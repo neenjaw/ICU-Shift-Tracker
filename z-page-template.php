@@ -19,17 +19,18 @@ if (!isset($_SESSION['user_session'])) {
 <!-- END Alert include -->
 
   <div class="container">
-    <div class="row justify-content-md-center">
-      <div class="col-2">
-<!-- Side NAV include -->
-
-<?php include 'includes/side-nav.php' ?>
-
-<!-- END Side NAV include -->
+    <div class="row">
+      <div class="col-12">
+<!-- NAV include -->
+<?php include 'includes/nav-menu.php' ?>
+<!-- END NAV include -->
       </div>
+    </div>      
+    <div class="row justify-content-md-center">
       <div class="col-12 col-md-auto">
+      	<br>
 <!-- Main Content -->
-        <h2>Add a new Staff</h2>
+        <h2>Add a new Shift</h2>
 
 
 

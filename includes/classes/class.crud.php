@@ -29,11 +29,11 @@ class crud
     public function createStaff($f_name, $l_name, $id_category, $is_active)
     {
         try {
-            $stmt = $this->db->prepare("INSERT INTO ".$this->tbl_staff." (first_name,last_name,category,active) VALUES(:fname, :lname, :cat, :act)");
+            $stmt = $this->db->prepare("INSERT INTO ".$this->tbl_staff." (`id`, `first_name` , `last_name`, `category`, `bool_is_active`) VALUES(NULL, :fname, :lname, :cat, :act)");
             $stmt->bindparam(":fname", $f_name);
             $stmt->bindparam(":lname", $l_name);
-            $stmt->bindparam(":email", $id_category);
-            $stmt->bindparam(":contact", $is_active);
+            $stmt->bindparam(":cat", $id_category);
+            $stmt->bindparam(":act", $is_active);
             $stmt->execute();
             return true;
         } catch (PDOException $e) {

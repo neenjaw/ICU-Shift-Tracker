@@ -12,11 +12,14 @@ include 'includes/navbar.php';
 <?php include 'includes/alert-header.php' ?>
 
   <div class="container">
-    <div class="row justify-content-md-center">
-      <div class="col-2">
-<?php include 'includes/side-nav.php' ?>
+    <div class="row">
+      <div class="col-12">
+<?php include 'includes/nav-menu.php' ?>
       </div>
+    </div>      
+    <div class="row justify-content-md-center">
       <div class="col-12 col-md-auto">
+      	<br>
         <h2>Home</h2>
         <h4>Showing last <?php echo (isset($_GET['num_days'])) ? $_GET['num_days'] : 20; ?> days of shifts entered</h4>
         <!-- GENERATED TABLE -->

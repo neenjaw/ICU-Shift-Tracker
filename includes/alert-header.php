@@ -26,4 +26,9 @@ if (isset($_SESSION['error_msg'])) {
 
 }
 ?>
+
+    <div class='alert hidden' id='form-alert'>
+      <!-- <button class='close' data-dismiss='alert'>&times;</button> -->
+      <p></p>
+    </div>
   </div>
