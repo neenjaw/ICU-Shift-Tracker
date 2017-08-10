@@ -58,6 +58,7 @@ if (!isset($_SESSION['user_session'])) {
                 <label class="control-label requiredField" for="select">Select a Staff for the shift:<span class="asteriskField">*</span></label>
                 <select class="select form-control" id="select-staff" name="staff">
                   <!--<option value="staff_id">Last, Name - RN</option>-->
+                  <option value="" disabled selected hidden>Please Choose...</option>
 <?php
 //Build Staff Select List
 //use the CRUD object to access the database and build an option list of the categories
@@ -191,8 +192,6 @@ Need to add logic to hide check boxes based on the role selected
       });
 <?php } ?>
       $("#select-staff").select2();
-      $("#select-assignment").select2();
-      $("#select-role").select2();
     });
   </script>
   <!-- END Aux Scripts -->
