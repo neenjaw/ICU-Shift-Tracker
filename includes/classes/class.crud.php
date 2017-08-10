@@ -257,7 +257,7 @@ class crud
     {
         $a_array = array();
 
-        $stmt = $this->db->prepare("SELECT * FROM ".$this->tbl_assignment."");
+        $stmt = $this->db->prepare("SELECT * FROM ".$this->tbl_assignment." ORDER BY `id`");
         $stmt->execute();
 
         if ($stmt->rowCount()>0) {
