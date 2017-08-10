@@ -68,7 +68,7 @@ if (!isset($_SESSION['user_session'])) {
                 <label class="control-label requiredField" for="date">Date<span class="asteriskField">*</span></label>
                 <div class="input-group">
                   <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
-                  <input class="form-control" id="date" name="date" placeholder="MM/DD/YYYY" type="date"/>
+                  <input class="form-control" id="date" name="date" placeholder="YYYY/MM/DD" value="<?php echo date('Y-m-d'); ?>" type="<?php echo (($detect->isMobile()) ? 'date' : 'text'); ?>"/>
                 </div>
               </div>
 
@@ -161,7 +161,15 @@ if (!isset($_SESSION['user_session'])) {
 
   <!-- Aux Scripts -->
   <script>
-
+    $(function() {
+<?php if (!$detect->isMobile()) { ?>
+      $('#date').datepicker({
+          format: "yyyy-mm-dd",
+          orientation: "bottom auto",
+          autoclose: true
+      });
+<?php } ?>
+    });
   </script>
   <!-- END Aux Scripts -->
 

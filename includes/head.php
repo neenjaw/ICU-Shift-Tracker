@@ -19,5 +19,8 @@
   <!-- Select 2 -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
 
-  <!-- -->
+  <!-- Custom stylesheet, date appended so that chrome forced to reload -->
   <link href="assets/style.css?<?php echo date('l jS \of F Y h:i:s A'); ?>" rel="stylesheet">
+
+  <!-- Bootstrap Date Picker -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/css/bootstrap-datepicker.standalone.min.css" rel="stylesheet" />
