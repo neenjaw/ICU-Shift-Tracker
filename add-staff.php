@@ -11,16 +11,16 @@ if (!isset($_SESSION['user_session'])) {
 
 <head>
   <!-- Header include -->
-  <?php include 'includes/head.php';?>
+<?php include 'includes/head.php';?>
   <!-- END Header include -->
 </head>
 <body>
   <!-- NAV bar include -->
-  <?php include 'includes/navbar.php'; ?>
+<?php include 'includes/navbar.php'; ?>
   <!-- END NAV bar include -->
 
   <!-- Alert include -->
-  <?php include 'includes/alert-header.php' ?>
+<?php include 'includes/alert-header.php' ?>
   <!-- END Alert include -->
 
   <div class="container">
@@ -112,7 +112,7 @@ if (!isset($_SESSION['user_session'])) {
   <!-- Spacer for the bottom -->
 
   <!-- Prefooter Include -->
-  <?php include 'includes/script-include.php'; ?>
+<?php include 'includes/script-include.php'; ?>
   <!-- END Prefooter Include -->
 
   <!-- Aux Scripts -->
@@ -200,7 +200,7 @@ if (!isset($_SESSION['user_session'])) {
   <!-- END Aux Scripts -->
 
   <!-- Footer Include -->
-  <?php include 'includes/footer.php'; ?>
+<?php include 'includes/footer.php'; ?>
   <!-- END Footer Include -->
 
 </body>

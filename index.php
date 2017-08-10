@@ -1,8 +1,8 @@
 <?php
 include 'includes/pre-head.php';
 
-if (!isset($_SESSION['user_session'])) {
-  header("Location: index.php");
+if (isset($_SESSION['user_session'])) {
+  header("Location: home.php");
 }
 ?>
 
