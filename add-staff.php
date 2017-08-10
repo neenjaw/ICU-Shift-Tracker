@@ -20,53 +20,62 @@ if (!isset($_SESSION['user_session'])) {
 
   <div class="container">
     <div class="row">
-      <div class="col-12">
+      <div class="col">
 <!-- NAV include -->
 <?php include 'includes/nav-menu.php' ?>
 <!-- END NAV include -->
       </div>
-    </div>      
-    <div class="row justify-content-md-center">
-      <div class="col-12 col-md-auto">
+    </div>
+    <div class="row justify-content-center">
+      <div class="col">
       	<br>
 <!-- Main Content -->
         <h2>Add a new Staff</h2>
         <hr />
-        <form id="add-staff-form">      
-          <div class="form-group" id="staff-name-group">
-            <div class="form-control-feedback hidden" id="staff-name-group-feedback"></div>
-            <div class="form-inline">
-            
-            	<label class="sr-only" for="first-name">First Name</label>
-        	    <input type="text" class="form-control mb-2 mr-sm-2 mb-sm-0" id="first-name" name="first-name" placeholder="First Name" 
-    	        	data-parsley-required data-parsley-trigger="change" autocomplete="off" spellcheck="false" 
-	            	data-parsley-errors-messages-disabled>
+        <form id="add-staff-form">
 
-            	<label class="sr-only" for="last-name">Last Name</label>
-        	    <input type="text" class="form-control mb-2 mr-sm-2 mb-sm-0" id="last-name" name="last-name" placeholder="Last Name" 
-    	        	data-parsley-required data-parsley-trigger="change" autocomplete="off" spellcheck="false" 
-	            	data-parsley-errors-messages-disabled>
+          <div class="container">
+            <div class="row">
+              <div class="col form-control-feedback hidden" id="staff-name-group-feedback"></div>
+            </div>
+            <div class="row">
+              <div class="col-sm-6 form-group">
+            	  <label for="first-name">First Name</label>
+        	      <input type="text" class="form-control" id="first-name" name="first-name" placeholder="First Name"
+      	        	data-parsley-required data-parsley-trigger="change" autocomplete="off" spellcheck="false"
+  	            	data-parsley-errors-messages-disabled>
+              </div>
+              <div class="col-sm-6 form-group">
+              	<label for="last-name">Last Name</label>
+          	    <input type="text" class="form-control" id="last-name" name="last-name" placeholder="Last Name"
+      	        	data-parsley-required data-parsley-trigger="change" autocomplete="off" spellcheck="false"
+  	            	data-parsley-errors-messages-disabled>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col form-group" id="cat-id-group">
+                <label for="category-id">Select the staff category (eg. RN, LPN, NA, etc..)</label>
+                <select class="form-control" id="category-id" name="category-id" data-parsley-required>
+                  <option value="" disabled selected hidden>Please Choose...</option>
+    <?php
+    //Build Option List
+    //use the CRUD object to access the database and build an option list of the categories
+    $form_select_categories = $crud->getAllCateories();
+    foreach ($form_select_categories as $k => $v) {?>
+                  <option value="<?php echo ($k); ?>"><?php echo ($v); ?></option>
+    <?php }
+    //END Build Option List
+    ?>
+                </select>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col form-group float-right">
+                  <button type="submit" class="btn btn-primary" id="btn-submit-new-staff">Add New Staff</button>
+              </div>
             </div>
           </div>
 
-          <div class="form-group" id="cat-id-group">
-            <label for="category-id">Select the staff category (eg. RN, LPN, NA, etc..)</label>
-            <select class="form-control" id="category-id" name="category-id" data-parsley-required>
-              <option value="" disabled selected hidden>Please Choose...</option>
-<?php
-//Build Option List
-//use the CRUD object to access the database and build an option list of the categories
-$form_select_categories = $crud->getAllCateories();
-foreach ($form_select_categories as $k => $v) {?>
-              <option value="<?php echo ($k); ?>"><?php echo ($v); ?></option>
-<?php }
-//END Build Option List
-?>
-            </select>
-          </div>
-          <div class="form-group float-right">
-              <button type="submit" class="btn btn-primary" id="btn-submit-new-staff">Add New Staff</button>
-          </div>
         </form>
 
 <!-- END Main Content -->
@@ -119,8 +128,8 @@ foreach ($form_select_categories as $k => $v) {?>
         },
         success: function (response) {
 		  console.log(response);
-            
-          if (response == "ok") { 
+
+          if (response == "ok") {
 
         	//clear the feedback message
             $('#staff-name-group-feedback').html('');
@@ -140,8 +149,8 @@ foreach ($form_select_categories as $k => $v) {?>
             $('#form-alert').show();
 
             //set timeout to hide the alert in x milliseconds
-            setTimeout(function(){ 
-                $("#form-alert").hide(); 
+            setTimeout(function(){
+                $("#form-alert").hide();
                 $("#form-alert p").html('');
                 $('#form-alert').removeClass('alert-success');
             }, 5000);
@@ -149,17 +158,17 @@ foreach ($form_select_categories as $k => $v) {?>
             //reset the form, return focus to first name
             $('#add-staff-form').trigger('reset');
             $("#first-name").focus()
-            
+
           } else {
-              
+
             $('#staff-name-group-feedback').html('<span class="fa fa-info-circle"></span> &nbsp; That name is already entered.');
-             
+
             $('#staff-name-group').removeClass('has-success').addClass('has-danger');
             $('#first-name').removeClass('form-control-success').addClass('form-control-danger');
             $('#login-password').removeClass('form-control-success').addClass('form-control-danger');
-       
+
           }
-           
+
           $('#btn-submit-new-staff').html('Add New Staff');
         }
       });
@@ -173,18 +182,3 @@ foreach ($form_select_categories as $k => $v) {?>
 <!-- Footer Include -->
 <?php include 'includes/footer.php'; ?>
 <!-- END Footer Include -->
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
