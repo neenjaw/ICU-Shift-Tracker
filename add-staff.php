@@ -28,32 +28,44 @@ if (!isset($_SESSION['user_session'])) {
     </div>
     <div class="row justify-content-center">
       <div class="col">
-      	<br>
+      <br>
 <!-- Main Content -->
-        <h2>Add a new Staff</h2>
-        <hr />
-        <form id="add-staff-form">
 
-          <div class="container">
-            <div class="row">
-              <div class="col form-control-feedback hidden" id="staff-name-group-feedback"></div>
+        <div class="container">
+          <form id="add-staff-form">
+            <div class="row justify-content-center">
+              <div class="col-sm-8">
+
+                <h2>Add a new Staff</h2>
+                <hr />
+
+              </div>
             </div>
-            <div class="row">
-              <div class="col-sm-6 form-group">
+            <div class="row justify-content-center">
+
+              <div class="col-sm-8 form-control-feedback hidden" id="staff-name-group-feedback"></div>
+
+            </div>
+            <div class="row justify-content-center">
+
+              <div class="col-sm-4 form-group">
             	  <label for="first-name">First Name</label>
         	      <input type="text" class="form-control" id="first-name" name="first-name" placeholder="First Name"
       	        	data-parsley-required data-parsley-trigger="change" autocomplete="off" spellcheck="false"
   	            	data-parsley-errors-messages-disabled>
               </div>
-              <div class="col-sm-6 form-group">
+
+              <div class="col-sm-4 form-group">
               	<label for="last-name">Last Name</label>
           	    <input type="text" class="form-control" id="last-name" name="last-name" placeholder="Last Name"
       	        	data-parsley-required data-parsley-trigger="change" autocomplete="off" spellcheck="false"
   	            	data-parsley-errors-messages-disabled>
               </div>
+
             </div>
-            <div class="row">
-              <div class="col form-group" id="cat-id-group">
+            <div class="row justify-content-center">
+
+              <div class="col-sm-8 form-group" id="cat-id-group">
                 <label for="category-id">Select the staff category (eg. RN, LPN, NA, etc..)</label>
                 <select class="form-control" id="category-id" name="category-id" data-parsley-required>
                   <option value="" disabled selected hidden>Please Choose...</option>
@@ -68,15 +80,18 @@ if (!isset($_SESSION['user_session'])) {
     ?>
                 </select>
               </div>
+
             </div>
-            <div class="row">
-              <div class="col form-group float-right">
+            <div class="row justify-content-end">
+
+              <div class="col-sm-4 form-group">
                   <button type="submit" class="btn btn-primary" id="btn-submit-new-staff">Add New Staff</button>
               </div>
-            </div>
-          </div>
 
-        </form>
+            </div>
+          </form>
+        </div>
+
 
 <!-- END Main Content -->
       </div>
