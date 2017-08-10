@@ -86,10 +86,10 @@ foreach ($form_select_staff as $k => $v) {?>
 
               <div class="col-sm-8 btn-group requiredField" data-toggle="buttons">
                 <label class="btn btn-outline-primary active">
-                  <input type="radio" name="radio-d-or-n" id="radio-d-or-n-d" value="D" autocomplete="off" checked> Day
+                  <input type="radio" name="d-or-n" id="radio-d-or-n-d" value="D" autocomplete="off" checked> Day
                 </label>
                 <label class="btn btn-outline-primary">
-                  <input type="radio" name="radio-d-or-n" id="radio-d-or-n-n" value="N" autocomplete="off"> Night
+                  <input type="radio" name="d-or-n" id="radio-d-or-n-n" value="N" autocomplete="off"> Night
                 </label>
               </div>
 
@@ -98,10 +98,17 @@ foreach ($form_select_staff as $k => $v) {?>
 
               <div class="col-sm-8 form-group">
                 <label class="control-label requiredField" for="select1">Role<span class="asteriskField">*</span></label>
-                <select class="select form-control" id="select1" name="select1">
-                  <option value="First Choice">First Choice</option>
-                  <option value="Second Choice">Second Choice</option>
-                  <option value="Third Choice">Third Choice</option>
+                <select class="select form-control" id="select-role" name="role">
+                  <!--<option value="First Choice">First Choice</option>-->
+<?php
+//Build Staff Role List
+//use the CRUD object to access the database and build an option list of the categories
+$form_select_role = $crud->getAllRoles();
+foreach ($form_select_role as $k => $v) {?>
+                  <option value="<?php echo ($k); ?>"><?php echo ($v); ?></option>
+<?php }
+//END Build Role Select List
+?>
                 </select>
               </div>
 
@@ -110,15 +117,27 @@ foreach ($form_select_staff as $k => $v) {?>
 
               <div class="col-sm-8 form-group">
                 <label class="control-label requiredField" for="select2">Pod Assignment<span class="asteriskField">*</span></label>
-                <select class="select form-control" id="select2" name="select2">
-                  <option value="First Choice">First Choice</option>
-                  <option value="Second Choice">Second Choice</option>
-                  <option value="Third Choice">Third Choice</option>
+                <select class="select form-control" id="select-assignment" name="assignment">
+                  <!--<option value="First Choice">First Choice</option>-->
+                  <option value="" disabled selected hidden>Please Choose...</option>
+<?php
+//Build Assignment Select List
+//use the CRUD object to access the database and build an option list of the categories
+$form_select_assignment = $crud->getAllAssignments();
+foreach ($form_select_assignment as $k => $v) {?>
+                  <option value="<?php echo ($k); ?>"><?php echo ($v); ?></option>
+<?php }
+//END Build Assignment Select List
+?>
                 </select>
               </div>
 
             </div>
             <div class="row justify-content-center">
+
+<!--
+Need to add logic to hide check boxes based on the role selected
+-->
 
               <div class="col-sm-8 form-group">
                 <label class="control-label">Check all that apply</label>
@@ -130,12 +149,6 @@ foreach ($form_select_staff as $k => $v) {?>
                 <div class="checkbox"><label class="custom-control custom-checkbox"><input name="ck-crrt" class="custom-control-input" type="checkbox" value="C"/><span class="custom-control-indicator"></span><span class="custom-control-description">CRRT?</span></label></div>
                 <div class="checkbox"><label class="custom-control custom-checkbox"><input name="ck-evd" class="custom-control-input" type="checkbox" value="E"/><span class="custom-control-indicator"></span><span class="custom-control-description">EVD?</span></label></div>
                 <div class="checkbox"><label class="custom-control custom-checkbox"><input name="ck-burn" class="custom-control-input" type="checkbox" value="B"/><span class="custom-control-indicator"></span><span class="custom-control-description">Burn?</span></label></div>
-              </div>
-
-            </div>
-            <div class="row justify-content-center">
-
-              <div class="col-sm-8 form-group">
               </div>
 
             </div>
@@ -178,6 +191,8 @@ foreach ($form_select_staff as $k => $v) {?>
       });
 <?php } ?>
       $("#select-staff").select2();
+      $("#select-assignment").select2();
+      $("#select-role").select2();
     });
   </script>
   <!-- END Aux Scripts -->

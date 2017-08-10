@@ -198,12 +198,20 @@ class crud
         return $editRow;
     }
 
-    public function getRole()
+    public function getAllRoles()
     {
-        $stmt = $this->db->prepare("SELECT * FROM ".$this->tbl_role." ");
+        $role_array = array();
+
+        $stmt = $this->db->prepare("SELECT * FROM ".$this->tbl_role."");
         $stmt->execute();
-        $editRow=$stmt->fetch(PDO::FETCH_ASSOC);
-        return $editRow;
+
+        if ($stmt->rowCount()>0) {
+            while ( $editRow = $stmt->fetch(PDO::FETCH_ASSOC) ) {
+                $role_array[$editRow['id']] = $editRow['role'];
+            }
+        }
+
+        return $role_array;
     }
 
     public function getRoleById($id)
@@ -247,10 +255,18 @@ class crud
 
     public function getAllAssignments()
     {
-        $stmt = $this->db->prepare("SELECT * FROM ".$this->tbl_assignment." ");
+        $a_array = array();
+
+        $stmt = $this->db->prepare("SELECT * FROM ".$this->tbl_assignment."");
         $stmt->execute();
-        $editRow=$stmt->fetch(PDO::FETCH_ASSOC);
-        return $editRow;
+
+        if ($stmt->rowCount()>0) {
+            while ( $editRow = $stmt->fetch(PDO::FETCH_ASSOC) ) {
+                $a_array[$editRow['id']] = $editRow['assignment'];
+            }
+        }
+
+        return $a_array;
     }
 
     public function getAssignmentById($id)
