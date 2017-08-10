@@ -56,8 +56,17 @@ if (!isset($_SESSION['user_session'])) {
 
               <div class="col-sm-8 form-group">
                 <label class="control-label requiredField" for="select">Select a Staff for the shift:<span class="asteriskField">*</span></label>
-                <select class="select form-control" id="select-staff" name="select">
-                  <option value="staff_id">Last, Name - RN</option>
+                <select class="select form-control" id="select-staff" name="staff">
+                  <!--<option value="staff_id">Last, Name - RN</option>-->
+<?php
+//Build Staff Select List
+//use the CRUD object to access the database and build an option list of the categories
+$form_select_staff = $crud->getAllStaff();
+foreach ($form_select_staff as $k => $v) {?>
+                  <option value="<?php echo ($k); ?>"><?php echo ($v); ?></option>
+<?php }
+//END Build Staff Select List
+?>
                 </select>
               </div>
 
@@ -112,16 +121,15 @@ if (!isset($_SESSION['user_session'])) {
             <div class="row justify-content-center">
 
               <div class="col-sm-8 form-group">
-                <label class="control-label ">Check all that apply</label>
-                <div class=" ">
-                  <div class="checkbox"><label class="checkbox"><nput name="checkbox" type="checkbox" value="Non-vented?"/> Non-vented?</label></div>
-                  <div class="checkbox"><label class="checkbox"><input name="checkbox" type="checkbox" value="Doubled?"/> Doubled?</label></div>
-                  <div class="checkbox"><label class="checkbox"><input name="checkbox" type="checkbox" value="Admitted?"/> Admitted?</label></div>
-                  <div class="checkbox"><label class="checkbox"><input name="checkbox" type="checkbox" value="Code pager?"/> Code pager?</label></div>
-                  <div class="checkbox"><label class="checkbox"><input name="checkbox" type="checkbox" value="Very sick?"/> Very sick?</label></div>
-                  <div class="checkbox"><label class="checkbox"><input name="checkbox" type="checkbox" value="Very sick?"/> CRRT?</label></div>
-                  <div class="checkbox"><label class="checkbox"><input name="checkbox" type="checkbox" value="Very sick?"/> EVD?</label></div>
-                </div>
+                <label class="control-label">Check all that apply</label>
+                <div class="checkbox"><label class="custom-control custom-checkbox"><input name="ck-nonvent" class="custom-control-input" type="checkbox" value="NV"/><span class="custom-control-indicator"></span><span class="custom-control-description">Non-vented?</span></label></div>
+                <div class="checkbox"><label class="custom-control custom-checkbox"><input name="ck-doubled" class="custom-control-input" type="checkbox" value="D"/><span class="custom-control-indicator"></span><span class="custom-control-description">Doubled?</span></label></div>
+                <div class="checkbox"><label class="custom-control custom-checkbox"><input name="ck-admit" class="custom-control-input" type="checkbox" value="A"/><span class="custom-control-indicator"></span><span class="custom-control-description">Admitted?</span></label></div>
+                <div class="checkbox"><label class="custom-control custom-checkbox"><input name="ck-codepg" class="custom-control-input" type="checkbox" value="P"/><span class="custom-control-indicator"></span><span class="custom-control-description">Code pager?</span></label></div>
+                <div class="checkbox"><label class="custom-control custom-checkbox"><input name="ck-vsick" class="custom-control-input" type="checkbox" value="VS"/><span class="custom-control-indicator"></span><span class="custom-control-description">Very sick?</span></label></div>
+                <div class="checkbox"><label class="custom-control custom-checkbox"><input name="ck-crrt" class="custom-control-input" type="checkbox" value="C"/><span class="custom-control-indicator"></span><span class="custom-control-description">CRRT?</span></label></div>
+                <div class="checkbox"><label class="custom-control custom-checkbox"><input name="ck-evd" class="custom-control-input" type="checkbox" value="E"/><span class="custom-control-indicator"></span><span class="custom-control-description">EVD?</span></label></div>
+                <div class="checkbox"><label class="custom-control custom-checkbox"><input name="ck-burn" class="custom-control-input" type="checkbox" value="B"/><span class="custom-control-indicator"></span><span class="custom-control-description">Burn?</span></label></div>
               </div>
 
             </div>
@@ -169,6 +177,7 @@ if (!isset($_SESSION['user_session'])) {
           autoclose: true
       });
 <?php } ?>
+      $("#select-staff").select2();
     });
   </script>
   <!-- END Aux Scripts -->

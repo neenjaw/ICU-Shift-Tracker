@@ -9,7 +9,7 @@ class crud
     private $tbl_role;
     private $tbl_category;
     private $tbl_assignment;
- 
+
     function __construct($DB_con)
     {
         $this->db = $DB_con;
@@ -20,9 +20,9 @@ class crud
         $this->tbl_category = 'shift_tracker_tbl_staff_category';
         $this->tbl_assignment = 'shift_tracker_tbl_assignment';
     }
- 
+
     /*
-     * CRUD -- 
+     * CRUD --
      * CREATE FUNCTIONS
      * STAFF, ROLE, CATEGORY, SHIFT
      */
@@ -85,7 +85,7 @@ class crud
     {
         try {
             $stmt = $this->db->prepare("INSERT INTO ".$this->tbl_shift_entry." (shift_date, staff_id, role_id, assignment_id, bool_doubled, bool_vented, bool_new_admit, bool_very_sick, bool_code_pager, bool_day_or_night) VALUES(:date, :sid, :rid, :aid, :bd, :bv, :bna, :bvs, :bcp, :bdon)");
-         
+
             //:date, :sid, :rid, :aid, :bd, :bv, :bna, :bvs, :bcp, :bdon
             $stmt->bindparam(":date", $shift_date);
             $stmt->bindparam(":sid", $staff_id);
@@ -120,7 +120,7 @@ class crud
             $role_id = $this->db->query("SELECT id FROM ".$this->tbl_role." WHERE role='NA'");
 
             $stmt = $this->db->prepare("INSERT INTO ".$this->tbl_shift_entry." (shift_date, staff_id, role_id, assignment_id, bool_day_or_night) VALUES(:date, :sid, :rid, :aid, :bdon)");
-         
+
             $stmt->bindparam(":date", $shift_date);
             $stmt->bindparam(":sid", $staff_id);
             $stmt->bindparam(":rid", $role_id);
@@ -133,14 +133,14 @@ class crud
             return false;
         }
     }
-    
+
     public function createUcShiftEntry($shift_date, $staff_id, $assignment_id, $bool_day_or_night)
     {
         try {
             $role_id = $this->db->query("SELECT id FROM ".$this->tbl_role." WHERE role='UC'");
 
             $stmt = $this->db->prepare("INSERT INTO ".$this->tbl_shift_entry." (shift_date, staff_id, role_id, assignment_id, bool_day_or_night) VALUES(:date, :sid, :rid, :aid, :bdon)");
-         
+
             $stmt->bindparam(":date", $shift_date);
             $stmt->bindparam(":sid", $staff_id);
             $stmt->bindparam(":rid", $role_id);
@@ -155,17 +155,25 @@ class crud
     }
 
     /*
-     * CRUD -- 
+     * CRUD --
      * READ FUNCTIONS
      * STAFF, ROLE, CATEGORY, ASSIGNMENT SHIFT ENTRY
      */
- 
-    public function getStaff()
+
+    public function getAllStaff()
     {
-        $stmt = $this->db->prepare("SELECT * FROM ".$this->tbl_staff." ");
+        $staff_array = array();
+
+        $stmt = $this->db->prepare('SELECT '.$this->tbl_staff.'.id AS `id`, CONCAT( '.$this->tbl_staff.'.last_name, ", ", '.$this->tbl_staff.'.first_name, " (", '.$this->tbl_category.'.category, ")" ) AS `name` FROM '.$this->tbl_staff.' LEFT JOIN '.$this->tbl_category.' ON '.$this->tbl_staff.'.category = '.$this->tbl_category.'.id ORDER BY `name`');
         $stmt->execute();
-        $editRow=$stmt->fetch(PDO::FETCH_ASSOC);
-        return $editRow;
+
+        if ($stmt->rowCount()>0) {
+            while ( $editRow = $stmt->fetch(PDO::FETCH_ASSOC) ) {
+                $staff_array[$editRow['id']] = $editRow['name'];
+            }
+        }
+
+        return $staff_array;
     }
 
     public function getStaffIdByName($f_name, $l_name)
@@ -180,9 +188,9 @@ class crud
 
     public function getStaffById($id)
     {
-        $stmt = $this->db->prepare("SELECT ".$this->tbl_staff.".last_name, ".$this->tbl_staff.".first_name, ".$this->tbl_category.".category 
-                                    FROM ".$this->tbl_staff." 
-                                    LEFT JOIN ".$this->tbl_category." on ".$this->tbl_staff.".category = ".$this->tbl_category.".id 
+        $stmt = $this->db->prepare("SELECT ".$this->tbl_staff.".last_name, ".$this->tbl_staff.".first_name, ".$this->tbl_category.".category
+                                    FROM ".$this->tbl_staff."
+                                    LEFT JOIN ".$this->tbl_category." on ".$this->tbl_staff.".category = ".$this->tbl_category.".id
                                     WHERE ".$this->tbl_staff.".id=:sid");
         $stmt->bindparam(":sid", $id);
         $stmt->execute();
@@ -221,7 +229,7 @@ class crud
 
         if ($stmt->rowCount()>0) {
             while ( $editRow = $stmt->fetch(PDO::FETCH_ASSOC) ) {
-                $cat_array[$editRow['id']] = $editRow['category']; 
+                $cat_array[$editRow['id']] = $editRow['category'];
             }
         }
 
@@ -299,10 +307,10 @@ class crud
     //  LEFT JOIN `tbl_staff_roles` ON tbl_shift_entry.role_id = tbl_staff_roles.id
     //  WHERE tbl_shift_entry.role_id <> (SELECT id FROM tbl_staff_roles WHERE role='NA') AND tbl_shift_entry.role_id <> (SELECT id FROM tbl_staff_roles WHERE role='UC')
 
-        $stmtShiftEntries = $this->db->prepare('SELECT 
+        $stmtShiftEntries = $this->db->prepare('SELECT
                                         '. $this->tbl_shift_entry .'.id AS `ID`,
                                         CONCAT('.$this->tbl_staff.'.last_name, ", ", '.$this->tbl_staff.'.first_name) AS `Staff`,
-                                        '.$this->tbl_shift_entry.'.shift_date AS `Shift Date`,   
+                                        '.$this->tbl_shift_entry.'.shift_date AS `Shift Date`,
                                         '.$this->tbl_role.'.role AS `Role`,
                                         '.$this->tbl_assignment.'.assignment AS `Assignment`,
                                         '.$this->tbl_shift_entry.'.bool_doubled AS `Double`,
@@ -311,22 +319,22 @@ class crud
                                         '.$this->tbl_shift_entry.'.bool_very_sick AS `Very Sick`,
                                         '.$this->tbl_shift_entry.'.bool_code_pager AS `Code Pager`,
                                         '.$this->tbl_shift_entry.'.bool_day_or_night AS `Day/Night`
-                                    FROM 
+                                    FROM
                                         '.$this->tbl_shift_entry.'
-                                    LEFT JOIN 
+                                    LEFT JOIN
                                         '.$this->tbl_staff.' ON '.$this->tbl_shift_entry.'.staff_id = '.$this->tbl_staff.'.id
-                                    LEFT JOIN 
+                                    LEFT JOIN
                                         '.$this->tbl_assignment.' ON '.$this->tbl_shift_entry.'.assignment_id = '.$this->tbl_assignment.'.id
-                                    LEFT JOIN 
+                                    LEFT JOIN
                                         '.$this->tbl_role.' ON '.$this->tbl_shift_entry.'.role_id = '.$this->tbl_role.'.id
                                     LEFT JOIN
                                         '.$this->tbl_category.' ON '.$this->tbl_staff.'.category = '.$this->tbl_category.'.id
                                     INNER JOIN
                                         (SELECT DISTINCT shift_date FROM '.$this->tbl_shift_entry.' ORDER BY shift_date DESC LIMIT '.$days_to_print.' OFFSET '.$offset.') AS t2 ON t2.shift_date = '.$this->tbl_shift_entry.'.shift_date
-                                    WHERE 
+                                    WHERE
                                         '.$this->tbl_category.'.category = "RN"
                                     ORDER BY `Staff`');
-                                    
+
         $stmtShiftEntries->execute();
 
         //  In php, create a 3-dimensional array shift_array[Staff Name][Shift Date][Letter Code]
@@ -364,7 +372,7 @@ class crud
         $stmtCountUniqueDates = $this->db->prepare('SELECT COUNT(DISTINCT shift_date) FROM '.$this->tbl_shift_entry.' LIMIT '.$days_to_print.' OFFSET '.$offset);
         $stmtCountUniqueDates->execute();
         $countUniqueDates = $stmtCountUniqueDates->fetch(PDO::FETCH_ASSOC);
-        
+
         $stmtUniqueDates = $this->db->prepare('SELECT DISTINCT shift_date FROM '.$this->tbl_shift_entry.' ORDER BY shift_date DESC LIMIT '.$days_to_print.' OFFSET '.$offset);
         $stmtUniqueDates->execute();
 
@@ -378,12 +386,12 @@ class crud
         //loop to generate date header
         //also generate rows with staff entries
         //
-        //Effect should be something like: 
-        //   
+        //Effect should be something like:
+        //
         //              |Jul                          |Aug
-        //              |1    |2    |3    |4    |5    |1    |2    |3    |4    |    
+        //              |1    |2    |3    |4    |5    |1    |2    |3    |4    |
         //       name 1 |  -  |  C  |  C  |  C  |  C  |  -  |  -  |  -  |  -  |
-        //       name 2 |  -  |  -  |  -  |  V  |  V  |  -  |  -  |  -  |  -  | 
+        //       name 2 |  -  |  -  |  -  |  V  |  V  |  -  |  -  |  -  |  -  |
         //       name 3 |  -  |  -  |  S  |  S  |  S  |  -  |  -  |  -  |  O  |
         //
 
@@ -394,9 +402,9 @@ class crud
 
         foreach ( $shift_dates_array as $v ) {
             $prev_month = $month;
-            
+
             $date = DateTime::createFromFormat('Y-m-d', $v);
-            
+
             $month = $date->format('M');
 
             if ($month !== $prev_month) {
@@ -405,7 +413,7 @@ class crud
                 $date_month_header = $date_month_header . '<th class="shift-cell">&nbsp;</th>';
             }
 
-            $date_date_header = $date_date_header . '<th class="shift-cell">' . $date->format('d') . '</th>'; 
+            $date_date_header = $date_date_header . '<th class="shift-cell">' . $date->format('d') . '</th>';
 
             //for each date, test against the staff shifts multidimensional array
             //  if the sub-array has the date set then set the letter code in the table else, put a dash
@@ -425,7 +433,7 @@ class crud
                 $shift_counter = $shift_counter + 1;
             }
         }
-        
+
 
         echo "      <div class=\"shift-table-div\">\r\n";
         echo "        <table class=\"table table-hover table-responsive table-striped table-sm shift-table\">\r\n";
@@ -434,7 +442,7 @@ class crud
         echo "              <th class=\"shift-row-head\">&nbsp;</th>" . $date_month_header . "\r\n";
         echo "            </tr>\r\n";
         echo "            <tr class=\"table-inverse\">\r\n";
-        echo "              <th class=\"shift-row-head\">Date</th>" . $date_date_header . "\r\n"; 
+        echo "              <th class=\"shift-row-head\">Date</th>" . $date_date_header . "\r\n";
         echo "            </tr>\r\n";
         echo "          </thead>\r\n";
         echo "          <tbody>\r\n";
@@ -482,7 +490,7 @@ class crud
 
 
     /*
-     * CRUD -- 
+     * CRUD --
      * Update FUNCTIONS
      * STAFF, ROLE, CATEGORY, ASSIGNMENT SHIFT ENTRY
      */
@@ -603,7 +611,7 @@ class crud
             $role_id = $this->db->query("SELECT id FROM ".$this->tbl_role." WHERE role='NA'");
 
             $stmt = $this->db->prepare("UPDATE ".$this->tbl_shift_entry." SET shift_date=:date, staff_id=:sid, role_id=:rid, assignment_id=:aid, bool_day_or_night=:bdon WHERE id=:id");
-         
+
             $stmt->bindparam(":date", $shift_date);
             $stmt->bindparam(":sid", $staff_id);
             $stmt->bindparam(":rid", $role_id);
@@ -617,14 +625,14 @@ class crud
             return false;
         }
     }
-    
+
     public function updateUcShiftEntry($shift_date, $staff_id, $assignment_id, $bool_day_or_night)
     {
         try {
             $role_id = $this->db->query("SELECT id FROM ".$this->tbl_role." WHERE role='UC'");
 
             $stmt = $this->db->prepare("UPDATE ".$this->tbl_shift_entry." SET shift_date=:date, staff_id=:sid, role_id=:rid, assignment_id=:aid, bool_day_or_night=:bdon WHERE id=:id");
-         
+
             $stmt->bindparam(":date", $shift_date);
             $stmt->bindparam(":sid", $staff_id);
             $stmt->bindparam(":rid", $role_id);
@@ -638,13 +646,13 @@ class crud
             return false;
         }
     }
- 
+
     /*
-     * CRUD -- 
+     * CRUD --
      * Update FUNCTIONS
      * STAFF, ROLE, CATEGORY, ASSIGNMENT SHIFT ENTRY
      */
-     
+
     public function deleteStaff($id)
     {
         $stmt = $this->db->prepare("DELETE FROM ".$this->tbl_staff." WHERE id=:id");
@@ -652,7 +660,7 @@ class crud
         $stmt->execute();
         return true;
     }
-    
+
     public function deleteRole($id)
     {
         $stmt = $this->db->prepare("DELETE FROM ".$this->tbl_role." WHERE id=:id");
@@ -660,7 +668,7 @@ class crud
         $stmt->execute();
         return true;
     }
-    
+
     public function deleteCategoy($id)
     {
         $stmt = $this->db->prepare("DELETE FROM ".$this->tbl_category." WHERE id=:id");
@@ -668,7 +676,7 @@ class crud
         $stmt->execute();
         return true;
     }
-     
+
     public function deleteAssignment($id)
     {
         $stmt = $this->db->prepare("DELETE FROM ".$this->tbl_assignment." WHERE id=:id");
@@ -676,7 +684,7 @@ class crud
         $stmt->execute();
         return true;
     }
-     
+
     public function deleteShiftEntry($id)
     {
         $stmt = $this->db->prepare("DELETE FROM ".$this->tbl_shift_entry." WHERE id=:id");
@@ -684,14 +692,14 @@ class crud
         $stmt->execute();
         return true;
     }
- 
+
  /* paging
- 
+
     public function dataview($query)
     {
         $stmt = $this->db->prepare($query);
         $stmt->execute();
- 
+
         if ($stmt->rowCount()>0) {
             while ($row=$stmt->fetch(PDO::FETCH_ASSOC)) {
                 ?>
@@ -718,7 +726,7 @@ class crud
             <?php
         }
     }
- 
+
     public function paging($query, $records_per_page)
     {
 
@@ -730,17 +738,17 @@ class crud
         $query2=$query." limit $starting_position,$records_per_page";
         return $query2;
     }
- 
+
     public function paginglink($query, $records_per_page)
     {
-  
+
         $self = $_SERVER['PHP_SELF'];
-  
+
         $stmt = $this->db->prepare($query);
         $stmt->execute();
-  
+
         $total_no_of_records = $stmt->rowCount();
-  
+
         if ($total_no_of_records > 0) {
             ?><ul class="pagination"><?php
    $total_no_of_pages=ceil($total_no_of_records/$records_per_page);
@@ -768,6 +776,6 @@ if ($current_page!=$total_no_of_pages) {
     ?></ul><?php
         }
     }
- 
+
  paging */
 }
