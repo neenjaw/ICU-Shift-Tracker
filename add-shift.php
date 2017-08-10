@@ -109,11 +109,13 @@ if (!isset($_SESSION['user_session'])) {
             <div class="col-sm-8 form-group">
               <label class="control-label ">Check all that apply</label>
               <div class=" ">
-                <div class="checkbox"><label class="checkbox"><nput name="checkbox" type="checkbox" value="Non-vented?"/>Non-vented?</label></div>
-                <div class="checkbox"><label class="checkbox"><input name="checkbox" type="checkbox" value="Doubled?"/>Doubled?</label></div>
-                <div class="checkbox"><label class="checkbox"><input name="checkbox" type="checkbox" value="Admitted?"/>Admitted?</label></div>
-                <div class="checkbox"><label class="checkbox"><input name="checkbox" type="checkbox" value="Code pager?"/>Code pager?</label></div>
-                <div class="checkbox"><label class="checkbox"><input name="checkbox" type="checkbox" value="Very sick?"/>Very sick?</label></div>
+                <div class="checkbox"><label class="checkbox"><nput name="checkbox" type="checkbox" value="Non-vented?"/> Non-vented?</label></div>
+                <div class="checkbox"><label class="checkbox"><input name="checkbox" type="checkbox" value="Doubled?"/> Doubled?</label></div>
+                <div class="checkbox"><label class="checkbox"><input name="checkbox" type="checkbox" value="Admitted?"/> Admitted?</label></div>
+                <div class="checkbox"><label class="checkbox"><input name="checkbox" type="checkbox" value="Code pager?"/> Code pager?</label></div>
+                <div class="checkbox"><label class="checkbox"><input name="checkbox" type="checkbox" value="Very sick?"/> Very sick?</label></div>
+                <div class="checkbox"><label class="checkbox"><input name="checkbox" type="checkbox" value="Very sick?"/> CRRT?</label></div>
+                <div class="checkbox"><label class="checkbox"><input name="checkbox" type="checkbox" value="Very sick?"/> EVD?</label></div>
               </div>
             </div>
 
@@ -121,18 +123,6 @@ if (!isset($_SESSION['user_session'])) {
           <div class="row justify-content-center">
 
             <div class="col-sm-8 form-group">
-            </div>
-
-          </div>
-
-
-
-          <div class="row justify-content-center">
-
-            <div class="col-sm-4 form-group">
-            </div>
-
-            <div class="col-sm-4 form-group">
             </div>
 
           </div>
