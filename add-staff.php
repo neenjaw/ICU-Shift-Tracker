@@ -1,35 +1,40 @@
 <?php
-include 'includes/pre-header.php';
+include 'includes/pre-head.php';
 
 if (!isset($_SESSION['user_session'])) {
-    header("Location: index.php");
+  header("Location: index.php");
 }
 ?>
 
-<!-- Header include -->
-<?php include 'includes/header.php';?>
-<!-- END Header include -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en">
 
-<!-- NAV bar include -->
-<?php include 'includes/navbar.php'; ?>
-<!-- END NAV bar include -->
+<head>
+  <!-- Header include -->
+  <?php include 'includes/head.php';?>
+  <!-- END Header include -->
+</head>
+<body>
+  <!-- NAV bar include -->
+  <?php include 'includes/navbar.php'; ?>
+  <!-- END NAV bar include -->
 
-<!-- Alert include -->
-<?php include 'includes/alert-header.php' ?>
-<!-- END Alert include -->
+  <!-- Alert include -->
+  <?php include 'includes/alert-header.php' ?>
+  <!-- END Alert include -->
 
   <div class="container">
     <div class="row">
       <div class="col">
-<!-- NAV include -->
-<?php include 'includes/nav-menu.php' ?>
-<!-- END NAV include -->
+        <!-- NAV include -->
+        <?php include 'includes/nav-menu.php' ?>
+        <!-- END NAV include -->
       </div>
     </div>
     <div class="row justify-content-center">
       <div class="col">
-      <br>
-<!-- Main Content -->
+        <br>
+        <!-- Main Content -->
 
         <div class="container">
           <form id="add-staff-form">
@@ -49,17 +54,17 @@ if (!isset($_SESSION['user_session'])) {
             <div class="row justify-content-center">
 
               <div class="col-sm-4 form-group">
-            	  <label for="first-name">First Name</label>
-        	      <input type="text" class="form-control" id="first-name" name="first-name" placeholder="First Name"
-      	        	data-parsley-required data-parsley-trigger="change" autocomplete="off" spellcheck="false"
-  	            	data-parsley-errors-messages-disabled>
+                <label for="first-name">First Name</label>
+                <input type="text" class="form-control" id="first-name" name="first-name" placeholder="First Name"
+                data-parsley-required data-parsley-trigger="change" autocomplete="off" spellcheck="false"
+                data-parsley-errors-messages-disabled>
               </div>
 
               <div class="col-sm-4 form-group">
-              	<label for="last-name">Last Name</label>
-          	    <input type="text" class="form-control" id="last-name" name="last-name" placeholder="Last Name"
-      	        	data-parsley-required data-parsley-trigger="change" autocomplete="off" spellcheck="false"
-  	            	data-parsley-errors-messages-disabled>
+                <label for="last-name">Last Name</label>
+                <input type="text" class="form-control" id="last-name" name="last-name" placeholder="Last Name"
+                data-parsley-required data-parsley-trigger="change" autocomplete="off" spellcheck="false"
+                data-parsley-errors-messages-disabled>
               </div>
 
             </div>
@@ -69,15 +74,15 @@ if (!isset($_SESSION['user_session'])) {
                 <label for="category-id">Select the staff category (eg. RN, LPN, NA, etc..)</label>
                 <select class="form-control" id="category-id" name="category-id" data-parsley-required>
                   <option value="" disabled selected hidden>Please Choose...</option>
-    <?php
-    //Build Option List
-    //use the CRUD object to access the database and build an option list of the categories
-    $form_select_categories = $crud->getAllCateories();
-    foreach ($form_select_categories as $k => $v) {?>
-                  <option value="<?php echo ($k); ?>"><?php echo ($v); ?></option>
-    <?php }
-    //END Build Option List
-    ?>
+                  <?php
+                  //Build Option List
+                  //use the CRUD object to access the database and build an option list of the categories
+                  $form_select_categories = $crud->getAllCateories();
+                  foreach ($form_select_categories as $k => $v) {?>
+                    <option value="<?php echo ($k); ?>"><?php echo ($v); ?></option>
+                  <?php }
+                  //END Build Option List
+                  ?>
                 </select>
               </div>
 
@@ -85,7 +90,7 @@ if (!isset($_SESSION['user_session'])) {
             <div class="row justify-content-end">
 
               <div class="col-sm-4 form-group">
-                  <button type="submit" class="btn btn-primary" id="btn-submit-new-staff">Add New Staff</button>
+                <button type="submit" class="btn btn-primary" id="btn-submit-new-staff">Add New Staff</button>
               </div>
 
             </div>
@@ -93,32 +98,32 @@ if (!isset($_SESSION['user_session'])) {
         </div>
 
 
-<!-- END Main Content -->
+        <!-- END Main Content -->
       </div>
     </div>
   </div>
 
-<!-- Spacer for the bottom -->
+  <!-- Spacer for the bottom -->
   <div class="container">
     <br />
     <br />
     <br />
   </div>
-<!-- Spacer for the bottom -->
+  <!-- Spacer for the bottom -->
 
-<!-- Prefooter Include -->
-<?php include 'includes/pre-script-footer.php'; ?>
-<!-- END Prefooter Include -->
+  <!-- Prefooter Include -->
+  <?php include 'includes/script-include.php'; ?>
+  <!-- END Prefooter Include -->
 
-<!-- Aux Scripts -->
-<script>
-/*
- * Bind parsley.js event listeners here.
- */
+  <!-- Aux Scripts -->
+  <script>
+  /*
+  * Bind parsley.js event listeners here.
+  */
 
   $(function () {
-	$('#add-staff-form')
-	.parsley({errorClass: "form-control-danger", successClass: "form-control-success"})
+    $('#add-staff-form')
+    .parsley({errorClass: "form-control-danger", successClass: "form-control-success"})
     .on('field:validated', function (e) {
 
       if (e.validationResult.constructor!==Array) {
@@ -142,11 +147,11 @@ if (!isset($_SESSION['user_session'])) {
           $('#btn-submit-new-staff').html('<span class="fa fa-transfer"></span> &nbsp; adding ...');
         },
         success: function (response) {
-		  console.log(response);
+          console.log(response);
 
           if (response == "ok") {
 
-        	//clear the feedback message
+            //clear the feedback message
             $('#staff-name-group-feedback').html('');
 
             //clear the form group classes
@@ -165,9 +170,9 @@ if (!isset($_SESSION['user_session'])) {
 
             //set timeout to hide the alert in x milliseconds
             setTimeout(function(){
-                $("#form-alert").hide();
-                $("#form-alert p").html('');
-                $('#form-alert').removeClass('alert-success');
+              $("#form-alert").hide();
+              $("#form-alert p").html('');
+              $('#form-alert').removeClass('alert-success');
             }, 5000);
 
             //reset the form, return focus to first name
@@ -191,9 +196,13 @@ if (!isset($_SESSION['user_session'])) {
       return false;
     });
   });
-</script>
-<!-- END Aux Scripts -->
+  </script>
+  <!-- END Aux Scripts -->
 
-<!-- Footer Include -->
-<?php include 'includes/footer.php'; ?>
-<!-- END Footer Include -->
+  <!-- Footer Include -->
+  <?php include 'includes/footer.php'; ?>
+  <!-- END Footer Include -->
+
+</body>
+
+</html>

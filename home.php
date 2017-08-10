@@ -1,36 +1,48 @@
 <?php
-include 'includes/pre-header.php';
+include 'includes/pre-head.php';
 
 if (!isset($_SESSION['user_session'])) {
-    header("Location: index.php");
+  header("Location: index.php");
 }
-
-include 'includes/header.php';
-include 'includes/navbar.php';
 ?>
 
-<?php include 'includes/alert-header.php' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en">
+
+<head>
+  <!-- Header include -->
+  <?php include 'includes/head.php';?>
+  <!-- END Header include -->
+</head>
+<body>
+  <!-- NAV bar include -->
+  <?php include 'includes/navbar.php'; ?>
+  <!-- END NAV bar include -->
+
+  <!-- Alert include -->
+  <?php include 'includes/alert-header.php' ?>
+  <!-- END Alert include -->
 
   <div class="container">
     <div class="row">
       <div class="col-12">
 <?php include 'includes/nav-menu.php' ?>
       </div>
-    </div>      
+    </div>
     <div class="row justify-content-md-center">
       <div class="col-12 col-md-auto">
       	<br>
         <h2>Home</h2>
         <h4>Showing last <?php echo (isset($_GET['num_days'])) ? $_GET['num_days'] : 20; ?> days of shifts entered</h4>
         <!-- GENERATED TABLE -->
-<?php 
+<?php
 $num_days = (isset($_GET['num_days'])) ? $_GET['num_days'] : 20;
 settype($num_days, 'integer');
 
 $day_offset = (isset($_GET['day_offset'])) ? $_GET['day_offset'] : 0;
 settype($day_offset, 'integer');
 
-$crud->printRnShiftTable($num_days, $day_offset); 
+$crud->printRnShiftTable($num_days, $day_offset);
 ?>
         <!-- END GENERATED TABLE -->
       </div>
@@ -39,9 +51,9 @@ $crud->printRnShiftTable($num_days, $day_offset);
 
   <div class="container">
     <br />
-    
+
     <br />
-    
+
     <br />
   </div>
 
@@ -73,7 +85,7 @@ $crud->printRnShiftTable($num_days, $day_offset);
   <!-- /.modal-dialog -->
   </div>
 
-<?php include 'includes/pre-script-footer.php'; ?>
+<?php include 'includes/script-include.php'; ?>
 
 <script>
   //When document is ready
@@ -81,13 +93,13 @@ $crud->printRnShiftTable($num_days, $day_offset);
     //Set all the shift table cells with a link to point at the page to display the shift details
     /*$(".shift-cell a").each(function(entry) {
           var shift_id = $(this).attr("data-shift-entry-id");
-          $(this).attr("href", ("show_shift_details.php?shift_id="+shift_id));  
+          $(this).attr("href", ("show_shift_details.php?shift_id="+shift_id));
     });*/
-    
+
     //Set click event listeners to call up modal after ajax query is returned
     $('.shift-cell a').click(function(){
       var i = $(this).attr('data-shift-entry-id'); //get the shift id
-  
+
       $.ajax({
         type: 'POST',
         url: 'ajax/ajax_shift_details.php',
@@ -107,18 +119,6 @@ $crud->printRnShiftTable($num_days, $day_offset);
 
 <?php include 'includes/footer.php'; ?>
 
+</body>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+</html>
