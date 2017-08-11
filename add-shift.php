@@ -86,12 +86,8 @@ foreach ($form_select_staff as $k => $v) {?>
             <div class="row justify-content-center">
 
               <div class="col-sm-8 btn-group requiredField" data-toggle="buttons">
-                <label class="btn btn-outline-primary active">
-                  <input type="radio" name="d-or-n" id="radio-d-or-n-d" value="D" autocomplete="off" checked> Day
-                </label>
-                <label class="btn btn-outline-primary">
-                  <input type="radio" name="d-or-n" id="radio-d-or-n-n" value="N" autocomplete="off"> Night
-                </label>
+                <label class="btn btn-outline-primary active"><input type="radio" name="d-or-n" id="radio-d-or-n-d" value="D" autocomplete="off" checked>Day</label>
+                <label class="btn btn-outline-primary"><input type="radio" name="d-or-n" id="radio-d-or-n-n" value="N" autocomplete="off">Night</label>
               </div>
 
             </div>
@@ -136,11 +132,7 @@ foreach ($form_select_assignment as $k => $v) {?>
             </div>
             <div class="row justify-content-center">
 
-<!--
-Need to add logic to hide check boxes based on the role selected
--->
-
-              <div class="col-sm-8 form-group">
+              <div class="col-sm-8 form-group collapse show" id="check-box-group">
                 <label class="control-label">Check all that apply</label>
                 <div class="checkbox"><label class="custom-control custom-checkbox"><input name="ck-nonvent" class="custom-control-input" type="checkbox" value="NV"/><span class="custom-control-indicator"></span><span class="custom-control-description">Non-vented?</span></label></div>
                 <div class="checkbox"><label class="custom-control custom-checkbox"><input name="ck-doubled" class="custom-control-input" type="checkbox" value="D"/><span class="custom-control-indicator"></span><span class="custom-control-description">Doubled?</span></label></div>
@@ -153,10 +145,10 @@ Need to add logic to hide check boxes based on the role selected
               </div>
 
             </div>
-            <div class="row justify-content-end">
+            <div class="row justify-content-center">
 
-              <div class="col-sm-4 form-group">
-                <div><button class="btn btn-primary " name="submit" type="submit">Submit</button></div>
+              <div class="col-sm-8 form-group">
+                <div><button class="btn btn-primary btn-block btn-lg" name="submit" type="submit">Submit</button></div>
               </div>
 
             </div>
@@ -192,6 +184,20 @@ Need to add logic to hide check boxes based on the role selected
       });
 <?php } ?>
       $("#select-staff").select2();
+
+      //Bind the Role Select Change event to selectively display the checkboxes
+      $( "#select-role" ).change(function() {
+        //alert( "Handler called: value: " + $(this).val() + " text: " + $("#select-role option:selected").text() );
+        var selectVal = $(this).val();
+        switch(selectVal) {
+          case "5": //If the bedside role is selected, then show the checkboxes
+            $("#check-box-group").collapse('show');
+            break;
+          default: //else hide them
+            $("#check-box-group").collapse('hide');
+        }
+      });
+
     });
   </script>
   <!-- END Aux Scripts -->

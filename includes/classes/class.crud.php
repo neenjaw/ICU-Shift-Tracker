@@ -81,10 +81,10 @@ class crud
         }
     }
 
-    public function createShiftEntry($shift_date, $staff_id, $role_id, $assignment_id, $bool_day_or_night, $bool_doubled = 0, $bool_vented = 1, $bool_new_admit = 0, $bool_very_sick = 0, $bool_code_pager = 0)
+    public function createShiftEntry($shift_date, $staff_id, $role_id, $assignment_id, $bool_day_or_night, $bool_doubled = false, $bool_vented = false, $bool_new_admit = false, $bool_very_sick = false, $bool_code_pager = false, $bool_crrt = false, $bool_evd = false, $bool_burn = false)
     {
         try {
-            $stmt = $this->db->prepare("INSERT INTO ".$this->tbl_shift_entry." (shift_date, staff_id, role_id, assignment_id, bool_doubled, bool_vented, bool_new_admit, bool_very_sick, bool_code_pager, bool_day_or_night) VALUES(:date, :sid, :rid, :aid, :bd, :bv, :bna, :bvs, :bcp, :bdon)");
+            $stmt = $this->db->prepare("INSERT INTO ".$this->tbl_shift_entry." (shift_date, staff_id, role_id, assignment_id, bool_doubled, bool_vented, bool_new_admit, bool_very_sick, bool_code_pager, bool_crrt, bool_evd, bool_burn, bool_day_or_night) VALUES(:date, :sid, :rid, :aid, :bd, :bv, :bna, :bvs, :bcp, :brt, :bev, :bbu, :bdon)");
 
             //:date, :sid, :rid, :aid, :bd, :bv, :bna, :bvs, :bcp, :bdon
             $stmt->bindparam(":date", $shift_date);
@@ -96,6 +96,9 @@ class crud
             $stmt->bindparam(":bna", boolean_to_int($bool_new_admit));
             $stmt->bindparam(":bvs", boolean_to_int($bool_very_sick));
             $stmt->bindparam(":bcp", boolean_to_int($bool_code_pager));
+            $stmt->bindparam(":brt", boolean_to_int($bool_crrt));
+            $stmt->bindparam(":bev", boolean_to_int($bool_evd));
+            $stmt->bindparam(":bbu", boolean_to_int($bool_burn));
             $stmt->bindparam(":bdon", boolean_to_int($bool_day_or_night));
             $stmt->execute();
             return true;
@@ -119,14 +122,7 @@ class crud
         try {
             $role_id = $this->db->query("SELECT id FROM ".$this->tbl_role." WHERE role='NA'");
 
-            $stmt = $this->db->prepare("INSERT INTO ".$this->tbl_shift_entry." (shift_date, staff_id, role_id, assignment_id, bool_day_or_night) VALUES(:date, :sid, :rid, :aid, :bdon)");
-
-            $stmt->bindparam(":date", $shift_date);
-            $stmt->bindparam(":sid", $staff_id);
-            $stmt->bindparam(":rid", $role_id);
-            $stmt->bindparam(":aid", $assignment_id);
-            $stmt->bindparam(":bdon", boolean_to_int($bool_day_or_night));
-            $stmt->execute();
+            $this->createShiftEntry($shift_date, $staff_id, $role_id, $assignment_id, $bool_day_or_night);
             return true;
         } catch (PDOException $e) {
             echo $e->getMessage();
@@ -136,22 +132,15 @@ class crud
 
     public function createUcShiftEntry($shift_date, $staff_id, $assignment_id, $bool_day_or_night)
     {
-        try {
-            $role_id = $this->db->query("SELECT id FROM ".$this->tbl_role." WHERE role='UC'");
+      try {
+          $role_id = $this->db->query("SELECT id FROM ".$this->tbl_role." WHERE role='UC'");
 
-            $stmt = $this->db->prepare("INSERT INTO ".$this->tbl_shift_entry." (shift_date, staff_id, role_id, assignment_id, bool_day_or_night) VALUES(:date, :sid, :rid, :aid, :bdon)");
-
-            $stmt->bindparam(":date", $shift_date);
-            $stmt->bindparam(":sid", $staff_id);
-            $stmt->bindparam(":rid", $role_id);
-            $stmt->bindparam(":aid", $assignment_id);
-            $stmt->bindparam(":bdon", boolean_to_int($bool_day_or_night));
-            $stmt->execute();
-            return true;
-        } catch (PDOException $e) {
-            echo $e->getMessage();
-            return false;
-        }
+          $this->createShiftEntry($shift_date, $staff_id, $role_id, $assignment_id, $bool_day_or_night);
+          return true;
+      } catch (PDOException $e) {
+          echo $e->getMessage();
+          return false;
+      }
     }
 
     /*
@@ -334,6 +323,9 @@ class crud
                                         '.$this->tbl_shift_entry.'.bool_new_admit AS `Admit`,
                                         '.$this->tbl_shift_entry.'.bool_very_sick AS `Very Sick`,
                                         '.$this->tbl_shift_entry.'.bool_code_pager AS `Code Pager`,
+                                        '.$this->tbl_shift_entry.'.bool_crrt AS `CRRT`,
+                                        '.$this->tbl_shift_entry.'.bool_evd AS `EVD`,
+                                        '.$this->tbl_shift_entry.'.bool_burn AS `Burn`,
                                         '.$this->tbl_shift_entry.'.bool_day_or_night AS `Day/Night`
                                     FROM
                                         '.$this->tbl_shift_entry.'
@@ -358,7 +350,7 @@ class crud
             while ($row=$stmtShiftEntries->fetch(PDO::FETCH_ASSOC)) {
                 $letter_code = '-';
 
-                // C => Clinician, P => Prn Charge, O => Outreach, D => doubled, S => very sick, A => admit, N => Non-vented, V => vented, F => undefined
+                // C => Clinician, P => Prn Charge, O => Outreach, D => doubled, S => very sick, R => CRRT, B => Burn, A => admit, N => Non-vented, V => vented, F => undefined
                 if (strpos($row['Role'], 'Clinician') !== false) {
                     $letter_code = 'C';
                 } elseif (strpos($row['Role'], 'Charge') !== false) {
@@ -369,6 +361,10 @@ class crud
                     $letter_code = 'D';
                 } elseif ($row['Very Sick'] == 1) {
                     $letter_code = 'S';
+                } elseif ($row['CRRT'] == 1) {
+                    $letter_code = 'R';
+                } elseif ($row['Burn'] == 1) {
+                    $letter_code = 'B';
                 } elseif ($row['Admit'] == 1) {
                     $letter_code = 'A';
                 } elseif ($row['Vented'] == 0) {
@@ -502,6 +498,9 @@ class crud
         echo "    <p>Very Sick? " . (($entry['bool_very_sick']) ? 'Yes' : 'No') . "</p>\r\n";
         echo "    <p>Admitted? " . (($entry['bool_new_admit']) ? 'Yes' : 'No') . "</p>\r\n";
         echo "    <p>Code pager? ". (($entry['bool_code_pager']) ? 'Yes' : 'No') . "</p>\r\n";
+        echo "    <p>Code pager? ". (($entry['bool_crrt']) ? 'Yes' : 'No') . "</p>\r\n";
+        echo "    <p>Code pager? ". (($entry['bool_evd']) ? 'Yes' : 'No') . "</p>\r\n";
+        echo "    <p>Code pager? ". (($entry['bool_burn']) ? 'Yes' : 'No') . "</p>\r\n";
     }
 
 
@@ -598,10 +597,10 @@ class crud
         }
     }
 
-    public function updateShiftEntry($id, $shift_date, $staff_id, $role_id, $assignment_id, $bool_doubled, $bool_vented, $bool_new_admit, $bool_very_sick, $bool_code_pager, $bool_day_or_night)
+    public function updateShiftEntry($id, $shift_date, $staff_id, $role_id, $assignment_id, $bool_day_or_night, $bool_doubled = false, $bool_vented = false, $bool_new_admit = false, $bool_very_sick = false, $bool_code_pager = false, $bool_crrt = false, $bool_evd = false, $bool_burn = false)
     {
         try {
-            $stmt = $this->db->prepare("UPDATE ".$this->tbl_shift_entry." SET shift_date=:date, staff_id=:sid, role_id=:rid, assignment_id=:aid, bool_doubled=:bd, bool_vented=:bv, bool_new_admit=:bna, bool_very_sick=:bvs, bool_code_pager=:bcp, bool_day_or_night=:bdon WHERE id=:id");
+            $stmt = $this->db->prepare("UPDATE ".$this->tbl_shift_entry." SET shift_date=:date, staff_id=:sid, role_id=:rid, assignment_id=:aid, bool_doubled=:bd, bool_vented=:bv, bool_new_admit=:bna, bool_very_sick=:bvs, bool_code_pager=:bcp, bool_crrt=:brt, bool_evd=:bev, bool_burn=:bbu, bool_day_or_night=:bdon,  WHERE id=:id");
             $stmt->bindparam(":date", $shift_date);
             $stmt->bindparam(":sid", $staff_id);
             $stmt->bindparam(":rid", $role_id);
@@ -611,6 +610,9 @@ class crud
             $stmt->bindparam(":bna", boolean_to_int($bool_new_admit));
             $stmt->bindparam(":bvs", boolean_to_int($bool_very_sick));
             $stmt->bindparam(":bcp", boolean_to_int($bool_code_pager));
+            $stmt->bindparam(":brt", boolean_to_int($bool_crrt));
+            $stmt->bindparam(":bev", boolean_to_int($bool_evd));
+            $stmt->bindparam(":bbu", boolean_to_int($bool_burn));
             $stmt->bindparam(":bdon", boolean_to_int($bool_day_or_night));
             $stmt->bindparam(":id", $id);
             $stmt->execute();
@@ -621,20 +623,12 @@ class crud
         }
     }
 
-    public function updateNaShiftEntry($shift_date, $staff_id, $assignment_id, $bool_day_or_night)
+    public function updateNaShiftEntry($id, $shift_date, $staff_id, $assignment_id, $bool_day_or_night)
     {
         try {
             $role_id = $this->db->query("SELECT id FROM ".$this->tbl_role." WHERE role='NA'");
 
-            $stmt = $this->db->prepare("UPDATE ".$this->tbl_shift_entry." SET shift_date=:date, staff_id=:sid, role_id=:rid, assignment_id=:aid, bool_day_or_night=:bdon WHERE id=:id");
-
-            $stmt->bindparam(":date", $shift_date);
-            $stmt->bindparam(":sid", $staff_id);
-            $stmt->bindparam(":rid", $role_id);
-            $stmt->bindparam(":aid", $assignment_id);
-            $stmt->bindparam(":bdon", boolean_to_int($bool_day_or_night));
-            $stmt->bindparam(":id", $id);
-            $stmt->execute();
+            $this->updateShiftEntry($id, $shift_date, $staff_id, $role_id, $assignment_id, $bool_day_or_night);
             return true;
         } catch (PDOException $e) {
             echo $e->getMessage();
@@ -642,20 +636,12 @@ class crud
         }
     }
 
-    public function updateUcShiftEntry($shift_date, $staff_id, $assignment_id, $bool_day_or_night)
+    public function updateUcShiftEntry($id, $shift_date, $staff_id, $assignment_id, $bool_day_or_night)
     {
         try {
             $role_id = $this->db->query("SELECT id FROM ".$this->tbl_role." WHERE role='UC'");
 
-            $stmt = $this->db->prepare("UPDATE ".$this->tbl_shift_entry." SET shift_date=:date, staff_id=:sid, role_id=:rid, assignment_id=:aid, bool_day_or_night=:bdon WHERE id=:id");
-
-            $stmt->bindparam(":date", $shift_date);
-            $stmt->bindparam(":sid", $staff_id);
-            $stmt->bindparam(":rid", $role_id);
-            $stmt->bindparam(":aid", $assignment_id);
-            $stmt->bindparam(":bdon", boolean_to_int($bool_day_or_night));
-            $stmt->bindparam(":id", $id);
-            $stmt->execute();
+            $this->updateShiftEntry($id, $shift_date, $staff_id, $role_id, $assignment_id, $bool_day_or_night);
             return true;
         } catch (PDOException $e) {
             echo $e->getMessage();
