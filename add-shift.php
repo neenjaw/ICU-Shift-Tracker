@@ -37,7 +37,7 @@ if (!isset($_SESSION['user_session'])) {
         <!-- Main Content -->
 
         <div class="container">
-          <form method="post" id="shift-form">
+          <form method="post" id="shift-form" data-parsley-validate>
             <div class="row justify-content-center">
               <div class="col-sm-8">
 
@@ -54,9 +54,10 @@ if (!isset($_SESSION['user_session'])) {
 
             <div class="row justify-content-center">
 
+              <!-- STAFF SELECT -->
               <div class="col-sm-8 form-group">
                 <label class="control-label requiredField" for="select">Select a Staff for the shift:<span class="asteriskField">*</span></label>
-                <select class="select form-control" id="select-staff" name="staff">
+                <select class="select form-control" id="select-staff" name="staff" required>
                   <!--<option value="staff_id">Last, Name - RN</option>-->
                   <option value="" disabled selected hidden>Please Choose...</option>
 <?php
@@ -74,28 +75,31 @@ foreach ($form_select_staff as $k => $v) {?>
             </div>
             <div class="row justify-content-center">
 
+              <!-- DATE SELECT -->
               <div class="col-sm-8 form-group">
                 <label class="control-label requiredField" for="date">Date<span class="asteriskField">*</span></label>
                 <div class="input-group">
                   <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
-                  <input class="form-control" id="date" name="date" placeholder="YYYY/MM/DD" value="<?php echo date('Y-m-d'); ?>" type="<?php echo (($detect->isMobile()) ? 'date' : 'text'); ?>"/>
+                  <input class="form-control" id="date" name="date" placeholder="YYYY/MM/DD" value="<?php echo date('Y-m-d'); ?>" type="<?php echo (($detect->isMobile()) ? 'date' : 'text'); ?>" required>
                 </div>
               </div>
 
             </div>
             <div class="row justify-content-center">
 
+              <!-- DAY / NIGHT SELECT -->
               <div class="col-sm-8 btn-group requiredField" data-toggle="buttons">
-                <label class="btn btn-outline-primary active"><input type="radio" name="d-or-n" id="radio-d-or-n-d" value="D" autocomplete="off" checked>Day</label>
+                <label class="btn btn-outline-primary active"><input type="radio" name="d-or-n" id="radio-d-or-n-d" value="D" autocomplete="off" checked required>Day</label>
                 <label class="btn btn-outline-primary"><input type="radio" name="d-or-n" id="radio-d-or-n-n" value="N" autocomplete="off">Night</label>
               </div>
 
             </div>
             <div class="row justify-content-center">
 
+              <!-- ROLE SELECT -->
               <div class="col-sm-8 form-group">
                 <label class="control-label requiredField" for="select1">Role<span class="asteriskField">*</span></label>
-                <select class="select form-control" id="select-role" name="role">
+                <select class="select form-control" id="select-role" name="role" required>
 <?php
 //Build Staff Role List
 //use the CRUD object to access the database and build an option list of the categories
@@ -113,7 +117,7 @@ foreach ($form_select_role as $k => $v) {?>
 
               <div class="col-sm-8 form-group">
                 <label class="control-label requiredField" for="select2">Pod Assignment<span class="asteriskField">*</span></label>
-                <select class="select form-control" id="select-assignment" name="assignment">
+                <select class="select form-control" id="select-assignment" name="assignment" required>
                   <option value="" disabled selected hidden>Please Choose...</option>
 <?php
 //Build Assignment Select List
@@ -132,21 +136,21 @@ foreach ($form_select_assignment as $k => $v) {?>
 
               <div class="col-sm-8 form-group collapse show" id="check-box-group">
                 <label class="control-label">Check all that apply</label>
-                <div class="checkbox"><label class="custom-control custom-checkbox"><input name="ck-nonvent" class="custom-control-input" type="checkbox" value="NV"/><span class="custom-control-indicator"></span><span class="custom-control-description">Non-vented?</span></label></div>
-                <div class="checkbox"><label class="custom-control custom-checkbox"><input name="ck-doubled" class="custom-control-input" type="checkbox" value="D"/><span class="custom-control-indicator"></span><span class="custom-control-description">Doubled?</span></label></div>
-                <div class="checkbox"><label class="custom-control custom-checkbox"><input name="ck-admit" class="custom-control-input" type="checkbox" value="A"/><span class="custom-control-indicator"></span><span class="custom-control-description">Admitted?</span></label></div>
-                <div class="checkbox"><label class="custom-control custom-checkbox"><input name="ck-codepg" class="custom-control-input" type="checkbox" value="P"/><span class="custom-control-indicator"></span><span class="custom-control-description">Code pager?</span></label></div>
-                <div class="checkbox"><label class="custom-control custom-checkbox"><input name="ck-vsick" class="custom-control-input" type="checkbox" value="VS"/><span class="custom-control-indicator"></span><span class="custom-control-description">Very sick?</span></label></div>
-                <div class="checkbox"><label class="custom-control custom-checkbox"><input name="ck-crrt" class="custom-control-input" type="checkbox" value="C"/><span class="custom-control-indicator"></span><span class="custom-control-description">CRRT?</span></label></div>
-                <div class="checkbox"><label class="custom-control custom-checkbox"><input name="ck-evd" class="custom-control-input" type="checkbox" value="E"/><span class="custom-control-indicator"></span><span class="custom-control-description">EVD?</span></label></div>
-                <div class="checkbox"><label class="custom-control custom-checkbox"><input name="ck-burn" class="custom-control-input" type="checkbox" value="B"/><span class="custom-control-indicator"></span><span class="custom-control-description">Burn?</span></label></div>
+                <div class="checkbox"><label class="custom-control custom-checkbox"><input name="ck-nonvent" class="custom-control-input" type="checkbox" value="NV" data-parsley-excluded><span class="custom-control-indicator"></span><span class="custom-control-description">Non-vented?</span></label></div>
+                <div class="checkbox"><label class="custom-control custom-checkbox"><input name="ck-doubled" class="custom-control-input" type="checkbox" value="D" data-parsley-excluded><span class="custom-control-indicator"></span><span class="custom-control-description">Doubled?</span></label></div>
+                <div class="checkbox"><label class="custom-control custom-checkbox"><input name="ck-admit" class="custom-control-input" type="checkbox" value="A" data-parsley-excluded><span class="custom-control-indicator"></span><span class="custom-control-description">Admitted?</span></label></div>
+                <div class="checkbox"><label class="custom-control custom-checkbox"><input name="ck-codepg" class="custom-control-input" type="checkbox" value="P" data-parsley-excluded><span class="custom-control-indicator"></span><span class="custom-control-description">Code pager?</span></label></div>
+                <div class="checkbox"><label class="custom-control custom-checkbox"><input name="ck-vsick" class="custom-control-input" type="checkbox" value="VS" data-parsley-excluded><span class="custom-control-indicator"></span><span class="custom-control-description">Very sick?</span></label></div>
+                <div class="checkbox"><label class="custom-control custom-checkbox"><input name="ck-crrt" class="custom-control-input" type="checkbox" value="C" data-parsley-excluded><span class="custom-control-indicator"></span><span class="custom-control-description">CRRT?</span></label></div>
+                <div class="checkbox"><label class="custom-control custom-checkbox"><input name="ck-evd" class="custom-control-input" type="checkbox" value="E" data-parsley-excluded><span class="custom-control-indicator"></span><span class="custom-control-description">EVD?</span></label></div>
+                <div class="checkbox"><label class="custom-control custom-checkbox"><input name="ck-burn" class="custom-control-input" type="checkbox" value="B" data-parsley-excluded><span class="custom-control-indicator"></span><span class="custom-control-description">Burn?</span></label></div>
               </div>
 
             </div>
             <div class="row justify-content-center">
 
               <div class="col-sm-8 form-group">
-                <div><button class="btn btn-primary btn-block btn-lg" name="btn-submit-new-shift" type="submit">Submit</button></div>
+                <div><button class="btn btn-primary btn-block btn-lg" id="shift-submit" name="btn-submit-new-shift" type="submit" value="validate">Submit</button></div>
               </div>
 
             </div>
@@ -186,7 +190,7 @@ foreach ($form_select_assignment as $k => $v) {?>
 
       //Bind the Role Select Change event to selectively display the checkboxes
       $( "#select-role" ).change(function() {
-        //alert( "Handler called: value: " + $(this).val() + " text: " + $("#select-role option:selected").text() );
+
         var selectVal = $(this).val();
         switch(selectVal) {
           case "5": //If the bedside role is selected, then show the checkboxes
@@ -195,6 +199,7 @@ foreach ($form_select_assignment as $k => $v) {?>
           default: //else hide them
             $("#check-box-group").collapse('hide');
         }
+
       });
 
       //bind the parsley.js event
@@ -209,14 +214,14 @@ foreach ($form_select_assignment as $k => $v) {?>
         }
       })
       .on('form:submit', function () {
-        var data = $('#shift-form').serialize();
-        console.log(data + '&btn-submit-new-shift=1');
+        var data = $('#shift-form').serialize()  + '&btn-submit-new-shift=1';
+        console.log(data);
         $.ajax({
           type: 'POST',
           url: 'ajax/ajax_add_single_shift_process.php',
           data: data,
           beforeSend: function () {
-            $('#btn-submit-new-shift').html('<span class="fa fa-transfer"></span> &nbsp; Attempting ...');
+            $('#shift-submit').html('<span class="fa fa-exchange"></span> &nbsp; Attempting ...');
           },
           success: function (response) {
             console.log(response);
@@ -252,12 +257,12 @@ foreach ($form_select_assignment as $k => $v) {?>
 
             } else {
 
-              $('#staff-name-group-feedback').html('<span class="fa fa-info-circle"></span> &nbsp; There is a problem with this entry.');
+              $('#shift-form-feedback').html('<span class="fa fa-info-circle"></span> &nbsp; There is a problem with this entry.');
 
               //feedback logic for form submission
             }
 
-            $('#btn-submit-new-shift').html('Submit');
+            $('#shift-submit').html('Submit');
           }
         });
 
