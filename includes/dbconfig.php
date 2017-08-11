@@ -1,9 +1,9 @@
 <?php
 
 $DB_host = 'localhost';
-$DB_user = 'id1876647_neenjawtestuser';
-$DB_pass = 'testedninja4neenjaw';
-$DB_name = 'id1876647_neenjawtest';
+$DB_user = '';
+$DB_pass = '';
+$DB_name = '';
 
 $DB_tbl_users = 'logindemo01_tbl_users';
 
