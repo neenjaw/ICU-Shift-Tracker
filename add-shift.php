@@ -96,7 +96,6 @@ foreach ($form_select_staff as $k => $v) {?>
               <div class="col-sm-8 form-group">
                 <label class="control-label requiredField" for="select1">Role<span class="asteriskField">*</span></label>
                 <select class="select form-control" id="select-role" name="role">
-                  <!--<option value="First Choice">First Choice</option>-->
 <?php
 //Build Staff Role List
 //use the CRUD object to access the database and build an option list of the categories
@@ -115,7 +114,6 @@ foreach ($form_select_role as $k => $v) {?>
               <div class="col-sm-8 form-group">
                 <label class="control-label requiredField" for="select2">Pod Assignment<span class="asteriskField">*</span></label>
                 <select class="select form-control" id="select-assignment" name="assignment">
-                  <!--<option value="First Choice">First Choice</option>-->
                   <option value="" disabled selected hidden>Please Choose...</option>
 <?php
 //Build Assignment Select List
@@ -148,7 +146,7 @@ foreach ($form_select_assignment as $k => $v) {?>
             <div class="row justify-content-center">
 
               <div class="col-sm-8 form-group">
-                <div><button class="btn btn-primary btn-block btn-lg" name="submit" type="submit">Submit</button></div>
+                <div><button class="btn btn-primary btn-block btn-lg" name="btn-submit-new-shift" type="submit">Submit</button></div>
               </div>
 
             </div>
@@ -183,6 +181,7 @@ foreach ($form_select_assignment as $k => $v) {?>
           autoclose: true
       });
 <?php } ?>
+      //Activate the Select2 script for the staff select to search easily
       $("#select-staff").select2();
 
       //Bind the Role Select Change event to selectively display the checkboxes
@@ -196,6 +195,73 @@ foreach ($form_select_assignment as $k => $v) {?>
           default: //else hide them
             $("#check-box-group").collapse('hide');
         }
+      });
+
+      //bind the parsley.js event
+      $('#shift-form')
+      .parsley({errorClass: "form-control-danger", successClass: "form-control-success"})
+      .on('field:validated', function (e) {
+        //customize Parsely.js for Bootstrap 4
+        if (e.validationResult.constructor!==Array) {
+          this.$element.closest('.form-group').removeClass('has-danger').addClass('has-success');
+        } else {
+          this.$element.closest('.form-group').removeClass('has-success').addClass('has-danger');
+        }
+      })
+      .on('form:submit', function () {
+        var data = $('#shift-form').serialize();
+        console.log(data + '&btn-submit-new-shift=1');
+        $.ajax({
+          type: 'POST',
+          url: 'ajax/ajax_add_single_shift_process.php',
+          data: data,
+          beforeSend: function () {
+            $('#btn-submit-new-shift').html('<span class="fa fa-transfer"></span> &nbsp; Attempting ...');
+          },
+          success: function (response) {
+            console.log(response);
+
+            if (response == "ok") {
+              //clear the feedback message
+              $('#shift-form-feedback').html('');
+
+              //clear the form group classes
+              $('.form-group').each(function(){
+                $(this).removeClass('has-danger').removeClass('has-success');
+              });
+
+              //clear the form control classes
+              $('.form-control-danger').each(function(){ $(this).removeClass('form-control-danger'); });
+              $('.form-control-success').each(function(){ $(this).removeClass('form-control-success'); });
+
+              //display the alert to success
+              //$('#form-alert').addClass('alert-success');
+              //$('#form-alert p').html('<h4>Staff successfully added!</h4>');
+              //$('#form-alert').show();
+
+              //set timeout to hide the alert in x milliseconds
+              //setTimeout(function(){
+              //  $("#form-alert").hide();
+              //  $("#form-alert p").html('');
+              //  $('#form-alert').removeClass('alert-success');
+              //}, 5000);
+
+              //reset the form, return focus to first name
+              $('#shift-form').trigger('reset');
+              $("#select-staff").focus()
+
+            } else {
+
+              $('#staff-name-group-feedback').html('<span class="fa fa-info-circle"></span> &nbsp; There is a problem with this entry.');
+
+              //feedback logic for form submission
+            }
+
+            $('#btn-submit-new-shift').html('Submit');
+          }
+        });
+
+        return false;
       });
 
     });
