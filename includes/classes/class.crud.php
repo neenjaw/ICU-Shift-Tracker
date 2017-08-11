@@ -294,23 +294,10 @@ class crud
     //  Then, left join the staff to the shift entry
     //  Then, left join the assignment to the shift entry
     //  Then, left join the role to the shift entry
-    //  Then, order by the staff, then date
-    //
-    //SELECT tbl_shift_entry.shift_date AS shift_date,
-    //  CONCAT(tbl_staff.last_name, ", ", tbl_staff.first_name) AS name,
-    //  tbl_staff_roles.role AS role,
-    //  tbl_assignments.assignment AS assignment,
-    //  tbl_shift_entry.bool_doubled AS doubled,
-    //  tbl_shift_entry.bool_vented AS doubled,
-    //  tbl_shift_entry.bool_new_admit AS new_admit,
-    //  tbl_shift_entry.bool_very_sick AS very_sick,
-    //  tbl_shift_entry.bool_code_pager AS code_pager,
-    //  tbl_shift_entry.bool_day_or_night AS day_or_night
-    //  FROM tbl_shift_entry
-    //  LEFT JOIN `tbl_staff` ON tbl_shift_entry.staff_id = tbl_staff.id
-    //  LEFT JOIN `tbl_assignments` ON tbl_shift_entry.assignment_id = tbl_assignments.id
-    //  LEFT JOIN `tbl_staff_roles` ON tbl_shift_entry.role_id = tbl_staff_roles.id
-    //  WHERE tbl_shift_entry.role_id <> (SELECT id FROM tbl_staff_roles WHERE role='NA') AND tbl_shift_entry.role_id <> (SELECT id FROM tbl_staff_roles WHERE role='UC')
+    //  Then, left join the category to the shift entry
+    //  Then, inner join on the results of the last x number of most recent days entered with an offset of y
+    //  Then, Where the entries are RN shifts
+    //  Then, order by the staff
 
         $stmtShiftEntries = $this->db->prepare('SELECT
                                         '. $this->tbl_shift_entry .'.id AS `ID`,
@@ -498,9 +485,9 @@ class crud
         echo "    <p>Very Sick? " . (($entry['bool_very_sick']) ? 'Yes' : 'No') . "</p>\r\n";
         echo "    <p>Admitted? " . (($entry['bool_new_admit']) ? 'Yes' : 'No') . "</p>\r\n";
         echo "    <p>Code pager? ". (($entry['bool_code_pager']) ? 'Yes' : 'No') . "</p>\r\n";
-        echo "    <p>Code pager? ". (($entry['bool_crrt']) ? 'Yes' : 'No') . "</p>\r\n";
-        echo "    <p>Code pager? ". (($entry['bool_evd']) ? 'Yes' : 'No') . "</p>\r\n";
-        echo "    <p>Code pager? ". (($entry['bool_burn']) ? 'Yes' : 'No') . "</p>\r\n";
+        echo "    <p>CRRT? ". (($entry['bool_crrt']) ? 'Yes' : 'No') . "</p>\r\n";
+        echo "    <p>EVD? ". (($entry['bool_evd']) ? 'Yes' : 'No') . "</p>\r\n";
+        echo "    <p>Burn? ". (($entry['bool_burn']) ? 'Yes' : 'No') . "</p>\r\n";
     }
 
 
