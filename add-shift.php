@@ -215,7 +215,8 @@ foreach ($form_select_assignment as $k => $v) {?>
       })
       .on('form:submit', function () {
         var data = $('#shift-form').serialize()  + '&btn-submit-new-shift=1';
-        console.log(data);
+        //console.log(data);
+
         $.ajax({
           type: 'POST',
           url: 'ajax/ajax_add_single_shift_process.php',
@@ -253,6 +254,7 @@ foreach ($form_select_assignment as $k => $v) {?>
 
               //reset the form, return focus to first name
               $('#shift-form').trigger('reset');
+              $('#select-staff').val('').trigger('change');
               $("#select-staff").focus()
 
             } else {

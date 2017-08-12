@@ -91,15 +91,34 @@ class crud
             $stmt->bindparam(":sid", $staff_id);
             $stmt->bindparam(":rid", $role_id);
             $stmt->bindparam(":aid", $assignment_id);
-            $stmt->bindparam(":bd", boolean_to_int($bool_doubled));
-            $stmt->bindparam(":bv", boolean_to_int($bool_vented));
-            $stmt->bindparam(":bna", boolean_to_int($bool_new_admit));
-            $stmt->bindparam(":bvs", boolean_to_int($bool_very_sick));
-            $stmt->bindparam(":bcp", boolean_to_int($bool_code_pager));
-            $stmt->bindparam(":brt", boolean_to_int($bool_crrt));
-            $stmt->bindparam(":bev", boolean_to_int($bool_evd));
-            $stmt->bindparam(":bbu", boolean_to_int($bool_burn));
-            $stmt->bindparam(":bdon", boolean_to_int($bool_day_or_night));
+
+            $bool_doubled = $this->booleanToInt($bool_doubled);
+            $stmt->bindparam(":bd", $bool_doubled);
+
+            $bool_vented = $this->booleanToInt($bool_vented);
+            $stmt->bindparam(":bv", $bool_vented);
+
+            $bool_new_admit = $this->booleanToInt($bool_new_admit);
+            $stmt->bindparam(":bna", $bool_new_admit);
+
+            $bool_very_sick = $this->booleanToInt($bool_very_sick);
+            $stmt->bindparam(":bvs", $bool_very_sick);
+
+            $bool_code_pager = $this->booleanToInt($bool_code_pager);
+            $stmt->bindparam(":bcp", $bool_code_pager);
+
+            $bool_crrt = $this->booleanToInt($bool_crrt);
+            $stmt->bindparam(":brt", $bool_crrt);
+
+            $bool_evd = $this->booleanToInt($bool_evd);
+            $stmt->bindparam(":bev", $bool_evd);
+
+            $bool_burn = $this->booleanToInt($bool_burn);
+            $stmt->bindparam(":bbu", $bool_burn);
+
+            $bool_day_or_night = $this->booleanToInt($bool_day_or_night);
+            $stmt->bindparam(":bdon", $bool_day_or_night);
+
             $stmt->execute();
             return true;
         } catch (PDOException $e) {
@@ -592,15 +611,15 @@ class crud
             $stmt->bindparam(":sid", $staff_id);
             $stmt->bindparam(":rid", $role_id);
             $stmt->bindparam(":aid", $assignment_id);
-            $stmt->bindparam(":bd", boolean_to_int($bool_doubled));
-            $stmt->bindparam(":bv", boolean_to_int($bool_vented));
-            $stmt->bindparam(":bna", boolean_to_int($bool_new_admit));
-            $stmt->bindparam(":bvs", boolean_to_int($bool_very_sick));
-            $stmt->bindparam(":bcp", boolean_to_int($bool_code_pager));
-            $stmt->bindparam(":brt", boolean_to_int($bool_crrt));
-            $stmt->bindparam(":bev", boolean_to_int($bool_evd));
-            $stmt->bindparam(":bbu", boolean_to_int($bool_burn));
-            $stmt->bindparam(":bdon", boolean_to_int($bool_day_or_night));
+            $stmt->bindparam(":bd", $this->booleanToInt($bool_doubled));
+            $stmt->bindparam(":bv", $this->booleanToInt($bool_vented));
+            $stmt->bindparam(":bna", $this->booleanToInt($bool_new_admit));
+            $stmt->bindparam(":bvs", $this->booleanToInt($bool_very_sick));
+            $stmt->bindparam(":bcp", $this->booleanToInt($bool_code_pager));
+            $stmt->bindparam(":brt", $this->booleanToInt($bool_crrt));
+            $stmt->bindparam(":bev", $this->booleanToInt($bool_evd));
+            $stmt->bindparam(":bbu", $this->booleanToInt($bool_burn));
+            $stmt->bindparam(":bdon", $this->booleanToInt($bool_day_or_night));
             $stmt->bindparam(":id", $id);
             $stmt->execute();
             return true;
