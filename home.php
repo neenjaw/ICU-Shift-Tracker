@@ -87,7 +87,25 @@ $crud->printRnShiftTable($num_days, $day_offset);
 
 <?php include 'includes/script-include.php'; ?>
 
-<script src="includes/templates/ShiftEntry.handlebars" id="shift-entry-template" type="text/x-handlebars-template"></script>
+<script id="shift-entry-template" type="text/x-handlebars-template">
+  <input type="hidden" name="shift-id" value="{{Id-Number}}">
+  <div class="card-block">
+    <h4 class="card-title">{{Name}}'s shift</h4>
+    <h5 class="card-text">{{Date}}-{{D-or-N}}</h5>
+  </div>
+  <ul class="list-group list-group-flush">
+    <li class="list-group-item">Role: {{Role}}</li>
+    <li class="list-group-item">Pod: {{Assignment}}</li>
+    <li class="list-group-item">Non-vented: {{NV}}</li>
+    <li class="list-group-item">Doubled: {{Double}}</li>
+    <li class="list-group-item">Admitted: {{Admit}}</li>
+    <li class="list-group-item">Very sick: {{Very-Sick}}</li>
+    <li class="list-group-item">Code pager: {{Code-Pager}}</li>
+    <li class="list-group-item">CRRT: {{CRRT}}</li>
+    <li class="list-group-item">EVD: {{EVD}}</li>
+    <li class="list-group-item">Burn: {{Burn}}</li>
+  </ul>
+</script>
 
 <script>
   var shiftTemplate = null;
@@ -106,13 +124,13 @@ $crud->printRnShiftTable($num_days, $day_offset);
           $('#shift-detail-text').html();
         },
         success: function (response) {
-          $('#shift-detail-text').html(shiftTemplate(response)); //add the result between the div tags
+          console.log(response);
+          $('#shift-detail-text').html(shiftTemplate(JSON.parse(response))); //add the result between the div tags
           $('#shift-detail-modal').modal('show');	//show the modal
         }
       });
     });
 
-    console.log($("#shift-entry-template").html());
     shiftTemplate = Handlebars.compile($("#shift-entry-template").html());
   });
 </script>
