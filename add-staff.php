@@ -166,18 +166,22 @@ if (!isset($_SESSION['user_session'])) {
             //display the alert to success
             $('#form-alert').addClass('alert-success');
             $('#form-alert p').html('<h4>Staff successfully added!</h4>');
-            $('#form-alert').show();
+            $('#alert-container').collapse('show');
+            $("#alert-container").focus();
 
             //set timeout to hide the alert in x milliseconds
             setTimeout(function(){
-              $("#form-alert").hide();
-              $("#form-alert p").html('');
-              $('#form-alert').removeClass('alert-success');
+              $("#alert-container").collapse('hide');
+              setTimeout(function(){
+                $("#form-alert p").html('');
+                $('#form-alert').removeClass('alert-success');
+              }, 1000);
             }, 5000);
+
 
             //reset the form, return focus to first name
             $('#add-staff-form').trigger('reset');
-            $("#first-name").focus()
+            $("#first-name").focus();
 
           } else {
 

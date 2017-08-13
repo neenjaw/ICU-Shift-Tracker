@@ -1,4 +1,4 @@
-  <div class="container" id="alert-container">
+  <div class="container collapse" id="alert-container">
 <?php
 
 if (isset($_SESSION['error_msg'])) {
@@ -23,7 +23,7 @@ if (isset($_SESSION['error_msg'])) {
 }
 ?>
 
-    <div class='alert hidden' id='form-alert'>
+    <div class='alert' id='form-alert'>
       <!-- <button class='close' data-dismiss='alert'>&times;</button> -->
       <p></p>
     </div>
