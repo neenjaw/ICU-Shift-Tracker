@@ -241,21 +241,24 @@ foreach ($form_select_assignment as $k => $v) {?>
               $('.form-control-success').each(function(){ $(this).removeClass('form-control-success'); });
 
               //display the alert to success
-              //$('#form-alert').addClass('alert-success');
-              //$('#form-alert p').html('<h4>Staff successfully added!</h4>');
-              //$('#form-alert').show();
+              $('#form-alert').addClass('alert-success');
+              $('#form-alert p').html('<h4>Shift successfully added!</h4>');
+              $('#alert-container').collapse('show');
+              $("#alert-container").focus();
 
               //set timeout to hide the alert in x milliseconds
-              //setTimeout(function(){
-              //  $("#form-alert").hide();
-              //  $("#form-alert p").html('');
-              //  $('#form-alert').removeClass('alert-success');
-              //}, 5000);
+              setTimeout(function(){
+                $("#alert-container").collapse('hide');
+                setTimeout(function(){
+                  $("#form-alert p").html('');
+                  $('#form-alert').removeClass('alert-success');
+                }, 1000);
+              }, 5000);
 
               //reset the form, return focus to first name
               $('#shift-form').trigger('reset');
               $('#select-staff').val('').trigger('change');
-              $("#select-staff").focus()
+              $("#select-staff").focus();
 
             } else {
 
