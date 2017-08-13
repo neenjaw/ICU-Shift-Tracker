@@ -90,12 +90,6 @@ $crud->printRnShiftTable($num_days, $day_offset);
 <script>
   //When document is ready
   $(function () {
-    //Set all the shift table cells with a link to point at the page to display the shift details
-    /*$(".shift-cell a").each(function(entry) {
-          var shift_id = $(this).attr("data-shift-entry-id");
-          $(this).attr("href", ("show_shift_details.php?shift_id="+shift_id));
-    });*/
-
     //Set click event listeners to call up modal after ajax query is returned
     $('.shift-cell a').click(function(){
       var i = $(this).attr('data-shift-entry-id'); //get the shift id

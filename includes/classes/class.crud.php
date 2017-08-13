@@ -299,6 +299,11 @@ class crud
         return $editRow;
     }
 
+    public function getShiftEntryAsJSON($id) {
+        $shift_array = getShiftEntry($id);
+        return json_encode($shift_array);
+    }
+
     public function printRnShiftTable($days_to_print = 5, $offset = 0)
     {
     //Likely need to make a very complex table print of shift entries here
@@ -351,7 +356,7 @@ class crud
 
         $stmtShiftEntries->execute();
 
-        //  In php, create a 3-dimensional array shift_array[Staff Name][Shift Date][Letter Code]
+        //  In php, create a 3-dimensional array shift_array[Staff Name][Shift Date][Letter Code], not every cell will be populated
         if ($stmtShiftEntries->rowCount()>0) {
             while ($row=$stmtShiftEntries->fetch(PDO::FETCH_ASSOC)) {
                 $letter_code = '-';
@@ -479,7 +484,7 @@ class crud
         echo "      </div>\r\n";
     }
 
-    public function printShiftEntry($shift_id) {
+    public function shiftEntry($shift_id) {
         if ($shift_id < 0) {
             throw new Exception('`Shift ID` parameter must be an integer greater than 0.');
         }
@@ -508,7 +513,6 @@ class crud
         echo "    <p>EVD? ". (($entry['bool_evd']) ? 'Yes' : 'No') . "</p>\r\n";
         echo "    <p>Burn? ". (($entry['bool_burn']) ? 'Yes' : 'No') . "</p>\r\n";
     }
-
 
     /*
      * CRUD --
