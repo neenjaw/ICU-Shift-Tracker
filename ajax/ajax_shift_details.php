@@ -4,8 +4,8 @@ require_once '../includes/dbconfig.php';
 
 if (isset($_SESSION['user_session']) && isset($_POST['shift_id'])) {
 
-  $crud->printShiftEntry(trim($_POST['shift_id']));
-  $crud->getShiftEntryAsJSON(trim($_POST['shift_id']));
+  //$crud->getShiftEntryAsHTML(trim($_POST['shift_id']));
+  echo json_encode($crud->getReadableShiftEntry(trim($_POST['shift_id'])));
 
 } else {
 

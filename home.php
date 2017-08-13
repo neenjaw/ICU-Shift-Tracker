@@ -87,7 +87,11 @@ $crud->printRnShiftTable($num_days, $day_offset);
 
 <?php include 'includes/script-include.php'; ?>
 
+<script src="includes/templates/ShiftEntry.handlebars" id="shift-entry-template" type="text/x-handlebars-template"></script>
+
 <script>
+  var shiftTemplate = null;
+
   //When document is ready
   $(function () {
     //Set click event listeners to call up modal after ajax query is returned
@@ -99,15 +103,17 @@ $crud->printRnShiftTable($num_days, $day_offset);
         url: 'ajax/ajax_shift_details.php',
         data: 'shift_id='+i+'',
         beforeSend: function () {
-          $('#shift-detail-text').html('');
+          $('#shift-detail-text').html();
         },
         success: function (response) {
-          $('#shift-detail-text').html(response); //add the result between the div tags
+          $('#shift-detail-text').html(shiftTemplate(response)); //add the result between the div tags
           $('#shift-detail-modal').modal('show');	//show the modal
         }
       });
     });
 
+    console.log($("#shift-entry-template").html());
+    shiftTemplate = Handlebars.compile($("#shift-entry-template").html());
   });
 </script>
 
