@@ -1,8 +1,8 @@
   <div class="container" id="alert-container">
-<?php 
+<?php
 
 if (isset($_SESSION['error_msg'])) {
-  
+
 ?>
     <div class='alert alert-danger'>
       <button class='close' data-dismiss='alert'>&times;</button>

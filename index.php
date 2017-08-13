@@ -1,13 +1,27 @@
 <?php
-include 'includes/pre-header.php';
+include 'includes/pre-head.php';
 
 if (isset($_SESSION['user_session'])) {
-    header("Location: home.php");
+  header("Location: home.php");
 }
-
-include 'includes/header.php';
-include 'includes/navbar.php';
 ?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en">
+
+<head>
+  <!-- Header include -->
+  <?php include 'includes/head.php';?>
+  <!-- END Header include -->
+</head>
+<body>
+  <!-- NAV bar include -->
+  <?php include 'includes/navbar.php'; ?>
+  <!-- END NAV bar include -->
+
+  <!-- Alert include -->
+  <?php include 'includes/alert-header.php' ?>
+  <!-- END Alert include -->
 
   <!-- Bootstrap Modals -->
 
@@ -62,98 +76,98 @@ include 'includes/navbar.php';
 
         <div class="modal-footer">
           <!--<p>
-            <a id="FPModal" href="javascript:void(0)">Forgot Password?</a> |
-            <a id="signupModal" href="javascript:void(0)">Request Access!</a>
-          </p>-->
-        </div>
-
+          <a id="FPModal" href="javascript:void(0)">Forgot Password?</a> |
+          <a id="signupModal" href="javascript:void(0)">Request Access!</a>
+        </p>-->
       </div>
-      <!-- login modal content -->
 
-      <!-- signup modal content -->
-      <div class="modal-content" id="signup-modal-content">
-
-        <div class="modal-header">
-          <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button> -->
-          <h4 class="modal-title"><span class="fa fa-lock"></span> Request Access!</h4>
-        </div>
-
-        <div class="modal-body">
-          <form method="post" id="signup-form" role="form">
-
-            <div class="form-group">
-              <div class="input-group">
-                <div class="input-group-addon"><span class="fa fa-envelope"></span></div>
-                <input name="email" id="email" type="email" class="form-control input-lg" placeholder="Enter Email" required data-parsley-type="email">
-              </div>
-            </div>
-
-            <div class="form-group">
-              <div class="input-group">
-                <div class="input-group-addon"><span class="fa fa-lock"></span></div>
-                <input name="password" id="passwd" type="password" class="form-control input-lg" placeholder="Enter Password" required data-parsley-length="[6, 10]"
-                  data-parsley-trigger="keyup">
-              </div>
-            </div>
-
-            <div class="form-group">
-              <div class="input-group">
-                <div class="input-group-addon"><span class="fa fa-lock"></span></div>
-                <input name="password" id="confirm-passwd" type="password" class="form-control input-lg" placeholder="Retype Password" required
-                  data-parsley-equalto="#passwd" data-parsley-trigger="keyup">
-              </div>
-            </div>
-
-
-            <button type="submit" class="btn btn-success btn-block btn-lg" id="btn-request">REQUEST ACCOUNT!</button>
-          </form>
-        </div>
-
-        <div class="modal-footer">
-          <p>Already a Member? <a id="loginModal" href="javascript:void(0)">Login Here!</a></p>
-        </div>
-
-      </div>
-      <!-- signup modal content -->
-
-      <!-- forgot password content -->
-      <div class="modal-content" id="forgot-password-modal-content">
-
-        <div class="modal-header">
-          <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button> -->
-          <h4 class="modal-title"><span class="fa fa-lock"></span> Recover Password!</h4>
-        </div>
-
-        <div class="modal-body">
-          <form method="post" id="forgot-password-form" role="form">
-
-            <div class="form-group">
-              <div class="input-group">
-                <div class="input-group-addon"><span class="fa fa-envelope"></span></div>
-                <input name="email" id="email" type="email" class="form-control input-lg" placeholder="Enter Email" required data-parsley-type="email">
-              </div>
-            </div>
-
-            <button type="submit" class="btn btn-success btn-block btn-lg" id="btn-forgot">
-              <span class="fa fa-send"></span> SUBMIT
-            </button>
-          </form>
-        </div>
-
-        <div class="modal-footer">
-          <p>Remember Password? <a id="loginModal1" href="javascript:void(0)">Login Here!</a></p>
-        </div>
-
-      </div>
-      <!-- forgot password content -->
-
-
-
-      <!-- /.modal-content -->
     </div>
-    <!-- /.modal-dialog -->
+    <!-- login modal content -->
+
+    <!-- signup modal content -->
+    <div class="modal-content" id="signup-modal-content">
+
+      <div class="modal-header">
+        <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button> -->
+        <h4 class="modal-title"><span class="fa fa-lock"></span> Request Access!</h4>
+      </div>
+
+      <div class="modal-body">
+        <form method="post" id="signup-form" role="form">
+
+          <div class="form-group">
+            <div class="input-group">
+              <div class="input-group-addon"><span class="fa fa-envelope"></span></div>
+              <input name="email" id="email" type="email" class="form-control input-lg" placeholder="Enter Email" required data-parsley-type="email">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="input-group">
+              <div class="input-group-addon"><span class="fa fa-lock"></span></div>
+              <input name="password" id="passwd" type="password" class="form-control input-lg" placeholder="Enter Password" required data-parsley-length="[6, 10]"
+              data-parsley-trigger="keyup">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="input-group">
+              <div class="input-group-addon"><span class="fa fa-lock"></span></div>
+              <input name="password" id="confirm-passwd" type="password" class="form-control input-lg" placeholder="Retype Password" required
+              data-parsley-equalto="#passwd" data-parsley-trigger="keyup">
+            </div>
+          </div>
+
+
+          <button type="submit" class="btn btn-success btn-block btn-lg" id="btn-request">REQUEST ACCOUNT!</button>
+        </form>
+      </div>
+
+      <div class="modal-footer">
+        <p>Already a Member? <a id="loginModal" href="javascript:void(0)">Login Here!</a></p>
+      </div>
+
+    </div>
+    <!-- signup modal content -->
+
+    <!-- forgot password content -->
+    <div class="modal-content" id="forgot-password-modal-content">
+
+      <div class="modal-header">
+        <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button> -->
+        <h4 class="modal-title"><span class="fa fa-lock"></span> Recover Password!</h4>
+      </div>
+
+      <div class="modal-body">
+        <form method="post" id="forgot-password-form" role="form">
+
+          <div class="form-group">
+            <div class="input-group">
+              <div class="input-group-addon"><span class="fa fa-envelope"></span></div>
+              <input name="email" id="email" type="email" class="form-control input-lg" placeholder="Enter Email" required data-parsley-type="email">
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-success btn-block btn-lg" id="btn-forgot">
+            <span class="fa fa-send"></span> SUBMIT
+          </button>
+        </form>
+      </div>
+
+      <div class="modal-footer">
+        <p>Remember Password? <a id="loginModal1" href="javascript:void(0)">Login Here!</a></p>
+      </div>
+
+    </div>
+    <!-- forgot password content -->
+
+
+
+    <!-- /.modal-content -->
   </div>
-  <!--Login, Signup, Forgot Password Modal -->
+  <!-- /.modal-dialog -->
+</div>
+<!--Login, Signup, Forgot Password Modal -->
 
 
 
@@ -164,80 +178,116 @@ include 'includes/navbar.php';
 
 
 
-  <?php  include 'includes/pre-script-footer.php'; ?>
+<?php  include 'includes/script-include.php'; ?>
 
-  <!-- onLoad, call login modal if not logged in. -->
-  <?php if (!isset($_SESSION['user_session'])) { ?>
+<!-- onLoad, call login modal if not logged in. -->
+<?php if (!isset($_SESSION['user_session'])) { ?>
   <script type="text/javascript">
-    $(window).on('load', function () {
-      $('#login-signup-modal').modal({ backdrop: 'static', keyboard: false })
-      $('#login-signup-modal').modal('show');
-    });
+  $(window).on('load', function () {
+    $('#login-signup-modal').modal({ backdrop: 'static', keyboard: false })
+    $('#login-signup-modal').modal('show');
+  });
   </script>
-  <?php } ?>
+<?php } ?>
 
-  <script type="text/javascript">
-    $(document).ready(function(){
-    		
-      //$('#Login-Form').parsley();
-      //$('#Signin-Form').parsley();
-      //$('#Forgot-Password-Form').parsley();
-    	
-      $('#signupModal').click(function(){			    		
-      	$('#login-modal-content').fadeOut('fast', function(){
-      	   $('#signup-modal-content').fadeIn('fast');
-        });
-      });
-        		   		
-      $('#loginModal').click(function(){			    			
-        $('#signup-modal-content').fadeOut('fast', function(){
-           $('#login-modal-content').fadeIn('fast');
-        });
-      });
-        		
-      $('#FPModal').click(function(){			   			
-        $('#login-modal-content').fadeOut('fast', function(){
-           $('#forgot-password-modal-content').fadeIn('fast');
-        });
-      });
-        		
-      $('#loginModal1').click(function(){			    			
-        $('#forgot-password-modal-content').fadeOut('fast', function(){
-           $('#login-modal-content').fadeIn('fast');
-        });
-      });
-    
+<script type="text/javascript">
+$(document).ready(function(){
+
+  //$('#Login-Form').parsley();
+  //$('#Signin-Form').parsley();
+  //$('#Forgot-Password-Form').parsley();
+
+  $('#signupModal').click(function(){
+    $('#login-modal-content').fadeOut('fast', function(){
+      $('#signup-modal-content').fadeIn('fast');
     });
-  </script>
+  });
 
-  <script type="text/javascript">
-    $(function () {
+  $('#loginModal').click(function(){
+    $('#signup-modal-content').fadeOut('fast', function(){
+      $('#login-modal-content').fadeIn('fast');
+    });
+  });
+
+  $('#FPModal').click(function(){
+    $('#login-modal-content').fadeOut('fast', function(){
+      $('#forgot-password-modal-content').fadeIn('fast');
+    });
+  });
+
+  $('#loginModal1').click(function(){
+    $('#forgot-password-modal-content').fadeOut('fast', function(){
+      $('#login-modal-content').fadeIn('fast');
+    });
+  });
+
+});
+</script>
+
+<script type="text/javascript">
+$(function () {
+  $('#callout-login-error').hide();
+  $('#callout-form-error').hide();
+
+  $('#login-form').parsley({errorClass: "form-control-danger", successClass: "form-control-success"})
+  .on('field:validated', function (e) {
+
+    if (e.validationResult.constructor!==Array) {
+
+      try {
+        if ( $('#collapse-callout').hasClass('show') && !$('#collapse-callout').hasClass('collapsing')) {
+          $('#collapse-callout').collapse('show');
+        }
+      }
+      catch (err) {
+        console.log(err);
+      }
+
+      $('#callout-form-error').fadeOut('fast');
+      $('#callout-login-error').fadeOut('fast');
+
+      this.$element.closest('.form-group').removeClass('has-danger').addClass('has-success');
+
+    } else {
+
       $('#callout-login-error').hide();
-      $('#callout-form-error').hide();
+      $('#callout-form-error').fadeIn('fast');
 
-      $('#login-form').parsley({errorClass: "form-control-danger", successClass: "form-control-success"})
-      .on('field:validated', function (e) {
+      try {
+        if ( !$('#collapse-callout').hasClass('show') && !$('#collapse-callout').hasClass('collapsing')) {
+          $('#collapse-callout').collapse('show');
+        }
+      }
+      catch (err) {
+        console.log(err);
+      }
 
-        if (e.validationResult.constructor!==Array) {
+      this.$element.closest('.form-group').removeClass('has-success').addClass('has-danger');
 
-          try {
-            if ( $('#collapse-callout').hasClass('show') && !$('#collapse-callout').hasClass('collapsing')) {
-              $('#collapse-callout').collapse('show');
-            }
-          }
-          catch (err) {
-            console.log(err);
-          }
+    }
+  })
+  .on('form:submit', function () {
 
-          $('#callout-form-error').fadeOut('fast');
-          $('#callout-login-error').fadeOut('fast');
+    var data = $("#login-form").serialize();
+    $.ajax({
+      type: 'POST',
+      url: 'ajax/ajax_login_process.php',
+      data: data + '&btn-login=1',
+      beforeSend: function () {
+        $("#btn-login").html('<span class="fa fa-transfer"></span> &nbsp; sending ...');
+      },
+      success: function (response) {
+        if (response == "ok") {
+          $("#btn-login").html('<span class="fa fa-check"></span> &nbsp; Signing In ...');
+          setTimeout(' window.location.href = "home.php"; ', 1000);
+        }
+        else {
 
-          this.$element.closest('.form-group').removeClass('has-danger').addClass('has-success');
+          $("#callout-login-error").html('<h4><span class="fa fa-info-circle"></span></h4>\r\n<p>' + response + '!</p>');
 
-        } else {
 
-          $('#callout-login-error').hide();
-          $('#callout-form-error').fadeIn('fast');
+          $('#callout-form-error').hide();
+          $('#callout-login-error').fadeIn('fast');
 
           try {
             if ( !$('#collapse-callout').hasClass('show') && !$('#collapse-callout').hasClass('collapsing')) {
@@ -248,56 +298,24 @@ include 'includes/navbar.php';
             console.log(err);
           }
 
-          this.$element.closest('.form-group').removeClass('has-success').addClass('has-danger');
+          $("#login-email").closest('.form-group').removeClass('has-success').addClass('has-danger');
+          $("#login-email").removeClass('form-control-success').addClass('form-control-danger');
+          $("#login-password").closest('.form-group').removeClass('has-success').addClass('has-danger');
+          $("#login-password").removeClass('form-control-success').addClass('form-control-danger');
 
-         }
-      })
-      .on('form:submit', function () {
+          $("#btn-login").html('LOGIN');
 
-        var data = $("#login-form").serialize();
-        $.ajax({
-          type: 'POST',
-          url: 'ajax/ajax_login_process.php',
-          data: data + '&btn-login=1',
-          beforeSend: function () {
-            $("#btn-login").html('<span class="fa fa-transfer"></span> &nbsp; sending ...');
-          },
-          success: function (response) {
-            if (response == "ok") {
-              $("#btn-login").html('<span class="fa fa-check"></span> &nbsp; Signing In ...');
-              setTimeout(' window.location.href = "home.php"; ', 1000);
-            }
-            else {
-               
-              $("#callout-login-error").html('<h4><span class="fa fa-info-circle"></span></h4>\r\n<p>' + response + '!</p>');
-        
-        
-              $('#callout-form-error').hide();
-              $('#callout-login-error').fadeIn('fast');
-
-              try {
-                if ( !$('#collapse-callout').hasClass('show') && !$('#collapse-callout').hasClass('collapsing')) {
-                  $('#collapse-callout').collapse('show');
-                }
-              }
-              catch (err) {
-                console.log(err);
-              }
-
-              $("#login-email").closest('.form-group').removeClass('has-success').addClass('has-danger');
-              $("#login-email").removeClass('form-control-success').addClass('form-control-danger');
-              $("#login-password").closest('.form-group').removeClass('has-success').addClass('has-danger');
-              $("#login-password").removeClass('form-control-success').addClass('form-control-danger');
-              
-              $("#btn-login").html('LOGIN');
-
-            }
-          }
-        });
-
-        return false;
-      });
+        }
+      }
     });
-  </script>
+
+    return false;
+  });
+});
+</script>
 
 <?php include 'includes/footer.php'; ?>
+
+</body>
+
+</html>
