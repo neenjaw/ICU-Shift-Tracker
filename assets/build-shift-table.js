@@ -45,13 +45,31 @@ function buildShiftTable(shiftDataJSON, shiftHeadClasses = '', shiftCellClasses 
       // skip loop if the property is from prototype
       if (!shiftDataJSON.hasOwnProperty(key)) continue;
 
-      var headMonthCell = null;
-      var headDateCell = null;
-            if (firstLoop) {
+      if (firstLoop) {
+        //Create the first row
+        headMonthFragment.appendChild(doc.createElement("tr"));
 
-            }
+        var headMonthCell = doc.createElement("th");
+        headMonthCell.html('&nbsp;');
+
+        headMonthFragment.appendChild(headMonthCell);
+
+        //Create the second row
+        headDateFragment.appendChild(doc.createElement("tr"));
+
+        var headDateCell = doc.createElement("th");
+        headDateCell.html('&nbsp;');
+
+        headDateFragment.appendChild(headDateCell);
+      }
+
+      //create first column of row
+      rowFragment.appendChild(doc.createElement("tr"));
+
       var rowCell = doc.createElement("th");
+      rowCell.innerHTML = shiftDataJSON[staff].name;
 
+      rowFragment.appendChild(rowCell);
 
       //create each row for the table, with dynamic links as neccessary where char != '-'
           //in the first iteration, create the header rows
