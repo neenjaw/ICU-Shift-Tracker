@@ -32,16 +32,34 @@
  * name 3 |  -  |  -  |  S  |  S  |  S  |  -  |  -  |  -  |  O  |
  *
  */
-function buildShiftTable($dataArray, $shiftHeadClasses = '', $shiftCellClasses = '') {
+function buildShiftTable(shiftDataJSON, shiftHeadClasses = '', shiftCellClasses = '') {
   var doc = document;
   var shiftTable = doc.createElement("table");
-  var fragment = doc.createDocumentFragment();
-
+  var headMonthFragment = doc.createDocumentFragment();
+  var headDateFragment = doc.createDocumentFragment();
+  var rowFragment = doc.createDocumentFragment();
+  var firstLoop = true;
   //for each loop through each of the staff entry of the JSON
-      //in the first iteration, create the header rows
+
+  for (staff in shiftDataJSON) {
+      // skip loop if the property is from prototype
+      if (!shiftDataJSON.hasOwnProperty(key)) continue;
+
+      var headMonthCell = null;
+      var headDateCell = null;
+            if (firstLoop) {
+
+            }
+      var rowCell = doc.createElement("th");
+
+
       //create each row for the table, with dynamic links as neccessary where char != '-'
+          //in the first iteration, create the header rows
           //name in first column as a <th></th>, then every shift as a <td><td>
       //append it to the fragment
+
+      firstLoop = false;
+  }
   //end loop
 
   //append the rows to the table dom object
@@ -49,29 +67,3 @@ function buildShiftTable($dataArray, $shiftHeadClasses = '', $shiftCellClasses =
   //return the completed table to caller so can be appended to dom at correct place.
   return shiftTable;
 }
-
-/*
-(EX)
-
-var doc = document;
-
-var fragment = doc.createDocumentFragment();
-
-for (i = 0; i < 3; i++) {
-    var tr = doc.createElement("tr");
-
-    var td = doc.createElement("td");
-    td.innerHTML = "content";
-
-    tr.appendChild(td);
-
-    //does not trigger reflow
-    fragment.appendChild(tr);
-}
-
-var table = doc.createElement("table");
-
-table.appendChild(fragment);
-
-doc.getElementById("here_table").appendChild(table);
-*/
