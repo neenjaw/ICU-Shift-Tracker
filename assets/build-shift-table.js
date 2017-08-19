@@ -67,19 +67,28 @@ function buildShiftTable(shiftDataJSON, shiftHeadClasses = '', shiftCellClasses 
   * Builds a month 'th' cell -- eg: <th data-shift-date="yyyy-mm-dd">Jan</th>
   * If the month is a new month from the last one, print the name, otherwise print &nsbp;
   */
-  function buildMonthHeadCell(doc, date, lastDate, locale) {
+  function buildMonthHeadCell(doc, date, mString) {
     var c = doc.createElement("th");
     c.dataset.shiftDate = shift.shift_date;
 
-    //if ( !( (lastDate.getYear() == shiftDate.getYear()) && (lastDate.getMonth() == shiftDate.getMonth()) ) ) {
-    //  headMonthCell.innerHTML = shiftDate.toLocaleString(locale, { month: "short" });
-    //} else {
-    //  headMonthCell.innerHTML = '';
-    //}
-
-    c.innerHTML = "m";
+    c.innerHTML = mString;
 
     return c;
+  }
+
+ /*
+  * Custom comparitor for the date based on year and month
+  */
+  function isNewMonth(date, lastDate) {
+
+    if ( date.getYear() > lastDate.getYear() ) {
+      return true;
+    } else if ( (date.getYear() == lastDate.getYear()) && (date.getMonth() > lastDate.getMonth()) ) {
+      return true;
+    } else {
+      return false;
+    }
+
   }
 
  /*
@@ -112,72 +121,52 @@ function buildShiftTable(shiftDataJSON, shiftHeadClasses = '', shiftCellClasses 
   */
   var doc = document;
   var shiftTable = doc.createElement("table");
+
   var headMonthRow = doc.createElement("tr");
+  headMonthRow.appendChild(buildEmptyHeadCell(doc));
+
   var headDateRow = doc.createElement("tr");
+  headDateRow.appendChild(buildEmptyHeadCell(doc));
+
   var rowFragment = doc.createDocumentFragment();
   var tempRow = null;
+  var monthString = '&nbsp';
 
   var firstLoop = true;
   var lastDate = new Date("0001-01-01");
 
   //for each loop through each of the staff entry of the JSON
 
-  for (staff in shiftDataJSON) {
+  for (var staff in shiftDataJSON) {
       // skip loop if the property is from prototype
       if (!shiftDataJSON.hasOwnProperty(staff)) continue;
-
-      if (firstLoop) {
-<<<<<<< HEAD
-        headMonthRow.appendChild(buildEmptyHeadCell(doc));
-        headDateRow.appendChild(buildEmptyHeadCell(doc));
-      }
-
+      console.log(staff);
       tempRow = doc.createElement("tr");
 
-      tempRow.appendChild(buildNameHeadCell(doc, shiftDataJSON[staff]));
-=======
-        //Create the first row
-        headMonthFragment.appendChild(doc.createElement("tr"));
-
-        var headMonthCell = doc.createElement("th");
-        headMonthCell.html('&nbsp;');
-
-        headMonthFragment.appendChild(headMonthCell);
-
-        //Create the second row
-        headDateFragment.appendChild(doc.createElement("tr"));
-
-        var headDateCell = doc.createElement("th");
-        headDateCell.html('&nbsp;');
-
-        headDateFragment.appendChild(headDateCell);
-      }
-
-      //create first column of row
-      rowFragment.appendChild(doc.createElement("tr"));
-
-      var rowCell = doc.createElement("th");
-      rowCell.innerHTML = shiftDataJSON[staff].name;
-
-      rowFragment.appendChild(rowCell);
->>>>>>> ff21cb2e5e71bd0cac8c4d68bae845951c7ab5e5
+      tempRow.appendChild(buildNameHeadCell(doc, shiftDataJSON.staff[staff]));
 
       //create each row for the table, with dynamic links as neccessary where char != '-'
           //in the first iteration, create the header rows
-      for (shift in shiftDataJSON[staff].shifts) {
+      for (var shift in shiftDataJSON.staff[staff].shifts) {
         // skip loop if the property is from prototype
         if (!shiftDataJSON[staff].shifts.hasOwnProperty(shift)) continue;
 
-        var shiftId = shiftDataJSON[staff].shifts[shift].shift_id;
-        var shiftDate = new Date(shiftDataJSON[staff].shifts[shift].shift_date);
-        var shiftCode = shiftDataJSON[staff].shifts[shift].shift_code;
+        var shiftId = shiftDataJSON.staff[staff].shifts[shift].shift_id;
+        var shiftDate = new Date(shiftDataJSON.staff[staff].shifts[shift].shift_date);
+        var shiftCode = shiftDataJSON.staff[staff].shifts[shift].shift_code;
 
         if (firstLoop) {
-          headMonthRow.appendChild(buildMonthHeadCell(doc, shiftDate, lastDate, locale));
+          if (isNewMonth(shiftDate, lastDate)) {
+            monthString = date.toLocaleString(locale, { month: "short" });
+          } else {
+            monthString = '&nbsp;';
+          }
+
+          headMonthRow.appendChild(buildMonthHeadCell(doc, shiftDate, monthString));
           headDateRow.appendChild(buildDateHeadCell(doc, shiftDate));
         }
 
-        tempRow.appendChild(buildShiftCell(doc, shiftDataJSON[staff].shifts[shift]));
+        tempRow.appendChild(buildShiftCell(doc, shiftDataJSON.staff[staff].shifts[shift]));
       }
 
       //append it to the fragment
