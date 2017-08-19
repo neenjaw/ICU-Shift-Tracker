@@ -145,6 +145,7 @@ function buildShiftTable(shiftDataJSON, shiftHeadClasses = '', shiftCellClasses 
 
       tempRow.appendChild(buildNameHeadCell(doc, shiftDataJSON.staff[staff]));
 
+
       //create each row for the table, with dynamic links as neccessary where char != '-'
           //in the first iteration, create the header rows
       for (var shift in shiftDataJSON.staff[staff].shifts) {
