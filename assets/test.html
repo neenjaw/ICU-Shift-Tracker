@@ -1,0 +1,23 @@
+<html>
+<head>
+</head>
+<body>
+  <h4>Test page</h4>
+  <div id="bin">
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="build-shift-table.js"></script>
+
+  <script>
+    var obj = null;
+    
+    $(function() {
+      var b = "adad";
+      obj = JSON.parse('{"staff": [{"name" : "Name1", "shifts": [{"shift_date": "1111-mm-dd", "shift_id": 1, "shift_code": "P"},{"shift_date": "2222-mm-dd", "shift_id": 2, "shift_code": "O"}]},{"name" : "Name2", "shifts": [{"shift_date": "3333-mm-dd", "shift_id": 3, "shift_code": "V"},{"shift_date": "4444-mm-dd", "shift_id": 4, "shift_code": "M"}]}]}');
+      console.log(JSON.stringify(obj));
+      $("#bin").html(JSON.stringify(obj));
+    });
+  </script>
+
+</body>
+</html>

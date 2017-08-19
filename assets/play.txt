@@ -10,17 +10,17 @@
 <h1>Test</h1>
 <p id="bin">My first paragraph.</p>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>  
-  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
 <script>
-$(function() { 
-  var b = "adad";    
-  var obj = JSON.parse(jsonString);
+$(function() {
+  var b = "adad";
+  var obj = JSON.parse('{"staff": [{"name" : "Name1", "shifts": [{"shift_date": "1111-mm-dd", "shift_id": 1, "shift_code": "P"},{"shift_date": "2222-mm-dd", "shift_id": 2, "shift_code": "O"}]},{"name" : "Name2", "shifts": [{"shift_date": "3333-mm-dd", "shift_id": 3, "shift_code": "V"},{"shift_date": "4444-mm-dd", "shift_id": 4, "shift_code": "M"}]}]}');
   console.log(JSON.stringify(obj));
   $("#bin").html(b);
 });
 </script>
-  
+
 </body>
 </html>
 
@@ -39,8 +39,8 @@ var jsonString = '{' +
         '}'+
       ']' +
     '}';
-     
-     
+
+
 "{\"staff\":[
       {\"name\":\"Name1\",\"shifts\":[
             {\"shift_date\":\"1111-mm-dd\",\"shift_id\":1,\"shift_code\":\"P\"},
@@ -54,4 +54,28 @@ var jsonString = '{' +
  }"
 
 
+ /*
+ (EX)
 
+ var doc = document;
+
+ var fragment = doc.createDocumentFragment();
+
+ for (i = 0; i < 3; i++) {
+     var tr = doc.createElement("tr");
+
+     var td = doc.createElement("td");
+     td.innerHTML = "content";
+
+     tr.appendChild(td);
+
+     //does not trigger reflow
+     fragment.appendChild(tr);
+ }
+
+ var table = doc.createElement("table");
+
+ table.appendChild(fragment);
+
+ doc.getElementById("here_table").appendChild(table);
+ */

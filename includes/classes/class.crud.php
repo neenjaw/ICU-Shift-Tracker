@@ -507,36 +507,6 @@ class crud
         echo "      </div>\r\n";
     }
 
-    public function getShiftEntryAsHTML($shift_id) {
-        if ($shift_id < 0) {
-            throw new Exception('`Shift ID` parameter must be an integer greater than 0.');
-        }
-
-        $entry = $this->getShiftEntry($shift_id);
-        $entry_staff_name = $this->getStaffById($entry['staff_id']);
-        $entry_assignment = $this->getAssignmentNamebyID($entry['assignment_id']);
-        $entry_role = $this->getRoleNameById($entry['role_id']);
-
-        //var_dump($entry);
-        //var_dump($entry_staff_name);
-        //var_dump($entry_assignment);
-        //var_dump($entry_role);
-
-
-        echo "    <p>Staff: " . $entry_staff_name['first_name'] . ' ' . $entry_staff_name['last_name'] . ', ' . $entry_staff_name['category'] . "</p>\r\n";
-        echo "    <p>Date: " . DateTime::createFromFormat('Y-m-d', $entry['shift_date'])->format('F j, Y') . ' -- ' . (($entry['bool_day_or_night']) ? 'Night' : 'Day') . " Shift</p>\r\n";
-        echo "    <p>Role: " . $entry_role . "</p>\r\n";
-        echo "    <p>Pod Assignment: " . $entry_assignment .  "</p>\r\n";
-        echo "    <p>Vented? " . (($entry['bool_vented']) ? 'Vented' : 'Non-vented') . "</p>\r\n";
-        echo "    <p>Doubled? " . (($entry['bool_doubled']) ? 'Yes' : 'No') . "</p>\r\n";
-        echo "    <p>Very Sick? " . (($entry['bool_very_sick']) ? 'Yes' : 'No') . "</p>\r\n";
-        echo "    <p>Admitted? " . (($entry['bool_new_admit']) ? 'Yes' : 'No') . "</p>\r\n";
-        echo "    <p>Code pager? ". (($entry['bool_code_pager']) ? 'Yes' : 'No') . "</p>\r\n";
-        echo "    <p>CRRT? ". (($entry['bool_crrt']) ? 'Yes' : 'No') . "</p>\r\n";
-        echo "    <p>EVD? ". (($entry['bool_evd']) ? 'Yes' : 'No') . "</p>\r\n";
-        echo "    <p>Burn? ". (($entry['bool_burn']) ? 'Yes' : 'No') . "</p>\r\n";
-    }
-
     /*
      * CRUD --
      * Update FUNCTIONS

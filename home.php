@@ -124,7 +124,7 @@ $crud->printRnShiftTable($num_days, $day_offset);
           $('#shift-detail-text').html();
         },
         success: function (response) {
-          console.log(response);
+          //console.log(response);
           $('#shift-detail-text').html(shiftTemplate(JSON.parse(response))); //add the result between the div tags
           $('#shift-detail-modal').modal('show');	//show the modal
         }
