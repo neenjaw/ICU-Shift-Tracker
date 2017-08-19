@@ -127,6 +127,7 @@ function buildShiftTable(shiftDataJSON, shiftHeadClasses = '', shiftCellClasses 
       if (!shiftDataJSON.hasOwnProperty(staff)) continue;
 
       if (firstLoop) {
+<<<<<<< HEAD
         headMonthRow.appendChild(buildEmptyHeadCell(doc));
         headDateRow.appendChild(buildEmptyHeadCell(doc));
       }
@@ -134,6 +135,32 @@ function buildShiftTable(shiftDataJSON, shiftHeadClasses = '', shiftCellClasses 
       tempRow = doc.createElement("tr");
 
       tempRow.appendChild(buildNameHeadCell(doc, shiftDataJSON[staff]));
+=======
+        //Create the first row
+        headMonthFragment.appendChild(doc.createElement("tr"));
+
+        var headMonthCell = doc.createElement("th");
+        headMonthCell.html('&nbsp;');
+
+        headMonthFragment.appendChild(headMonthCell);
+
+        //Create the second row
+        headDateFragment.appendChild(doc.createElement("tr"));
+
+        var headDateCell = doc.createElement("th");
+        headDateCell.html('&nbsp;');
+
+        headDateFragment.appendChild(headDateCell);
+      }
+
+      //create first column of row
+      rowFragment.appendChild(doc.createElement("tr"));
+
+      var rowCell = doc.createElement("th");
+      rowCell.innerHTML = shiftDataJSON[staff].name;
+
+      rowFragment.appendChild(rowCell);
+>>>>>>> ff21cb2e5e71bd0cac8c4d68bae845951c7ab5e5
 
       //create each row for the table, with dynamic links as neccessary where char != '-'
           //in the first iteration, create the header rows
