@@ -34,7 +34,7 @@
  * name 3 |  -  |  -  |  S  |  S  |  S  |  -  |  -  |  -  |  O  |
  *
  */
-function buildShiftTable(shiftDataJSON, shiftHeadClasses = '', shiftCellClasses = '', locale = 'en-us') {
+function buildShiftTable(staffObj, shiftHeadClasses = '', shiftCellClasses = '', locale = 'en-us') {
 
  /*
   * Builds a date 'td' cell -- eg: <td data-shift-date="yyyy-mm-dd" data-shift-id="1" data-shift-code="X">X</td>
@@ -69,7 +69,7 @@ function buildShiftTable(shiftDataJSON, shiftHeadClasses = '', shiftCellClasses 
   */
   function buildMonthHeadCell(doc, date, mString) {
     var c = doc.createElement("th");
-    c.dataset.shiftDate = shift.shift_date;
+    c.dataset.shiftDate = date;
 
     c.innerHTML = mString;
 
@@ -83,7 +83,7 @@ function buildShiftTable(shiftDataJSON, shiftHeadClasses = '', shiftCellClasses 
 
     if ( date.getYear() > lastDate.getYear() ) {
       return true;
-    } else if ( (date.getYear() == lastDate.getYear()) && (date.getMonth() > lastDate.getMonth()) ) {
+    } else if ( (date.getUTCYear() == lastDate.getUTCYear()) && (date.getUTCMonth() > lastDate.getUTCMonth()) ) {
       return true;
     } else {
       return false;
@@ -96,15 +96,15 @@ function buildShiftTable(shiftDataJSON, shiftHeadClasses = '', shiftCellClasses 
   */
   function buildDateHeadCell(doc, date) {
     var c = doc.createElement("th");
-    c.dataset.shiftDate = shift.shift_date;
+    c.dataset.shiftDate = date;
 
-    c.innerHTML = date.getDate();
+    c.innerHTML = date.getUTCDate();
 
     return c;
-  }
+  UTC}
 
  /*
-  * Builds an empty 'th' cell -- eg: <th>&nsbp;</th>
+  * Builds an UTCempty 'th' cell -- eg: <th>&nsbp;</th>
   */
   function buildEmptyHeadCell(doc) {
     var c = doc.createElement("th");
@@ -137,28 +137,27 @@ function buildShiftTable(shiftDataJSON, shiftHeadClasses = '', shiftCellClasses 
 
   //for each loop through each of the staff entry of the JSON
 
-  for (var staff in shiftDataJSON) {
-      // skip loop if the property is from prototype
-      if (!shiftDataJSON.hasOwnProperty(staff)) continue;
-      console.log(staff);
+  if (!staffObj.hasOwnProperty('staff')) throw 'Object not formatted properly';
+
+  for (var staff in staffObj.staff) {
+      console.log(staffObj.staff[staff]);
       tempRow = doc.createElement("tr");
 
-      tempRow.appendChild(buildNameHeadCell(doc, shiftDataJSON.staff[staff]));
+      tempRow.appendChild(buildNameHeadCell(doc, staffObj.staff[staff]));
 
 
       //create each row for the table, with dynamic links as neccessary where char != '-'
           //in the first iteration, create the header rows
-      for (var shift in shiftDataJSON.staff[staff].shifts) {
-        // skip loop if the property is from prototype
-        if (!shiftDataJSON[staff].shifts.hasOwnProperty(shift)) continue;
+      //if (!staffObj[staff].hasOwnProperty('shifts')) throw 'Object not formatted properly';
+      for (var shift in staffObj.staff[staff].shifts) {
 
-        var shiftId = shiftDataJSON.staff[staff].shifts[shift].shift_id;
-        var shiftDate = new Date(shiftDataJSON.staff[staff].shifts[shift].shift_date);
-        var shiftCode = shiftDataJSON.staff[staff].shifts[shift].shift_code;
+        var shiftId = staffObj.staff[staff].shifts[shift].shift_id;
+        var shiftDate = new Date(staffObj.staff[staff].shifts[shift].shift_date);
+        var shiftCode = staffObj.staff[staff].shifts[shift].shift_code;
 
         if (firstLoop) {
           if (isNewMonth(shiftDate, lastDate)) {
-            monthString = date.toLocaleString(locale, { month: "short" });
+            monthString = shiftDate.toLocaleString(locale, { month: "short", timeZone: 'UTC' });
           } else {
             monthString = '&nbsp;';
           }
@@ -167,7 +166,7 @@ function buildShiftTable(shiftDataJSON, shiftHeadClasses = '', shiftCellClasses 
           headDateRow.appendChild(buildDateHeadCell(doc, shiftDate));
         }
 
-        tempRow.appendChild(buildShiftCell(doc, shiftDataJSON.staff[staff].shifts[shift]));
+        tempRow.appendChild(buildShiftCell(doc, staffObj.staff[staff].shifts[shift]));
       }
 
       //append it to the fragment
