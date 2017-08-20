@@ -3,7 +3,7 @@ session_start();
 
 include_once 'includes/dbconfig.php';
 
-require_once 'includes/classes/Mobile-Detect-2.8.25/Mobile_Detect.php';
+require_once 'includes/libraries/Mobile-Detect-2.8.25/Mobile_Detect.php';
 $detect = new Mobile_Detect;
 
 if (isset($_SESSION['user_session'])) {

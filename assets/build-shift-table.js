@@ -41,11 +41,14 @@ function buildShiftTable(staffObj, shiftHeadClasses = '', shiftCellClasses = '',
   */
   function buildShiftCell(doc, shift) {
     var c = doc.createElement("td");
-    c.dataset.shiftDate = shift.shift_date;
-    c.dataset.shiftId = shift.shift_id;
-    c.dataset.shiftCode = shift.shift_code;
+    c.dataset.shiftDate = shift.date;
+    c.dataset.shiftId = shift.id;
+    c.dataset.shiftCode = shift.code;
 
-    c.innerHTML = shift.shift_code;
+    var a = doc.createElement("a");
+    a.innerHTML = shift.code;
+
+    c.appendChild(a);
 
     return c;
   }
@@ -58,7 +61,7 @@ function buildShiftTable(staffObj, shiftHeadClasses = '', shiftCellClasses = '',
     c.dataset.staffName = staff.name;
     c.dataset.staffId = staff.id;
 
-    c.innerHTML = staff.name;
+    c.innerHTML = '<pre>'+staff.name+'</pre>';
 
     return c;
   }
@@ -69,7 +72,7 @@ function buildShiftTable(staffObj, shiftHeadClasses = '', shiftCellClasses = '',
   */
   function buildMonthHeadCell(doc, date, mString) {
     var c = doc.createElement("th");
-    c.dataset.shiftDate = date;
+    c.dataset.shiftDate = toYYYYMMDD(date);
 
     c.innerHTML = mString;
 
@@ -81,9 +84,9 @@ function buildShiftTable(staffObj, shiftHeadClasses = '', shiftCellClasses = '',
   */
   function isNewMonth(date, lastDate) {
 
-    if ( date.getYear() > lastDate.getYear() ) {
+    if ( date.getUTCFullYear() > lastDate.getUTCFullYear() ) {
       return true;
-    } else if ( (date.getUTCYear() == lastDate.getUTCYear()) && (date.getUTCMonth() > lastDate.getUTCMonth()) ) {
+    } else if ( (date.getUTCFullYear() == lastDate.getUTCFullYear()) && (date.getUTCMonth() > lastDate.getUTCMonth()) ) {
       return true;
     } else {
       return false;
@@ -96,12 +99,12 @@ function buildShiftTable(staffObj, shiftHeadClasses = '', shiftCellClasses = '',
   */
   function buildDateHeadCell(doc, date) {
     var c = doc.createElement("th");
-    c.dataset.shiftDate = date;
+    c.dataset.shiftDate = toYYYYMMDD(date);
 
     c.innerHTML = date.getUTCDate();
 
     return c;
-  UTC}
+  }
 
  /*
   * Builds an UTCempty 'th' cell -- eg: <th>&nsbp;</th>
@@ -112,6 +115,14 @@ function buildShiftTable(staffObj, shiftHeadClasses = '', shiftCellClasses = '',
     c.innerHTML = "&nbsp";
 
     return c;
+  }
+
+
+ /*
+  * returns ISO format for date
+  */
+  function toYYYYMMDD(date) {
+    return date.toISOString().substring(0,10);
   }
 
  /*
@@ -135,7 +146,7 @@ function buildShiftTable(staffObj, shiftHeadClasses = '', shiftCellClasses = '',
   var firstLoop = true;
   var lastDate = new Date("0001-01-01");
 
-  //for each loop through each of the staff entry of the JSON
+  //for each loop through each of the staff entry of the Object
 
   if (!staffObj.hasOwnProperty('staff')) throw 'Object not formatted properly';
 
@@ -151,9 +162,9 @@ function buildShiftTable(staffObj, shiftHeadClasses = '', shiftCellClasses = '',
       //if (!staffObj[staff].hasOwnProperty('shifts')) throw 'Object not formatted properly';
       for (var shift in staffObj.staff[staff].shifts) {
 
-        var shiftId = staffObj.staff[staff].shifts[shift].shift_id;
-        var shiftDate = new Date(staffObj.staff[staff].shifts[shift].shift_date);
-        var shiftCode = staffObj.staff[staff].shifts[shift].shift_code;
+        var shiftId = staffObj.staff[staff].shifts[shift].id;
+        var shiftDate = new Date(staffObj.staff[staff].shifts[shift].date);
+        var shiftCode = staffObj.staff[staff].shifts[shift].code;
 
         if (firstLoop) {
           if (isNewMonth(shiftDate, lastDate)) {

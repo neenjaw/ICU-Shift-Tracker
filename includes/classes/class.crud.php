@@ -507,6 +507,123 @@ class crud
         echo "      </div>\r\n";
     }
 
+    public function getShiftTableObject($days_to_print = 10, $offset_from_last_day = 0, $staff_category = 'RN')
+    {
+        //query the db to get all the shifts within the specified date range
+        $stmtShiftEntries = $this->db->prepare('SELECT
+                                        '. $this->tbl_shift_entry .'.id AS `ID`,
+                                        CONCAT('.$this->tbl_staff.'.last_name, ", ", '.$this->tbl_staff.'.first_name) AS `Staff`,
+                                        '.$this->tbl_shift_entry.'.staff_id AS `Staff ID`,
+                                        '.$this->tbl_shift_entry.'.shift_date AS `Shift Date`,
+                                        '.$this->tbl_role.'.role AS `Role`,
+                                        '.$this->tbl_assignment.'.assignment AS `Assignment`,
+                                        '.$this->tbl_shift_entry.'.bool_doubled AS `Double`,
+                                        '.$this->tbl_shift_entry.'.bool_vented AS `Vented`,
+                                        '.$this->tbl_shift_entry.'.bool_new_admit AS `Admit`,
+                                        '.$this->tbl_shift_entry.'.bool_very_sick AS `Very Sick`,
+                                        '.$this->tbl_shift_entry.'.bool_code_pager AS `Code Pager`,
+                                        '.$this->tbl_shift_entry.'.bool_crrt AS `CRRT`,
+                                        '.$this->tbl_shift_entry.'.bool_evd AS `EVD`,
+                                        '.$this->tbl_shift_entry.'.bool_burn AS `Burn`,
+                                        '.$this->tbl_shift_entry.'.bool_day_or_night AS `Day/Night`
+                                    FROM
+                                        '.$this->tbl_shift_entry.'
+                                    LEFT JOIN
+                                        '.$this->tbl_staff.' ON '.$this->tbl_shift_entry.'.staff_id = '.$this->tbl_staff.'.id
+                                    LEFT JOIN
+                                        '.$this->tbl_assignment.' ON '.$this->tbl_shift_entry.'.assignment_id = '.$this->tbl_assignment.'.id
+                                    LEFT JOIN
+                                        '.$this->tbl_role.' ON '.$this->tbl_shift_entry.'.role_id = '.$this->tbl_role.'.id
+                                    LEFT JOIN
+                                        '.$this->tbl_category.' ON '.$this->tbl_staff.'.category = '.$this->tbl_category.'.id
+                                    INNER JOIN
+                                        (SELECT DISTINCT shift_date FROM '.$this->tbl_shift_entry.' ORDER BY shift_date DESC LIMIT '.$days_to_print.' OFFSET '.$offset_from_last_day.') AS t2 ON t2.shift_date = '.$this->tbl_shift_entry.'.shift_date
+                                    WHERE
+                                        '.$this->tbl_category.'.category = "'.$staff_category.'"
+                                    ORDER BY `Staff` ASC');
+
+        $stmtShiftEntries->execute();
+
+        //  Loop to:
+        //    1. Create a list of all the staff
+        //    2. Create a 3-dimensional array shift_array[Staff Name][Shift Date][Shift Data], not every cell will be populated
+        $staff_array = array();
+        $staff_shifts_array = array();
+        if ($stmtShiftEntries->rowCount()>0) {
+            while ($row=$stmtShiftEntries->fetch(PDO::FETCH_ASSOC)) {
+                $letter_code = '-';
+
+                // C => Clinician, P => Prn Charge, O => Outreach, D => doubled, S => very sick, R => CRRT, B => Burn, A => admit, N => Non-vented, V => vented, F => undefined
+                if (strpos($row['Role'], 'Clinician') !== false) {
+                    $letter_code = 'C';
+                } elseif (strpos($row['Role'], 'Charge') !== false) {
+                    $letter_code = 'P';
+                } elseif (strpos($row['Role'], 'Outreach') !== false) {
+                    $letter_code = 'O';
+                } elseif ($row['Double'] == 1) {
+                    $letter_code = 'D';
+                } elseif ($row['Very Sick'] == 1) {
+                    $letter_code = 'S';
+                } elseif ($row['CRRT'] == 1) {
+                    $letter_code = 'R';
+                } elseif ($row['Burn'] == 1) {
+                    $letter_code = 'B';
+                } elseif ($row['Admit'] == 1) {
+                    $letter_code = 'A';
+                } elseif ($row['Vented'] == 0) {
+                    $letter_code = 'N';
+                } elseif ($row['Vented'] == 1) {
+                    $letter_code = 'V';
+                } else {
+                    $letter_code = 'F';
+                }
+
+                if (!isset($staff_array[ $row['Staff'] ]) ) {
+                  $staff_array[ $row['Staff'] ] = $row['Staff ID'];
+                }
+                $staff_shifts_array[ $row['Staff'] ][ $row['Shift Date'] ] = array('shift_id' => $row['ID'], 'code' => $letter_code);
+            }
+        } else {
+            die("No Shifts Entered");
+        }
+
+        //get a separate array of all the dates
+        $stmtUniqueDates = $this->db->prepare('SELECT DISTINCT shift_date FROM '.$this->tbl_shift_entry.' ORDER BY shift_date DESC LIMIT '.$days_to_print.' OFFSET '.$offset_from_last_day);
+        $stmtUniqueDates->execute();
+
+        $shift_dates_array = array();
+        if ($stmtUniqueDates->rowCount()>0) {
+            while ($row=$stmtUniqueDates->fetch(PDO::FETCH_ASSOC)) {
+                array_unshift($shift_dates_array, $row['shift_date']);
+            }
+        }
+
+        //make a new table object
+        $obj = new TableObj();
+        //for each staff member....
+        foreach ( $staff_array as $k => $v) {
+          //make a new staff entry object
+          $s = new StaffMinEntry($k, $v);
+
+          //then for each date, enter shift data for that staff
+          foreach ( $shift_dates_array as $x ) {
+            //if there is a shift entry for the staff, record it
+            if ( isset($staff_shifts_array[$k][$x]) ) {
+              $s->shifts[] = new ShiftMinEntry($x, $staff_shifts_array[$k][$x]['shift_id'], $staff_shifts_array[$k][$x]['code']);
+            //or else put in dummy entry as placeholder
+            } else {
+              $s->shifts[] = new ShiftMinEntry($x, -1, '-');
+            }
+          }
+
+          //add the staff to the table object
+          $obj->staff[] = $s;
+        }
+
+        //return the object
+        return $obj;
+    }
+
     /*
      * CRUD --
      * Update FUNCTIONS
@@ -697,90 +814,41 @@ class crud
         $stmt->execute();
         return true;
     }
-
- /* paging
-
-    public function dataview($query)
-    {
-        $stmt = $this->db->prepare($query);
-        $stmt->execute();
-
-        if ($stmt->rowCount()>0) {
-            while ($row=$stmt->fetch(PDO::FETCH_ASSOC)) {
-                ?>
-                <tr>
-                <td><?php print($row['id']); ?></td>
-                <td><?php print($row['first_name']); ?></td>
-                <td><?php print($row['last_name']); ?></td>
-                <td><?php print($row['email_id']); ?></td>
-                <td><?php print($row['contact_no']); ?></td>
-                <td align="center">
-                <a href="edit-data.php?edit_id=<?php print($row['id']); ?>"><i class="glyphicon glyphicon-edit"></i></a>
-                </td>
-                <td align="center">
-                <a href="delete.php?delete_id=<?php print($row['id']); ?>"><i class="glyphicon glyphicon-remove-circle"></i></a>
-                </td>
-                </tr>
-                <?php
-            }
-        } else {
-            ?>
-            <tr>
-            <td>Nothing here...</td>
-            </tr>
-            <?php
-        }
-    }
-
-    public function paging($query, $records_per_page)
-    {
-
-        $starting_position=0;
-        if (isset($_GET["page_no"])) {
-            $starting_position=($_GET["page_no"]-1)*$records_per_page;
-        }
-
-        $query2=$query." limit $starting_position,$records_per_page";
-        return $query2;
-    }
-
-    public function paginglink($query, $records_per_page)
-    {
-
-        $self = $_SERVER['PHP_SELF'];
-
-        $stmt = $this->db->prepare($query);
-        $stmt->execute();
-
-        $total_no_of_records = $stmt->rowCount();
-
-        if ($total_no_of_records > 0) {
-            ?><ul class="pagination"><?php
-   $total_no_of_pages=ceil($total_no_of_records/$records_per_page);
-   $current_page=1;
-if (isset($_GET["page_no"])) {
-    $current_page=$_GET["page_no"];
 }
-if ($current_page!=1) {
-    $previous =$current_page-1;
-    echo "<li><a href='".$self."?page_no=1'>First</a></li>";
-    echo "<li><a href='".$self."?page_no=".$previous."'>Previous</a></li>";
-}
-for ($i=1; $i<=$total_no_of_pages; $i++) {
-    if ($i==$current_page) {
-        echo "<li><a href='".$self."?page_no=".$i."' style='color:red;'>".$i."</a></li>";
-    } else {
-        echo "<li><a href='".$self."?page_no=".$i."'>".$i."</a></li>";
+
+class ShiftMinEntry
+{
+    public $date;
+    public $id;
+    public $code;
+
+    function __construct($date, $id, $letter_code) {
+      $this->date = $date;
+      $this->id = $id;
+      $this->code = $letter_code;
     }
 }
-if ($current_page!=$total_no_of_pages) {
-    $next=$current_page+1;
-    echo "<li><a href='".$self."?page_no=".$next."'>Next</a></li>";
-    echo "<li><a href='".$self."?page_no=".$total_no_of_pages."'>Last</a></li>";
-}
-    ?></ul><?php
-        }
-    }
 
- paging */
+class StaffMinEntry
+{
+    public $name;
+    public $id;
+    public $shifts;
+
+    function __construct($name, $id) {
+        $this->name = $name;
+        $this->id = $id;
+        $this->shifts = array();
+    }
 }
+
+class TableObj
+{
+    public $staff;
+
+    function __construct() {
+      $this->staff = array();
+    }
+}
+
+?>
