@@ -107,6 +107,12 @@ input.parsley-error:focus{
     text-align: center;
 }
 
+.shift-date {
+    width: 25px;
+    text-align: center;
+		overflow-x: visible;
+}
+
 .modal-open {
   padding-right: 0 !important;
   overflow-y: scroll;

@@ -327,188 +327,25 @@ class crud
         return $readable_array;
     }
 
-    public function printRnShiftTable($days_to_print = 5, $offset = 0)
-    {
-    //Likely need to make a very complex table print of shift entries here
-    //
-    //         | date 1 | date 2 | date 3 | Single letter denoting the most important identifier
-    //  name 1 |   v    |   S    |   A    |   Cn => Clinician, Ch => Charge, O => Outreach, D => doubled, S => very sick, A => admit,
-    //  name 2 |   D    |   N    |   N    |   N => Non-vented, V => vented
-    //  name 3 |   -    |   -    |   D    |
-    //
-    //  First, determine the role id for NA / UC
-    //  Then, Select the table values that are NOT NA/UC
-    //  Then, left join the staff to the shift entry
-    //  Then, left join the assignment to the shift entry
-    //  Then, left join the role to the shift entry
-    //  Then, left join the category to the shift entry
-    //  Then, inner join on the results of the last x number of most recent days entered with an offset of y
-    //  Then, Where the entries are RN shifts
-    //  Then, order by the staff
-
-        $stmtShiftEntries = $this->db->prepare('SELECT
-                                        '. $this->tbl_shift_entry .'.id AS `ID`,
-                                        CONCAT('.$this->tbl_staff.'.last_name, ", ", '.$this->tbl_staff.'.first_name) AS `Staff`,
-                                        '.$this->tbl_shift_entry.'.shift_date AS `Shift Date`,
-                                        '.$this->tbl_role.'.role AS `Role`,
-                                        '.$this->tbl_assignment.'.assignment AS `Assignment`,
-                                        '.$this->tbl_shift_entry.'.bool_doubled AS `Double`,
-                                        '.$this->tbl_shift_entry.'.bool_vented AS `Vented`,
-                                        '.$this->tbl_shift_entry.'.bool_new_admit AS `Admit`,
-                                        '.$this->tbl_shift_entry.'.bool_very_sick AS `Very Sick`,
-                                        '.$this->tbl_shift_entry.'.bool_code_pager AS `Code Pager`,
-                                        '.$this->tbl_shift_entry.'.bool_crrt AS `CRRT`,
-                                        '.$this->tbl_shift_entry.'.bool_evd AS `EVD`,
-                                        '.$this->tbl_shift_entry.'.bool_burn AS `Burn`,
-                                        '.$this->tbl_shift_entry.'.bool_day_or_night AS `Day/Night`
-                                    FROM
-                                        '.$this->tbl_shift_entry.'
-                                    LEFT JOIN
-                                        '.$this->tbl_staff.' ON '.$this->tbl_shift_entry.'.staff_id = '.$this->tbl_staff.'.id
-                                    LEFT JOIN
-                                        '.$this->tbl_assignment.' ON '.$this->tbl_shift_entry.'.assignment_id = '.$this->tbl_assignment.'.id
-                                    LEFT JOIN
-                                        '.$this->tbl_role.' ON '.$this->tbl_shift_entry.'.role_id = '.$this->tbl_role.'.id
-                                    LEFT JOIN
-                                        '.$this->tbl_category.' ON '.$this->tbl_staff.'.category = '.$this->tbl_category.'.id
-                                    INNER JOIN
-                                        (SELECT DISTINCT shift_date FROM '.$this->tbl_shift_entry.' ORDER BY shift_date DESC LIMIT '.$days_to_print.' OFFSET '.$offset.') AS t2 ON t2.shift_date = '.$this->tbl_shift_entry.'.shift_date
-                                    WHERE
-                                        '.$this->tbl_category.'.category = "RN"
-                                    ORDER BY `Staff`');
-
-        $stmtShiftEntries->execute();
-
-        //  In php, create a 3-dimensional array shift_array[Staff Name][Shift Date][Letter Code], not every cell will be populated
-        if ($stmtShiftEntries->rowCount()>0) {
-            while ($row=$stmtShiftEntries->fetch(PDO::FETCH_ASSOC)) {
-                $letter_code = '-';
-
-                // C => Clinician, P => Prn Charge, O => Outreach, D => doubled, S => very sick, R => CRRT, B => Burn, A => admit, N => Non-vented, V => vented, F => undefined
-                if (strpos($row['Role'], 'Clinician') !== false) {
-                    $letter_code = 'C';
-                } elseif (strpos($row['Role'], 'Charge') !== false) {
-                    $letter_code = 'P';
-                } elseif (strpos($row['Role'], 'Outreach') !== false) {
-                    $letter_code = 'O';
-                } elseif ($row['Double'] == 1) {
-                    $letter_code = 'D';
-                } elseif ($row['Very Sick'] == 1) {
-                    $letter_code = 'S';
-                } elseif ($row['CRRT'] == 1) {
-                    $letter_code = 'R';
-                } elseif ($row['Burn'] == 1) {
-                    $letter_code = 'B';
-                } elseif ($row['Admit'] == 1) {
-                    $letter_code = 'A';
-                } elseif ($row['Vented'] == 0) {
-                    $letter_code = 'N';
-                } elseif ($row['Vented'] == 1) {
-                    $letter_code = 'V';
-                } else {
-                    $letter_code = 'F';
-                }
-
-                $staff_shifts_array[ $row['Staff'] ][ $row['Shift Date'] ] = '<a href="javascript:void(0);" data-shift-entry-id="'.$row['ID'].'" data-shift-entry-letter="'.$letter_code.'">'.$letter_code.'</a>';
-            }
-        } else {
-            die("No Shifts Entered");
-        }
-
-        $stmtCountUniqueDates = $this->db->prepare('SELECT COUNT(DISTINCT shift_date) FROM '.$this->tbl_shift_entry.' LIMIT '.$days_to_print.' OFFSET '.$offset);
-        $stmtCountUniqueDates->execute();
-        $countUniqueDates = $stmtCountUniqueDates->fetch(PDO::FETCH_ASSOC);
-
-        $stmtUniqueDates = $this->db->prepare('SELECT DISTINCT shift_date FROM '.$this->tbl_shift_entry.' ORDER BY shift_date DESC LIMIT '.$days_to_print.' OFFSET '.$offset);
-        $stmtUniqueDates->execute();
-
-        $shift_dates_array = array();
-        if ($stmtUniqueDates->rowCount()>0) {
-            while ($row=$stmtUniqueDates->fetch(PDO::FETCH_ASSOC)) {
-                array_unshift($shift_dates_array, $row['shift_date']);
-            }
-        }
-
-        //loop to generate date header
-        //also generate rows with staff entries
-        //
-        //Effect should be something like:
-        //
-        //              |Jul                          |Aug
-        //              |1    |2    |3    |4    |5    |1    |2    |3    |4    |
-        //       name 1 |  -  |  C  |  C  |  C  |  C  |  -  |  -  |  -  |  -  |
-        //       name 2 |  -  |  -  |  -  |  V  |  V  |  -  |  -  |  -  |  -  |
-        //       name 3 |  -  |  -  |  S  |  S  |  S  |  -  |  -  |  -  |  O  |
-        //
-
-        $date_month_header = '';
-        $date_date_header = '';
-        $month = '';
-        $staff_shifts_table_rows = array();
-
-        foreach ( $shift_dates_array as $v ) {
-            $prev_month = $month;
-
-            $date = DateTime::createFromFormat('Y-m-d', $v);
-
-            $month = $date->format('M');
-
-            if ($month !== $prev_month) {
-                $date_month_header = $date_month_header . '<th class="shift-cell">' . $month . "</th>";
-            } else {
-                $date_month_header = $date_month_header . '<th class="shift-cell">&nbsp;</th>';
-            }
-
-            $date_date_header = $date_date_header . '<th class="shift-cell">' . $date->format('d') . '</th>';
-
-            //for each date, test against the staff shifts multidimensional array
-            //  if the sub-array has the date set then set the letter code in the table else, put a dash
-            $shift_counter = 0;
-            foreach ($staff_shifts_array as $l => $w) {
-
-                if (!isset($staff_shifts_table_rows[$shift_counter])){
-                    $staff_shifts_table_rows[$shift_counter] = '';
-                }
-
-                if ( isset($w[$v]) ) {
-                    $staff_shifts_table_rows[$shift_counter] = $staff_shifts_table_rows[$shift_counter] . '<td class="shift-cell">' . $staff_shifts_array[$l][$v] . '</td>';
-                } else {
-                    $staff_shifts_table_rows[$shift_counter] = $staff_shifts_table_rows[$shift_counter] . '<td class="shift-cell">-</td>';
-                }
-
-                $shift_counter = $shift_counter + 1;
-            }
-        }
-
-
-        echo "      <div class=\"shift-table-div\">\r\n";
-        echo "        <table class=\"table table-hover table-responsive table-striped table-sm shift-table\">\r\n";
-        echo "          <thead>\r\n";
-        echo "            <tr>\r\n";
-        echo "              <th class=\"shift-row-head\">&nbsp;</th>" . $date_month_header . "\r\n";
-        echo "            </tr>\r\n";
-        echo "            <tr class=\"table-inverse\">\r\n";
-        echo "              <th class=\"shift-row-head\">Date</th>" . $date_date_header . "\r\n";
-        echo "            </tr>\r\n";
-        echo "          </thead>\r\n";
-        echo "          <tbody>\r\n";
-
-        //loop to generate chart goes here
-        $x = 0;
-        foreach ( $staff_shifts_array as $k => $v) {
-            echo "            <tr>\r\n";
-            echo "              <th class=\"shift-row-head\" scope=\"row\"><pre>".$k."</pre></th>".$staff_shifts_table_rows[$x];
-            echo "            </tr>\r\n";
-            $x++;
-        }
-
-        echo "          </tbody>\r\n";
-        echo "        </table>\r\n";
-        echo "      </div>\r\n";
-    }
-
     public function getShiftTableObject($days_to_print = 10, $offset_from_last_day = 0, $staff_category = 'RN')
     {
+        //Likely need to make a very complex table print of shift entries here
+        //
+        //         | date 1 | date 2 | date 3 | Single letter denoting the most important identifier
+        //  name 1 |   v    |   S    |   A    |   Cn => Clinician, Ch => Charge, O => Outreach, D => doubled, S => very sick, A => admit,
+        //  name 2 |   D    |   N    |   N    |   N => Non-vented, V => vented
+        //  name 3 |   -    |   -    |   D    |
+        //
+        //  First, determine the role id for NA / UC
+        //  Then, Select the table values that are NOT NA/UC
+        //  Then, left join the staff to the shift entry
+        //  Then, left join the assignment to the shift entry
+        //  Then, left join the role to the shift entry
+        //  Then, left join the category to the shift entry
+        //  Then, inner join on the results of the last x number of most recent days entered with an offset of y
+        //  Then, Where the entries are RN shifts
+        //  Then, order by the staff
+
         //query the db to get all the shifts within the specified date range
         $stmtShiftEntries = $this->db->prepare('SELECT
                                         '. $this->tbl_shift_entry .'.id AS `ID`,

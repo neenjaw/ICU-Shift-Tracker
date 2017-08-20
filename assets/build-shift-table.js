@@ -34,21 +34,27 @@
  * name 3 |  -  |  -  |  S  |  S  |  S  |  -  |  -  |  -  |  O  |
  *
  */
-function buildShiftTable(staffObj, shiftHeadClasses = '', shiftCellClasses = '', locale = 'en-us') {
+function buildShiftTable(staffObj, tableClasses = '', theadClasses = '', tbodyClasses = '', dateHeadClasses = '', rowHeadClasses = '', cellClasses = '', locale = 'en-us') {
 
  /*
   * Builds a date 'td' cell -- eg: <td data-shift-date="yyyy-mm-dd" data-shift-id="1" data-shift-code="X">X</td>
   */
-  function buildShiftCell(doc, shift) {
+  function buildShiftCell(doc, shift, cellClass = '') {
     var c = doc.createElement("td");
     c.dataset.shiftDate = shift.date;
     c.dataset.shiftId = shift.id;
     c.dataset.shiftCode = shift.code;
+    c.setAttribute("class", cellClass);
 
-    var a = doc.createElement("a");
-    a.innerHTML = shift.code;
+    if (shift.code != '-') {
+      var a = doc.createElement("a");
+      a.innerHTML = shift.code;
+      a.setAttribute("href", "javascript:void(0)");
 
-    c.appendChild(a);
+      c.appendChild(a);
+    } else {
+      c.innerHTML = shift.code;
+    }
 
     return c;
   }
@@ -56,10 +62,11 @@ function buildShiftTable(staffObj, shiftHeadClasses = '', shiftCellClasses = '',
  /*
   * Builds a name 'th' cell -- eg: <th data-staff-name="Jones, Tom" data-staff-id="1">Jones, Tom</th>
   */
-  function buildNameHeadCell(doc, staff) {
+  function buildNameHeadCell(doc, staff, headClass = '') {
     var c = doc.createElement("td");
     c.dataset.staffName = staff.name;
     c.dataset.staffId = staff.id;
+    c.setAttribute("class", headClass);
 
     c.innerHTML = '<pre>'+staff.name+'</pre>';
 
@@ -70,9 +77,10 @@ function buildShiftTable(staffObj, shiftHeadClasses = '', shiftCellClasses = '',
   * Builds a month 'th' cell -- eg: <th data-shift-date="yyyy-mm-dd">Jan</th>
   * If the month is a new month from the last one, print the name, otherwise print &nsbp;
   */
-  function buildMonthHeadCell(doc, date, mString) {
+  function buildMonthHeadCell(doc, date, mString, headClass = '') {
     var c = doc.createElement("th");
     c.dataset.shiftDate = toYYYYMMDD(date);
+    c.setAttribute("class", headClass);
 
     c.innerHTML = mString;
 
@@ -97,9 +105,10 @@ function buildShiftTable(staffObj, shiftHeadClasses = '', shiftCellClasses = '',
  /*
   * Builds a date 'th' cell -- eg: <th data-shift-date="yyyy-mm-dd">dd</th>
   */
-  function buildDateHeadCell(doc, date) {
+  function buildDateHeadCell(doc, date, headClass) {
     var c = doc.createElement("th");
     c.dataset.shiftDate = toYYYYMMDD(date);
+    c.setAttribute("class", headClass);
 
     c.innerHTML = date.getUTCDate();
 
@@ -109,10 +118,11 @@ function buildShiftTable(staffObj, shiftHeadClasses = '', shiftCellClasses = '',
  /*
   * Builds an UTCempty 'th' cell -- eg: <th>&nsbp;</th>
   */
-  function buildEmptyHeadCell(doc) {
+  function buildEmptyHeadCell(doc, headClass, optionalCaption = '&nbsp;') {
     var c = doc.createElement("th");
+    c.setAttribute("class", headClass);
 
-    c.innerHTML = "&nbsp";
+    c.innerHTML = optionalCaption;
 
     return c;
   }
@@ -132,12 +142,13 @@ function buildShiftTable(staffObj, shiftHeadClasses = '', shiftCellClasses = '',
   */
   var doc = document;
   var shiftTable = doc.createElement("table");
+  shiftTable.setAttribute("class", tableClasses);
 
   var headMonthRow = doc.createElement("tr");
-  headMonthRow.appendChild(buildEmptyHeadCell(doc));
+  headMonthRow.appendChild(buildEmptyHeadCell(doc, dateHeadClasses));
 
   var headDateRow = doc.createElement("tr");
-  headDateRow.appendChild(buildEmptyHeadCell(doc));
+  headDateRow.appendChild(buildEmptyHeadCell(doc, dateHeadClasses, "Date"));
 
   var rowFragment = doc.createDocumentFragment();
   var tempRow = null;
@@ -151,10 +162,10 @@ function buildShiftTable(staffObj, shiftHeadClasses = '', shiftCellClasses = '',
   if (!staffObj.hasOwnProperty('staff')) throw 'Object not formatted properly';
 
   for (var staff in staffObj.staff) {
-      console.log(staffObj.staff[staff]);
+      //console.log(staffObj.staff[staff]);
       tempRow = doc.createElement("tr");
 
-      tempRow.appendChild(buildNameHeadCell(doc, staffObj.staff[staff]));
+      tempRow.appendChild(buildNameHeadCell(doc, staffObj.staff[staff], rowHeadClasses));
 
 
       //create each row for the table, with dynamic links as neccessary where char != '-'
@@ -172,12 +183,13 @@ function buildShiftTable(staffObj, shiftHeadClasses = '', shiftCellClasses = '',
           } else {
             monthString = '&nbsp;';
           }
+          lastDate = shiftDate;
 
-          headMonthRow.appendChild(buildMonthHeadCell(doc, shiftDate, monthString));
-          headDateRow.appendChild(buildDateHeadCell(doc, shiftDate));
+          headMonthRow.appendChild(buildMonthHeadCell(doc, shiftDate, monthString, dateHeadClasses));
+          headDateRow.appendChild(buildDateHeadCell(doc, shiftDate, dateHeadClasses));
         }
 
-        tempRow.appendChild(buildShiftCell(doc, staffObj.staff[staff].shifts[shift]));
+        tempRow.appendChild(buildShiftCell(doc, staffObj.staff[staff].shifts[shift], cellClasses));
       }
 
       //append it to the fragment
@@ -188,9 +200,18 @@ function buildShiftTable(staffObj, shiftHeadClasses = '', shiftCellClasses = '',
   //end loop
 
   //append the rows to the table dom object
-  shiftTable.appendChild(headMonthRow);
-  shiftTable.appendChild(headDateRow);
-  shiftTable.appendChild(rowFragment);
+  var thead = doc.createElement("thead");
+  thead.appendChild(headMonthRow);
+  thead.appendChild(headDateRow);
+  thead.setAttribute("class", theadClasses);
+
+  shiftTable.appendChild(thead);
+
+  var tbody = doc.createElement("tbody");
+  tbody.appendChild(rowFragment);
+  tbody.setAttribute("class", tbodyClasses);
+
+  shiftTable.appendChild(tbody);
 
   //return the completed table to caller so can be appended to dom at correct place.
   return shiftTable;

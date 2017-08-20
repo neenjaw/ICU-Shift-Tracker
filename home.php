@@ -33,17 +33,9 @@ if (!isset($_SESSION['user_session'])) {
       <div class="col-12 col-md-auto">
       	<br>
         <h2>Home</h2>
-        <h4>Showing last <?php echo (isset($_GET['num_days'])) ? $_GET['num_days'] : 20; ?> days of shifts entered</h4>
+        <h4>Showing last <span id="shift-number"></span> days of shifts entered</h4>
         <!-- GENERATED TABLE -->
-<?php
-$num_days = (isset($_GET['num_days'])) ? $_GET['num_days'] : 20;
-settype($num_days, 'integer');
-
-$day_offset = (isset($_GET['day_offset'])) ? $_GET['day_offset'] : 0;
-settype($day_offset, 'integer');
-
-$crud->printRnShiftTable($num_days, $day_offset);
-?>
+        <div id="bin" class="shift-table-div"></div>
         <!-- END GENERATED TABLE -->
       </div>
     </div>
@@ -107,32 +99,60 @@ $crud->printRnShiftTable($num_days, $day_offset);
   </ul>
 </script>
 
+<script src="assets/build-shift-table.js"></script>
+
 <script>
   var shiftTemplate = null;
 
   //When document is ready
   $(function () {
-    //Set click event listeners to call up modal after ajax query is returned
-    $('.shift-cell a').click(function(){
-      var i = $(this).attr('data-shift-entry-id'); //get the shift id
-
-      $.ajax({
-        type: 'POST',
-        url: 'ajax/ajax_shift_details.php',
-        data: 'shift_id='+i+'',
-        beforeSend: function () {
-          $('#shift-detail-text').html();
-        },
-        success: function (response) {
-          //console.log(response);
-          $('#shift-detail-text').html(shiftTemplate(JSON.parse(response))); //add the result between the div tags
-          $('#shift-detail-modal').modal('show');	//show the modal
-        }
-      });
-    });
-
+    //compile the shift template with Handlebars
     shiftTemplate = Handlebars.compile($("#shift-entry-template").html());
+
+    //get the first shift table
+    getShiftTable(20,0);
+
+    $("#shift-number").html("20");
   });
+
+  function getShiftTable(days, offset) {
+    $.ajax({
+      type: 'POST',
+      url: 'ajax/ajax_shift_table.php',
+      data: 'days='+days+'&offset='+offset+'',
+      beforeSend: function () {
+      },
+      success: function (response) {
+        //console.log(response);
+        $('#bin').html(buildShiftTable(JSON.parse(response),
+          'table table-hover table-responsive table-striped table-sm shift-table',
+          'thead-inverse',
+          '',
+          'shift-row-head shift-date',
+          'shift-row-head',
+          'shift-cell'));
+
+        //Set click event listeners to call up modal after ajax query is returned
+        $('.shift-cell a').click(function(){
+          var i = $(this).parent().attr('data-shift-id'); //get the shift id
+
+          $.ajax({
+            type: 'POST',
+            url: 'ajax/ajax_shift_details.php',
+            data: 'shift_id='+i+'',
+            beforeSend: function () {
+              $('#shift-detail-text').html();
+            },
+            success: function (response) {
+              console.log(response);
+              $('#shift-detail-text').html(shiftTemplate(JSON.parse(response))); //add the result between the div tags
+              $('#shift-detail-modal').modal('show');	//show the modal
+            }
+          });
+        });
+      }
+    });
+  }
 </script>
 
 <?php include 'includes/footer.php'; ?>
