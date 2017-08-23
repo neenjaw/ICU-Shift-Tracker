@@ -106,13 +106,15 @@ if (!isset($_SESSION['user_session'])) {
 
   //When document is ready
   $(function () {
-    //compile the shift template with Handlebars
-    shiftTemplate = Handlebars.compile($("#shift-entry-template").html());
 
     //get the first shift table
     getShiftTable(20,0);
 
     $("#shift-number").html("20");
+
+    //compile the shift template with Handlebars
+    shiftTemplate = Handlebars.compile($("#shift-entry-template").html());
+    
   });
 
   function getShiftTable(days, offset) {
