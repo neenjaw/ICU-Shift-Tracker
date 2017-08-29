@@ -136,9 +136,11 @@ function buildShiftTable(staffObj, tableClasses = '', theadClasses = '', tbodyCl
   }
 
  /*
+  * main function
   *
-  *
-  *
+  * -builds the table with an iterative nested loop.
+  * -outer loop for each row
+  * -inner loop is for each cell
   */
   var doc = document;
   var shiftTable = doc.createElement("table");
@@ -158,7 +160,6 @@ function buildShiftTable(staffObj, tableClasses = '', theadClasses = '', tbodyCl
   var lastDate = new Date("0001-01-01");
 
   //for each loop through each of the staff entry of the Object
-
   if (!staffObj.hasOwnProperty('staff')) throw 'Object not formatted properly';
 
   for (var staff in staffObj.staff) {
@@ -169,14 +170,13 @@ function buildShiftTable(staffObj, tableClasses = '', theadClasses = '', tbodyCl
 
 
       //create each row for the table, with dynamic links as neccessary where char != '-'
-          //in the first iteration, create the header rows
-      //if (!staffObj[staff].hasOwnProperty('shifts')) throw 'Object not formatted properly';
       for (var shift in staffObj.staff[staff].shifts) {
 
         var shiftId = staffObj.staff[staff].shifts[shift].id;
         var shiftDate = new Date(staffObj.staff[staff].shifts[shift].date);
         var shiftCode = staffObj.staff[staff].shifts[shift].code;
 
+        //in the first iteration, create the header rows;
         if (firstLoop) {
           if (isNewMonth(shiftDate, lastDate)) {
             monthString = shiftDate.toLocaleString(locale, { month: "short", timeZone: 'UTC' });
