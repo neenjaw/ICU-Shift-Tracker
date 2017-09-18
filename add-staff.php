@@ -27,7 +27,7 @@ if (!isset($_SESSION['user_session'])) {
     <div class="row">
       <div class="col">
         <!-- NAV include -->
-        <?php include 'includes/nav-menu.php' ?>
+<?php include 'includes/nav-menu.php' ?>
         <!-- END NAV include -->
       </div>
     </div>
@@ -172,6 +172,7 @@ if (!isset($_SESSION['user_session'])) {
             //set timeout to hide the alert in x milliseconds
             setTimeout(function(){
               $("#alert-container").collapse('hide');
+              
               setTimeout(function(){
                 $("#form-alert p").html('');
                 $('#form-alert').removeClass('alert-success');
