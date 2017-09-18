@@ -424,7 +424,9 @@ class crud
             die("No Shifts Entered");
         }
 
+        //FIXME THERE IS A PROBLEM WITH THIS SQL QUERY!! Needs to only select the unique dates where the staff category matches the submitted type
         //get a separate array of all the dates
+        //WHERE '.$this->tbl_category.'.category = "'.$staff_category.'"
         $stmtUniqueDates = $this->db->prepare('SELECT DISTINCT shift_date FROM '.$this->tbl_shift_entry.' ORDER BY shift_date DESC LIMIT '.$days_to_print.' OFFSET '.$offset_from_last_day);
         $stmtUniqueDates->execute();
 
