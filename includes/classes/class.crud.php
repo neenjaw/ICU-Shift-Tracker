@@ -9,6 +9,8 @@ class crud
     private $tbl_role;
     private $tbl_category;
     private $tbl_assignment;
+    private $v_entries_complete;
+    private $v_entries_w_staff_w_category;
 
     function __construct($DB_con)
     {
@@ -19,6 +21,9 @@ class crud
         $this->tbl_role = 'shift_tracker_tbl_staff_role';
         $this->tbl_category = 'shift_tracker_tbl_staff_category';
         $this->tbl_assignment = 'shift_tracker_tbl_assignment';
+
+        $this->v_entries_complete = 'v_shift_entries_w_staff_w_category_w_assignment_w_role';
+        $this->v_entries_w_staff_w_category = 'v_shift_entries_w_staff_w_category';
     }
 
     /*
@@ -347,47 +352,60 @@ class crud
         //  Then, order by the staff
 
         //query the db to get all the shifts within the specified date range
-        $stmtShiftEntries = $this->db->prepare('SELECT
-                                        '. $this->tbl_shift_entry .'.id AS `ID`,
-                                        CONCAT('.$this->tbl_staff.'.last_name, ", ", '.$this->tbl_staff.'.first_name) AS `Staff`,
-                                        '.$this->tbl_shift_entry.'.staff_id AS `Staff ID`,
-                                        '.$this->tbl_shift_entry.'.shift_date AS `Shift Date`,
-                                        '.$this->tbl_role.'.role AS `Role`,
-                                        '.$this->tbl_assignment.'.assignment AS `Assignment`,
-                                        '.$this->tbl_shift_entry.'.bool_doubled AS `Double`,
-                                        '.$this->tbl_shift_entry.'.bool_vented AS `Vented`,
-                                        '.$this->tbl_shift_entry.'.bool_new_admit AS `Admit`,
-                                        '.$this->tbl_shift_entry.'.bool_very_sick AS `Very Sick`,
-                                        '.$this->tbl_shift_entry.'.bool_code_pager AS `Code Pager`,
-                                        '.$this->tbl_shift_entry.'.bool_crrt AS `CRRT`,
-                                        '.$this->tbl_shift_entry.'.bool_evd AS `EVD`,
-                                        '.$this->tbl_shift_entry.'.bool_burn AS `Burn`,
-                                        '.$this->tbl_shift_entry.'.bool_day_or_night AS `Day/Night`
-                                    FROM
-                                        '.$this->tbl_shift_entry.'
-                                    LEFT JOIN
-                                        '.$this->tbl_staff.' ON '.$this->tbl_shift_entry.'.staff_id = '.$this->tbl_staff.'.id
-                                    LEFT JOIN
-                                        '.$this->tbl_assignment.' ON '.$this->tbl_shift_entry.'.assignment_id = '.$this->tbl_assignment.'.id
-                                    LEFT JOIN
-                                        '.$this->tbl_role.' ON '.$this->tbl_shift_entry.'.role_id = '.$this->tbl_role.'.id
-                                    LEFT JOIN
-                                        '.$this->tbl_category.' ON '.$this->tbl_staff.'.category = '.$this->tbl_category.'.id
-                                    INNER JOIN
-                                        (SELECT DISTINCT shift_date FROM '.$this->tbl_shift_entry.' ORDER BY shift_date DESC LIMIT '.$days_to_print.' OFFSET '.$offset_from_last_day.') AS t2 ON t2.shift_date = '.$this->tbl_shift_entry.'.shift_date
-                                    WHERE
-                                        '.$this->tbl_category.'.category = "'.$staff_category.'"
-                                    ORDER BY `Staff` ASC');
-
+        $stmtShiftEntries = $this->db->prepare("
+          SELECT
+            {$this->v_entries_complete}.id AS `ID`,
+            CONCAT(
+              {$this->v_entries_complete}.last_name,
+              \", \",
+              {$this->v_entries_complete}.first_name
+            ) AS `Staff`,
+            {$this->v_entries_complete}.category AS `Category`,
+            {$this->v_entries_complete}.staff_id AS `Staff ID`,
+            {$this->v_entries_complete}.shift_date AS `Shift Date`,
+            {$this->v_entries_complete}.role AS `Role`,
+            {$this->v_entries_complete}.assignment AS `Assignment`,
+            {$this->v_entries_complete}.bool_doubled AS `Double`,
+            {$this->v_entries_complete}.bool_vented AS `Vented`,
+            {$this->v_entries_complete}.bool_new_admit AS `Admit`,
+            {$this->v_entries_complete}.bool_very_sick AS `Very Sick`,
+            {$this->v_entries_complete}.bool_code_pager AS `Code Pager`,
+            {$this->v_entries_complete}.bool_crrt AS `CRRT`,
+            {$this->v_entries_complete}.bool_evd AS `EVD`,
+            {$this->v_entries_complete}.bool_burn AS `Burn`,
+            {$this->v_entries_complete}.bool_day_or_night AS `Day/Night`
+          FROM
+            {$this->v_entries_complete}
+          INNER JOIN
+            (
+              SELECT
+                DISTINCT shift_date
+              FROM
+                {$this->v_entries_w_staff_w_category}
+              WHERE
+                category = \"{$staff_category}\"
+              ORDER BY
+                shift_date DESC
+              LIMIT
+                {$days_to_print}
+              OFFSET
+                {$offset_from_last_day}
+            ) AS t2 ON t2.shift_date = {$this->v_entries_complete}.shift_date
+          WHERE
+            category = \"{$staff_category}\"
+          ORDER BY `Staff` ASC");
         $stmtShiftEntries->execute();
 
         //  Loop to:
         //    1. Create a list of all the staff
         //    2. Create a 3-dimensional array shift_array[Staff Name][Shift Date][Shift Data], not every cell will be populated
+        $shift_dates_array = array();
         $staff_array = array();
         $staff_shifts_array = array();
         if ($stmtShiftEntries->rowCount()>0) {
             while ($row=$stmtShiftEntries->fetch(PDO::FETCH_ASSOC)) {
+                $shift_dates_array[$row['Shift Date']] = $row['Shift Date'];
+
                 $letter_code = '-';
 
                 // C => Clinician, P => Prn Charge, O => Outreach, D => doubled, S => very sick, R => CRRT, B => Burn, A => admit, N => Non-vented, V => vented, F => undefined
@@ -423,34 +441,8 @@ class crud
         } else {
             die("No Shifts Entered");
         }
-
-        //FIXME THERE IS A PROBLEM WITH THIS SQL QUERY!! Needs to only select the unique dates where the staff category matches the submitted type
-        //IDEA It might work better to create this array during the first loop
-        //          -why? less time cost (connecting to an external database)
-        //                less operations (avoiding at least a loops)
-        //                less complicated, ergo KISS and DRY
-        
-        /* MOCK UP CODE TO BRAINSTORM
-                    declare array
-                    loop {
-                        array[date] = true
-                    }
-                    now sort array based on key
-                    result is an array with all of the unique dates
-        */
-        
-        
-        //get a separate array of all the dates
-        //WHERE '.$this->tbl_category.'.category = "'.$staff_category.'"
-        $stmtUniqueDates = $this->db->prepare('SELECT DISTINCT shift_date FROM '.$this->tbl_shift_entry.' ORDER BY shift_date DESC LIMIT '.$days_to_print.' OFFSET '.$offset_from_last_day);
-        $stmtUniqueDates->execute();
-
-        $shift_dates_array = array();
-        if ($stmtUniqueDates->rowCount()>0) {
-            while ($row=$stmtUniqueDates->fetch(PDO::FETCH_ASSOC)) {
-                array_unshift($shift_dates_array, $row['shift_date']);
-            }
-        }
+        //now arrange all of the dates in sequence
+        ksort($shift_dates_array);
 
         //make a new table object
         $obj = new TableObj();
