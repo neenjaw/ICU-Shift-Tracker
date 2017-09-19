@@ -6,36 +6,36 @@ $a_active = ' active';
 		<!-- Top nav menu, for small screens -->
 		<ul class="nav nav-tabs">
 			<li class="nav-item">
-				<?php echo makeNavLink($page_name, 'home.php', 'Home', 'nav-link');?>
+				<?= makeNavLink($page_name, 'home.php', 'Home', 'nav-link');?>
 			</li>
 			<li class="nav-item dropdown">
-				<?php echo makeNavLink($page_name, 'add-unit-shift.php,add-shift.php,mod-shift.php', 'Shifts', 'nav-link dropdown-toggle', 'data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"'); ?>
+				<?= makeNavLink($page_name, 'add-unit-shift.php,add-shift.php,mod-shift.php', 'Shifts', 'nav-link dropdown-toggle', 'data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"'); ?>
 				<div class="dropdown-menu">
-					<?php echo makeNavLink($page_name, 'add-unit-shift.php', 'Add unit', 'dropdown-item disabled'); ?>
-					<?php echo makeNavLink($page_name, 'add-shift.php', 'Add single', 'dropdown-item'); ?>
+					<?= makeNavLink($page_name, 'add-unit-shift.php', 'Add unit', 'dropdown-item'); ?>
+					<?= makeNavLink($page_name, 'add-shift.php', 'Add single', 'dropdown-item'); ?>
 					<div class="dropdown-divider"></div>
-					<?php echo makeNavLink($page_name, 'mod-shift.php', 'Modify / Delete', 'dropdown-item disabled'); ?>
+					<?= makeNavLink($page_name, 'mod-shift.php', 'Modify / Delete', 'dropdown-item disabled'); ?>
 				</div>
 			</li>
 			<li class="nav-item dropdown">
-				<?php echo makeNavLink($page_name, 'add-staff.php,mod-staff.php', 'Staff', 'nav-link dropdown-toggle', 'data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"'); ?>
+				<?= makeNavLink($page_name, 'add-staff.php,mod-staff.php', 'Staff', 'nav-link dropdown-toggle', 'data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"'); ?>
 				<div class="dropdown-menu">
-					<?php echo makeNavLink($page_name, 'add-staff.php', 'Add new', 'dropdown-item'); ?>
+					<?= makeNavLink($page_name, 'add-staff.php', 'Add new', 'dropdown-item'); ?>
 					<div class="dropdown-divider"></div>
-					<?php echo makeNavLink($page_name, 'mod-staff.php', 'Modify / Delete', 'dropdown-item disabled'); ?>
+					<?= makeNavLink($page_name, 'mod-staff.php', 'Modify / Delete', 'dropdown-item disabled'); ?>
 				</div>
 			</li>
 			<li class="nav-item dropdown">
-				<?php echo makeNavLink($page_name, 'pod-report.php,double-report.php', 'Reports', 'nav-link dropdown-toggle', 'data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"'); ?>
+				<?= makeNavLink($page_name, 'pod-report.php,double-report.php', 'Reports', 'nav-link dropdown-toggle', 'data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"'); ?>
 				<div class="dropdown-menu">
-					<?php echo makeNavLink($page_name, 'pod-report.php', 'Pod Assignment', 'dropdown-item disabled'); ?>
-					<?php echo makeNavLink($page_name, 'double-report.php', 'Doubles', 'dropdown-item disabled'); ?>
+					<?= makeNavLink($page_name, 'pod-report.php', 'Pod Assignment', 'dropdown-item disabled'); ?>
+					<?= makeNavLink($page_name, 'double-report.php', 'Doubles', 'dropdown-item disabled'); ?>
 				</div>
 			</li>
 			<li class="nav-item dropdown">
-				<?php echo makeNavLink($page_name, 'config.php', '&nbsp;', 'nav-link dropdown-toggle', 'data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"'); ?>
+				<?= makeNavLink($page_name, 'config.php', '&nbsp;', 'nav-link dropdown-toggle', 'data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"'); ?>
 				<div class="dropdown-menu">
-					<?php echo makeNavLink($page_name, 'config.php', 'Config', 'dropdown-item disabled'); ?>
+					<?= makeNavLink($page_name, 'config.php', 'Config', 'dropdown-item disabled'); ?>
 				</div>
 			</li>
 		</ul>

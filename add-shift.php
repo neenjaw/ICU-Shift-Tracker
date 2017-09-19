@@ -11,23 +11,23 @@ if (!isset($_SESSION['user_session'])) {
 
 <head>
   <!-- Header include -->
-<?php include 'includes/head.php';?>
+  <?php include 'includes/head.php';?>
   <!-- END Header include -->
 </head>
 <body>
   <!-- NAV bar include -->
-<?php include 'includes/navbar.php'; ?>
+  <?php include 'includes/navbar.php'; ?>
   <!-- END NAV bar include -->
 
   <!-- Alert include -->
-<?php include 'includes/alert-header.php' ?>
+  <?php include 'includes/alert-header.php' ?>
   <!-- END Alert include -->
 
   <div class="container">
     <div class="row">
       <div class="col-12">
         <!-- NAV include -->
-<?php include 'includes/nav-menu.php' ?>
+        <?php include 'includes/nav-menu.php' ?>
         <!-- END NAV include -->
       </div>
     </div>
@@ -60,15 +60,17 @@ if (!isset($_SESSION['user_session'])) {
                 <select class="select form-control" id="select-staff" name="staff" required>
                   <!--<option value="staff_id">Last, Name - RN</option>-->
                   <option value="" disabled selected hidden>Please Choose...</option>
-<?php
-//Build Staff Select List
-//use the CRUD object to access the database and build an option list of the categories
-$form_select_staff = $crud->getAllStaff();
-foreach ($form_select_staff as $k => $v) {?>
+                  <?php
+                    //Build Staff Select List
+                    //use the CRUD object to access the database and build an option list of the categories
+                    $form_select_staff = $crud->getAllStaff();
+                    foreach ($form_select_staff as $k => $v):
+                  ?>
                   <option value="<?php echo ($k); ?>"><?php echo ($v); ?></option>
-<?php }
-//END Build Staff Select List
-?>
+                  <?php
+                    endforeach;
+                    //END Build Staff Select List
+                  ?>
                 </select>
               </div>
 
@@ -124,7 +126,7 @@ foreach ($form_select_role as $k => $v) {?>
 //use the CRUD object to access the database and build an option list of the categories
 $form_select_assignment = $crud->getAllAssignments();
 foreach ($form_select_assignment as $k => $v) {?>
-                  <option value="<?php echo ($k); ?>"><?php echo ($v); ?></option>
+                  <option value="<?= $k ?>"><?= $v ?></option>
 <?php }
 //END Build Assignment Select List
 ?>

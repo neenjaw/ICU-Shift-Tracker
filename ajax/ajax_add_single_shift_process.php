@@ -25,7 +25,7 @@ try {
         if ($crud->createShiftEntry($shift_date, $staff_id, $role, $assignment, $d_or_n, $ck_doubled, $ck_v, $ck_admit, $ck_vsick, $ck_codepgr, $ck_crrt, $ck_evd, $ck_burn)) {
             echo "ok";
         } else {
-            echo "Could not add new shift entry, check details."; // wrong details
+            throw new Exception("Could not add new shift entry, check details."); // wrong details
         }
 
     }
