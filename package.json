@@ -1,0 +1,29 @@
+{
+  "name": "icu-shift-tracker",
+  "version": "1.0.0",
+  "description": "Shift Tracking tool for FMC's ICU",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/neenjaw/icu-shift-tracker.git"
+  },
+  "keywords": [
+    "shift-tracking",
+    "jquery",
+    "bootstrap",
+    "4",
+    "php"
+  ],
+  "author": "Tim Austin",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/neenjaw/icu-shift-tracker/issues"
+  },
+  "homepage": "https://github.com/neenjaw/icu-shift-tracker#readme",
+  "dependencies": {
+    "popper.js": "^1.12.5"
+  }
+}

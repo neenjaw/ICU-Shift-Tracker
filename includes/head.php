@@ -11,11 +11,6 @@
   <!-- Font Awesome -->
   <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 
-  <!-- less.js
-  <link rel="stylesheet/less" type="text/css" href="assets/styles.less" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/less.js/2.7.2/less.min.js" type="text/javascript"></script>
-  -->
-
   <!-- Select 2 -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
 
