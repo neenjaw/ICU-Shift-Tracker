@@ -117,3 +117,19 @@ input.parsley-error:focus{
   padding-right: 0 !important;
   overflow-y: scroll;
 }
+
+/*
+ *
+ */
+
+ .form-section {
+   padding-left: 15px;
+   border-left: 2px solid #FF851B;
+   display: none;
+ }
+ .form-section.current {
+   display: inherit;
+ }
+ .btn-outline-secondary, .btn-primary {
+   margin: 10px 0px 10px 0px;
+ }

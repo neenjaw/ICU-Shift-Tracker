@@ -31,15 +31,15 @@ if (!isset($_SESSION['user_session'])) {
         <!-- END NAV include -->
       </div>
     </div>
-    <div class="row justify-content-md-center">
-      <div class="col-12 col-md-auto">
+    <div class="row justify-content-center">
+      <div class="col-12">
         <br>
         <!-- Main Content -->
 
         <div class="container">
           <form method="post" id="shift-form" data-parsley-validate>
             <div class="row justify-content-center">
-              <div class="col-sm-8">
+              <div class="col-8">
 
                 <h2>Add a new Shift</h2>
                 <hr />
@@ -138,14 +138,54 @@ foreach ($form_select_assignment as $k => $v) {?>
 
               <div class="col-sm-8 form-group collapse show" id="check-box-group">
                 <label class="control-label">Check all that apply</label>
-                <div class="checkbox"><label class="custom-control custom-checkbox"><input name="ck-nonvent" class="custom-control-input" type="checkbox" value="NV" data-parsley-excluded><span class="custom-control-indicator"></span><span class="custom-control-description">Non-vented?</span></label></div>
-                <div class="checkbox"><label class="custom-control custom-checkbox"><input name="ck-doubled" class="custom-control-input" type="checkbox" value="D" data-parsley-excluded><span class="custom-control-indicator"></span><span class="custom-control-description">Doubled?</span></label></div>
-                <div class="checkbox"><label class="custom-control custom-checkbox"><input name="ck-admit" class="custom-control-input" type="checkbox" value="A" data-parsley-excluded><span class="custom-control-indicator"></span><span class="custom-control-description">Admitted?</span></label></div>
-                <div class="checkbox"><label class="custom-control custom-checkbox"><input name="ck-codepg" class="custom-control-input" type="checkbox" value="P" data-parsley-excluded><span class="custom-control-indicator"></span><span class="custom-control-description">Code pager?</span></label></div>
-                <div class="checkbox"><label class="custom-control custom-checkbox"><input name="ck-vsick" class="custom-control-input" type="checkbox" value="VS" data-parsley-excluded><span class="custom-control-indicator"></span><span class="custom-control-description">Very sick?</span></label></div>
-                <div class="checkbox"><label class="custom-control custom-checkbox"><input name="ck-crrt" class="custom-control-input" type="checkbox" value="C" data-parsley-excluded><span class="custom-control-indicator"></span><span class="custom-control-description">CRRT?</span></label></div>
-                <div class="checkbox"><label class="custom-control custom-checkbox"><input name="ck-evd" class="custom-control-input" type="checkbox" value="E" data-parsley-excluded><span class="custom-control-indicator"></span><span class="custom-control-description">EVD?</span></label></div>
-                <div class="checkbox"><label class="custom-control custom-checkbox"><input name="ck-burn" class="custom-control-input" type="checkbox" value="B" data-parsley-excluded><span class="custom-control-indicator"></span><span class="custom-control-description">Burn?</span></label></div>
+                <div class="checkbox">
+                  <label class="custom-control custom-checkbox">
+                    <input name="ck-nonvent" class="custom-control-input" type="checkbox" value="NV" data-parsley-excluded>
+                    <span class="custom-control-indicator"></span><span class="custom-control-description">Non-vented?</span>
+                  </label>
+                </div>
+                <div class="checkbox">
+                  <label class="custom-control custom-checkbox">
+                    <input name="ck-doubled" class="custom-control-input" type="checkbox" value="D" data-parsley-excluded>
+                    <span class="custom-control-indicator"></span><span class="custom-control-description">Doubled?</span>
+                  </label>
+                </div>
+                <div class="checkbox">
+                  <label class="custom-control custom-checkbox">
+                    <input name="ck-admit" class="custom-control-input" type="checkbox" value="A" data-parsley-excluded>
+                    <span class="custom-control-indicator"></span><span class="custom-control-description">Admitted?</span>
+                  </label>
+                </div>
+                <div class="checkbox">
+                  <label class="custom-control custom-checkbox">
+                    <input name="ck-codepg" class="custom-control-input" type="checkbox" value="P" data-parsley-excluded>
+                    <span class="custom-control-indicator"></span><span class="custom-control-description">Code pager?</span>
+                  </label>
+                </div>
+                <div class="checkbox">
+                  <label class="custom-control custom-checkbox">
+                    <input name="ck-vsick" class="custom-control-input" type="checkbox" value="VS" data-parsley-excluded>
+                    <span class="custom-control-indicator"></span><span class="custom-control-description">Very sick?</span>
+                  </label>
+                </div>
+                <div class="checkbox">
+                  <label class="custom-control custom-checkbox">
+                    <input name="ck-crrt" class="custom-control-input" type="checkbox" value="C" data-parsley-excluded>
+                    <span class="custom-control-indicator"></span><span class="custom-control-description">CRRT?</span>
+                  </label>
+                </div>
+                <div class="checkbox">
+                  <label class="custom-control custom-checkbox">
+                    <input name="ck-evd" class="custom-control-input" type="checkbox" value="E" data-parsley-excluded>
+                    <span class="custom-control-indicator"></span><span class="custom-control-description">EVD?</span>
+                  </label>
+                </div>
+                <div class="checkbox">
+                  <label class="custom-control custom-checkbox">
+                    <input name="ck-burn" class="custom-control-input" type="checkbox" value="B" data-parsley-excluded>
+                    <span class="custom-control-indicator"></span><span class="custom-control-description">Burn?</span>
+                  </label>
+                </div>
               </div>
 
             </div>

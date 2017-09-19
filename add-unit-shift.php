@@ -31,40 +31,135 @@ if (!isset($_SESSION['user_session'])) {
         <!-- END NAV include -->
       </div>
     </div>
-    <div class="row justify-content-md-center">
-      <div class="col-12 col-md-auto">
-        <br>
+    <div class="row justify-content-center">
+      <div class="col-12">
+
         <!-- Main Content -->
 
         <div class="container">
-          <form method="post" id="shift-form" data-parsley-validate>
-            <div class="row justify-content-center">
-              <div class="col-sm-8">
-                <h2>Add Shifts for the Unit</h2>
-                <hr />
-              </div>
+          <div class="row justify-content-center">
+            <div class="col-8">
+              <h2>Add Shifts for the Unit</h2>
+              <hr />
             </div>
-            <div class="row justify-content-center">
+          </div>
+          <div class="row justify-content-center">
 
-              <div class="col-sm-8 form-control-feedback hidden" id="shift-form-feedback"></div>
+            <!-- Alert Feedback -->
+            <div id="shift-form-feedback" class="col-8 form-control-feedback hidden">
+            </div>
+
+          </div>
+          <div class="row justify-content-center">
+            <div id="msf-container" class="col-sm-8">
+              <!-- Multi-step form goes here -->
+
+              <form class="demo-form">
+                <div class="form-section">
+                  <!-- DATE SELECT -->
+                  <div class="form-group">
+                    <label class="control-label requiredField" for="date">Date<span class="asteriskField">*</span></label>
+                    <div class="input-group">
+                      <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
+                      <input class="form-control" id="date" name="date" placeholder="YYYY/MM/DD" value="<?php echo date('Y-m-d'); ?>" type="<?php echo (($detect->isMobile()) ? 'date' : 'text'); ?>" required>
+                    </div>
+                  </div>
+
+                  <!-- DAY / NIGHT SELECT -->
+                  <div class="btn-group requiredField" data-toggle="buttons">
+                    <label class="btn btn-outline-primary active"><input type="radio" name="d-or-n" id="radio-d-or-n-d" value="D" autocomplete="off" checked required>Day</label>
+                    <label class="btn btn-outline-primary"><input type="radio" name="d-or-n" id="radio-d-or-n-n" value="N" autocomplete="off">Night</label>
+                  </div>
+                </div>
+
+                <!-- TODO start adding the rest of the form elements
+                TODO add in the bootstrap handling
+                TODO add in the ajax to submit them all -->
+                <div class="form-section">
+                <!-- Select Clinician/Charge -->
+                <!-- Assign Pods -->
+                </div>
+                </div>
+
+                <div class="form-section">
+                <!-- Select Bedside Nurses for A -->
+                </div>
+                </div>
+
+                <div class="form-section">
+                <!-- Select Bedside Nurses for B -->
+                </div>
+                </div>
+
+                <div class="form-section">
+                <!-- Select Bedside Nurses for C -->
+                </div>
+                </div>
+
+                <div class="form-section">
+                <!-- Who had non-vent -->
+                </div>
+                </div>
+
+                <div class="form-section">
+                <!-- Who had double -->
+                </div>
+
+                <div class="form-section">
+                <!-- Who admitted -->
+                </div>
+
+                <div class="form-section">
+                <!-- Who had very sick -->
+                </div>
+
+                <div class="form-section">
+                <!-- Who had code pager -->
+                </div>
+
+                <div class="form-section">
+                <!-- Who had crrt -->
+                </div>
+
+                <div class="form-section">
+                <!-- Who had evd -->
+                </div>
+
+                <div class="form-section">
+                <!-- Who who had burn -->
+                </div>
+
+                <div class="form-section">
+                <!-- Select NA's -->
+                <!-- Assign Pods -->
+                </div>
+
+                <div class="form-section">
+                <!-- Select UC's -->
+                <!-- Assign Pods -->
+                </div>
+
+                <div class="form-navigation clearfix">
+                  <button type="button" class="previous btn btn-secondary float-left">&lt; Previous</button>
+                  <button type="button" class="next btn btn-secondary float-right">Next &gt;</button>
+                  <input type="submit" class="btn btn-primary float-right">
+                </div>
+              </form>
 
             </div>
-            <div class="row justify-content-center">
-
-              <div class="col-sm-8" id="msf">
-              </div>
-
-            </div>
-            <div class="row justify-content-center">
-
-              <div class="col-sm-8 form-group">
-                <div><button class="btn btn-primary btn-block btn-lg" id="shift-submit" name="btn-submit-new-shift" type="submit" value="validate">Submit</button></div>
-              </div>
-
-            </div>
-          </form>
+          </div>
         </div>
 
+        <div class="row justify-content-center">
+          <div class="col-8">
+            <!-- Progess bar -->
+            <div class="progress">
+              <div id="step-progress" class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+
+            <p id="step-x-of-y" class="text-center"></p>
+          </div>
+        </div>
 
         <!-- END Main Content -->
       </div>
@@ -85,87 +180,74 @@ if (!isset($_SESSION['user_session'])) {
 
   <!-- Aux Scripts -->
   <script>
+    //TODO Bind to the window, so that if user tries to back out while form is dirty, then prompts to ask
     $(function() {
+
       <?php if (!$detect->isMobile()): ?>
       $('#date').datepicker({
           format: "yyyy-mm-dd",
           orientation: "bottom auto",
           autoclose: true
       });
-      <? endif; ?>
+      <?php endif; ?>
 
       //Activate the Select2 script for the staff select to search easily
       $("#select-staff").select2();
 
       //bind the parsley.js event
-      $('#shift-form')
-      .parsley({errorClass: "form-control-danger", successClass: "form-control-success"})
-      .on('field:validated', function (e) {
-        //customize Parsely.js for Bootstrap 4
-        if (e.validationResult.constructor!==Array) {
-          this.$element.closest('.form-group').removeClass('has-danger').addClass('has-success');
-        } else {
-          this.$element.closest('.form-group').removeClass('has-success').addClass('has-danger');
-        }
-      })
-      .on('form:submit', function () {
-        //IDEA When form submitted, open modal, then...
-        //show progressbar
-        //loop -> submit each person's shift individually
-        //when
+      // $('#unit-shift-form')
+      // .parsley({errorClass: "form-control-danger", successClass: "form-control-success"})
+      // .on('field:validated', function (e) {
+      //   //customize Parsely.js for Bootstrap 4
+      //   if (e.validationResult.constructor!==Array) {
+      //     this.$element.closest('.form-group').removeClass('has-danger').addClass('has-success');
+      //   } else {
+      //     this.$element.closest('.form-group').removeClass('has-success').addClass('has-danger');
+      //   }
+      // })
+      var $sections = $('.form-section');
 
-        var data = $('#unit-shift-form').serialize();
+      function navigateTo(index) {
+        // Mark the current section with the class 'current'
+        $sections
+        .removeClass('current')
+        .eq(index)
+        .addClass('current');
+        // Show only the navigation buttons that make sense for the current section:
+        $('.form-navigation .previous').toggle(index > 0);
+        var atTheEnd = index >= $sections.length - 1;
+        $('.form-navigation .next').toggle(!atTheEnd);
+        $('.form-navigation [type=submit]').toggle(atTheEnd);
 
-        /*$.ajax({
-          type: 'POST',
-          url: 'ajax/ajax_add_single_shift_process.php',
-          data: data,
-          beforeSend: function () {
-            $('#shift-submit').html('<span class="fa fa-exchange"></span> &nbsp; Attempting ...');
-          },
-          success: function (response) {
-            console.log(response);
+        var progress = (index + 1)/$sections.length*100;
+        $('#step-progress').attr('aria-valuenow', progress).css("width",(progress+"%"));
+        $('#step-x-of-y').html(`Step ${index + 1} of ${$sections.length}`);
+      }
 
-            if (response == "ok") {
-              //clear the feedback message
-              $('#shift-form-feedback').html('');
+      function curIndex() {
+        // Return the current index by looking at which section has the class 'current'
+        return $sections.index($sections.filter('.current'));
+      }
 
-              //clear the form group classes
-              $('.form-group').each(function(){
-                $(this).removeClass('has-danger').removeClass('has-success');
-              });
-
-              //clear the form control classes
-              $('.form-control-danger').each(function(){ $(this).removeClass('form-control-danger'); });
-              $('.form-control-success').each(function(){ $(this).removeClass('form-control-success'); });
-
-              //display the alert to success
-              $('#form-alert').addClass('alert-success');
-              $('#form-alert p').html('<h4>Shift successfully added!</h4>');
-              $('#alert-container').collapse('show');
-              $("#alert-container").focus();
-
-              //set timeout to hide the alert in x milliseconds
-              setTimeout(function(){
-                $("#alert-container").collapse('hide');
-                setTimeout(function(){
-                  $("#form-alert p").html('');
-                  $('#form-alert').removeClass('alert-success');
-                }, 1000);
-              }, 5000);
-
-              //reset the form, return focus first input of first step
-
-            } else {
-              //give feedback if there is a problem with the form
-            }
-
-            $('#shift-submit').html('Submit');
-          }
-        });*/
-
-        return false;
+      // Previous button is easy, just go back
+      $('.form-navigation .previous').click(function() {
+        navigateTo(curIndex() - 1);
       });
+
+      // Next button goes forward iff current block validates
+      $('.form-navigation .next').click(function() {
+        $('.demo-form').parsley().whenValidate({
+          group: 'block-' + curIndex()
+        }).done(function() {
+          navigateTo(curIndex() + 1);
+        });
+      });
+
+      // Prepare sections by setting the `data-parsley-group` attribute to 'block-0', 'block-1', etc.
+      $sections.each(function(index, section) {
+        $(section).find(':input').attr('data-parsley-group', 'block-' + index);
+      });
+      navigateTo(0); // Start at the beginning
 
     });
   </script>
