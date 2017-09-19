@@ -117,10 +117,10 @@ if (!isset($_SESSION['user_session'])) {
 
   <!-- Aux Scripts -->
   <script>
+
   /*
   * Bind parsley.js event listeners here.
   */
-
   $(function () {
     $('#add-staff-form')
     .parsley({errorClass: "form-control-danger", successClass: "form-control-success"})
