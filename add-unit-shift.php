@@ -61,7 +61,7 @@ if (!isset($_SESSION['user_session'])) {
                     <label class="control-label requiredField" for="date">Date<span class="asteriskField">*</span></label>
                     <div class="input-group">
                       <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
-                      <input class="form-control" id="date" name="date" placeholder="YYYY/MM/DD" value="<?php echo date('Y-m-d'); ?>" type="<?php echo (($detect->isMobile()) ? 'date' : 'text'); ?>" required>
+                      <input class="form-control" id="date" name="date" placeholder="YYYY/MM/DD" value="<?= date('Y-m-d') ?>" type="<?= (($detect->isMobile()) ? 'date' : 'text'); ?>" required>
                     </div>
                   </div>
 
@@ -72,77 +72,184 @@ if (!isset($_SESSION['user_session'])) {
                   </div>
                 </div>
 
-                <!-- TODO start adding the rest of the form elements
-                TODO add in the bootstrap handling
-                TODO add in the ajax to submit them all -->
-                <div class="form-section">
+                <!-- TODO start adding the rest of the form elements -->
+                <!-- TODO add in the bootstrap handling -->
+                <!-- TODO add in the ajax to submit them all -->
+
+                <!-- FIXME NEED TO CHANGE FROM SELECT TO TO CHOSEN - https://harvesthq.github.io/chosen/ -->
+
                 <!-- Select Clinician/Charge -->
-                <!-- Assign Pods -->
-                </div>
+                <div class="form-section">
+                  <!-- RN Clinician SELECT -->
+                  <div class="form-group">
+                    <label class="control-label requiredField" for="select">
+                      Who is the Clinician for the shift?<span class="asteriskField">*</span>
+                    </label>
+                    <select class="select form-control" id="select-clinician" name="staff" style="width: 100%" required>
+                      <option value="" disabled selected hidden>Please Choose...</option>
+                      <?php
+                        //Build Staff Select List
+                        //use the CRUD object to access the database and build an option list of the categories
+                        $form_select_staff = $crud->getRnStaff();
+                        foreach ($form_select_staff as $k => $v):
+                      ?>
+                      <option value="<?= $k ?>"><?= $v ?></option>
+                      <?php
+                        endforeach;
+                        //END Build Staff Select List
+                      ?>
+                    </select>
+                  </div>
+
+                  <!-- TODO add logic which hides the charge option select if you are doing a night shift -->
+                  <!-- TODO add logic which hides the option of choosing the same person as the clinician -->
+
+                  <!-- RN CHARGE SELECT -->
+                  <div class="form-group">
+                    <label class="control-label requiredField" for="select">
+                      Who is the Charge for the shift?<span class="asteriskField">*</span>
+                    </label>
+                    <select class="select form-control" id="select-charge" name="staff" style="width: 100%" required>
+                      <option value="" disabled selected hidden>Please Choose...</option>
+                      <?php
+                        //Build Staff Select List
+                        //use the CRUD object to access the database and build an option list of the categories
+                        $form_select_staff = $crud->getRnStaff();
+                        foreach ($form_select_staff as $k => $v):
+                      ?>
+                      <option value="<?= $k ?>"><?= $v ?></option>
+                      <?php
+                        endforeach;
+                        //END Build Staff Select List
+                      ?>
+                    </select>
+                  </div>
+
+                  <!-- TODO assign pods to the clinician/charge -->
+
                 </div>
 
                 <div class="form-section">
                 <!-- Select Bedside Nurses for A -->
-                </div>
+                <!-- TODO add logic so that clinician and charge cant be selected -->
+
+                  <div class="form-group">
+                    <label class="control-label requiredField" for="select">
+                      Select the nurses for Pod A<span class="asteriskField">*</span>
+                    </label>
+                    <select class="select form-control" id="select-poda" name="staff" style="width: 100%" required>
+                      <option value="" disabled selected hidden>Please Choose...</option>
+                      <?php
+                        //Build Staff Select List
+                        //use the CRUD object to access the database and build an option list of the categories
+                        $form_select_staff = $crud->getRnStaff();
+                        foreach ($form_select_staff as $k => $v):
+                      ?>
+                      <option value="<?= $k ?>"><?= $v ?></option>
+                      <?php
+                        endforeach;
+                        //END Build Staff Select List
+                      ?>
+                    </select>
+                  </div>
                 </div>
 
                 <div class="form-section">
                 <!-- Select Bedside Nurses for B -->
-                </div>
+                <!-- TODO add logic so that clinician and charge, pod a nurses cant be selected -->
+
+                  <div class="form-group">
+                    <label class="control-label requiredField" for="select">
+                      Select the nurses for Pod B<span class="asteriskField">*</span>
+                    </label>
+                    <select class="select form-control" id="select-podb" name="staff" style="width: 100%" required>
+                      <option value="" disabled selected hidden>Please Choose...</option>
+                      <?php
+                        //Build Staff Select List
+                        //use the CRUD object to access the database and build an option list of the categories
+                        $form_select_staff = $crud->getRnStaff();
+                        foreach ($form_select_staff as $k => $v):
+                      ?>
+                      <option value="<?= $k ?>"><?= $v ?></option>
+                      <?php
+                        endforeach;
+                        //END Build Staff Select List
+                      ?>
+                    </select>
+                  </div>
                 </div>
 
                 <div class="form-section">
                 <!-- Select Bedside Nurses for C -->
-                </div>
+                <!-- TODO add logic so that clinician and charge, pod a/b nurses cant be selected -->
+
+                  <div class="form-group">
+                    <label class="control-label requiredField" for="select">
+                      Select the nurses for Pod B<span class="asteriskField">*</span>
+                    </label>
+                    <select class="select form-control" id="select-podc" name="staff" style="width: 100%" required>
+                      <option value="" disabled selected hidden>Please Choose...</option>
+                      <?php
+                        //Build Staff Select List
+                        //use the CRUD object to access the database and build an option list of the categories
+                        $form_select_staff = $crud->getRnStaff();
+                        foreach ($form_select_staff as $k => $v):
+                      ?>
+                      <option value="<?= $k ?>"><?= $v ?></option>
+                      <?php
+                        endforeach;
+                        //END Build Staff Select List
+                      ?>
+                    </select>
+                  </div>
                 </div>
 
-                <div class="form-section">
+                <!-- <div class="form-section"> -->
                 <!-- Who had non-vent -->
-                </div>
-                </div>
+                <!-- </div> -->
 
-                <div class="form-section">
+                <!-- <div class="form-section"> -->
                 <!-- Who had double -->
-                </div>
+                <!-- </div> -->
 
-                <div class="form-section">
+                <!-- <div class="form-section"> -->
                 <!-- Who admitted -->
-                </div>
+                <!-- </div> -->
 
-                <div class="form-section">
+                <!-- <div class="form-section"> -->
                 <!-- Who had very sick -->
-                </div>
+                <!-- </div> -->
 
-                <div class="form-section">
+                <!-- <div class="form-section"> -->
                 <!-- Who had code pager -->
-                </div>
+                <!-- </div> -->
 
-                <div class="form-section">
+                <!-- <div class="form-section"> -->
                 <!-- Who had crrt -->
-                </div>
+                <!-- </div> -->
 
-                <div class="form-section">
+                <!-- <div class="form-section"> -->
                 <!-- Who had evd -->
-                </div>
+                <!-- </div> -->
 
-                <div class="form-section">
+                <!-- <div class="form-section"> -->
                 <!-- Who who had burn -->
-                </div>
+                <!-- </div> -->
 
-                <div class="form-section">
+                <!-- <div class="form-section"> -->
                 <!-- Select NA's -->
                 <!-- Assign Pods -->
-                </div>
+                <!-- </div> -->
 
-                <div class="form-section">
+                <!-- <div class="form-section"> -->
                 <!-- Select UC's -->
                 <!-- Assign Pods -->
-                </div>
+                <!-- </div> -->
 
                 <div class="form-navigation clearfix">
                   <button type="button" class="previous btn btn-secondary float-left">&lt; Previous</button>
                   <button type="button" class="next btn btn-secondary float-right">Next &gt;</button>
-                  <input type="submit" class="btn btn-primary float-right">
+                  <button type="submit" class="btn btn-primary float-right">Submit</button>
                 </div>
               </form>
 
@@ -192,7 +299,11 @@ if (!isset($_SESSION['user_session'])) {
       <?php endif; ?>
 
       //Activate the Select2 script for the staff select to search easily
-      $("#select-staff").select2();
+      $("#select-clinician").select2({theme: "bootstrap"});
+      $("#select-charge").select2({theme: "bootstrap"});
+      $("#select-poda").select2({theme: "bootstrap"});
+      $("#select-podb").select2({theme: "bootstrap"});
+      $("#select-podc").select2({theme: "bootstrap"});
 
       //bind the parsley.js event
       // $('#unit-shift-form')

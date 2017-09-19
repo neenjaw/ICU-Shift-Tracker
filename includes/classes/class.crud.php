@@ -173,20 +173,53 @@ class crud
      * STAFF, ROLE, CATEGORY, ASSIGNMENT SHIFT ENTRY
      */
 
+    public function getStaff($category = null) {
+          $staff_array = array();
+
+          if ($category == null) {
+            $where_clause = "";
+          } else {
+            $where_clause = " WHERE {$this->tbl_category}.category = \"{$category}\"";
+          }
+
+          $stmt = $this->db->prepare("SELECT
+                                        {$this->tbl_staff}.id AS `id`,
+                                        CONCAT(
+                                          {$this->tbl_staff}.last_name,
+                                          \", \",
+                                          {$this->tbl_staff}.first_name,
+                                          \" (\",
+                                          {$this->tbl_category}.category,
+                                          \")\"
+                                        ) AS `name`
+                                      FROM
+                                        {$this->tbl_staff}
+                                      LEFT JOIN
+                                        {$this->tbl_category}
+                                      ON
+                                        {$this->tbl_staff}.category = {$this->tbl_category}.id
+                                      {$where_clause}
+                                      ORDER BY
+                                        `name`");
+          $stmt->execute();
+
+          if ($stmt->rowCount()>0) {
+              while ( $editRow = $stmt->fetch(PDO::FETCH_ASSOC) ) {
+                  $staff_array[$editRow['id']] = $editRow['name'];
+              }
+          }
+
+          return $staff_array;
+    }
+
     public function getAllStaff()
     {
-        $staff_array = array();
+      return $this->getStaff();
+    }
 
-        $stmt = $this->db->prepare('SELECT '.$this->tbl_staff.'.id AS `id`, CONCAT( '.$this->tbl_staff.'.last_name, ", ", '.$this->tbl_staff.'.first_name, " (", '.$this->tbl_category.'.category, ")" ) AS `name` FROM '.$this->tbl_staff.' LEFT JOIN '.$this->tbl_category.' ON '.$this->tbl_staff.'.category = '.$this->tbl_category.'.id ORDER BY `name`');
-        $stmt->execute();
-
-        if ($stmt->rowCount()>0) {
-            while ( $editRow = $stmt->fetch(PDO::FETCH_ASSOC) ) {
-                $staff_array[$editRow['id']] = $editRow['name'];
-            }
-        }
-
-        return $staff_array;
+    public function getRnStaff()
+    {
+      return $this->getStaff("RN");
     }
 
     public function getStaffIdByName($f_name, $l_name)
