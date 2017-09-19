@@ -174,19 +174,19 @@ foreach ($form_select_assignment as $k => $v) {?>
   <!-- Spacer for the bottom -->
 
   <!-- Prefooter Include -->
-<?php include 'includes/script-include.php'; ?>
+  <?php include 'includes/script-include.php'; ?>
   <!-- END Prefooter Include -->
 
   <!-- Aux Scripts -->
   <script>
     $(function() {
-<?php if (!$detect->isMobile()) { ?>
+      <?php if (!$detect->isMobile()): ?>
       $('#date').datepicker({
           format: "yyyy-mm-dd",
           orientation: "bottom auto",
           autoclose: true
       });
-<?php } ?>
+      <?php endif; ?>
       //Activate the Select2 script for the staff select to search easily
       $("#select-staff").select2();
 

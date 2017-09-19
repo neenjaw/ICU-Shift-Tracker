@@ -169,15 +169,6 @@ if (isset($_SESSION['user_session'])) {
 </div>
 <!--Login, Signup, Forgot Password Modal -->
 
-
-
-
-
-
-
-
-
-
 <?php  include 'includes/script-include.php'; ?>
 
 <!-- onLoad, call login modal if not logged in. -->

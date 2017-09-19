@@ -112,7 +112,7 @@ if (!isset($_SESSION['user_session'])) {
   <!-- Spacer for the bottom -->
 
   <!-- Prefooter Include -->
-<?php include 'includes/script-include.php'; ?>
+  <?php include 'includes/script-include.php'; ?>
   <!-- END Prefooter Include -->
 
   <!-- Aux Scripts -->
@@ -172,7 +172,7 @@ if (!isset($_SESSION['user_session'])) {
             //set timeout to hide the alert in x milliseconds
             setTimeout(function(){
               $("#alert-container").collapse('hide');
-              
+
               setTimeout(function(){
                 $("#form-alert p").html('');
                 $('#form-alert').removeClass('alert-success');
@@ -205,7 +205,7 @@ if (!isset($_SESSION['user_session'])) {
   <!-- END Aux Scripts -->
 
   <!-- Footer Include -->
-<?php include 'includes/footer.php'; ?>
+  <?php include 'includes/footer.php'; ?>
   <!-- END Footer Include -->
 
 </body>

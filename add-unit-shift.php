@@ -40,10 +40,8 @@ if (!isset($_SESSION['user_session'])) {
           <form method="post" id="shift-form" data-parsley-validate>
             <div class="row justify-content-center">
               <div class="col-sm-8">
-
                 <h2>Add Shifts for the Unit</h2>
                 <hr />
-
               </div>
             </div>
             <div class="row justify-content-center">
@@ -52,6 +50,9 @@ if (!isset($_SESSION['user_session'])) {
 
             </div>
             <div class="row justify-content-center">
+
+              <div class="col-sm-8" id="msf">
+              </div>
 
             </div>
             <div class="row justify-content-center">
@@ -92,22 +93,9 @@ if (!isset($_SESSION['user_session'])) {
           autoclose: true
       });
       <? endif; ?>
+
       //Activate the Select2 script for the staff select to search easily
       $("#select-staff").select2();
-
-      //Bind the Role Select Change event to selectively display the checkboxes
-      $( "#select-role" ).change(function() {
-
-        var selectVal = $(this).val();
-        switch(selectVal) {
-          case "5": //If the bedside role is selected, then show the checkboxes
-            $("#check-box-group").collapse('show');
-            break;
-          default: //else hide them
-            $("#check-box-group").collapse('hide');
-        }
-
-      });
 
       //bind the parsley.js event
       $('#shift-form')
@@ -124,11 +112,11 @@ if (!isset($_SESSION['user_session'])) {
         //IDEA When form submitted, open modal, then...
         //show progressbar
         //loop -> submit each person's shift individually
-        //when 
+        //when
 
-        var data = $('#shift-form').serialize()  + '&btn-submit-new-shift=1';
+        var data = $('#unit-shift-form').serialize();
 
-        $.ajax({
+        /*$.ajax({
           type: 'POST',
           url: 'ajax/ajax_add_single_shift_process.php',
           data: data,
@@ -174,7 +162,7 @@ if (!isset($_SESSION['user_session'])) {
 
             $('#shift-submit').html('Submit');
           }
-        });
+        });*/
 
         return false;
       });
