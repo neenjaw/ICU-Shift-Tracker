@@ -25,7 +25,7 @@ if (!isset($_SESSION['user_session'])) {
 
   <div class="container">
     <div class="row">
-      <div class="col-12">
+      <div class="col-12 m-2">
         <!-- NAV include -->
         <?php include 'includes/nav-menu.php' ?>
         <!-- END NAV include -->
@@ -38,7 +38,7 @@ if (!isset($_SESSION['user_session'])) {
 
         <div class="container">
           <div class="row justify-content-center">
-            <div class="col-8">
+            <div class="col-8 m-1">
               <h2>Add Shifts for the Unit</h2>
               <hr />
             </div>
@@ -51,25 +51,26 @@ if (!isset($_SESSION['user_session'])) {
 
           </div>
           <div class="row justify-content-center">
-            <div id="msf-container" class="col-sm-8">
+            <div id="msf-container" class="col-8">
               <!-- Multi-step form goes here -->
 
-              <form class="demo-form">
-                <div class="form-section">
+              <form class="unit-shift-form">
+                <div class="form-section form-inline m-1">
                   <!-- DATE SELECT -->
                   <div class="form-group">
-                    <label class="control-label requiredField" for="date">Date<span class="asteriskField">*</span></label>
+                    <label class="control-label requiredField mr-1" for="date">Date: </label>
                     <div class="input-group">
                       <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
                       <input class="form-control" id="date" name="date" placeholder="YYYY/MM/DD" value="<?= date('Y-m-d') ?>" type="<?= (($detect->isMobile()) ? 'date' : 'text'); ?>" required>
                     </div>
+
+                    <!-- DAY / NIGHT SELECT -->
+                    <div class="btn-group requiredField ml-1" data-toggle="buttons">
+                      <label class="btn btn-outline-primary active"><input type="radio" name="d-or-n" id="radio-d-or-n-d" value="D" autocomplete="off" checked required>Day</label>
+                      <label class="btn btn-outline-primary"><input type="radio" name="d-or-n" id="radio-d-or-n-n" value="N" autocomplete="off">Night</label>
+                    </div>
                   </div>
 
-                  <!-- DAY / NIGHT SELECT -->
-                  <div class="btn-group requiredField" data-toggle="buttons">
-                    <label class="btn btn-outline-primary active"><input type="radio" name="d-or-n" id="radio-d-or-n-d" value="D" autocomplete="off" checked required>Day</label>
-                    <label class="btn btn-outline-primary"><input type="radio" name="d-or-n" id="radio-d-or-n-n" value="N" autocomplete="off">Night</label>
-                  </div>
                 </div>
 
                 <!-- TODO start adding the rest of the form elements -->
@@ -79,7 +80,7 @@ if (!isset($_SESSION['user_session'])) {
                 <!-- FIXME NEED TO CHANGE FROM SELECT TO TO CHOSEN - https://harvesthq.github.io/chosen/ -->
 
                 <!-- Select Clinician/Charge -->
-                <div class="form-section">
+                <div class="form-section m-1">
                   <!-- RN Clinician SELECT -->
                   <div class="form-group">
                     <label class="control-label requiredField" for="select">
@@ -129,7 +130,7 @@ if (!isset($_SESSION['user_session'])) {
 
                 </div>
 
-                <div class="form-section">
+                <div class="form-section m-1">
                 <!-- Select Bedside Nurses for A -->
                 <!-- TODO add logic so that clinician and charge cant be selected -->
 
@@ -154,7 +155,7 @@ if (!isset($_SESSION['user_session'])) {
                   </div>
                 </div>
 
-                <div class="form-section">
+                <div class="form-section m-1">
                 <!-- Select Bedside Nurses for B -->
                 <!-- TODO add logic so that clinician and charge, pod a nurses cant be selected -->
 
@@ -179,7 +180,7 @@ if (!isset($_SESSION['user_session'])) {
                   </div>
                 </div>
 
-                <div class="form-section">
+                <div class="form-section m-1">
                 <!-- Select Bedside Nurses for C -->
                 <!-- TODO add logic so that clinician and charge, pod a/b nurses cant be selected -->
 
@@ -246,10 +247,10 @@ if (!isset($_SESSION['user_session'])) {
                 <!-- Assign Pods -->
                 <!-- </div> -->
 
-                <div class="form-navigation clearfix">
-                  <button type="button" class="previous btn btn-secondary float-left">&lt; Previous</button>
-                  <button type="button" class="next btn btn-secondary float-right">Next &gt;</button>
-                  <button type="submit" class="btn btn-primary float-right">Submit</button>
+                <div class="form-navigation m-1">
+                  <button type="button" class="previous btn btn-secondary">&lt; Previous</button>
+                  <button type="button" class="next btn btn-secondary">Next &gt;</button>
+                  <button type="submit" class="btn btn-secondary">Submit</button>
                 </div>
               </form>
 
@@ -318,17 +319,18 @@ if (!isset($_SESSION['user_session'])) {
       // })
       var $sections = $('.form-section');
 
+      //TODO Make the div expand, not just POP into existence
       function navigateTo(index) {
         // Mark the current section with the class 'current'
         $sections
         .removeClass('current')
         .eq(index)
-        .addClass('current');
+        .addClass('current'); //TODO << ADD SHOW ANIMATION HERE
         // Show only the navigation buttons that make sense for the current section:
-        $('.form-navigation .previous').toggle(index > 0);
+        $('.form-navigation .previous').attr("disabled", !(index > 0)).toggleClass("btn-primary", (index > 0)).toggleClass("btn-secondary", !(index > 0));
         var atTheEnd = index >= $sections.length - 1;
-        $('.form-navigation .next').toggle(!atTheEnd);
-        $('.form-navigation [type=submit]').toggle(atTheEnd);
+        $('.form-navigation .next').attr("disabled", (atTheEnd)).toggleClass("btn-primary", (!atTheEnd)).toggleClass("btn-secondary", (atTheEnd));
+        $('.form-navigation [type=submit]').attr("disabled", (!atTheEnd)).toggleClass("btn-primary", (atTheEnd)).toggleClass("btn-secondary", (!atTheEnd));
 
         var progress = (index + 1)/$sections.length*100;
         $('#step-progress').attr('aria-valuenow', progress).css("width",(progress+"%"));
@@ -347,7 +349,7 @@ if (!isset($_SESSION['user_session'])) {
 
       // Next button goes forward iff current block validates
       $('.form-navigation .next').click(function() {
-        $('.demo-form').parsley().whenValidate({
+        $('.unit-shift-form').parsley().whenValidate({
           group: 'block-' + curIndex()
         }).done(function() {
           navigateTo(curIndex() + 1);

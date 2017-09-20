@@ -130,6 +130,3 @@ input.parsley-error:focus{
  .form-section.current {
    display: inherit;
  }
- .btn-outline-secondary, .btn-primary {
-   margin: 10px 0px 10px 0px;
- }
