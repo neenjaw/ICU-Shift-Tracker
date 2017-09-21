@@ -39,7 +39,7 @@ if (!isset($_SESSION['user_session'])) {
         <div class="container">
           <form method="post" id="shift-form" data-parsley-validate>
             <div class="row justify-content-center">
-              <div class="col-8">
+              <div class="col-sm-10">
 
                 <h2>Add a new Shift</h2>
                 <hr />
@@ -48,14 +48,14 @@ if (!isset($_SESSION['user_session'])) {
             </div>
             <div class="row justify-content-center">
 
-              <div class="col-sm-8 form-control-feedback hidden" id="shift-form-feedback"></div>
+              <div class="col-sm-10 form-control-feedback hidden" id="shift-form-feedback"></div>
 
             </div>
 
             <div class="row justify-content-center">
 
               <!-- STAFF SELECT -->
-              <div class="col-sm-8 form-group">
+              <div class="col-sm-10 form-group">
                 <label class="control-label requiredField" for="select">Select a Staff for the shift:<span class="asteriskField">*</span></label>
                 <select class="select form-control" id="select-staff" name="staff" required>
                   <!--<option value="staff_id">Last, Name - RN</option>-->
@@ -78,7 +78,7 @@ if (!isset($_SESSION['user_session'])) {
             <div class="row justify-content-center">
 
               <!-- DATE SELECT -->
-              <div class="col-sm-8 form-group">
+              <div class="col-sm-10 form-group">
                 <label class="control-label requiredField" for="date">Date<span class="asteriskField">*</span></label>
                 <div class="input-group">
                   <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
@@ -90,7 +90,7 @@ if (!isset($_SESSION['user_session'])) {
             <div class="row justify-content-center">
 
               <!-- DAY / NIGHT SELECT -->
-              <div class="col-sm-8 btn-group requiredField" data-toggle="buttons">
+              <div class="col-sm-10 btn-group requiredField" data-toggle="buttons">
                 <label class="btn btn-outline-primary active"><input type="radio" name="d-or-n" id="radio-d-or-n-d" value="D" autocomplete="off" checked required>Day</label>
                 <label class="btn btn-outline-primary"><input type="radio" name="d-or-n" id="radio-d-or-n-n" value="N" autocomplete="off">Night</label>
               </div>
@@ -99,7 +99,7 @@ if (!isset($_SESSION['user_session'])) {
             <div class="row justify-content-center">
 
               <!-- ROLE SELECT -->
-              <div class="col-sm-8 form-group">
+              <div class="col-sm-10 form-group">
                 <label class="control-label requiredField" for="select1">Role<span class="asteriskField">*</span></label>
                 <select class="select form-control" id="select-role" name="role" required>
 <?php
@@ -117,7 +117,7 @@ foreach ($form_select_role as $k => $v) {?>
             </div>
             <div class="row justify-content-center">
 
-              <div class="col-sm-8 form-group">
+              <div class="col-sm-10 form-group">
                 <label class="control-label requiredField" for="select2">Pod Assignment<span class="asteriskField">*</span></label>
                 <select class="select form-control" id="select-assignment" name="assignment" required>
                   <option value="" disabled selected hidden>Please Choose...</option>
@@ -136,7 +136,7 @@ foreach ($form_select_assignment as $k => $v) {?>
             </div>
             <div class="row justify-content-center">
 
-              <div class="col-sm-8 form-group collapse show" id="check-box-group">
+              <div class="col-sm-10 form-group collapse show" id="check-box-group">
                 <label class="control-label">Check all that apply</label>
                 <div class="checkbox">
                   <label class="custom-control custom-checkbox">
@@ -191,7 +191,7 @@ foreach ($form_select_assignment as $k => $v) {?>
             </div>
             <div class="row justify-content-center">
 
-              <div class="col-sm-8 form-group">
+              <div class="col-sm-10 form-group">
                 <div><button class="btn btn-primary btn-block btn-lg" id="shift-submit" name="btn-submit-new-shift" type="submit" value="validate">Submit</button></div>
               </div>
 

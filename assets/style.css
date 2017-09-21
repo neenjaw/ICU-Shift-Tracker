@@ -7,9 +7,6 @@ body {
 .modal-footer{
 	text-align: center;
 }
-#signup-modal-content, #forgot-password-modal-content{
-	display: none;
-}
 
 /** validation */
 /*

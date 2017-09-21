@@ -17,10 +17,10 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Table structure for table `logindemo01_tbl_users`
+-- Table structure for table `login_tbl_users`
 --
 
-CREATE TABLE `logindemo01_tbl_users` (
+CREATE TABLE `login_tbl_users` (
   `id` int(11) NOT NULL,
   `email` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `password` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
@@ -30,28 +30,28 @@ CREATE TABLE `logindemo01_tbl_users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
--- Dumping data for table `logindemo01_tbl_users`
+-- Dumping data for table `login_tbl_users`
 --
 
-INSERT INTO `logindemo01_tbl_users` (`id`, `email`, `password`, `active`, `viewonly`, `admin`) VALUES
+INSERT INTO `login_tbl_users` (`id`, `email`, `password`, `active`, `viewonly`, `admin`) VALUES
 (1, 'user@demo.com', '$2y$10$LyMbLQnbmYBPRLwR.EAOTOSCQk3AkMFZ6hr52KjcW7vz8EpIDzJyS', 1, 0, 1);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `shift_tracker_tbl_assignment`
+-- Table structure for table `st_tbl_assignment`
 --
 
-CREATE TABLE `shift_tracker_tbl_assignment` (
+CREATE TABLE `st_tbl_assignment` (
   `id` int(11) NOT NULL,
   `assignment` varchar(60) COLLATE utf8_unicode_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
--- Dumping data for table `shift_tracker_tbl_assignment`
+-- Dumping data for table `st_tbl_assignment`
 --
 
-INSERT INTO `shift_tracker_tbl_assignment` (`id`, `assignment`) VALUES
+INSERT INTO `st_tbl_assignment` (`id`, `assignment`) VALUES
 (1, 'A'),
 (5, 'A/B'),
 (8, 'A/B/C'),
@@ -64,10 +64,10 @@ INSERT INTO `shift_tracker_tbl_assignment` (`id`, `assignment`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `shift_tracker_tbl_shift_entry`
+-- Table structure for table `st_tbl_shift_entry`
 --
 
-CREATE TABLE `shift_tracker_tbl_shift_entry` (
+CREATE TABLE `st_tbl_shift_entry` (
   `id` int(11) NOT NULL,
   `shift_date` date NOT NULL,
   `staff_id` int(11) NOT NULL,
@@ -85,10 +85,10 @@ CREATE TABLE `shift_tracker_tbl_shift_entry` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
--- Dumping data for table `shift_tracker_tbl_shift_entry`
+-- Dumping data for table `st_tbl_shift_entry`
 --
 
-INSERT INTO `shift_tracker_tbl_shift_entry` (`id`, `shift_date`, `staff_id`, `role_id`, `assignment_id`, `bool_doubled`, `bool_vented`, `bool_new_admit`, `bool_very_sick`, `bool_code_pager`, `bool_crrt`, `bool_burn`, `bool_evd`, `bool_day_or_night`) VALUES
+INSERT INTO `st_tbl_shift_entry` (`id`, `shift_date`, `staff_id`, `role_id`, `assignment_id`, `bool_doubled`, `bool_vented`, `bool_new_admit`, `bool_very_sick`, `bool_code_pager`, `bool_crrt`, `bool_burn`, `bool_evd`, `bool_day_or_night`) VALUES
 (1, '2017-02-02', 27, 5, 2, 0, 1, 0, 0, 0, 0, 0, 0, 0),
 (2, '2017-03-08', 25, 5, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0),
 (3, '2017-07-07', 7, 5, 2, 0, 1, 0, 0, 0, 0, 0, 0, 0),
@@ -409,10 +409,10 @@ INSERT INTO `shift_tracker_tbl_shift_entry` (`id`, `shift_date`, `staff_id`, `ro
 -- --------------------------------------------------------
 
 --
--- Table structure for table `shift_tracker_tbl_staff`
+-- Table structure for table `st_tbl_staff`
 --
 
-CREATE TABLE `shift_tracker_tbl_staff` (
+CREATE TABLE `st_tbl_staff` (
   `id` int(11) NOT NULL,
   `last_name` varchar(60) COLLATE utf8_unicode_ci NOT NULL,
   `first_name` varchar(60) COLLATE utf8_unicode_ci NOT NULL,
@@ -421,10 +421,10 @@ CREATE TABLE `shift_tracker_tbl_staff` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
--- Dumping data for table `shift_tracker_tbl_staff`
+-- Dumping data for table `st_tbl_staff`
 --
 
-INSERT INTO `shift_tracker_tbl_staff` (`id`, `last_name`, `first_name`, `category`, `bool_is_active`) VALUES
+INSERT INTO `st_tbl_staff` (`id`, `last_name`, `first_name`, `category`, `bool_is_active`) VALUES
 (1, 'smith', 'joe', 1, 1),
 (2, 'Kasprzak', 'Margurite', 1, 1),
 (3, 'Carone', 'Claretta', 1, 1),
@@ -469,19 +469,19 @@ INSERT INTO `shift_tracker_tbl_staff` (`id`, `last_name`, `first_name`, `categor
 -- --------------------------------------------------------
 
 --
--- Table structure for table `shift_tracker_tbl_staff_category`
+-- Table structure for table `st_tbl_staff_category`
 --
 
-CREATE TABLE `shift_tracker_tbl_staff_category` (
+CREATE TABLE `st_tbl_staff_category` (
   `id` int(11) NOT NULL,
   `category` varchar(60) COLLATE utf8_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
--- Dumping data for table `shift_tracker_tbl_staff_category`
+-- Dumping data for table `st_tbl_staff_category`
 --
 
-INSERT INTO `shift_tracker_tbl_staff_category` (`id`, `category`) VALUES
+INSERT INTO `st_tbl_staff_category` (`id`, `category`) VALUES
 (3, 'LPN'),
 (2, 'NA'),
 (1, 'RN'),
@@ -490,19 +490,19 @@ INSERT INTO `shift_tracker_tbl_staff_category` (`id`, `category`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `shift_tracker_tbl_staff_role`
+-- Table structure for table `st_tbl_staff_role`
 --
 
-CREATE TABLE `shift_tracker_tbl_staff_role` (
+CREATE TABLE `st_tbl_staff_role` (
   `id` int(11) NOT NULL,
   `role` varchar(60) COLLATE utf8_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
--- Dumping data for table `shift_tracker_tbl_staff_role`
+-- Dumping data for table `st_tbl_staff_role`
 --
 
-INSERT INTO `shift_tracker_tbl_staff_role` (`id`, `role`) VALUES
+INSERT INTO `st_tbl_staff_role` (`id`, `role`) VALUES
 (5, 'Bedside'),
 (2, 'Charge'),
 (1, 'Clinician'),
@@ -510,27 +510,6 @@ INSERT INTO `shift_tracker_tbl_staff_role` (`id`, `role`) VALUES
 (6, 'NA'),
 (4, 'Outreach'),
 (7, 'UC');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `userdemo01_tbl_users`
---
-
-CREATE TABLE `userdemo01_tbl_users` (
-  `id` int(11) NOT NULL,
-  `first_name` varchar(25) NOT NULL,
-  `last_name` varchar(25) NOT NULL,
-  `email_id` varchar(50) NOT NULL,
-  `contact_no` bigint(10) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `userdemo01_tbl_users`
---
-
-INSERT INTO `userdemo01_tbl_users` (`id`, `first_name`, `last_name`, `email_id`, `contact_no`) VALUES
-(21, 'Hal1', '2000', 'hal2000@badcomputer.com', 403);
 
 -- --------------------------------------------------------
 
@@ -593,7 +572,7 @@ CREATE TABLE `v_shift_entries_w_staff_w_category_w_assignment_w_role` (
 --
 DROP TABLE IF EXISTS `v_shift_entries_w_staff_w_category`;
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`id1876647_neenjawtestuser`@`%` SQL SECURITY DEFINER VIEW `v_shift_entries_w_staff_w_category`  AS  select `shift_tracker_tbl_shift_entry`.`id` AS `id`,`shift_tracker_tbl_shift_entry`.`shift_date` AS `shift_date`,`shift_tracker_tbl_shift_entry`.`staff_id` AS `staff_id`,`shift_tracker_tbl_shift_entry`.`role_id` AS `role_id`,`shift_tracker_tbl_shift_entry`.`assignment_id` AS `assignment_id`,`shift_tracker_tbl_shift_entry`.`bool_doubled` AS `bool_doubled`,`shift_tracker_tbl_shift_entry`.`bool_vented` AS `bool_vented`,`shift_tracker_tbl_shift_entry`.`bool_new_admit` AS `bool_new_admit`,`shift_tracker_tbl_shift_entry`.`bool_very_sick` AS `bool_very_sick`,`shift_tracker_tbl_shift_entry`.`bool_code_pager` AS `bool_code_pager`,`shift_tracker_tbl_shift_entry`.`bool_crrt` AS `bool_crrt`,`shift_tracker_tbl_shift_entry`.`bool_burn` AS `bool_burn`,`shift_tracker_tbl_shift_entry`.`bool_evd` AS `bool_evd`,`shift_tracker_tbl_shift_entry`.`bool_day_or_night` AS `bool_day_or_night`,`shift_tracker_tbl_staff`.`first_name` AS `first_name`,`shift_tracker_tbl_staff`.`last_name` AS `last_name`,`shift_tracker_tbl_staff_category`.`category` AS `category` from ((`shift_tracker_tbl_shift_entry` left join `shift_tracker_tbl_staff` on((`shift_tracker_tbl_shift_entry`.`staff_id` = `shift_tracker_tbl_staff`.`id`))) left join `shift_tracker_tbl_staff_category` on((`shift_tracker_tbl_staff`.`category` = `shift_tracker_tbl_staff_category`.`id`))) ;
+CREATE ALGORITHM=UNDEFINED DEFINER=`id1876647_neenjawtestuser`@`%` SQL SECURITY DEFINER VIEW `v_shift_entries_w_staff_w_category`  AS  select `st_tbl_shift_entry`.`id` AS `id`,`st_tbl_shift_entry`.`shift_date` AS `shift_date`,`st_tbl_shift_entry`.`staff_id` AS `staff_id`,`st_tbl_shift_entry`.`role_id` AS `role_id`,`st_tbl_shift_entry`.`assignment_id` AS `assignment_id`,`st_tbl_shift_entry`.`bool_doubled` AS `bool_doubled`,`st_tbl_shift_entry`.`bool_vented` AS `bool_vented`,`st_tbl_shift_entry`.`bool_new_admit` AS `bool_new_admit`,`st_tbl_shift_entry`.`bool_very_sick` AS `bool_very_sick`,`st_tbl_shift_entry`.`bool_code_pager` AS `bool_code_pager`,`st_tbl_shift_entry`.`bool_crrt` AS `bool_crrt`,`st_tbl_shift_entry`.`bool_burn` AS `bool_burn`,`st_tbl_shift_entry`.`bool_evd` AS `bool_evd`,`st_tbl_shift_entry`.`bool_day_or_night` AS `bool_day_or_night`,`st_tbl_staff`.`first_name` AS `first_name`,`st_tbl_staff`.`last_name` AS `last_name`,`st_tbl_staff_category`.`category` AS `category` from ((`st_tbl_shift_entry` left join `st_tbl_staff` on((`st_tbl_shift_entry`.`staff_id` = `st_tbl_staff`.`id`))) left join `st_tbl_staff_category` on((`st_tbl_staff`.`category` = `st_tbl_staff_category`.`id`))) ;
 
 -- --------------------------------------------------------
 
@@ -602,31 +581,31 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`id1876647_neenjawtestuser`@`%` SQL SECURITY 
 --
 DROP TABLE IF EXISTS `v_shift_entries_w_staff_w_category_w_assignment_w_role`;
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`id1876647_neenjawtestuser`@`%` SQL SECURITY DEFINER VIEW `v_shift_entries_w_staff_w_category_w_assignment_w_role`  AS  select `v_shift_entries_w_staff_w_category`.`id` AS `id`,`v_shift_entries_w_staff_w_category`.`shift_date` AS `shift_date`,`v_shift_entries_w_staff_w_category`.`staff_id` AS `staff_id`,`v_shift_entries_w_staff_w_category`.`role_id` AS `role_id`,`v_shift_entries_w_staff_w_category`.`assignment_id` AS `assignment_id`,`v_shift_entries_w_staff_w_category`.`bool_doubled` AS `bool_doubled`,`v_shift_entries_w_staff_w_category`.`bool_vented` AS `bool_vented`,`v_shift_entries_w_staff_w_category`.`bool_new_admit` AS `bool_new_admit`,`v_shift_entries_w_staff_w_category`.`bool_very_sick` AS `bool_very_sick`,`v_shift_entries_w_staff_w_category`.`bool_code_pager` AS `bool_code_pager`,`v_shift_entries_w_staff_w_category`.`bool_crrt` AS `bool_crrt`,`v_shift_entries_w_staff_w_category`.`bool_burn` AS `bool_burn`,`v_shift_entries_w_staff_w_category`.`bool_evd` AS `bool_evd`,`v_shift_entries_w_staff_w_category`.`bool_day_or_night` AS `bool_day_or_night`,`v_shift_entries_w_staff_w_category`.`first_name` AS `first_name`,`v_shift_entries_w_staff_w_category`.`last_name` AS `last_name`,`v_shift_entries_w_staff_w_category`.`category` AS `category`,`shift_tracker_tbl_assignment`.`assignment` AS `assignment`,`shift_tracker_tbl_staff_role`.`role` AS `role` from ((`v_shift_entries_w_staff_w_category` left join `shift_tracker_tbl_assignment` on((`v_shift_entries_w_staff_w_category`.`assignment_id` = `shift_tracker_tbl_assignment`.`id`))) left join `shift_tracker_tbl_staff_role` on((`v_shift_entries_w_staff_w_category`.`role_id` = `shift_tracker_tbl_staff_role`.`id`))) ;
+CREATE ALGORITHM=UNDEFINED DEFINER=`id1876647_neenjawtestuser`@`%` SQL SECURITY DEFINER VIEW `v_shift_entries_w_staff_w_category_w_assignment_w_role`  AS  select `v_shift_entries_w_staff_w_category`.`id` AS `id`,`v_shift_entries_w_staff_w_category`.`shift_date` AS `shift_date`,`v_shift_entries_w_staff_w_category`.`staff_id` AS `staff_id`,`v_shift_entries_w_staff_w_category`.`role_id` AS `role_id`,`v_shift_entries_w_staff_w_category`.`assignment_id` AS `assignment_id`,`v_shift_entries_w_staff_w_category`.`bool_doubled` AS `bool_doubled`,`v_shift_entries_w_staff_w_category`.`bool_vented` AS `bool_vented`,`v_shift_entries_w_staff_w_category`.`bool_new_admit` AS `bool_new_admit`,`v_shift_entries_w_staff_w_category`.`bool_very_sick` AS `bool_very_sick`,`v_shift_entries_w_staff_w_category`.`bool_code_pager` AS `bool_code_pager`,`v_shift_entries_w_staff_w_category`.`bool_crrt` AS `bool_crrt`,`v_shift_entries_w_staff_w_category`.`bool_burn` AS `bool_burn`,`v_shift_entries_w_staff_w_category`.`bool_evd` AS `bool_evd`,`v_shift_entries_w_staff_w_category`.`bool_day_or_night` AS `bool_day_or_night`,`v_shift_entries_w_staff_w_category`.`first_name` AS `first_name`,`v_shift_entries_w_staff_w_category`.`last_name` AS `last_name`,`v_shift_entries_w_staff_w_category`.`category` AS `category`,`st_tbl_assignment`.`assignment` AS `assignment`,`st_tbl_staff_role`.`role` AS `role` from ((`v_shift_entries_w_staff_w_category` left join `st_tbl_assignment` on((`v_shift_entries_w_staff_w_category`.`assignment_id` = `st_tbl_assignment`.`id`))) left join `st_tbl_staff_role` on((`v_shift_entries_w_staff_w_category`.`role_id` = `st_tbl_staff_role`.`id`))) ;
 
 --
 -- Indexes for dumped tables
 --
 
 --
--- Indexes for table `logindemo01_tbl_users`
+-- Indexes for table `login_tbl_users`
 --
-ALTER TABLE `logindemo01_tbl_users`
+ALTER TABLE `login_tbl_users`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `email` (`email`);
 
 --
--- Indexes for table `shift_tracker_tbl_assignment`
+-- Indexes for table `st_tbl_assignment`
 --
-ALTER TABLE `shift_tracker_tbl_assignment`
+ALTER TABLE `st_tbl_assignment`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `pod_name` (`assignment`),
   ADD UNIQUE KEY `pod_name_2` (`assignment`);
 
 --
--- Indexes for table `shift_tracker_tbl_shift_entry`
+-- Indexes for table `st_tbl_shift_entry`
 --
-ALTER TABLE `shift_tracker_tbl_shift_entry`
+ALTER TABLE `st_tbl_shift_entry`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `ix_uq` (`shift_date`,`staff_id`),
   ADD KEY `FK_role_id` (`role_id`),
@@ -634,86 +613,75 @@ ALTER TABLE `shift_tracker_tbl_shift_entry`
   ADD KEY `FK_staff_id` (`staff_id`);
 
 --
--- Indexes for table `shift_tracker_tbl_staff`
+-- Indexes for table `st_tbl_staff`
 --
-ALTER TABLE `shift_tracker_tbl_staff`
+ALTER TABLE `st_tbl_staff`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `ui` (`last_name`,`first_name`,`category`),
   ADD KEY `FK_staff_category` (`category`);
 
 --
--- Indexes for table `shift_tracker_tbl_staff_category`
+-- Indexes for table `st_tbl_staff_category`
 --
-ALTER TABLE `shift_tracker_tbl_staff_category`
+ALTER TABLE `st_tbl_staff_category`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `category` (`category`);
 
 --
--- Indexes for table `shift_tracker_tbl_staff_role`
+-- Indexes for table `st_tbl_staff_role`
 --
-ALTER TABLE `shift_tracker_tbl_staff_role`
+ALTER TABLE `st_tbl_staff_role`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `role` (`role`);
-
---
--- Indexes for table `userdemo01_tbl_users`
---
-ALTER TABLE `userdemo01_tbl_users`
-  ADD PRIMARY KEY (`id`);
 
 --
 -- AUTO_INCREMENT for dumped tables
 --
 
 --
--- AUTO_INCREMENT for table `logindemo01_tbl_users`
+-- AUTO_INCREMENT for table `login_tbl_users`
 --
-ALTER TABLE `logindemo01_tbl_users`
+ALTER TABLE `login_tbl_users`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 --
--- AUTO_INCREMENT for table `shift_tracker_tbl_assignment`
+-- AUTO_INCREMENT for table `st_tbl_assignment`
 --
-ALTER TABLE `shift_tracker_tbl_assignment`
+ALTER TABLE `st_tbl_assignment`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 --
--- AUTO_INCREMENT for table `shift_tracker_tbl_shift_entry`
+-- AUTO_INCREMENT for table `st_tbl_shift_entry`
 --
-ALTER TABLE `shift_tracker_tbl_shift_entry`
+ALTER TABLE `st_tbl_shift_entry`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=318;
 --
--- AUTO_INCREMENT for table `shift_tracker_tbl_staff`
+-- AUTO_INCREMENT for table `st_tbl_staff`
 --
-ALTER TABLE `shift_tracker_tbl_staff`
+ALTER TABLE `st_tbl_staff`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
 --
--- AUTO_INCREMENT for table `shift_tracker_tbl_staff_category`
+-- AUTO_INCREMENT for table `st_tbl_staff_category`
 --
-ALTER TABLE `shift_tracker_tbl_staff_category`
+ALTER TABLE `st_tbl_staff_category`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 --
--- AUTO_INCREMENT for table `shift_tracker_tbl_staff_role`
+-- AUTO_INCREMENT for table `st_tbl_staff_role`
 --
-ALTER TABLE `shift_tracker_tbl_staff_role`
+ALTER TABLE `st_tbl_staff_role`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
---
--- AUTO_INCREMENT for table `userdemo01_tbl_users`
---
-ALTER TABLE `userdemo01_tbl_users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 --
 -- Constraints for dumped tables
 --
 
 --
--- Constraints for table `shift_tracker_tbl_shift_entry`
+-- Constraints for table `st_tbl_shift_entry`
 --
-ALTER TABLE `shift_tracker_tbl_shift_entry`
-  ADD CONSTRAINT `FK_assignment_id` FOREIGN KEY (`assignment_id`) REFERENCES `shift_tracker_tbl_assignment` (`id`) ON UPDATE CASCADE,
-  ADD CONSTRAINT `FK_role_id` FOREIGN KEY (`role_id`) REFERENCES `shift_tracker_tbl_staff_role` (`id`) ON UPDATE CASCADE,
-  ADD CONSTRAINT `FK_staff_id` FOREIGN KEY (`staff_id`) REFERENCES `shift_tracker_tbl_staff` (`id`) ON UPDATE CASCADE;
+ALTER TABLE `st_tbl_shift_entry`
+  ADD CONSTRAINT `FK_assignment_id` FOREIGN KEY (`assignment_id`) REFERENCES `st_tbl_assignment` (`id`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `FK_role_id` FOREIGN KEY (`role_id`) REFERENCES `st_tbl_staff_role` (`id`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `FK_staff_id` FOREIGN KEY (`staff_id`) REFERENCES `st_tbl_staff` (`id`) ON UPDATE CASCADE;
 
 --
--- Constraints for table `shift_tracker_tbl_staff`
+-- Constraints for table `st_tbl_staff`
 --
-ALTER TABLE `shift_tracker_tbl_staff`
-  ADD CONSTRAINT `FK_staff_category` FOREIGN KEY (`category`) REFERENCES `shift_tracker_tbl_staff_category` (`id`) ON UPDATE CASCADE;
+ALTER TABLE `st_tbl_staff`
+  ADD CONSTRAINT `FK_staff_category` FOREIGN KEY (`category`) REFERENCES `st_tbl_staff_category` (`id`) ON UPDATE CASCADE;

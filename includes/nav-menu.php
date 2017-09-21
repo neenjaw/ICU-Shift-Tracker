@@ -9,7 +9,7 @@ $a_active = ' active';
 				<?= makeNavLink($page_name, 'home.php', 'Home', 'nav-link');?>
 			</li>
 			<li class="nav-item dropdown">
-				<?= makeNavLink($page_name, 'add-unit-shift.php,add-shift.php,mod-shift.php', 'Shifts', 'nav-link dropdown-toggle', 'data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"'); ?>
+				<?= makeNavLink($page_name, 'add-unit-shift.php,add-shift.php,mod-shift.php', 'Shift', 'nav-link dropdown-toggle', 'data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"'); ?>
 				<div class="dropdown-menu">
 					<?= makeNavLink($page_name, 'add-unit-shift.php', 'Add unit', 'dropdown-item'); ?>
 					<?= makeNavLink($page_name, 'add-shift.php', 'Add single', 'dropdown-item'); ?>
@@ -26,14 +26,14 @@ $a_active = ' active';
 				</div>
 			</li>
 			<li class="nav-item dropdown">
-				<?= makeNavLink($page_name, 'pod-report.php,double-report.php', 'Reports', 'nav-link dropdown-toggle', 'data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"'); ?>
+				<?= makeNavLink($page_name, 'pod-report.php,double-report.php', 'Report', 'nav-link dropdown-toggle', 'data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"'); ?>
 				<div class="dropdown-menu">
 					<?= makeNavLink($page_name, 'pod-report.php', 'Pod Assignment', 'dropdown-item disabled'); ?>
 					<?= makeNavLink($page_name, 'double-report.php', 'Doubles', 'dropdown-item disabled'); ?>
 				</div>
 			</li>
 			<li class="nav-item dropdown">
-				<?= makeNavLink($page_name, 'config.php', '&nbsp;', 'nav-link dropdown-toggle', 'data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"'); ?>
+				<?= makeNavLink($page_name, 'config.php', '', 'nav-link dropdown-toggle', 'data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"'); ?>
 				<div class="dropdown-menu">
 					<?= makeNavLink($page_name, 'config.php', 'Config', 'dropdown-item disabled'); ?>
 				</div>

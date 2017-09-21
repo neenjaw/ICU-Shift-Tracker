@@ -38,7 +38,7 @@ if (!isset($_SESSION['user_session'])) {
 
         <div class="container">
           <div class="row justify-content-center">
-            <div class="col-8 m-1">
+            <div class="col-sm-10 m-1">
               <h2>Add Shifts for the Unit</h2>
               <hr />
             </div>
@@ -51,13 +51,22 @@ if (!isset($_SESSION['user_session'])) {
 
           </div>
           <div class="row justify-content-center">
-            <div id="msf-container" class="col-8">
+            <div id="msf-container" class="col-sm-10">
               <!-- Multi-step form goes here -->
 
               <form class="unit-shift-form">
-                <div class="form-section form-inline m-1">
+
+                <?php
+                //use the CRUD object to access the database and build an option list of the categories
+                $form_select_rn = $crud->getRnStaff(); //only need to get this once
+                //TODO Do all the $crud operations once, reuse data if able
+                //$form_select_na = $crud->getNaStaff();
+                //$form_select_uc = $crud->getUcStaff();
+                ?>
+
+                <div class="form-section form-inline m-1 col-sm-10">
                   <!-- DATE SELECT -->
-                  <div class="form-group">
+                  <div class="form-group col-sm-8">
                     <label class="control-label requiredField mr-1" for="date">Date: </label>
                     <div class="input-group">
                       <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
@@ -65,7 +74,7 @@ if (!isset($_SESSION['user_session'])) {
                     </div>
 
                     <!-- DAY / NIGHT SELECT -->
-                    <div class="btn-group requiredField ml-1" data-toggle="buttons">
+                    <div class="btn-group requiredField m-1 col-sm-2" data-toggle="buttons">
                       <label class="btn btn-outline-primary active"><input type="radio" name="d-or-n" id="radio-d-or-n-d" value="D" autocomplete="off" checked required>Day</label>
                       <label class="btn btn-outline-primary"><input type="radio" name="d-or-n" id="radio-d-or-n-n" value="N" autocomplete="off">Night</label>
                     </div>
@@ -90,9 +99,7 @@ if (!isset($_SESSION['user_session'])) {
                       <option value="" disabled selected hidden>Please Choose...</option>
                       <?php
                         //Build Staff Select List
-                        //use the CRUD object to access the database and build an option list of the categories
-                        $form_select_staff = $crud->getRnStaff();
-                        foreach ($form_select_staff as $k => $v):
+                        foreach ($form_select_rn as $k => $v):
                       ?>
                       <option value="<?= $k ?>"><?= $v ?></option>
                       <?php
@@ -115,8 +122,7 @@ if (!isset($_SESSION['user_session'])) {
                       <?php
                         //Build Staff Select List
                         //use the CRUD object to access the database and build an option list of the categories
-                        $form_select_staff = $crud->getRnStaff();
-                        foreach ($form_select_staff as $k => $v):
+                        foreach ($form_select_rn as $k => $v):
                       ?>
                       <option value="<?= $k ?>"><?= $v ?></option>
                       <?php
@@ -143,8 +149,7 @@ if (!isset($_SESSION['user_session'])) {
                       <?php
                         //Build Staff Select List
                         //use the CRUD object to access the database and build an option list of the categories
-                        $form_select_staff = $crud->getRnStaff();
-                        foreach ($form_select_staff as $k => $v):
+                        foreach ($form_select_rn as $k => $v):
                       ?>
                       <option value="<?= $k ?>"><?= $v ?></option>
                       <?php
@@ -168,8 +173,7 @@ if (!isset($_SESSION['user_session'])) {
                       <?php
                         //Build Staff Select List
                         //use the CRUD object to access the database and build an option list of the categories
-                        $form_select_staff = $crud->getRnStaff();
-                        foreach ($form_select_staff as $k => $v):
+                        foreach ($form_select_rn as $k => $v):
                       ?>
                       <option value="<?= $k ?>"><?= $v ?></option>
                       <?php
@@ -186,15 +190,14 @@ if (!isset($_SESSION['user_session'])) {
 
                   <div class="form-group">
                     <label class="control-label requiredField" for="select">
-                      Select the nurses for Pod B<span class="asteriskField">*</span>
+                      Select the nurses for Pod C<span class="asteriskField">*</span>
                     </label>
                     <select class="select form-control" id="select-podc" name="staff" style="width: 100%" required>
                       <option value="" disabled selected hidden>Please Choose...</option>
                       <?php
                         //Build Staff Select List
                         //use the CRUD object to access the database and build an option list of the categories
-                        $form_select_staff = $crud->getRnStaff();
-                        foreach ($form_select_staff as $k => $v):
+                        foreach ($form_select_rn as $k => $v):
                       ?>
                       <option value="<?= $k ?>"><?= $v ?></option>
                       <?php
@@ -247,7 +250,7 @@ if (!isset($_SESSION['user_session'])) {
                 <!-- Assign Pods -->
                 <!-- </div> -->
 
-                <div class="form-navigation m-1">
+                <div class="form-navigation m-1 text-center">
                   <button type="button" class="previous btn btn-secondary">&lt; Previous</button>
                   <button type="button" class="next btn btn-secondary">Next &gt;</button>
                   <button type="submit" class="btn btn-secondary">Submit</button>
@@ -299,12 +302,12 @@ if (!isset($_SESSION['user_session'])) {
       });
       <?php endif; ?>
 
-      //Activate the Select2 script for the staff select to search easily
-      $("#select-clinician").select2({theme: "bootstrap"});
-      $("#select-charge").select2({theme: "bootstrap"});
-      $("#select-poda").select2({theme: "bootstrap"});
-      $("#select-podb").select2({theme: "bootstrap"});
-      $("#select-podc").select2({theme: "bootstrap"});
+      // //Activate the Select2 script for the staff select to search easily
+      // $("#select-clinician").select2({theme: "bootstrap"});
+      // $("#select-charge").select2({theme: "bootstrap"});
+      // $("#select-poda").select2({theme: "bootstrap"});
+      // $("#select-podb").select2({theme: "bootstrap"});
+      // $("#select-podc").select2({theme: "bootstrap"});
 
       //bind the parsley.js event
       // $('#unit-shift-form')
