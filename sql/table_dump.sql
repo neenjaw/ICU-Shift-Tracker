@@ -10,10 +10,6 @@
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
 
---
--- Database: `id1876647_neenjawtest`
---
-
 -- --------------------------------------------------------
 
 --
@@ -87,7 +83,6 @@ CREATE TABLE `st_tbl_shift_entry` (
 --
 -- Dumping data for table `st_tbl_shift_entry`
 --
-
 INSERT INTO `st_tbl_shift_entry` (`id`, `shift_date`, `staff_id`, `role_id`, `assignment_id`, `bool_doubled`, `bool_vented`, `bool_new_admit`, `bool_very_sick`, `bool_code_pager`, `bool_crrt`, `bool_burn`, `bool_evd`, `bool_day_or_night`) VALUES
 (1, '2017-02-02', 27, 5, 2, 0, 1, 0, 0, 0, 0, 0, 0, 0),
 (2, '2017-03-08', 25, 5, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0),
@@ -230,6 +225,7 @@ INSERT INTO `st_tbl_shift_entry` (`id`, `shift_date`, `staff_id`, `role_id`, `as
 (139, '2017-02-05', 15, 5, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0),
 (140, '2017-06-13', 7, 5, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0),
 (141, '2017-05-13', 25, 5, 2, 0, 1, 0, 0, 0, 0, 0, 0, 0),
+
 (142, '2017-01-09', 7, 5, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0),
 (143, '2017-03-29', 17, 5, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0),
 (144, '2017-06-17', 19, 5, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0),
@@ -572,7 +568,7 @@ CREATE TABLE `v_shift_entries_w_staff_w_category_w_assignment_w_role` (
 --
 DROP TABLE IF EXISTS `v_shift_entries_w_staff_w_category`;
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`id1876647_neenjawtestuser`@`%` SQL SECURITY DEFINER VIEW `v_shift_entries_w_staff_w_category`  AS  select `st_tbl_shift_entry`.`id` AS `id`,`st_tbl_shift_entry`.`shift_date` AS `shift_date`,`st_tbl_shift_entry`.`staff_id` AS `staff_id`,`st_tbl_shift_entry`.`role_id` AS `role_id`,`st_tbl_shift_entry`.`assignment_id` AS `assignment_id`,`st_tbl_shift_entry`.`bool_doubled` AS `bool_doubled`,`st_tbl_shift_entry`.`bool_vented` AS `bool_vented`,`st_tbl_shift_entry`.`bool_new_admit` AS `bool_new_admit`,`st_tbl_shift_entry`.`bool_very_sick` AS `bool_very_sick`,`st_tbl_shift_entry`.`bool_code_pager` AS `bool_code_pager`,`st_tbl_shift_entry`.`bool_crrt` AS `bool_crrt`,`st_tbl_shift_entry`.`bool_burn` AS `bool_burn`,`st_tbl_shift_entry`.`bool_evd` AS `bool_evd`,`st_tbl_shift_entry`.`bool_day_or_night` AS `bool_day_or_night`,`st_tbl_staff`.`first_name` AS `first_name`,`st_tbl_staff`.`last_name` AS `last_name`,`st_tbl_staff_category`.`category` AS `category` from ((`st_tbl_shift_entry` left join `st_tbl_staff` on((`st_tbl_shift_entry`.`staff_id` = `st_tbl_staff`.`id`))) left join `st_tbl_staff_category` on((`st_tbl_staff`.`category` = `st_tbl_staff_category`.`id`))) ;
+CREATE VIEW `v_shift_entries_w_staff_w_category`  AS  select `st_tbl_shift_entry`.`id` AS `id`,`st_tbl_shift_entry`.`shift_date` AS `shift_date`,`st_tbl_shift_entry`.`staff_id` AS `staff_id`,`st_tbl_shift_entry`.`role_id` AS `role_id`,`st_tbl_shift_entry`.`assignment_id` AS `assignment_id`,`st_tbl_shift_entry`.`bool_doubled` AS `bool_doubled`,`st_tbl_shift_entry`.`bool_vented` AS `bool_vented`,`st_tbl_shift_entry`.`bool_new_admit` AS `bool_new_admit`,`st_tbl_shift_entry`.`bool_very_sick` AS `bool_very_sick`,`st_tbl_shift_entry`.`bool_code_pager` AS `bool_code_pager`,`st_tbl_shift_entry`.`bool_crrt` AS `bool_crrt`,`st_tbl_shift_entry`.`bool_burn` AS `bool_burn`,`st_tbl_shift_entry`.`bool_evd` AS `bool_evd`,`st_tbl_shift_entry`.`bool_day_or_night` AS `bool_day_or_night`,`st_tbl_staff`.`first_name` AS `first_name`,`st_tbl_staff`.`last_name` AS `last_name`,`st_tbl_staff_category`.`category` AS `category` from ((`st_tbl_shift_entry` left join `st_tbl_staff` on((`st_tbl_shift_entry`.`staff_id` = `st_tbl_staff`.`id`))) left join `st_tbl_staff_category` on((`st_tbl_staff`.`category` = `st_tbl_staff_category`.`id`))) ;
 
 -- --------------------------------------------------------
 
@@ -581,7 +577,7 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`id1876647_neenjawtestuser`@`%` SQL SECURITY 
 --
 DROP TABLE IF EXISTS `v_shift_entries_w_staff_w_category_w_assignment_w_role`;
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`id1876647_neenjawtestuser`@`%` SQL SECURITY DEFINER VIEW `v_shift_entries_w_staff_w_category_w_assignment_w_role`  AS  select `v_shift_entries_w_staff_w_category`.`id` AS `id`,`v_shift_entries_w_staff_w_category`.`shift_date` AS `shift_date`,`v_shift_entries_w_staff_w_category`.`staff_id` AS `staff_id`,`v_shift_entries_w_staff_w_category`.`role_id` AS `role_id`,`v_shift_entries_w_staff_w_category`.`assignment_id` AS `assignment_id`,`v_shift_entries_w_staff_w_category`.`bool_doubled` AS `bool_doubled`,`v_shift_entries_w_staff_w_category`.`bool_vented` AS `bool_vented`,`v_shift_entries_w_staff_w_category`.`bool_new_admit` AS `bool_new_admit`,`v_shift_entries_w_staff_w_category`.`bool_very_sick` AS `bool_very_sick`,`v_shift_entries_w_staff_w_category`.`bool_code_pager` AS `bool_code_pager`,`v_shift_entries_w_staff_w_category`.`bool_crrt` AS `bool_crrt`,`v_shift_entries_w_staff_w_category`.`bool_burn` AS `bool_burn`,`v_shift_entries_w_staff_w_category`.`bool_evd` AS `bool_evd`,`v_shift_entries_w_staff_w_category`.`bool_day_or_night` AS `bool_day_or_night`,`v_shift_entries_w_staff_w_category`.`first_name` AS `first_name`,`v_shift_entries_w_staff_w_category`.`last_name` AS `last_name`,`v_shift_entries_w_staff_w_category`.`category` AS `category`,`st_tbl_assignment`.`assignment` AS `assignment`,`st_tbl_staff_role`.`role` AS `role` from ((`v_shift_entries_w_staff_w_category` left join `st_tbl_assignment` on((`v_shift_entries_w_staff_w_category`.`assignment_id` = `st_tbl_assignment`.`id`))) left join `st_tbl_staff_role` on((`v_shift_entries_w_staff_w_category`.`role_id` = `st_tbl_staff_role`.`id`))) ;
+CREATE VIEW `v_shift_entries_w_staff_w_category_w_assignment_w_role`  AS  select `v_shift_entries_w_staff_w_category`.`id` AS `id`,`v_shift_entries_w_staff_w_category`.`shift_date` AS `shift_date`,`v_shift_entries_w_staff_w_category`.`staff_id` AS `staff_id`,`v_shift_entries_w_staff_w_category`.`role_id` AS `role_id`,`v_shift_entries_w_staff_w_category`.`assignment_id` AS `assignment_id`,`v_shift_entries_w_staff_w_category`.`bool_doubled` AS `bool_doubled`,`v_shift_entries_w_staff_w_category`.`bool_vented` AS `bool_vented`,`v_shift_entries_w_staff_w_category`.`bool_new_admit` AS `bool_new_admit`,`v_shift_entries_w_staff_w_category`.`bool_very_sick` AS `bool_very_sick`,`v_shift_entries_w_staff_w_category`.`bool_code_pager` AS `bool_code_pager`,`v_shift_entries_w_staff_w_category`.`bool_crrt` AS `bool_crrt`,`v_shift_entries_w_staff_w_category`.`bool_burn` AS `bool_burn`,`v_shift_entries_w_staff_w_category`.`bool_evd` AS `bool_evd`,`v_shift_entries_w_staff_w_category`.`bool_day_or_night` AS `bool_day_or_night`,`v_shift_entries_w_staff_w_category`.`first_name` AS `first_name`,`v_shift_entries_w_staff_w_category`.`last_name` AS `last_name`,`v_shift_entries_w_staff_w_category`.`category` AS `category`,`st_tbl_assignment`.`assignment` AS `assignment`,`st_tbl_staff_role`.`role` AS `role` from ((`v_shift_entries_w_staff_w_category` left join `st_tbl_assignment` on((`v_shift_entries_w_staff_w_category`.`assignment_id` = `st_tbl_assignment`.`id`))) left join `st_tbl_staff_role` on((`v_shift_entries_w_staff_w_category`.`role_id` = `st_tbl_staff_role`.`id`))) ;
 
 --
 -- Indexes for dumped tables

@@ -222,6 +222,16 @@ class crud
       return $this->getStaff("RN");
     }
 
+    public function getUcStaff()
+    {
+      return $this->getStaff("UC");
+    }
+
+    public function getNaStaff()
+    {
+      return $this->getStaff("NA");
+    }
+
     public function getStaffIdByName($f_name, $l_name)
     {
         $stmt = $this->db->prepare("SELECT id FROM ".$this->tbl_staff." WHERE last_name=:ln AND first_name:=fn");
