@@ -299,8 +299,6 @@ if (!isset($_SESSION['user_session'])) {
 
   </div>
 
-
-
   <!-- Spacer for the bottom -->
   <div class="container">
     <br />
