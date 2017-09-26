@@ -233,7 +233,7 @@ if (!isset($_SESSION['user_session'])) {
             </div>
           </div>
 
-          <div class="form-section mt-4 mb-4">
+          <div id="bpod-rn-select" class="form-section mt-4 mb-4">
             <!-- Select Bedside Nurses for B -->
             <!-- TODO add logic so that clinician and charge, pod a nurses cant be selected -->
 
@@ -263,7 +263,7 @@ if (!isset($_SESSION['user_session'])) {
             </div>
           </div>
 
-          <div class="form-section mt-4 mb-4">
+          <div id="cpod-rn-select" class="form-section mt-4 mb-4">
             <!-- Select Bedside Nurses for C -->
             <!-- TODO add logic so that clinician and charge, pod a/b nurses cant be selected -->
 
@@ -325,9 +325,35 @@ if (!isset($_SESSION['user_session'])) {
           <!-- Who who had burn -->
           <!-- </div> -->
 
-          <!-- <div class="form-section mt-4 mb-4"> -->
-          <!-- Who was on outreach-->
-          <!-- </div> -->
+          <div id="outreach-rn-select" class="form-section mt-4 mb-4">
+            <!-- Select Bedside Nurses for C -->
+            <!-- TODO add logic so that clinician and charge, pod a/b nurses cant be selected -->
+
+            <div class="form-group">
+              <label class="control-label requiredField" for="select">
+                Who was on outreach?<span class="asteriskField">*</span>
+              </label>
+
+              <div id="outreach-rn" class="staff-select-group p-0 m-0">
+              <?php
+              //Build Staff Select List
+              foreach ($form_select_rn as $k => $v):
+              ?>
+                <div class="inner-item list-group-item-action">
+                  <label class="custom-control custom-radio m-1">
+                    <input id="outreach-rn-<?= $k ?>" name="outreach-rn" type="radio" value="<?= $k ?>" class="custom-control-input">
+                    <span class="custom-control-indicator"></span>
+                    <span class="custom-control-description"><?= $v ?></span>
+                  </label>
+                </div>
+              <?php
+              endforeach;
+              //END Build Staff Select List
+              ?>
+              </div>
+
+            </div>
+          </div>
 
           <div class="form-section mt-4 mb-4">
             <!-- Select NA's -->
@@ -581,13 +607,14 @@ if (!isset($_SESSION['user_session'])) {
       if ( currentSectionId == 'apod-rn-select' ) {
         hideAlreadyPickedForApod();
       } else if ( currentSectionId == 'bpod-rn-select' ) {
-        // hideAlreadyPickedForBpod();
+        hideAlreadyPickedForBpod();
       } else if ( currentSectionId == 'cpod-rn-select' ) {
-        // hideAlreadyPickedForCpod();
+        hideAlreadyPickedForCpod();
       } else if ( currentSectionId == 'outreach-rn-select' ) {
-        // hideAlreadyPickedForOutreach();
+        hideAlreadyPickedForOutreach();
       }
 
+      //TODO
       //popStaffShiftModifierList();
       //popNaPodSelect();
       //popUcPodSelect();
@@ -595,30 +622,17 @@ if (!isset($_SESSION['user_session'])) {
       return true;
     });
 
-    //listener which diables/clears apod nurs depending on clinician/charge values
-    // TODO Code here
-    // IDEA when the form-section is made current (as in, coming in to view, get the values, disable the previously chosen ones)
-
-    // function getNcAndCn() {} -- returns nc and cn id's
-    // function getNcAndCnAndApod() { call getNcAndCn(), add id's in apod }
-    // ... etc
-
-    //listener which diables/clears bpod nurs depending on clinician/charge values
-    // TODO Code here
-
-    //listener which diables/clears cpod nurs depending on clinician/charge/apod/bpod values
-    // TODO Code here
-
-    //listener which updates shift code lists depending on all nurses selected
-    // TODO Code here
-
   });
 
+  /**
+   * [hideAlreadyPickedForApod description]
+   * @return [type] [description]
+   */
   function hideAlreadyPickedForApod() {
     //reset all hidden
     $(`#apod-rn div.st-none`).each(function() {
       showFormInnerItem($(this).find('input'));
-    })
+    });
 
     //hide clinician
     let ncVal = $(`input[type='radio'][name='nurse-clinician']:checked`).val();
@@ -631,6 +645,83 @@ if (!isset($_SESSION['user_session'])) {
     }
   }
 
+  /**
+   * [hideAlreadyPickedForBpod description]
+   * @return [type] [description]
+   */
+  function hideAlreadyPickedForBpod() {
+    //reset all previously hidden
+    $(`#bpod-rn div.st-none`).each(function() {
+      showFormInnerItem($(this).find('input'));
+    });
+
+    //hide based on previously hidden
+    $(`#apod-rn div.st-none`).each(function() {
+      let rnVal = $(this).find('input').val();
+      hideFormInnerItem($(`input[type='checkbox'][name='bpod-rn[]'][value='${rnVal}']`));
+    });
+
+    //hide based on apod picks
+    $(`#apod-rn input[type='checkbox'][name='apod-rn[]']:checked`).each(function() {
+      let rnVal = $(this).val();
+      hideFormInnerItem($(`input[type='checkbox'][name='bpod-rn[]'][value='${rnVal}']`));
+    });
+
+  }
+
+  /**
+   * [hideAlreadyPickedForCpod description]
+   * @return [type] [description]
+   */
+  function hideAlreadyPickedForCpod() {
+    //reset all previously hidden
+    $(`#cpod-rn div.st-none`).each(function() {
+      showFormInnerItem($(this).find('input'));
+    });
+
+    //hide based on previously hidden
+    $(`#bpod-rn div.st-none`).each(function() {
+      let rnVal = $(this).find('input').val();
+      hideFormInnerItem($(`input[type='checkbox'][name='cpod-rn[]'][value='${rnVal}']`));
+    });
+
+    //hide based on bpod picks
+    $(`#bpod-rn input[type='checkbox'][name='bpod-rn[]']:checked`).each(function() {
+      let rnVal = $(this).val();
+      hideFormInnerItem($(`input[type='checkbox'][name='cpod-rn[]'][value='${rnVal}']`));
+    });
+
+  }
+
+  /**
+   * [hideAlreadyPickedForOutreach description]
+   * @return [type] [description]
+   */
+  function hideAlreadyPickedForOutreach() {
+    //reset all previously hidden
+    $(`#outreach-rn div.st-none`).each(function() {
+      showFormInnerItem($(this).find('input'));
+    });
+
+    //hide based on previously hidden
+    $(`#cpod-rn div.st-none`).each(function() {
+      let rnVal = $(this).find('input').val();
+      hideFormInnerItem($(`input[type='radio'][name='outreach-rn'][value='${rnVal}']`));
+    });
+
+    //hide based on vpod picks
+    $(`#cpod-rn input[type='checkbox'][name='cpod-rn[]']:checked`).each(function() {
+      let rnVal = $(this).val();
+      hideFormInnerItem($(`input[type='radio'][name='outreach-rn'][value='${rnVal}']`));
+    });
+
+  }
+
+  /**
+   * [showFormInnerItem description]
+   * @param  [type] $elem [description]
+   * @return [type]       [description]
+   */
   function showFormInnerItem($elem) {
     try {
       $elem.closest("div").removeClass('st-none').toggle(true);
@@ -642,6 +733,11 @@ if (!isset($_SESSION['user_session'])) {
     }
   }
 
+  /**
+   * [hideFormInnerItem description]
+   * @param  [type] $elem [description]
+   * @return [type]       [description]
+   */
   function hideFormInnerItem($elem) {
     try {
       $elem.closest("div").addClass('st-none').toggle(false);
@@ -653,6 +749,11 @@ if (!isset($_SESSION['user_session'])) {
     }
   }
 
+  /**
+   * [enableFormInnerItem description]
+   * @param  [type] $elem [description]
+   * @return [type]       [description]
+   */
   function enableFormInnerItem($elem) {
     try {
       $elem.prop("disabled", false);
@@ -663,6 +764,11 @@ if (!isset($_SESSION['user_session'])) {
     }
   }
 
+  /**
+   * [disableFormInnerItem description]
+   * @param  [type] $elem [description]
+   * @return [type]       [description]
+   */
   function disableFormInnerItem($elem) {
     try {
       $elem.prop("checked", false);
@@ -673,6 +779,7 @@ if (!isset($_SESSION['user_session'])) {
       return false;
     }
   }
+
   </script>
   <!-- END Aux Scripts -->
 
