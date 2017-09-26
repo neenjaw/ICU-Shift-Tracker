@@ -119,11 +119,36 @@ input.parsley-error:focus{
  *
  */
 
- .form-section {
-   padding-left: 15px;
-   border-left: 2px solid #FF851B;
-   display: none;
- }
- .form-section.current {
-   display: inherit;
- }
+.form-section {
+	padding-left: 15px;
+  border-left: 2px solid #FF851B;
+  display: none;
+}
+
+.form-section.current {
+  display: inherit;
+}
+
+#nurse-clinician {
+  max-height: 150px;
+}
+
+#charge-nurse {
+  max-height: 150px;
+}
+
+#apod-rn, #bpod-rn, #cpod-rn, #na, #uc {
+  max-height: 300px;
+}
+
+div.staff-select-group {
+  overflow-y: scroll;
+  border-radius: 3px;
+  padding: 5px;
+  border: 1px solid lightgrey;
+}
+
+div.inner-item:not(:last-child) {
+  border-collapse: collapse;
+  border-bottom: 1px solid lightgrey;
+}

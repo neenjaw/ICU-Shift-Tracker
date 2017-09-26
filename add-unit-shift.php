@@ -88,18 +88,26 @@ if (!isset($_SESSION['user_session'])) {
               <label class="control-label requiredField" for="select">
                 Who is the Clinician for the shift?<span class="asteriskField">*</span>
               </label>
-              <select class="select form-control" id="select-clinician" name="nc-staff" style="width: 100%" required>
-                <option value="" disabled selected hidden>Please Choose...</option>
-                <?php
-                //Build Staff Select List
-                foreach ($form_select_rn as $k => $v):
-                  ?>
-                  <option value="<?= $k ?>"><?= $v ?></option>
-                  <?php
-                endforeach;
-                //END Build Staff Select List
-                ?>
-              </select>
+
+
+              <div id="nurse-clinician" class="staff-select-group p-0 m-0">
+              <?php
+              //Build Staff Select List
+              foreach ($form_select_rn as $k => $v):
+              ?>
+                <div class="inner-item list-group-item-action">
+                  <label class="custom-control custom-radio m-1">
+                    <input id="nc-<?= $k ?>" name="nurse-clinician" type="radio" value="<?= $k ?>" class="custom-control-input">
+                    <span class="custom-control-indicator"></span>
+                    <span class="custom-control-description"><?= $v ?></span>
+                  </label>
+                </div>
+              <?php
+              endforeach;
+              //END Build Staff Select List
+              ?>
+              </div>
+
             </div>
 
             <!-- TODO add logic which hides the charge option select if you are doing a night shift -->
@@ -110,23 +118,34 @@ if (!isset($_SESSION['user_session'])) {
               <label class="control-label requiredField" for="select">
                 Who is the Charge for the shift?<span class="asteriskField">*</span>
               </label>
-              <select class="select form-control" id="select-charge" name="charge-staff" style="width: 100%" required>
-                <option value="" disabled selected hidden>Please Choose...</option>
-                <?php
-                //Build Staff Select List
-                foreach ($form_select_rn as $k => $v):
-                  ?>
-                  <option value="<?= $k ?>"><?= $v ?></option>
-                  <?php
-                endforeach;
-                //END Build Staff Select List
-                ?>
-              </select>
+
+              <div id="charge-nurse" class="staff-select-group p-0 m-0">
+              <?php
+              //Build Staff Select List
+              foreach ($form_select_rn as $k => $v):
+              ?>
+                <div class="inner-item list-group-item-action">
+                  <label class="custom-control custom-radio m-1">
+                    <input id="nc-<?= $k ?>" name="charge-nurse" type="radio" value="<?= $k ?>" class="custom-control-input">
+                    <span class="custom-control-indicator"></span>
+                    <span class="custom-control-description"><?= $v ?></span>
+                  </label>
+                </div>
+              <?php
+              endforeach;
+              //END Build Staff Select List
+              ?>
+              </div>
+
             </div>
 
-            <!-- TODO assign pods to the clinician/charge -->
 
           </div>
+
+
+          <!-- <div class="form-section mt-4 mb-4"> -->
+          <!-- TODO assign pods to the clinician/charge -->
+          <!-- </div> -->
 
           <div class="form-section mt-4 mb-4">
             <!-- Select Bedside Nurses for A -->
@@ -136,19 +155,25 @@ if (!isset($_SESSION['user_session'])) {
               <label class="control-label requiredField" for="select">
                 Select the nurses for Pod A<span class="asteriskField">*</span>
               </label>
-              <select class="select form-control" id="select-poda" name="apod-staff" style="width: 100%" required>
-                <option value="" disabled selected hidden>Please Choose...</option>
-                <?php
-                //Build Staff Select List
-                //use the CRUD object to access the database and build an option list of the categories
-                foreach ($form_select_rn as $k => $v):
-                  ?>
-                  <option value="<?= $k ?>"><?= $v ?></option>
-                  <?php
-                endforeach;
-                //END Build Staff Select List
-                ?>
-              </select>
+
+              <div id="apod-rn" class="staff-select-group p-0 m-0">
+              <?php
+              //Build Staff Select List
+              foreach ($form_select_rn as $k => $v):
+              ?>
+                <div class="inner-item list-group-item-action">
+                  <label class="custom-control custom-checkbox m-1">
+                    <input id="apod-rn-<?= $k ?>" name="apod-rn[]" type="checkbox" value="<?= $k ?>" class="custom-control-input">
+                    <span class="custom-control-indicator"></span>
+                    <span class="custom-control-description"><?= $v ?></span>
+                  </label>
+                </div>
+              <?php
+              endforeach;
+              //END Build Staff Select List
+              ?>
+              </div>
+
             </div>
           </div>
 
@@ -160,18 +185,25 @@ if (!isset($_SESSION['user_session'])) {
               <label class="control-label requiredField" for="select">
                 Select the nurses for Pod B<span class="asteriskField">*</span>
               </label>
-              <select class="select form-control" id="select-podb" name="bpod-staff" style="width: 100%" required>
-                <option value="" disabled selected hidden>Please Choose...</option>
-                <?php
-                //Build Staff Select List
-                foreach ($form_select_rn as $k => $v):
-                  ?>
-                  <option value="<?= $k ?>"><?= $v ?></option>
-                  <?php
-                endforeach;
-                //END Build Staff Select List
-                ?>
-              </select>
+
+              <div id="bpod-rn" class="staff-select-group p-0 m-0">
+              <?php
+              //Build Staff Select List
+              foreach ($form_select_rn as $k => $v):
+              ?>
+                <div class="inner-item list-group-item-action">
+                  <label class="custom-control custom-checkbox m-1">
+                    <input id="bpod-rn-<?= $k ?>" name="bpod-rn[]" type="checkbox" value="<?= $k ?>" class="custom-control-input">
+                    <span class="custom-control-indicator"></span>
+                    <span class="custom-control-description"><?= $v ?></span>
+                  </label>
+                </div>
+              <?php
+              endforeach;
+              //END Build Staff Select List
+              ?>
+              </div>
+
             </div>
           </div>
 
@@ -183,18 +215,25 @@ if (!isset($_SESSION['user_session'])) {
               <label class="control-label requiredField" for="select">
                 Select the nurses for Pod C<span class="asteriskField">*</span>
               </label>
-              <select class="select form-control" id="select-podc" name="cpod-staff" style="width: 100%" required>
-                <option value="" disabled selected hidden>Please Choose...</option>
-                <?php
-                //Build Staff Select List
-                foreach ($form_select_rn as $k => $v):
-                  ?>
-                  <option value="<?= $k ?>"><?= $v ?></option>
-                  <?php
-                endforeach;
-                //END Build Staff Select List
-                ?>
-              </select>
+
+              <div id="cpod-rn" class="staff-select-group p-0 m-0">
+              <?php
+              //Build Staff Select List
+              foreach ($form_select_rn as $k => $v):
+              ?>
+                <div class="inner-item list-group-item-action">
+                  <label class="custom-control custom-checkbox m-1">
+                    <input id="cpod-rn-<?= $k ?>" name="cpod-rn[]" type="checkbox" value="<?= $k ?>" class="custom-control-input">
+                    <span class="custom-control-indicator"></span>
+                    <span class="custom-control-description"><?= $v ?></span>
+                  </label>
+                </div>
+              <?php
+              endforeach;
+              //END Build Staff Select List
+              ?>
+              </div>
+
             </div>
           </div>
 
@@ -236,18 +275,25 @@ if (!isset($_SESSION['user_session'])) {
               <label class="control-label requiredField" for="select">
                 Select the NA's<span class="asteriskField">*</span>
               </label>
-              <select class="select form-control" id="select-na" name="na-staff" style="width: 100%" required>
-                <option value="" disabled selected hidden>Please Choose...</option>
-                <?php
-                //Build Staff Select List
-                foreach ($form_select_na as $k => $v):
-                  ?>
-                  <option value="<?= $k ?>"><?= $v ?></option>
-                  <?php
-                endforeach;
-                //END Build Staff Select List
-                ?>
-              </select>
+
+              <div id="na" class="staff-select-group p-0 m-0">
+              <?php
+              //Build Staff Select List
+              foreach ($form_select_na as $k => $v):
+              ?>
+                <div class="inner-item list-group-item-action">
+                  <label class="custom-control custom-checkbox m-1">
+                    <input id="na-<?= $k ?>" name="na[]" type="checkbox" value="<?= $k ?>" class="custom-control-input">
+                    <span class="custom-control-indicator"></span>
+                    <span class="custom-control-description"><?= $v ?></span>
+                  </label>
+                </div>
+              <?php
+              endforeach;
+              //END Build Staff Select List
+              ?>
+              </div>
+
             </div>
 
             <!-- Assign Pods -->
@@ -259,18 +305,24 @@ if (!isset($_SESSION['user_session'])) {
             <label class="control-label requiredField" for="select">
               Select the UC's<span class="asteriskField">*</span>
             </label>
-            <select class="select form-control" id="select-uc" name="uc-staff" style="width: 100%" required>
-              <option value="" disabled selected hidden>Please Choose...</option>
-              <?php
-              //Build Staff Select List
-              foreach ($form_select_uc as $k => $v):
-                ?>
-                <option value="<?= $k ?>"><?= $v ?></option>
-                <?php
-              endforeach;
-              //END Build Staff Select List
-              ?>
-            </select>
+
+            <div id="uc" class="staff-select-group p-0 m-0">
+            <?php
+            //Build Staff Select List
+            foreach ($form_select_uc as $k => $v):
+            ?>
+              <div class="inner-item list-group-item-action">
+                <label class="custom-control custom-checkbox m-1">
+                  <input id="uc-<?= $k ?>" name="uc[]" type="checkbox" value="<?= $k ?>" class="custom-control-input">
+                  <span class="custom-control-indicator"></span>
+                  <span class="custom-control-description"><?= $v ?></span>
+                </label>
+              </div>
+            <?php
+            endforeach;
+            //END Build Staff Select List
+            ?>
+            </div>
           </div>
 
           <!-- Assign Pods -->
@@ -323,13 +375,6 @@ if (!isset($_SESSION['user_session'])) {
       autoclose: true
     });
     <?php endif; ?>
-
-    // //Activate the Select2 script for the staff select to search easily
-    // $("#select-clinician").select2({theme: "bootstrap"});
-    // $("#select-charge").select2({theme: "bootstrap"});
-    // $("#select-poda").select2({theme: "bootstrap"});
-    // $("#select-podb").select2({theme: "bootstrap"});
-    // $("#select-podc").select2({theme: "bootstrap"});
 
     //bind the parsley.js event
     // $('#unit-shift-form')
@@ -386,6 +431,12 @@ if (!isset($_SESSION['user_session'])) {
       $(section).find(':input').attr('data-parsley-group', 'block-' + index);
     });
     navigateTo(0); // Start at the beginning
+
+    $("div.inner-item").click(function() {
+      var elem = $(this).find("input[type='checkbox'], input[type='radio']"); // find checkbox associated
+      elem.prop("checked", !(elem.prop("checked"))); // toggle checked state
+      return false; // return false to stop click propigation
+    });
 
   });
   </script>
