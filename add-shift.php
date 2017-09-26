@@ -224,7 +224,8 @@ foreach ($form_select_assignment as $k => $v) {?>
       $('#date').datepicker({
           format: "yyyy-mm-dd",
           orientation: "bottom auto",
-          autoclose: true
+          autoclose: true,
+          endDate: "0d"
       });
       <?php endif; ?>
       //Activate the Select2 script for the staff select to search easily

@@ -54,6 +54,7 @@ if (!isset($_SESSION['user_session'])) {
           $form_select_rn = $crud->getRnStaff();
           $form_select_na = $crud->getNaStaff();
           $form_select_uc = $crud->getUcStaff();
+          $form_select_assignment = $crud->getAllAssignments();
           ?>
 
           <div class="form-section form-inline mt-4 mb-4">
@@ -68,8 +69,8 @@ if (!isset($_SESSION['user_session'])) {
 
               <!-- DAY / NIGHT SELECT -->
               <div class="btn-group requiredField ml-sm-1 mt-1" data-toggle="buttons">
-                <label class="btn btn-outline-primary active"><input type="radio" name="d-or-n" id="radio-d-or-n-d" value="D" autocomplete="off" checked required>Day</label>
-                <label class="btn btn-outline-primary"><input type="radio" name="d-or-n" id="radio-d-or-n-n" value="N" autocomplete="off">Night</label>
+                <label id="radio-d-or-n-d" class="btn btn-outline-primary active"><input type="radio" name="d-or-n" value="D" autocomplete="off" checked required>Day</label>
+                <label id="radio-d-or-n-n" class="btn btn-outline-primary"><input type="radio" name="d-or-n" value="N" autocomplete="off">Night</label>
               </div>
             </div>
 
@@ -114,7 +115,7 @@ if (!isset($_SESSION['user_session'])) {
             <!-- TODO add logic which hides the option of choosing the same person as the clinician -->
 
             <!-- RN CHARGE SELECT -->
-            <div class="form-group">
+            <div id="fg-charge-nurse" class="form-group">
               <label class="control-label requiredField" for="select">
                 Who is the Charge for the shift?<span class="asteriskField">*</span>
               </label>
@@ -139,15 +140,70 @@ if (!isset($_SESSION['user_session'])) {
 
             </div>
 
-
           </div>
 
 
-          <!-- <div class="form-section mt-4 mb-4"> -->
-          <!-- TODO assign pods to the clinician/charge -->
-          <!-- </div> -->
+          <div id="fs-nc-and-cn-pod-select" class="form-section mt-4 mb-4">
+            <!-- assign pods to the clinician/charge -->
 
-          <div class="form-section mt-4 mb-4">
+            <div class="form-group">
+              <label class="control-label requiredField" for="select">
+                Which pod was the Nurse Clinician in?<span class="asteriskField">*</span>
+              </label>
+
+              <div id="nc-pod" class="staff-select-group p-0 m-0">
+                <?php
+                //Build Staff Select List
+                foreach ($form_select_assignment as $k => $v):
+                  if ( (strpos($v, "B") === false) || (strlen($v) == 1) ) {
+                    continue;
+                  }
+                ?>
+                  <div class="inner-item list-group-item-action">
+                    <label class="custom-control custom-radio m-1">
+                      <input id="nc-pod-<?= $k ?>" name="nc-pod" type="radio" value="<?= $k ?>" class="custom-control-input">
+                      <span class="custom-control-indicator"></span>
+                      <span class="custom-control-description"><?= $v ?></span>
+                    </label>
+                  </div>
+                <?php
+                endforeach;
+                //END Build Staff Select List
+                ?>
+              </div>
+
+            </div>
+
+            <div class="form-group">
+              <label class="control-label requiredField" for="select">
+                Which pod was the Charge Nurse in?<span class="asteriskField">*</span>
+              </label>
+
+              <div id="cn-pod" class="staff-select-group p-0 m-0">
+                <?php
+                //Build Staff Select List
+                foreach ($form_select_assignment as $k => $v):
+                  if ( (strlen($v) > 1) || ($v === "B") ) {
+                    continue;
+                  }
+                ?>
+                  <div class="inner-item list-group-item-action">
+                    <label class="custom-control custom-radio m-1">
+                      <input id="cn-pod-<?= $k ?>" name="cn-pod" type="radio" value="<?= $k ?>" class="custom-control-input">
+                      <span class="custom-control-indicator"></span>
+                      <span class="custom-control-description"><?= $v ?></span>
+                    </label>
+                  </div>
+                <?php
+                endforeach;
+                //END Build Staff Select List
+                ?>
+              </div>
+
+            </div>
+          </div>
+
+          <div id="apod-rn-select" class="form-section mt-4 mb-4">
             <!-- Select Bedside Nurses for A -->
             <!-- TODO add logic so that clinician and charge cant be selected -->
 
@@ -269,6 +325,10 @@ if (!isset($_SESSION['user_session'])) {
           <!-- Who who had burn -->
           <!-- </div> -->
 
+          <!-- <div class="form-section mt-4 mb-4"> -->
+          <!-- Who was on outreach-->
+          <!-- </div> -->
+
           <div class="form-section mt-4 mb-4">
             <!-- Select NA's -->
             <div class="form-group">
@@ -333,9 +393,9 @@ if (!isset($_SESSION['user_session'])) {
           <!-- </div> -->
 
           <div class="form-navigation m-1 text-center">
-            <button type="button" class="previous btn btn-secondary">&lt; Previous</button>
-            <button type="button" class="next btn btn-secondary">Next &gt;</button>
-            <button type="submit" class="btn btn-secondary">Submit</button>
+            <button type="button" id="btn-prev" class="previous btn btn-secondary">&lt; Previous</button>
+            <button type="button" id="btn-next" class="next btn btn-secondary">Next &gt;</button>
+            <button type="submit" id="btn-submit" class="btn btn-secondary">Submit</button>
           </div>
         </form>
 
@@ -376,7 +436,8 @@ if (!isset($_SESSION['user_session'])) {
     $('#date').datepicker({
       format: "yyyy-mm-dd",
       orientation: "bottom auto",
-      autoclose: true
+      autoclose: true,
+      endDate: "0d"
     });
     <?php endif; ?>
 
@@ -396,13 +457,23 @@ if (!isset($_SESSION['user_session'])) {
     /********************************************************
      * FORM PAGINATION - CREDIT TO Parsely.js DOCUMENTATION *
      ********************************************************/
-    var $sections = $('.form-section');
-
+    var $sections = $('.form-section'); // list all all the form-section elements
+    var oldIndex = -1; //reference to be able to know if traverseing forward or backward
     function navigateTo(index) {
       // Mark the current section with the class 'current'
-      $sections.removeClass('current')
-               .eq(index)
-               .addClass('current'); //TODO << ADD SHOW TRANSITION ANIMATION HERE BETWEEN FORMS
+      var $temp = $sections.removeClass('current')
+                           .eq(index);
+
+      //check if section should be skipped
+      while ( $temp.hasClass('skip-section') ) { //loop until section found which shouldnt be skipped
+        if ( oldIndex > index ) { //if moving backwards
+          $temp = $sections.eq(--index); //look back one more section
+        } else if ( oldIndex < index ) { //if moving forwards
+          $temp = $sections.eq(++index); //look ahead one more section
+        }
+      }
+
+      $temp.addClass('current'); //IDEA << ADD SHOW TRANSITION ANIMATION HERE BETWEEN FORMS
 
       // Show only the navigation buttons that make sense for the current section:
       $('.form-navigation .previous').attr("disabled", !(index > 0))
@@ -419,9 +490,13 @@ if (!isset($_SESSION['user_session'])) {
                                          .toggleClass("btn-primary", (atTheEnd))
                                          .toggleClass("btn-secondary", (!atTheEnd));
 
+      //update progress bar
       var progress = (index + 1)/$sections.length*100;
       $('#step-progress').attr('aria-valuenow', progress).css("width",(progress+"%"));
       $('#step-x-of-y').html(`Step ${index + 1} of ${$sections.length}`);
+
+      //update reference index
+      oldIndex = index;
     }
 
     function curIndex() {
@@ -466,17 +541,58 @@ if (!isset($_SESSION['user_session'])) {
     var $disabledPrn = null;
     $(`#nurse-clinician div.inner-item`).click(function() {
       if ($disabledPrn !== null) {
-          $disabledPrn.prop("disabled", false);
+          // $disabledPrn.prop("disabled", false);
+          // $disabledPrn.closest("div").toggleClass("list-group-item-action");
+          enableFormInnerItem($disabledPrn);
       }
-      var $ncChoice = $(this).find("input[type='radio']");
+      let $ncChoice = $(this).find("input[type='radio']");
 
-      var $elem = $(`input[type='radio'][name='charge-nurse'][value='${$ncChoice.val()}']`);
+      let $elem = $(`input[type='radio'][name='charge-nurse'][value='${$ncChoice.val()}']`);
 
       if ($elem !== null) {
-        $elem.prop("checked", false);
-        $elem.prop("disabled", true);
+        // $elem.prop("checked", false);
+        // $elem.prop("disabled", true);
+        // $elem.closest("div").toggleClass("list-group-item-action");
+        disableFormInnerItem($elem);
         $disabledPrn = $elem;
       }
+    });
+
+    //change behavior of form if day shift is selected for input
+    $(`#radio-d-or-n-d`).click(function() {
+      $(`#fg-charge-nurse`).toggle(true); // show charge nurse select
+      $(`#fs-nc-and-cn-pod-select`).toggleClass('skip-section', false); // show section for pod selection for nc/cn
+    });
+    //change behavior of form if night shift is selected for input
+    $(`#radio-d-or-n-n`).click(function() {
+      $(`#fg-charge-nurse`).toggle(false); // hide charge nurse select
+      $(`#fs-nc-and-cn-pod-select`).toggleClass('skip-section', true); // hide section for pod selection for nc/cn
+
+      let $cnElem = $(`input[type='radio'][name='charge-nurse']:checked`); //unselect any selected charge-nurse value
+      if ($cnElem !== null) { $cnElem.prop("checked", false); }
+      let $cnPodElem = $(`input[type='radio'][name='cn-pod']:checked`); //unselect any selected charge-nurse value
+      if ($cnPodElem !== null) { $cnPodElem.prop("checked", false); }
+    });
+
+    //when next is clicked, evaluate based on previous section(s);
+    $('.form-navigation .next').click(function () {
+      let currentSectionId = $('.current').prop('id');
+
+      if ( currentSectionId == 'apod-rn-select' ) {
+        hideAlreadyPickedForApod();
+      } else if ( currentSectionId == 'bpod-rn-select' ) {
+        // hideAlreadyPickedForBpod();
+      } else if ( currentSectionId == 'cpod-rn-select' ) {
+        // hideAlreadyPickedForCpod();
+      } else if ( currentSectionId == 'outreach-rn-select' ) {
+        // hideAlreadyPickedForOutreach();
+      }
+
+      //popStaffShiftModifierList();
+      //popNaPodSelect();
+      //popUcPodSelect();
+
+      return true;
     });
 
     //listener which diables/clears apod nurs depending on clinician/charge values
@@ -496,9 +612,67 @@ if (!isset($_SESSION['user_session'])) {
     //listener which updates shift code lists depending on all nurses selected
     // TODO Code here
 
-
-
   });
+
+  function hideAlreadyPickedForApod() {
+    //reset all hidden
+    $(`#apod-rn div.st-none`).each(function() {
+      showFormInnerItem($(this).find('input'));
+    })
+
+    //hide clinician
+    let ncVal = $(`input[type='radio'][name='nurse-clinician']:checked`).val();
+    hideFormInnerItem($(`input[type='checkbox'][name='apod-rn[]'][value='${ncVal}']`));
+
+    //hide charge nurse
+    if ( $(`input[type='radio'][name='d-or-n']:checked`).val() === "D" ) {
+      let cnVal = $(`input[type='radio'][name='charge-nurse']:checked`).val();
+      hideFormInnerItem($(`input[type='checkbox'][name='apod-rn[]'][value='${cnVal}']`));
+    }
+  }
+
+  function showFormInnerItem($elem) {
+    try {
+      $elem.closest("div").removeClass('st-none').toggle(true);
+      enableFormInnerItem($elem);
+
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  function hideFormInnerItem($elem) {
+    try {
+      $elem.closest("div").addClass('st-none').toggle(false);
+      disableFormInnerItem($elem);
+
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  function enableFormInnerItem($elem) {
+    try {
+      $elem.prop("disabled", false);
+      $elem.closest("div").toggleClass("list-group-item-action");
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  function disableFormInnerItem($elem) {
+    try {
+      $elem.prop("checked", false);
+      $elem.prop("disabled", true);
+      $elem.closest("div").toggleClass("list-group-item-action");
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
   </script>
   <!-- END Aux Scripts -->
 
