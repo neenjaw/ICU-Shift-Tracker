@@ -126,7 +126,7 @@ if (!isset($_SESSION['user_session'])) {
               ?>
                 <div class="inner-item list-group-item-action">
                   <label class="custom-control custom-radio m-1">
-                    <input id="nc-<?= $k ?>" name="charge-nurse" type="radio" value="<?= $k ?>" class="custom-control-input">
+                    <input id="cn-<?= $k ?>" name="charge-nurse" type="radio" value="<?= $k ?>" class="custom-control-input">
                     <span class="custom-control-indicator"></span>
                     <span class="custom-control-description"><?= $v ?></span>
                   </label>
@@ -295,9 +295,11 @@ if (!isset($_SESSION['user_session'])) {
               </div>
 
             </div>
-
-            <!-- Assign Pods -->
           </div>
+
+          <!-- <div class="form-section mt-4 mb-4"> -->
+          <!-- TODO assign pods to the na's -->
+          <!-- </div> -->
 
           <div class="form-section mt-4 mb-4">
           <!-- Select UC's -->
@@ -324,9 +326,11 @@ if (!isset($_SESSION['user_session'])) {
             ?>
             </div>
           </div>
-
-          <!-- Assign Pods -->
           </div>
+
+          <!-- <div class="form-section mt-4 mb-4"> -->
+          <!-- TODO assign pods to the uc's -->
+          <!-- </div> -->
 
           <div class="form-navigation m-1 text-center">
             <button type="button" class="previous btn btn-secondary">&lt; Previous</button>
@@ -387,20 +391,33 @@ if (!isset($_SESSION['user_session'])) {
     //     this.$element.closest('.form-group').removeClass('has-success').addClass('has-danger');
     //   }
     // })
+    //
+
+    /********************************************************
+     * FORM PAGINATION - CREDIT TO Parsely.js DOCUMENTATION *
+     ********************************************************/
     var $sections = $('.form-section');
 
-    //TODO Make the div expand, not just POP into existence
     function navigateTo(index) {
       // Mark the current section with the class 'current'
-      $sections
-      .removeClass('current')
-      .eq(index)
-      .addClass('current'); //TODO << ADD SHOW ANIMATION HERE
+      $sections.removeClass('current')
+               .eq(index)
+               .addClass('current'); //TODO << ADD SHOW TRANSITION ANIMATION HERE BETWEEN FORMS
+
       // Show only the navigation buttons that make sense for the current section:
-      $('.form-navigation .previous').attr("disabled", !(index > 0)).toggleClass("btn-primary", (index > 0)).toggleClass("btn-secondary", !(index > 0));
+      $('.form-navigation .previous').attr("disabled", !(index > 0))
+                                     .toggleClass("btn-primary", (index > 0))
+                                     .toggleClass("btn-secondary", !(index > 0));
+
       var atTheEnd = index >= $sections.length - 1;
-      $('.form-navigation .next').attr("disabled", (atTheEnd)).toggleClass("btn-primary", (!atTheEnd)).toggleClass("btn-secondary", (atTheEnd));
-      $('.form-navigation [type=submit]').attr("disabled", (!atTheEnd)).toggleClass("btn-primary", (atTheEnd)).toggleClass("btn-secondary", (!atTheEnd));
+
+      $('.form-navigation .next').attr("disabled", (atTheEnd))
+                                 .toggleClass("btn-primary", (!atTheEnd))
+                                 .toggleClass("btn-secondary", (atTheEnd));
+
+      $('.form-navigation [type=submit]').attr("disabled", (!atTheEnd))
+                                         .toggleClass("btn-primary", (atTheEnd))
+                                         .toggleClass("btn-secondary", (!atTheEnd));
 
       var progress = (index + 1)/$sections.length*100;
       $('#step-progress').attr('aria-valuenow', progress).css("width",(progress+"%"));
@@ -432,11 +449,54 @@ if (!isset($_SESSION['user_session'])) {
     });
     navigateTo(0); // Start at the beginning
 
+    /**************************
+     * END -- FORM PAGINATION *
+     **************************/
+
+    //listener for click in the div to increase radio/checkbox active area
     $("div.inner-item").click(function() {
-      var elem = $(this).find("input[type='checkbox'], input[type='radio']"); // find checkbox associated
-      elem.prop("checked", !(elem.prop("checked"))); // toggle checked state
+      var $elem = $(this).find("input[type='checkbox'], input[type='radio']"); // find checkbox associated
+      if (!$elem.prop("disabled")) {
+        $elem.prop("checked", !($elem.prop("checked"))); // toggle checked state
+      }
       return false; // return false to stop click propigation
     });
+
+    //listener which disables/clear chage nurse value depending on nurse clinician value
+    var $disabledPrn = null;
+    $(`#nurse-clinician div.inner-item`).click(function() {
+      if ($disabledPrn !== null) {
+          $disabledPrn.prop("disabled", false);
+      }
+      var $ncChoice = $(this).find("input[type='radio']");
+
+      var $elem = $(`input[type='radio'][name='charge-nurse'][value='${$ncChoice.val()}']`);
+
+      if ($elem !== null) {
+        $elem.prop("checked", false);
+        $elem.prop("disabled", true);
+        $disabledPrn = $elem;
+      }
+    });
+
+    //listener which diables/clears apod nurs depending on clinician/charge values
+    // TODO Code here
+    // IDEA when the form-section is made current (as in, coming in to view, get the values, disable the previously chosen ones)
+
+    // function getNcAndCn() {} -- returns nc and cn id's
+    // function getNcAndCnAndApod() { call getNcAndCn(), add id's in apod }
+    // ... etc
+
+    //listener which diables/clears bpod nurs depending on clinician/charge values
+    // TODO Code here
+
+    //listener which diables/clears cpod nurs depending on clinician/charge/apod/bpod values
+    // TODO Code here
+
+    //listener which updates shift code lists depending on all nurses selected
+    // TODO Code here
+
+
 
   });
   </script>
