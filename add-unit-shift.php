@@ -158,7 +158,7 @@ if (!isset($_SESSION['user_session'])) {
                 ?>
                   <div class="inner-item list-group-item-action">
                     <label class="custom-control custom-radio m-1">
-                      <input id="nc-pod-<?= $k ?>" name="nc-pod" type="radio" value="<?= $k ?>" class="custom-control-input">
+                      <input id="nc-pod-<?= $k ?>" name="nc-pod" type="radio" value="<?= $k ?>" data-pod-name="<?= $v ?>" class="custom-control-input">
                       <span class="custom-control-indicator"></span>
                       <span class="custom-control-description"><?= $v ?></span>
                     </label>
@@ -186,7 +186,7 @@ if (!isset($_SESSION['user_session'])) {
                 ?>
                   <div class="inner-item list-group-item-action">
                     <label class="custom-control custom-radio m-1">
-                      <input id="cn-pod-<?= $k ?>" name="cn-pod" type="radio" value="<?= $k ?>" class="custom-control-input">
+                      <input id="cn-pod-<?= $k ?>" name="cn-pod" type="radio" value="<?= $k ?>" data-pod-name="<?= $v ?>" class="custom-control-input">
                       <span class="custom-control-indicator"></span>
                       <span class="custom-control-description"><?= $v ?></span>
                     </label>
@@ -631,6 +631,7 @@ if (!isset($_SESSION['user_session'])) {
      **************************/
 
     setClickAreaListeners("div.inner-item");
+    hideFormInnerItem($(`#nc-pod-8`));
 
     //listener which disables/clear chage nurse value depending on nurse clinician value
     var $disabledPrn = null;
@@ -652,11 +653,17 @@ if (!isset($_SESSION['user_session'])) {
     $(`#radio-d-or-n-d`).click(function() {
       $(`#fg-charge-nurse`).toggle(true); // show charge nurse select
       $(`#fs-nc-and-cn-pod-select`).toggleClass('skip-section', false); // show section for pod selection for nc/cn
+
+      hideFormInnerItem($(`#nc-pod-8`));
     });
+
     //listener to change behavior of form if night shift is selected for input
     $(`#radio-d-or-n-n`).click(function() {
       $(`#fg-charge-nurse`).toggle(false); // hide charge nurse select
       $(`#fs-nc-and-cn-pod-select`).toggleClass('skip-section', true); // hide section for pod selection for nc/cn
+
+      showFormInnerItem($(`#nc-pod-8`));
+      $(`#nc-pod-8`).prop("checked", true);
 
       let $cnElem = $(`input[type='radio'][name='charge-nurse']:checked`); //unselect any selected charge-nurse value
       if ($cnElem !== null) { $cnElem.prop("checked", false); }
@@ -695,9 +702,32 @@ if (!isset($_SESSION['user_session'])) {
         popStaffShiftModifierList('#burn', 'burn', bedsideRnStaffList);
       }
 
-      //TODO
+      //TODO -- NEED TO GET THE PODS from CRUD to JAVASCRIPT
       //popNaPodSelect();
       //popUcPodSelect();
+
+      return true;
+    });
+
+    $(`#nc-pod div.inner-item`).click(function() {
+      let clickedPodName = $(this).find('input').data('podName').replace(/[\/B]/g, '');
+
+      $(`input[type='radio'][name='cn-pod']`)
+        .filter(function() {
+          return (!($(this).closest('div').hasClass('st-none'))) && ($(this).data('podName').indexOf(clickedPodName) < 0);
+        })
+        .prop("checked", true);
+
+      return true;
+    });
+    $(`#cn-pod div.inner-item`).click(function() {
+      let clickedPodName = $(this).find('input').data('podName');
+
+      $(`input[type='radio'][name='nc-pod']`)
+        .filter(function() {
+          return (!($(this).closest('div').hasClass('st-none'))) && ($(this).data('podName').indexOf(clickedPodName) < 0);
+        })
+        .prop("checked", true);
 
       return true;
     });
