@@ -293,9 +293,18 @@ if (!isset($_SESSION['user_session'])) {
             </div>
           </div>
 
-          <!-- <div class="form-section mt-4 mb-4"> -->
-          <!-- Who had non-vent -->
-          <!-- </div> -->
+          <div class="form-section mt-4 mb-4">
+            <!-- Who had non-vent -->
+            <div class="form-group">
+              <label class="control-label" for="div">
+                Which nurses had only non-ventilated patients?
+              </label>
+              <div id="non-vent" class="staff-select-group p-0 m-0">
+                <!-- Add handlebars template here -->
+              </div>
+            </div>
+
+          </div>
 
           <!-- <div class="form-section mt-4 mb-4"> -->
           <!-- Who had double -->
@@ -453,8 +462,17 @@ if (!isset($_SESSION['user_session'])) {
   <?php include 'includes/script-include.php'; ?>
   <!-- END Prefooter Include -->
 
+  <!-- Handlebars templates -->
+  <script id="hbt-shift-modifier-checkbox" type="text/x-handlebars-template">
+  <?php include 'includes/templates/UnitShiftShiftModCheckbox.handlebars'; ?>
+  </script>
+  <!-- END Handlebars templates -->
+
   <!-- Aux Scripts -->
   <script>
+
+  var shiftModifierCheckboxTemplate = null;
+
   //TODO Bind to the window, so that if user tries to back out while form is dirty, then prompts to ask
   $(function() {
 
@@ -622,7 +640,25 @@ if (!isset($_SESSION['user_session'])) {
       return true;
     });
 
+    //compile the shift modifier checkbox template with Handlebars
+    shiftModifierCheckboxTemplate = Handlebars.compile($("#hbt-shift-modifier-checkbox").html());
+
   });
+
+  /**
+   * [popStaffShiftModifierList description]
+   * @return [type] [description]
+   */
+  function popStaffShiftModifierList() {
+    let staffList = {
+                      modifier : "non-vent",
+                      staff : [
+                        {id: 1, name: "Bob, Billy (P.ENG)"}
+                      ]
+                    };
+    $('#non-vent').html(shiftModifierCheckboxTemplate(staffList));
+    //add div click listeners to it
+  }
 
   /**
    * [hideAlreadyPickedForApod description]
