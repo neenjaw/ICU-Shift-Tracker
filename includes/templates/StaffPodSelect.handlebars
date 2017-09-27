@@ -1,0 +1,13 @@
+{{#each staff}}
+  <div class="inner-item list-group-item-action">
+    <label class="custom-control custom-checkbox m-1">
+      <span class="custom-control-description">{{staff.name}}</span>
+      <select class="custom-select">
+        <option disabled selected>Select a pod...</option>
+        {{#each pod}}
+          <option value="{{pod.id}}">{{pod.name}}</option>
+        {{/each}}
+      </select>
+    </label>
+  </div>
+{{/each}}

@@ -1,7 +1,7 @@
 {{#each staff}}
   <div class="inner-item list-group-item-action">
     <label class="custom-control custom-checkbox m-1">
-      <input id="{{modifier}}-{{id}}" name="non-vent[]" type="checkbox" value="{{id}}" class="custom-control-input">
+      <input id="{{modifier}}-{{id}}" name="non-vent[]" type="checkbox" value="{{id}}" data-staff-name="{{{name}}}" class="custom-control-input">
       <span class="custom-control-description">{{name}}?</span>
       <span class="custom-control-indicator"></span>
     </label>

@@ -98,7 +98,7 @@ if (!isset($_SESSION['user_session'])) {
               ?>
                 <div class="inner-item list-group-item-action">
                   <label class="custom-control custom-radio m-1">
-                    <input id="nc-<?= $k ?>" name="nurse-clinician" type="radio" value="<?= $k ?>" class="custom-control-input">
+                    <input id="nc-<?= $k ?>" name="nurse-clinician" type="radio" value="<?= $k ?>" data-staff-name="<?= $v ?>" class="custom-control-input">
                     <span class="custom-control-indicator"></span>
                     <span class="custom-control-description"><?= $v ?></span>
                   </label>
@@ -110,9 +110,6 @@ if (!isset($_SESSION['user_session'])) {
               </div>
 
             </div>
-
-            <!-- TODO add logic which hides the charge option select if you are doing a night shift -->
-            <!-- TODO add logic which hides the option of choosing the same person as the clinician -->
 
             <!-- RN CHARGE SELECT -->
             <div id="fg-charge-nurse" class="form-group">
@@ -127,7 +124,7 @@ if (!isset($_SESSION['user_session'])) {
               ?>
                 <div class="inner-item list-group-item-action">
                   <label class="custom-control custom-radio m-1">
-                    <input id="cn-<?= $k ?>" name="charge-nurse" type="radio" value="<?= $k ?>" class="custom-control-input">
+                    <input id="cn-<?= $k ?>" name="charge-nurse" type="radio" value="<?= $k ?>" data-staff-name="<?= $v ?>" class="custom-control-input">
                     <span class="custom-control-indicator"></span>
                     <span class="custom-control-description"><?= $v ?></span>
                   </label>
@@ -153,7 +150,7 @@ if (!isset($_SESSION['user_session'])) {
 
               <div id="nc-pod" class="staff-select-group p-0 m-0">
                 <?php
-                //Build Staff Select List
+                //Build Pod Select List
                 foreach ($form_select_assignment as $k => $v):
                   if ( (strpos($v, "B") === false) || (strlen($v) == 1) ) {
                     continue;
@@ -168,7 +165,7 @@ if (!isset($_SESSION['user_session'])) {
                   </div>
                 <?php
                 endforeach;
-                //END Build Staff Select List
+                //END Build Pod Select List
                 ?>
               </div>
 
@@ -181,7 +178,7 @@ if (!isset($_SESSION['user_session'])) {
 
               <div id="cn-pod" class="staff-select-group p-0 m-0">
                 <?php
-                //Build Staff Select List
+                //Build Pod Select List
                 foreach ($form_select_assignment as $k => $v):
                   if ( (strlen($v) > 1) || ($v === "B") ) {
                     continue;
@@ -196,7 +193,7 @@ if (!isset($_SESSION['user_session'])) {
                   </div>
                 <?php
                 endforeach;
-                //END Build Staff Select List
+                //END Build Pod Select List
                 ?>
               </div>
 
@@ -219,7 +216,7 @@ if (!isset($_SESSION['user_session'])) {
               ?>
                 <div class="inner-item list-group-item-action">
                   <label class="custom-control custom-checkbox m-1">
-                    <input id="apod-rn-<?= $k ?>" name="apod-rn[]" type="checkbox" value="<?= $k ?>" class="custom-control-input">
+                    <input id="apod-rn-<?= $k ?>" name="apod-rn[]" type="checkbox" value="<?= $k ?>" data-staff-name="<?= $v ?>" class="custom-control-input">
                     <span class="custom-control-indicator"></span>
                     <span class="custom-control-description"><?= $v ?></span>
                   </label>
@@ -249,7 +246,7 @@ if (!isset($_SESSION['user_session'])) {
               ?>
                 <div class="inner-item list-group-item-action">
                   <label class="custom-control custom-checkbox m-1">
-                    <input id="bpod-rn-<?= $k ?>" name="bpod-rn[]" type="checkbox" value="<?= $k ?>" class="custom-control-input">
+                    <input id="bpod-rn-<?= $k ?>" name="bpod-rn[]" type="checkbox" value="<?= $k ?>" data-staff-name="<?= $v ?>" class="custom-control-input">
                     <span class="custom-control-indicator"></span>
                     <span class="custom-control-description"><?= $v ?></span>
                   </label>
@@ -279,7 +276,7 @@ if (!isset($_SESSION['user_session'])) {
               ?>
                 <div class="inner-item list-group-item-action">
                   <label class="custom-control custom-checkbox m-1">
-                    <input id="cpod-rn-<?= $k ?>" name="cpod-rn[]" type="checkbox" value="<?= $k ?>" class="custom-control-input">
+                    <input id="cpod-rn-<?= $k ?>" name="cpod-rn[]" type="checkbox" value="<?= $k ?>" data-staff-name="<?= $v ?>" class="custom-control-input">
                     <span class="custom-control-indicator"></span>
                     <span class="custom-control-description"><?= $v ?></span>
                   </label>
@@ -293,8 +290,8 @@ if (!isset($_SESSION['user_session'])) {
             </div>
           </div>
 
-          <div class="form-section mt-4 mb-4">
-            <!-- Who had non-vent -->
+          <!-- Who had non-vent -->
+          <div id="section-non-vent" class="form-section mt-4 mb-4">
             <div class="form-group">
               <label class="control-label" for="div">
                 Which nurses had only non-ventilated patients?
@@ -303,36 +300,91 @@ if (!isset($_SESSION['user_session'])) {
                 <!-- Add handlebars template here -->
               </div>
             </div>
-
           </div>
 
-          <!-- <div class="form-section mt-4 mb-4"> -->
           <!-- Who had double -->
-          <!-- </div> -->
+          <div id="section-double" class="form-section mt-4 mb-4">
+            <div class="form-group">
+              <label class="control-label" for="div">
+                Which nurses were doubled?
+              </label>
+              <div id="double" class="staff-select-group p-0 m-0">
+                <!-- Add handlebars template here -->
+              </div>
+            </div>
+          </div>
 
-          <!-- <div class="form-section mt-4 mb-4"> -->
           <!-- Who admitted -->
-          <!-- </div> -->
+          <div id="section-admit" class="form-section mt-4 mb-4">
+            <div class="form-group">
+              <label class="control-label" for="div">
+                Which nurses admitted patients?
+              </label>
+              <div id="admit" class="staff-select-group p-0 m-0">
+                <!-- Add handlebars template here -->
+              </div>
+            </div>
+          </div>
 
-          <!-- <div class="form-section mt-4 mb-4"> -->
           <!-- Who had very sick -->
-          <!-- </div> -->
+          <div id="section-very-sick" class="form-section mt-4 mb-4">
+            <div class="form-group">
+              <label class="control-label" for="div">
+                Which nurses had a very sick patient <small>(3 gtt's or more)</small>?
+              </label>
+              <div id="very-sick" class="staff-select-group p-0 m-0">
+                <!-- Add handlebars template here -->
+              </div>
+            </div>
+          </div>
 
-          <!-- <div class="form-section mt-4 mb-4"> -->
           <!-- Who had code pager -->
-          <!-- </div> -->
+          <div id="section-code-pager" class="form-section mt-4 mb-4">
+            <div class="form-group">
+              <label class="control-label" for="div">
+                Which nurses had the code pager?
+              </label>
+              <div id="code-pager" class="staff-select-group p-0 m-0">
+                <!-- Add handlebars template here -->
+              </div>
+            </div>
+          </div>
 
-          <!-- <div class="form-section mt-4 mb-4"> -->
           <!-- Who had crrt -->
-          <!-- </div> -->
+          <div id="section-crrt" class="form-section mt-4 mb-4">
+            <div class="form-group">
+              <label class="control-label" for="div">
+                Which nurses had crrt?
+              </label>
+              <div id="crrt" class="staff-select-group p-0 m-0">
+                <!-- Add handlebars template here -->
+              </div>
+            </div>
+          </div>
 
-          <!-- <div class="form-section mt-4 mb-4"> -->
           <!-- Who had evd -->
-          <!-- </div> -->
+          <div id="section-evd" class="form-section mt-4 mb-4">
+            <div class="form-group">
+              <label class="control-label" for="div">
+                Which nurses had an EVD?
+              </label>
+              <div id="evd" class="staff-select-group p-0 m-0">
+                <!-- Add handlebars template here -->
+              </div>
+            </div>
+          </div>
 
-          <!-- <div class="form-section mt-4 mb-4"> -->
           <!-- Who who had burn -->
-          <!-- </div> -->
+          <div id="section-burn" class="form-section mt-4 mb-4">
+            <div class="form-group">
+              <label class="control-label" for="div">
+                Which nurses had a burn patient?
+              </label>
+              <div id="burn" class="staff-select-group p-0 m-0">
+                <!-- Add handlebars template here -->
+              </div>
+            </div>
+          </div>
 
           <div id="outreach-rn-select" class="form-section mt-4 mb-4">
             <!-- Select Bedside Nurses for C -->
@@ -466,12 +518,18 @@ if (!isset($_SESSION['user_session'])) {
   <script id="hbt-shift-modifier-checkbox" type="text/x-handlebars-template">
   <?php include 'includes/templates/UnitShiftShiftModCheckbox.handlebars'; ?>
   </script>
+  <script id="hbt-staff-pod-select" type="text/x-handlebars-template">
+  <?php include 'includes/templates/StaffPodSelect.handlebars'; ?>
+  </script>
   <!-- END Handlebars templates -->
 
   <!-- Aux Scripts -->
   <script>
 
   var shiftModifierCheckboxTemplate = null;
+  var bedsideRnStaffList = [];
+  var naStaffList = [];
+  var ucStaffList = [];
 
   //TODO Bind to the window, so that if user tries to back out while form is dirty, then prompts to ask
   $(function() {
@@ -572,21 +630,12 @@ if (!isset($_SESSION['user_session'])) {
      * END -- FORM PAGINATION *
      **************************/
 
-    //listener for click in the div to increase radio/checkbox active area
-    $("div.inner-item").click(function() {
-      var $elem = $(this).find("input[type='checkbox'], input[type='radio']"); // find checkbox associated
-      if (!$elem.prop("disabled")) {
-        $elem.prop("checked", !($elem.prop("checked"))); // toggle checked state
-      }
-      return false; // return false to stop click propigation
-    });
+    setClickAreaListeners("div.inner-item");
 
     //listener which disables/clear chage nurse value depending on nurse clinician value
     var $disabledPrn = null;
     $(`#nurse-clinician div.inner-item`).click(function() {
       if ($disabledPrn !== null) {
-          // $disabledPrn.prop("disabled", false);
-          // $disabledPrn.closest("div").toggleClass("list-group-item-action");
           enableFormInnerItem($disabledPrn);
       }
       let $ncChoice = $(this).find("input[type='radio']");
@@ -594,20 +643,17 @@ if (!isset($_SESSION['user_session'])) {
       let $elem = $(`input[type='radio'][name='charge-nurse'][value='${$ncChoice.val()}']`);
 
       if ($elem !== null) {
-        // $elem.prop("checked", false);
-        // $elem.prop("disabled", true);
-        // $elem.closest("div").toggleClass("list-group-item-action");
         disableFormInnerItem($elem);
         $disabledPrn = $elem;
       }
     });
 
-    //change behavior of form if day shift is selected for input
+    //listener to change behavior of form if day shift is selected for input
     $(`#radio-d-or-n-d`).click(function() {
       $(`#fg-charge-nurse`).toggle(true); // show charge nurse select
       $(`#fs-nc-and-cn-pod-select`).toggleClass('skip-section', false); // show section for pod selection for nc/cn
     });
-    //change behavior of form if night shift is selected for input
+    //listener to change behavior of form if night shift is selected for input
     $(`#radio-d-or-n-n`).click(function() {
       $(`#fg-charge-nurse`).toggle(false); // hide charge nurse select
       $(`#fs-nc-and-cn-pod-select`).toggleClass('skip-section', true); // hide section for pod selection for nc/cn
@@ -630,10 +676,26 @@ if (!isset($_SESSION['user_session'])) {
         hideAlreadyPickedForCpod();
       } else if ( currentSectionId == 'outreach-rn-select' ) {
         hideAlreadyPickedForOutreach();
+      } else if ( currentSectionId == 'section-non-vent' ) {
+        bedsideRnStaffList = getBedsideRnStaff();
+        popStaffShiftModifierList('#non-vent', 'non-vent', bedsideRnStaffList);
+      } else if ( currentSectionId == 'section-double' ) {
+        popStaffShiftModifierList('#double', 'double', bedsideRnStaffList);
+      } else if ( currentSectionId == 'section-admit' ) {
+        popStaffShiftModifierList('#admit', 'admit', bedsideRnStaffList);
+      } else if ( currentSectionId == 'section-very-sick' ) {
+        popStaffShiftModifierList('#very-sick', 'very-sick', bedsideRnStaffList);
+      } else if ( currentSectionId == 'section-code-pager' ) {
+        popStaffShiftModifierList('#code-pager', 'code-pager', bedsideRnStaffList);
+      } else if ( currentSectionId == 'section-crrt' ) {
+        popStaffShiftModifierList('#crrt', 'crrt', bedsideRnStaffList);
+      } else if ( currentSectionId == 'section-evd' ) {
+        popStaffShiftModifierList('#evd', 'evd', bedsideRnStaffList);
+      } else if ( currentSectionId == 'section-burn' ) {
+        popStaffShiftModifierList('#burn', 'burn', bedsideRnStaffList);
       }
 
       //TODO
-      //popStaffShiftModifierList();
       //popNaPodSelect();
       //popUcPodSelect();
 
@@ -642,22 +704,40 @@ if (!isset($_SESSION['user_session'])) {
 
     //compile the shift modifier checkbox template with Handlebars
     shiftModifierCheckboxTemplate = Handlebars.compile($("#hbt-shift-modifier-checkbox").html());
+    StaffPodSelectTemplate = Handlebars.compile($("#hbt-staff-pod-select").html());
 
   });
+
+  function setClickAreaListeners(target) {
+    //listener for click in the div to increase radio/checkbox active area
+    $(target).click(function() {
+      var $elem = $(this).find("input[type='checkbox'], input[type='radio']"); // find checkbox associated
+      if (!$elem.prop("disabled")) {
+        $elem.prop("checked", !($elem.prop("checked"))); // toggle checked state
+      }
+      return false; // return false to stop click propigation
+    });
+  }
+
+  function getBedsideRnStaff() {
+      let staffList = $("input[name='apod-rn[]'][type='checkbox']:checked, " +
+                        "input[name='bpod-rn[]'][type='checkbox']:checked, " +
+                        "input[name='cpod-rn[]'][type='checkbox']:checked")
+                        .map(function () {
+                          return {id: $(this).val(), name: $(this).data("staffName")};
+                        })
+                        .get()
+
+      return staffList;
+  }
 
   /**
    * [popStaffShiftModifierList description]
    * @return [type] [description]
    */
-  function popStaffShiftModifierList() {
-    let staffList = {
-                      modifier : "non-vent",
-                      staff : [
-                        {id: 1, name: "Bob, Billy (P.ENG)"}
-                      ]
-                    };
-    $('#non-vent').html(shiftModifierCheckboxTemplate(staffList));
-    //add div click listeners to it
+  function popStaffShiftModifierList(target, shiftModName, staffList) {
+    $(target).html(shiftModifierCheckboxTemplate({modifier: shiftModName, staff: staffList}));
+    setClickAreaListeners(`${target} div.inner-item`);
   }
 
   /**
