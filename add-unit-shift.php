@@ -47,7 +47,7 @@ if (!isset($_SESSION['user_session'])) {
       <div id="msf-container" class="col-sm-12">
 
         <!-- Multi-step form goes here -->
-        <form class="unit-shift-form">
+        <form id="unit-shift-form" class="unit-shift-form">
 
           <?php
           //use the CRUD object to access the database and to build option lists of the staff categories
@@ -620,9 +620,15 @@ if (!isset($_SESSION['user_session'])) {
     });
     navigateTo(0); // Start at the beginning
 
-    /**************************
-     * END -- FORM PAGINATION *
-     **************************/
+    //handle data collection, form submission
+    $('#unit-shift-form').on('form:submit', function () {
+      return false;
+    });
+
+
+    /***************************************
+     * END -- FORM PAGINATION / VALIDATION *
+     ***************************************/
 
     //call the function to set listeners on the div's that contain the checkboxes to make more accessible
     setClickAreaListeners("div.inner-item");
@@ -672,34 +678,48 @@ if (!isset($_SESSION['user_session'])) {
       let currentSectionId = $('.current').prop('id');
 
       if ( currentSectionId == 'apod-rn-select' ) {
-        hideAlreadyPickedForApod();
+        hideAlreadyPicked('apod-rn', ['nurse-clinician', 'charge-nurse']);
+
       } else if ( currentSectionId == 'bpod-rn-select' ) {
-        hideAlreadyPickedForBpod();
+        hideAlreadyPicked('bpod-rn', ['nurse-clinician', 'charge-nurse', 'apod-rn[]']);
+
       } else if ( currentSectionId == 'cpod-rn-select' ) {
-        hideAlreadyPickedForCpod();
+        hideAlreadyPicked('cpod-rn', ['nurse-clinician', 'charge-nurse', 'apod-rn[]', 'bpod-rn[]']);
+
       } else if ( currentSectionId == 'outreach-rn-select' ) {
-        hideAlreadyPickedForOutreach();
+        hideAlreadyPicked('outreach-rn', ['nurse-clinician', 'charge-nurse', 'apod-rn[]', 'bpod-rn[]', 'cpod-rn[]']);
+
       } else if ( currentSectionId == 'section-non-vent' ) {
-        bedsideRnStaffList = getBedsideRnStaff();
+        bedsideRnStaffList = getStaffFromCheckboxes(['apod-rn[]', 'bpod-rn[]', 'cpod-rn[]']);
         popStaffShiftModifierList('#non-vent', 'non-vent', bedsideRnStaffList);
+
       } else if ( currentSectionId == 'section-double' ) {
         popStaffShiftModifierList('#double', 'double', bedsideRnStaffList);
+
       } else if ( currentSectionId == 'section-admit' ) {
         popStaffShiftModifierList('#admit', 'admit', bedsideRnStaffList);
+
       } else if ( currentSectionId == 'section-very-sick' ) {
         popStaffShiftModifierList('#very-sick', 'very-sick', bedsideRnStaffList);
+
       } else if ( currentSectionId == 'section-code-pager' ) {
         popStaffShiftModifierList('#code-pager', 'code-pager', bedsideRnStaffList);
+
       } else if ( currentSectionId == 'section-crrt' ) {
         popStaffShiftModifierList('#crrt', 'crrt', bedsideRnStaffList);
+
       } else if ( currentSectionId == 'section-evd' ) {
         popStaffShiftModifierList('#evd', 'evd', bedsideRnStaffList);
+
       } else if ( currentSectionId == 'section-burn' ) {
         popStaffShiftModifierList('#burn', 'burn', bedsideRnStaffList);
+
       } else if ( currentSectionId == 'na-pod-select' ) {
-        popPodSelectList('#na-pod-select', getNaStaff(), assignmentList);
+        popPodSelectList('#na-pod-select', getStaffFromCheckboxes(['na[]']), assignmentList);
+
       } else if ( currentSectionId == 'uc-pod-select' ) {
-        popPodSelectList('#uc-pod-select', getUcStaff(), assignmentList);
+        popPodSelectList('#uc-pod-select', getStaffFromCheckboxes(['uc[]']), assignmentList);
+
       }
 
       return true;
@@ -736,7 +756,7 @@ if (!isset($_SESSION['user_session'])) {
     shiftModifierCheckboxTemplate = Handlebars.compile($("#hbt-shift-modifier-checkbox").html());
     staffPodSelectTemplate = Handlebars.compile($("#hbt-staff-pod-select").html());
 
-  });
+  }); //End on document ready function
 
   function setClickAreaListeners(target) {
     //listener for click in the div to increase radio/checkbox active area
@@ -749,36 +769,21 @@ if (!isset($_SESSION['user_session'])) {
     });
   }
 
-  function getBedsideRnStaff() {
-      let staffList = $("input[name='apod-rn[]'][type='checkbox']:checked, " +
-                        "input[name='bpod-rn[]'][type='checkbox']:checked, " +
-                        "input[name='cpod-rn[]'][type='checkbox']:checked")
-                        .map(function () {
-                          return {id: $(this).val(), name: $(this).data("staffName")};
-                        })
-                        .get()
+  function getStaffFromCheckboxes(names) {
+    let jquerySelector = '';
 
-      return staffList;
-  }
+    //iterate through the array of checkbox names to check for selected staff, building the query selector string
+    names.forEach(function (name) {
+      jquerySelector += `input[name='${name}'][type='checkbox']:checked, `;
+    });
+    //get rid of the last comma and space (', ')
+    jquerySelector = jquerySelector.slice(0, -2);
 
-  function getNaStaff() {
-      let staffList = $("input[name='na[]'][type='checkbox']:checked")
-                        .map(function () {
-                          return {id: $(this).val(), name: $(this).data("staffName")};
-                        })
-                        .get()
-
-      return staffList;
-  }
-
-  function getUcStaff() {
-      let staffList = $("input[name='uc[]'][type='checkbox']:checked")
-                        .map(function () {
-                          return {id: $(this).val(), name: $(this).data("staffName")};
-                        })
-                        .get()
-
-      return staffList;
+    //find the selected staff, map the results into an array of object literals
+    return $(jquerySelector).map(function () {
+                              return {id: $(this).val(), name: $(this).data("staffName")};
+                              })
+                            .get();
   }
 
   /**
@@ -800,96 +805,27 @@ if (!isset($_SESSION['user_session'])) {
   }
 
   /**
-   * [hideAlreadyPickedForApod description]
-   * @return [type] [description]
+   * This hides staff choices in a target div element based on an array of specified divs
+   * @param  string targetId    the id of the target div
+   * @param  string[] hideBasedOn the id('s) of the divs to base the hiding on
+   * @return void             
    */
-  function hideAlreadyPickedForApod() {
+  function hideAlreadyPicked(targetId, hideBasedOn) {
     //reset all hidden
-    $(`#apod-rn div.st-none`).each(function() {
+    $(`#${targetId} div.st-none`).each(function() {
       showFormInnerItem($(this).find('input'));
     });
 
-    //hide clinician
-    let ncVal = $(`input[type='radio'][name='nurse-clinician']:checked`).val();
-    hideFormInnerItem($(`input[type='checkbox'][name='apod-rn[]'][value='${ncVal}']`));
-
-    //hide charge nurse
-    if ( $(`input[type='radio'][name='d-or-n']:checked`).val() === "D" ) {
-      let cnVal = $(`input[type='radio'][name='charge-nurse']:checked`).val();
-      hideFormInnerItem($(`input[type='checkbox'][name='apod-rn[]'][value='${cnVal}']`));
-    }
-  }
-
-  /**
-   * [hideAlreadyPickedForBpod description]
-   * @return [type] [description]
-   */
-  function hideAlreadyPickedForBpod() {
-    //reset all previously hidden
-    $(`#bpod-rn div.st-none`).each(function() {
-      showFormInnerItem($(this).find('input'));
+    //foreach radio/checkbox name specified
+    hideBasedOn.forEach(function(s) {
+      //select any checked staff
+      $(`input[name='${s}']:checked`).each(function() {
+        //get the staff id (set as value)
+        let val = $(this).val();
+        //hide the staff choice from the current target
+        hideFormInnerItem($(`#${targetId} input[value='${val}']`));
+      });
     });
-
-    //hide based on previously hidden
-    $(`#apod-rn div.st-none`).each(function() {
-      let rnVal = $(this).find('input').val();
-      hideFormInnerItem($(`input[type='checkbox'][name='bpod-rn[]'][value='${rnVal}']`));
-    });
-
-    //hide based on apod picks
-    $(`#apod-rn input[type='checkbox'][name='apod-rn[]']:checked`).each(function() {
-      let rnVal = $(this).val();
-      hideFormInnerItem($(`input[type='checkbox'][name='bpod-rn[]'][value='${rnVal}']`));
-    });
-
-  }
-
-  /**
-   * [hideAlreadyPickedForCpod description]
-   * @return [type] [description]
-   */
-  function hideAlreadyPickedForCpod() {
-    //reset all previously hidden
-    $(`#cpod-rn div.st-none`).each(function() {
-      showFormInnerItem($(this).find('input'));
-    });
-
-    //hide based on previously hidden
-    $(`#bpod-rn div.st-none`).each(function() {
-      let rnVal = $(this).find('input').val();
-      hideFormInnerItem($(`input[type='checkbox'][name='cpod-rn[]'][value='${rnVal}']`));
-    });
-
-    //hide based on bpod picks
-    $(`#bpod-rn input[type='checkbox'][name='bpod-rn[]']:checked`).each(function() {
-      let rnVal = $(this).val();
-      hideFormInnerItem($(`input[type='checkbox'][name='cpod-rn[]'][value='${rnVal}']`));
-    });
-
-  }
-
-  /**
-   * [hideAlreadyPickedForOutreach description]
-   * @return [type] [description]
-   */
-  function hideAlreadyPickedForOutreach() {
-    //reset all previously hidden
-    $(`#outreach-rn div.st-none`).each(function() {
-      showFormInnerItem($(this).find('input'));
-    });
-
-    //hide based on previously hidden
-    $(`#cpod-rn div.st-none`).each(function() {
-      let rnVal = $(this).find('input').val();
-      hideFormInnerItem($(`input[type='radio'][name='outreach-rn'][value='${rnVal}']`));
-    });
-
-    //hide based on vpod picks
-    $(`#cpod-rn input[type='checkbox'][name='cpod-rn[]']:checked`).each(function() {
-      let rnVal = $(this).val();
-      hideFormInnerItem($(`input[type='radio'][name='outreach-rn'][value='${rnVal}']`));
-    });
-
   }
 
   /**
