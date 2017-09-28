@@ -152,3 +152,7 @@ div.inner-item:not(:last-child) {
   border-collapse: collapse;
   border-bottom: 1px solid lightgrey;
 }
+
+.dropdown-toggle::after {
+    display:none
+}

@@ -34,13 +34,16 @@ if (!isset($_SESSION['user_session'])) {
       </div>
     </div>
     <div class="row justify-content-md-center">
-      <div class="col-12 col-md-auto">
+      <div class="col-md-10">
       	<br>
         <h2>Home</h2>
         <h4>Showing last <span id="shift-number"></span> days of shifts entered</h4>
 
         <!-- GENERATED TABLE -->
-        <div id="bin" class="shift-table-div"></div>
+        <div id="bin" class="shift-table-div">
+          <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+          <span class="sr-only">Loading...</span>
+        </div>
         <!-- END GENERATED TABLE -->
 
       </div>

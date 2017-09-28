@@ -31,7 +31,7 @@ if (!isset($_SESSION['user_session'])) {
     </div>
 
     <div class="col-10">
-      <h2>Add Shifts for the Unit</h2>
+      <h3>Add Shifts for the Unit</h3>
     </div>
   </div>
 
@@ -402,7 +402,7 @@ if (!isset($_SESSION['user_session'])) {
               ?>
                 <div class="inner-item list-group-item-action">
                   <label class="custom-control custom-radio m-1">
-                    <input id="outreach-rn-<?= $k ?>" name="outreach-rn" type="radio" value="<?= $k ?>" class="custom-control-input">
+                    <input id="outreach-rn-<?= $k ?>" name="outreach-rn" type="radio" value="<?= $k ?>" data-staff-name="<?= $v ?>" class="custom-control-input">
                     <span class="custom-control-indicator"></span>
                     <span class="custom-control-description"><?= $v ?></span>
                   </label>
@@ -430,7 +430,7 @@ if (!isset($_SESSION['user_session'])) {
               ?>
                 <div class="inner-item list-group-item-action">
                   <label class="custom-control custom-checkbox m-1">
-                    <input id="na-<?= $k ?>" name="na[]" type="checkbox" value="<?= $k ?>" class="custom-control-input">
+                    <input id="na-<?= $k ?>" name="na[]" type="checkbox" value="<?= $k ?>" data-staff-name="<?= $v ?>" class="custom-control-input">
                     <span class="custom-control-indicator"></span>
                     <span class="custom-control-description"><?= $v ?></span>
                   </label>
@@ -444,9 +444,9 @@ if (!isset($_SESSION['user_session'])) {
             </div>
           </div>
 
-          <!-- <div class="form-section mt-4 mb-4"> -->
-          <!-- TODO assign pods to the na's -->
-          <!-- </div> -->
+          <!-- assign pods to the na's -->
+          <div id="na-pod-select" class="form-section mt-4 mb-4">
+          </div>
 
           <div class="form-section mt-4 mb-4">
           <!-- Select UC's -->
@@ -530,6 +530,14 @@ if (!isset($_SESSION['user_session'])) {
   var bedsideRnStaffList = [];
   var naStaffList = [];
   var ucStaffList = [];
+  <?php
+  $objAssignment = array();
+  foreach ($form_select_assignment as $k => $v) {
+    array_push($objAssignment, array('id' => $k, 'name' => $v) );
+  }
+  ?>
+  var assignmentList = <?= json_encode($objAssignment) ?>;
+
 
   //TODO Bind to the window, so that if user tries to back out while form is dirty, then prompts to ask
   $(function() {
@@ -700,6 +708,8 @@ if (!isset($_SESSION['user_session'])) {
         popStaffShiftModifierList('#evd', 'evd', bedsideRnStaffList);
       } else if ( currentSectionId == 'section-burn' ) {
         popStaffShiftModifierList('#burn', 'burn', bedsideRnStaffList);
+      } else if ( currentSectionId == 'na-pod-select' ) {
+        popNaPodSelectList('#na-pod-select', getNaStaff(), assignmentList);
       }
 
       //TODO -- NEED TO GET THE PODS from CRUD to JAVASCRIPT
@@ -734,7 +744,7 @@ if (!isset($_SESSION['user_session'])) {
 
     //compile the shift modifier checkbox template with Handlebars
     shiftModifierCheckboxTemplate = Handlebars.compile($("#hbt-shift-modifier-checkbox").html());
-    StaffPodSelectTemplate = Handlebars.compile($("#hbt-staff-pod-select").html());
+    staffPodSelectTemplate = Handlebars.compile($("#hbt-staff-pod-select").html());
 
   });
 
@@ -761,6 +771,16 @@ if (!isset($_SESSION['user_session'])) {
       return staffList;
   }
 
+  function getNaStaff() {
+      let staffList = $("input[name='na[]'][type='checkbox']:checked")
+                        .map(function () {
+                          return {id: $(this).val(), name: $(this).data("staffName")};
+                        })
+                        .get()
+
+      return staffList;
+  }
+
   /**
    * [popStaffShiftModifierList description]
    * @return [type] [description]
@@ -768,6 +788,15 @@ if (!isset($_SESSION['user_session'])) {
   function popStaffShiftModifierList(target, shiftModName, staffList) {
     $(target).html(shiftModifierCheckboxTemplate({modifier: shiftModName, staff: staffList}));
     setClickAreaListeners(`${target} div.inner-item`);
+  }
+
+  /**
+   * [popNaPodSelectList description]
+   * @return [type] [description]
+   */
+  function popNaPodSelectList(target, staffList, podList) {
+    let x = {pod: podList, staff: staffList};
+    $(target).html(staffPodSelectTemplate(x));
   }
 
   /**
