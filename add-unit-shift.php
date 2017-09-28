@@ -621,7 +621,8 @@ if (!isset($_SESSION['user_session'])) {
     navigateTo(0); // Start at the beginning
 
     //handle data collection, form submission
-    $('#unit-shift-form').on('form:submit', function () {
+    $('#unit-shift-form').parsley().on('form:submit', function () {
+      alert("hi");
       return false;
     });
 
@@ -808,7 +809,7 @@ if (!isset($_SESSION['user_session'])) {
    * This hides staff choices in a target div element based on an array of specified divs
    * @param  string targetId    the id of the target div
    * @param  string[] hideBasedOn the id('s) of the divs to base the hiding on
-   * @return void             
+   * @return void
    */
   function hideAlreadyPicked(targetId, hideBasedOn) {
     //reset all hidden
@@ -829,7 +830,7 @@ if (!isset($_SESSION['user_session'])) {
   }
 
   /**
-   * [showFormInnerItem description]
+   * Shows the inner inner-item
    * @param  [type] $elem [description]
    * @return [type]       [description]
    */
