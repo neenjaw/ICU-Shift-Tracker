@@ -1,11 +1,20 @@
-{{#each staff}}
-  <div class="inner-item">
-    <span>{{name}}</span>
-    <select name="pod-select-for-staff-{{id}}" class="custom-select">
-      <option disabled selected>Select a pod...</option>
-      {{#each ../pod}}
-        <option value="{{this.id}}">{{this.name}}</option>
-      {{/each}}
-    </select>
-  </div>
-{{/each}}
+<div class="col-md-6">
+  <label>
+    What pod was each staff assigned to?
+  </label>
+  <table class="table">
+  {{#each staff}}
+    <tr>
+      <td>{{name}}</td>
+      <td>
+        <select name="pod-select-for-staff-{{id}}" class="custom-select">
+          <option disabled selected>Select a pod...</option>
+          {{#each ../pod}}
+            <option value="{{this.id}}">{{this.name}}</option>
+          {{/each}}
+        </select>
+      </td>
+    </div>
+  {{/each}}
+  </table>
+</div>

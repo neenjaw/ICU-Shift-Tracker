@@ -449,35 +449,35 @@ if (!isset($_SESSION['user_session'])) {
           </div>
 
           <div class="form-section mt-4 mb-4">
-          <!-- Select UC's -->
-          <div class="form-group">
-            <label class="control-label requiredField" for="select">
-              Select the UC's<span class="asteriskField">*</span>
-            </label>
+            <!-- Select UC's -->
+            <div class="form-group">
+              <label class="control-label requiredField" for="select">
+                Select the UC's<span class="asteriskField">*</span>
+              </label>
 
-            <div id="uc" class="staff-select-group p-0 m-0">
-            <?php
-            //Build Staff Select List
-            foreach ($form_select_uc as $k => $v):
-            ?>
-              <div class="inner-item list-group-item-action">
-                <label class="custom-control custom-checkbox m-1">
-                  <input id="uc-<?= $k ?>" name="uc[]" type="checkbox" value="<?= $k ?>" class="custom-control-input">
-                  <span class="custom-control-indicator"></span>
-                  <span class="custom-control-description"><?= $v ?></span>
-                </label>
+              <div id="uc" class="staff-select-group p-0 m-0">
+              <?php
+              //Build Staff Select List
+              foreach ($form_select_uc as $k => $v):
+              ?>
+                <div class="inner-item list-group-item-action">
+                  <label class="custom-control custom-checkbox m-1">
+                    <input id="uc-<?= $k ?>" name="uc[]" type="checkbox" value="<?= $k ?>" data-staff-name="<?= $v ?>" class="custom-control-input">
+                    <span class="custom-control-indicator"></span>
+                    <span class="custom-control-description"><?= $v ?></span>
+                  </label>
+                </div>
+              <?php
+              endforeach;
+              //END Build Staff Select List
+              ?>
               </div>
-            <?php
-            endforeach;
-            //END Build Staff Select List
-            ?>
             </div>
           </div>
-          </div>
 
-          <!-- <div class="form-section mt-4 mb-4"> -->
           <!-- TODO assign pods to the uc's -->
-          <!-- </div> -->
+          <div id="uc-pod-select" class="form-section mt-4 mb-4">
+          </div>
 
           <div class="form-navigation m-1 text-center">
             <button type="button" id="btn-prev" class="previous btn btn-secondary">&lt; Previous</button>
@@ -535,8 +535,7 @@ if (!isset($_SESSION['user_session'])) {
   foreach ($form_select_assignment as $k => $v) {
     array_push($objAssignment, array('id' => $k, 'name' => $v) );
   }
-  ?>
-  var assignmentList = <?= json_encode($objAssignment) ?>;
+  ?>var assignmentList = <?= json_encode($objAssignment) ?>;
 
 
   //TODO Bind to the window, so that if user tries to back out while form is dirty, then prompts to ask
@@ -550,19 +549,6 @@ if (!isset($_SESSION['user_session'])) {
       endDate: "0d"
     });
     <?php endif; ?>
-
-    //bind the parsley.js event
-    // $('#unit-shift-form')
-    // .parsley({errorClass: "form-control-danger", successClass: "form-control-success"})
-    // .on('field:validated', function (e) {
-    //   //customize Parsely.js for Bootstrap 4
-    //   if (e.validationResult.constructor!==Array) {
-    //     this.$element.closest('.form-group').removeClass('has-danger').addClass('has-success');
-    //   } else {
-    //     this.$element.closest('.form-group').removeClass('has-success').addClass('has-danger');
-    //   }
-    // })
-    //
 
     /********************************************************
      * FORM PAGINATION - CREDIT TO Parsely.js DOCUMENTATION *
@@ -609,8 +595,8 @@ if (!isset($_SESSION['user_session'])) {
       oldIndex = index;
     }
 
+    // Return the current index by looking at which section has the class 'current'
     function curIndex() {
-      // Return the current index by looking at which section has the class 'current'
       return $sections.index($sections.filter('.current'));
     }
 
@@ -638,7 +624,9 @@ if (!isset($_SESSION['user_session'])) {
      * END -- FORM PAGINATION *
      **************************/
 
+    //call the function to set listeners on the div's that contain the checkboxes to make more accessible
     setClickAreaListeners("div.inner-item");
+    //hide the option for the nc to select pod 'A/B/C' when the day shift button is preselected (default state)
     hideFormInnerItem($(`#nc-pod-8`));
 
     //listener which disables/clear chage nurse value depending on nurse clinician value
@@ -709,35 +697,37 @@ if (!isset($_SESSION['user_session'])) {
       } else if ( currentSectionId == 'section-burn' ) {
         popStaffShiftModifierList('#burn', 'burn', bedsideRnStaffList);
       } else if ( currentSectionId == 'na-pod-select' ) {
-        popNaPodSelectList('#na-pod-select', getNaStaff(), assignmentList);
+        popPodSelectList('#na-pod-select', getNaStaff(), assignmentList);
+      } else if ( currentSectionId == 'uc-pod-select' ) {
+        popPodSelectList('#uc-pod-select', getUcStaff(), assignmentList);
       }
-
-      //TODO -- NEED TO GET THE PODS from CRUD to JAVASCRIPT
-      //popNaPodSelect();
-      //popUcPodSelect();
 
       return true;
     });
 
+    //when the nc's assigned pod is clicked, the charge nurse's pod changes to the appropriate selection
     $(`#nc-pod div.inner-item`).click(function() {
-      let clickedPodName = $(this).find('input').data('podName').replace(/[\/B]/g, '');
+      let clickedPodName = $(this).find('input').data('podName').replace(/[\/B]/g, ''); //which main pod was chosen, get rid of the B-pod
 
       $(`input[type='radio'][name='cn-pod']`)
         .filter(function() {
+          //find the non-matching main pod assignment -- eg: if pod A was chosen by nc, choose pod C for cn
           return (!($(this).closest('div').hasClass('st-none'))) && ($(this).data('podName').indexOf(clickedPodName) < 0);
         })
-        .prop("checked", true);
+        .prop("checked", true); //select it
 
       return true;
     });
+
     $(`#cn-pod div.inner-item`).click(function() {
-      let clickedPodName = $(this).find('input').data('podName');
+      let clickedPodName = $(this).find('input').data('podName'); //which main pod was chosen
 
       $(`input[type='radio'][name='nc-pod']`)
         .filter(function() {
+          //find the non-matching main pod assignment -- eg: if pod A was chosen by cn, choose pod C for nc
           return (!($(this).closest('div').hasClass('st-none'))) && ($(this).data('podName').indexOf(clickedPodName) < 0);
         })
-        .prop("checked", true);
+        .prop("checked", true); // select it
 
       return true;
     });
@@ -781,6 +771,16 @@ if (!isset($_SESSION['user_session'])) {
       return staffList;
   }
 
+  function getUcStaff() {
+      let staffList = $("input[name='uc[]'][type='checkbox']:checked")
+                        .map(function () {
+                          return {id: $(this).val(), name: $(this).data("staffName")};
+                        })
+                        .get()
+
+      return staffList;
+  }
+
   /**
    * [popStaffShiftModifierList description]
    * @return [type] [description]
@@ -794,7 +794,7 @@ if (!isset($_SESSION['user_session'])) {
    * [popNaPodSelectList description]
    * @return [type] [description]
    */
-  function popNaPodSelectList(target, staffList, podList) {
+  function popPodSelectList(target, staffList, podList) {
     let x = {pod: podList, staff: staffList};
     $(target).html(staffPodSelectTemplate(x));
   }
