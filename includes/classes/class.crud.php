@@ -1,5 +1,11 @@
 <?php
 
+//TODO Refactor to make all returned results more 'JSON'-ish
+// eg: instead of:
+//       $arr = [{id}:{name}, ..., {id}:{name}]
+//     make it:
+//       $arr = [['id':{id}, 'name':{name}], ..., ['id':{id}, 'name':{name}]]
+
 class crud
 {
     private $db;

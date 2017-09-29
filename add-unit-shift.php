@@ -4,6 +4,13 @@ include 'includes/pre-head.php';
 if (!isset($_SESSION['user_session'])) {
   header("Location: index.php");
 }
+
+//use the CRUD object to access the database and to build option lists of the staff categories
+$form_select_rn = $crud->getRnStaff();
+$form_select_na = $crud->getNaStaff();
+$form_select_uc = $crud->getUcStaff();
+$form_select_assignment = $crud->getAllAssignments();
+
 ?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -49,14 +56,6 @@ if (!isset($_SESSION['user_session'])) {
         <!-- Multi-step form goes here -->
         <form id="unit-shift-form" class="unit-shift-form">
 
-          <?php
-          //use the CRUD object to access the database and to build option lists of the staff categories
-          $form_select_rn = $crud->getRnStaff();
-          $form_select_na = $crud->getNaStaff();
-          $form_select_uc = $crud->getUcStaff();
-          $form_select_assignment = $crud->getAllAssignments();
-          ?>
-
           <div class="form-section form-inline mt-4 mb-4">
 
             <!-- DATE SELECT -->
@@ -64,7 +63,14 @@ if (!isset($_SESSION['user_session'])) {
               <label class="control-label requiredField mr-1" for="date">Date: </label>
               <div class="input-group mt-1">
                 <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
-                <input class="form-control" id="date" name="date" placeholder="YYYY/MM/DD" value="<?= date('Y-m-d') ?>" type="<?= (($detect->isMobile()) ? 'date' : 'text'); ?>" required>
+                <input class="form-control"
+                       id="date"
+                       name="date"
+                       placeholder="YYYY/MM/DD"
+                       value="<?= date('Y-m-d') ?>"
+                       type="<?= (($detect->isMobile()) ? 'date' : 'text'); ?>"
+                       <?= (($detect->isMobile()) ? ('max="'.date('Y-m-d').'" ') : ''); ?>
+                       required>
               </div>
 
               <!-- DAY / NIGHT SELECT -->
@@ -76,34 +82,37 @@ if (!isset($_SESSION['user_session'])) {
 
           </div>
 
-          <!-- TODO start adding the rest of the form elements -->
-          <!-- TODO add in the bootstrap handling -->
           <!-- TODO add in the ajax to submit them all -->
-
-          <!-- FIXME NEED TO CHANGE FROM SELECT TO TO CHOSEN - https://harvesthq.github.io/chosen/ -->
 
           <!-- Select Clinician/Charge -->
           <div class="form-section mt-4 mb-4">
             <!-- RN Clinician SELECT -->
             <div class="form-group">
-              <label class="control-label requiredField" for="select">
+              <label class="control-label requiredField" for="nurse-clinician">
                 Who is the Clinician for the shift?<span class="asteriskField">*</span>
               </label>
-
-
+              <div id="nc-select-errors"></div>
               <div id="nurse-clinician" class="staff-select-group p-0 m-0">
               <?php
               //Build Staff Select List
+              $i = true;
               foreach ($form_select_rn as $k => $v):
               ?>
                 <div class="inner-item list-group-item-action">
                   <label class="custom-control custom-radio m-1">
-                    <input id="nc-<?= $k ?>" name="nurse-clinician" type="radio" value="<?= $k ?>" data-staff-name="<?= $v ?>" class="custom-control-input">
+                    <input id="nc-<?= $k ?>"
+                           name="nurse-clinician"
+                           type="radio"
+                           value="<?= $k ?>"
+                           <?= ($i === true)? ' required data-parsley-errors-container="#nc-select-errors"':'' ?>
+                           data-staff-name="<?= $v ?>"
+                           class="custom-control-input">
                     <span class="custom-control-indicator"></span>
                     <span class="custom-control-description"><?= $v ?></span>
                   </label>
                 </div>
               <?php
+              $i = false;
               endforeach;
               //END Build Staff Select List
               ?>
@@ -113,23 +122,31 @@ if (!isset($_SESSION['user_session'])) {
 
             <!-- RN CHARGE SELECT -->
             <div id="fg-charge-nurse" class="form-group">
-              <label class="control-label requiredField" for="select">
+              <label class="control-label requiredField" for="charge-nurse">
                 Who is the Charge for the shift?<span class="asteriskField">*</span>
               </label>
-
+              <div id="cn-select-errors"></div>
               <div id="charge-nurse" class="staff-select-group p-0 m-0">
               <?php
               //Build Staff Select List
+              $i = true;
               foreach ($form_select_rn as $k => $v):
               ?>
                 <div class="inner-item list-group-item-action">
                   <label class="custom-control custom-radio m-1">
-                    <input id="cn-<?= $k ?>" name="charge-nurse" type="radio" value="<?= $k ?>" data-staff-name="<?= $v ?>" class="custom-control-input">
+                    <input id="cn-<?= $k ?>"
+                           name="charge-nurse"
+                           type="radio"
+                           value="<?= $k ?>"
+                           <?= ($i === true)? ' required data-parsley-errors-container="#cn-select-errors"':'' ?>
+                           data-staff-name="<?= $v ?>"
+                           class="custom-control-input">
                     <span class="custom-control-indicator"></span>
                     <span class="custom-control-description"><?= $v ?></span>
                   </label>
                 </div>
               <?php
+              $i = false;
               endforeach;
               //END Build Staff Select List
               ?>
@@ -147,10 +164,11 @@ if (!isset($_SESSION['user_session'])) {
               <label class="control-label requiredField" for="select">
                 Which pod was the Nurse Clinician in?<span class="asteriskField">*</span>
               </label>
-
+              <div id="nc-pod-select-errors"></div>
               <div id="nc-pod" class="staff-select-group p-0 m-0">
                 <?php
                 //Build Pod Select List
+                $i = true;
                 foreach ($form_select_assignment as $k => $v):
                   if ( (strpos($v, "B") === false) || (strlen($v) == 1) ) {
                     continue;
@@ -158,12 +176,19 @@ if (!isset($_SESSION['user_session'])) {
                 ?>
                   <div class="inner-item list-group-item-action">
                     <label class="custom-control custom-radio m-1">
-                      <input id="nc-pod-<?= $k ?>" name="nc-pod" type="radio" value="<?= $k ?>" data-pod-name="<?= $v ?>" class="custom-control-input">
+                      <input id="nc-pod-<?= $k ?>"
+                             name="nc-pod"
+                             type="radio"
+                             value="<?= $k ?>"
+                             <?= ($i === true)? ' required data-parsley-errors-container="#nc-pod-select-errors"':'' ?>
+                             data-pod-name="<?= $v ?>"
+                             class="custom-control-input">
                       <span class="custom-control-indicator"></span>
                       <span class="custom-control-description"><?= $v ?></span>
                     </label>
                   </div>
                 <?php
+                $i = false;
                 endforeach;
                 //END Build Pod Select List
                 ?>
@@ -172,13 +197,14 @@ if (!isset($_SESSION['user_session'])) {
             </div>
 
             <div class="form-group">
-              <label class="control-label requiredField" for="select">
+              <label class="control-label requiredField" for="cn-pod">
                 Which pod was the Charge Nurse in?<span class="asteriskField">*</span>
               </label>
-
+              <div id="cn-pod-select-errors"></div>
               <div id="cn-pod" class="staff-select-group p-0 m-0">
                 <?php
                 //Build Pod Select List
+                $i = true;
                 foreach ($form_select_assignment as $k => $v):
                   if ( (strlen($v) > 1) || ($v === "B") ) {
                     continue;
@@ -186,12 +212,19 @@ if (!isset($_SESSION['user_session'])) {
                 ?>
                   <div class="inner-item list-group-item-action">
                     <label class="custom-control custom-radio m-1">
-                      <input id="cn-pod-<?= $k ?>" name="cn-pod" type="radio" value="<?= $k ?>" data-pod-name="<?= $v ?>" class="custom-control-input">
+                      <input id="cn-pod-<?= $k ?>"
+                             name="cn-pod"
+                             type="radio"
+                             value="<?= $k ?>"
+                             <?= ($i === true)? ' required data-parsley-errors-container="#cn-pod-select-errors"':'' ?>
+                             data-pod-name="<?= $v ?>"
+                             class="custom-control-input">
                       <span class="custom-control-indicator"></span>
                       <span class="custom-control-description"><?= $v ?></span>
                     </label>
                   </div>
                 <?php
+                $i = false;
                 endforeach;
                 //END Build Pod Select List
                 ?>
@@ -202,26 +235,33 @@ if (!isset($_SESSION['user_session'])) {
 
           <div id="apod-rn-select" class="form-section mt-4 mb-4">
             <!-- Select Bedside Nurses for A -->
-            <!-- TODO add logic so that clinician and charge cant be selected -->
 
             <div class="form-group">
               <label class="control-label requiredField" for="select">
                 Select the nurses for Pod A<span class="asteriskField">*</span>
               </label>
-
+              <div id="apod-rn-errors"></div>
               <div id="apod-rn" class="staff-select-group p-0 m-0">
               <?php
               //Build Staff Select List
+              $i = true;
               foreach ($form_select_rn as $k => $v):
               ?>
                 <div class="inner-item list-group-item-action">
                   <label class="custom-control custom-checkbox m-1">
-                    <input id="apod-rn-<?= $k ?>" name="apod-rn[]" type="checkbox" value="<?= $k ?>" data-staff-name="<?= $v ?>" class="custom-control-input">
+                    <input id="apod-rn-<?= $k ?>"
+                           name="apod-rn[]"
+                           type="checkbox"
+                           value="<?= $k ?>"
+                           <?= ($i === true)? ' required data-parsley-errors-container="#apod-rn-errors"':'' ?>
+                           data-staff-name="<?= $v ?>"
+                           class="custom-control-input">
                     <span class="custom-control-indicator"></span>
                     <span class="custom-control-description"><?= $v ?></span>
                   </label>
                 </div>
               <?php
+              $i = false;
               endforeach;
               //END Build Staff Select List
               ?>
@@ -232,26 +272,33 @@ if (!isset($_SESSION['user_session'])) {
 
           <div id="bpod-rn-select" class="form-section mt-4 mb-4">
             <!-- Select Bedside Nurses for B -->
-            <!-- TODO add logic so that clinician and charge, pod a nurses cant be selected -->
 
             <div class="form-group">
               <label class="control-label requiredField" for="select">
                 Select the nurses for Pod B<span class="asteriskField">*</span>
               </label>
-
+              <div id="bpod-rn-errors"></div>
               <div id="bpod-rn" class="staff-select-group p-0 m-0">
               <?php
               //Build Staff Select List
+              $i = true;
               foreach ($form_select_rn as $k => $v):
               ?>
                 <div class="inner-item list-group-item-action">
                   <label class="custom-control custom-checkbox m-1">
-                    <input id="bpod-rn-<?= $k ?>" name="bpod-rn[]" type="checkbox" value="<?= $k ?>" data-staff-name="<?= $v ?>" class="custom-control-input">
+                    <input id="bpod-rn-<?= $k ?>"
+                           name="bpod-rn[]"
+                           type="checkbox"
+                           value="<?= $k ?>"
+                           <?= ($i === true)? ' required data-parsley-errors-container="#bpod-rn-errors"':'' ?>
+                           data-staff-name="<?= $v ?>"
+                           class="custom-control-input">
                     <span class="custom-control-indicator"></span>
                     <span class="custom-control-description"><?= $v ?></span>
                   </label>
                 </div>
               <?php
+              $i = false;
               endforeach;
               //END Build Staff Select List
               ?>
@@ -262,26 +309,32 @@ if (!isset($_SESSION['user_session'])) {
 
           <div id="cpod-rn-select" class="form-section mt-4 mb-4">
             <!-- Select Bedside Nurses for C -->
-            <!-- TODO add logic so that clinician and charge, pod a/b nurses cant be selected -->
-
             <div class="form-group">
               <label class="control-label requiredField" for="select">
                 Select the nurses for Pod C<span class="asteriskField">*</span>
               </label>
-
+              <div id="cpod-rn-errors"></div>
               <div id="cpod-rn" class="staff-select-group p-0 m-0">
               <?php
               //Build Staff Select List
+              $i = true;
               foreach ($form_select_rn as $k => $v):
               ?>
                 <div class="inner-item list-group-item-action">
                   <label class="custom-control custom-checkbox m-1">
-                    <input id="cpod-rn-<?= $k ?>" name="cpod-rn[]" type="checkbox" value="<?= $k ?>" data-staff-name="<?= $v ?>" class="custom-control-input">
+                    <input id="cpod-rn-<?= $k ?>"
+                           name="cpod-rn[]"
+                           type="checkbox"
+                           value="<?= $k ?>"
+                           <?= ($i === true)? ' required data-parsley-errors-container="#cpod-rn-errors"':'' ?>
+                           data-staff-name="<?= $v ?>"
+                           class="custom-control-input">
                     <span class="custom-control-indicator"></span>
                     <span class="custom-control-description"><?= $v ?></span>
                   </label>
                 </div>
               <?php
+              $i = false;
               endforeach;
               //END Build Staff Select List
               ?>
@@ -388,26 +441,33 @@ if (!isset($_SESSION['user_session'])) {
 
           <div id="outreach-rn-select" class="form-section mt-4 mb-4">
             <!-- Select Bedside Nurses for C -->
-            <!-- TODO add logic so that clinician and charge, pod a/b nurses cant be selected -->
 
             <div class="form-group">
-              <label class="control-label requiredField" for="select">
+              <label class="control-label requiredField" for="outrach-rn">
                 Who was on outreach?<span class="asteriskField">*</span>
               </label>
-
+              <div id="outreach-rn-errors"></div>
               <div id="outreach-rn" class="staff-select-group p-0 m-0">
               <?php
               //Build Staff Select List
+              $i = true;
               foreach ($form_select_rn as $k => $v):
               ?>
                 <div class="inner-item list-group-item-action">
                   <label class="custom-control custom-radio m-1">
-                    <input id="outreach-rn-<?= $k ?>" name="outreach-rn" type="radio" value="<?= $k ?>" data-staff-name="<?= $v ?>" class="custom-control-input">
+                    <input id="outreach-rn-<?= $k ?>"
+                           name="outreach-rn"
+                           type="radio"
+                           value="<?= $k ?>"
+                           <?= ($i === true)? ' required data-parsley-errors-container="#outreach-rn-errors"':'' ?>
+                           data-staff-name="<?= $v ?>"
+                           class="custom-control-input">
                     <span class="custom-control-indicator"></span>
                     <span class="custom-control-description"><?= $v ?></span>
                   </label>
                 </div>
               <?php
+              $i = false;
               endforeach;
               //END Build Staff Select List
               ?>
@@ -422,20 +482,28 @@ if (!isset($_SESSION['user_session'])) {
               <label class="control-label requiredField" for="select">
                 Select the NA's<span class="asteriskField">*</span>
               </label>
-
+              <div id="na-select-errors"></div>
               <div id="na" class="staff-select-group p-0 m-0">
               <?php
               //Build Staff Select List
+              $i = true;
               foreach ($form_select_na as $k => $v):
               ?>
                 <div class="inner-item list-group-item-action">
                   <label class="custom-control custom-checkbox m-1">
-                    <input id="na-<?= $k ?>" name="na[]" type="checkbox" value="<?= $k ?>" data-staff-name="<?= $v ?>" class="custom-control-input">
+                    <input id="na-<?= $k ?>"
+                           name="na[]"
+                           type="checkbox"
+                           value="<?= $k ?>"
+                           <?= ($i === true)? ' required data-parsley-errors-container="#na-select-errors"':'' ?>
+                           data-staff-name="<?= $v ?>"
+                           class="custom-control-input">
                     <span class="custom-control-indicator"></span>
                     <span class="custom-control-description"><?= $v ?></span>
                   </label>
                 </div>
               <?php
+              $i = false;
               endforeach;
               //END Build Staff Select List
               ?>
@@ -454,20 +522,28 @@ if (!isset($_SESSION['user_session'])) {
               <label class="control-label requiredField" for="select">
                 Select the UC's<span class="asteriskField">*</span>
               </label>
-
+              <div id="uc-select-errors"></div>
               <div id="uc" class="staff-select-group p-0 m-0">
               <?php
               //Build Staff Select List
+              $i = true;
               foreach ($form_select_uc as $k => $v):
               ?>
                 <div class="inner-item list-group-item-action">
                   <label class="custom-control custom-checkbox m-1">
-                    <input id="uc-<?= $k ?>" name="uc[]" type="checkbox" value="<?= $k ?>" data-staff-name="<?= $v ?>" class="custom-control-input">
+                    <input id="uc-<?= $k ?>"
+                           name="uc[]"
+                           type="checkbox"
+                           value="<?= $k ?>"
+                           <?= ($i === true)? ' required data-parsley-errors-container="#uc-select-errors"':'' ?>
+                           data-staff-name="<?= $v ?>"
+                           class="custom-control-input">
                     <span class="custom-control-indicator"></span>
                     <span class="custom-control-description"><?= $v ?></span>
                   </label>
                 </div>
               <?php
+              $i = false;
               endforeach;
               //END Build Staff Select List
               ?>
@@ -475,7 +551,7 @@ if (!isset($_SESSION['user_session'])) {
             </div>
           </div>
 
-          <!-- TODO assign pods to the uc's -->
+          <!-- assign pods to the uc's -->
           <div id="uc-pod-select" class="form-section mt-4 mb-4">
           </div>
 
@@ -620,7 +696,7 @@ if (!isset($_SESSION['user_session'])) {
     });
     navigateTo(0); // Start at the beginning
 
-    //handle data collection, form submission
+    //catch the on-submit event, collect/format data from the form, submit via ajax
     $('#unit-shift-form').parsley().on('form:submit', function () {
       alert("hi");
       return false;
