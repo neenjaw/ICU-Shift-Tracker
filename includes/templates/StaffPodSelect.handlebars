@@ -2,15 +2,16 @@
   <label>
     What pod was each staff assigned to?
   </label>
+  <div id="{{section}}-errors"></div>
   <table class="table">
   {{#each staff}}
     <tr>
       <td>{{name}}</td>
       <td>
-        <select name="pod-select-for-staff-{{id}}" class="custom-select">
-          <option disabled selected>Select a pod...</option>
+        <select name="{{../section}}-{{id}}" class="custom-select" required data-parsley-errors-container="#{{../section}}-errors">
+          <option value="">Select a pod...</option>
           {{#each ../pod}}
-            <option value="{{this.id}}">{{this.name}}</option>
+          <option value="{{this.id}}">{{this.name}}</option>
           {{/each}}
         </select>
       </td>

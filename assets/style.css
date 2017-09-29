@@ -129,15 +129,15 @@ input.parsley-error:focus{
   display: inherit;
 }
 
-#nurse-clinician {
+#nc-select {
   max-height: 150px;
 }
 
-#charge-nurse {
+#cn-select {
   max-height: 150px;
 }
 
-#apod-rn, #bpod-rn, #cpod-rn, #outreach-rn, #na, #uc {
+#apod-rn-select, #bpod-rn-select, #cpod-rn-select, #outreach-rn-select, #na-select, #uc-select {
   max-height: 300px;
 }
 
