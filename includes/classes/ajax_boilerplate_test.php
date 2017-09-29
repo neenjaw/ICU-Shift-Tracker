@@ -8,7 +8,8 @@ try {
 
 
     echo json_encode($crud->getRnStaff(), JSON_PRETTY_PRINT);
-    echo "<hr />"
+    echo "<hr />";
+    echo json_encode($crud->getAllStaffObj(), JSON_PRETTY_PRINT);
 
   } else {
     throw new Exception('Wrong arguments.');

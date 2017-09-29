@@ -300,8 +300,12 @@ foreach ($form_select_assignment as $k => $v) {?>
 
               //reset the form, return focus to first name
               $('#shift-form').trigger('reset');
+              $("#check-box-group").collapse('show');
               $('#select-staff').val('').trigger('change');
-              $("#select-staff").focus();
+
+              //scroll to top
+              document.body.scrollTop = 0; // For Chrome, Safari and Opera
+              document.documentElement.scrollTop = 0; // For IE and Firefox
 
             } else {
 
