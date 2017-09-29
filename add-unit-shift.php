@@ -728,6 +728,9 @@ $form_select_assignment = $crud->getAllAssignments();
       }
     });
 
+    //FIXME - If night shift is selected, the form validation still requires the charge nurse,
+    //IDEA - remove the required attribute from the charge-nurse select IF IT IS A NIGHT SHIFT, restore for days
+
     //listener to change behavior of form if day shift is selected for input
     $(`#radio-d-or-n-d`).click(function() {
       $(`#fg-charge-nurse`).toggle(true); // show charge nurse select
