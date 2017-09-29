@@ -179,6 +179,32 @@ class crud
      * STAFF, ROLE, CATEGORY, ASSIGNMENT SHIFT ENTRY
      */
 
+    public function getStaffObj($id) {
+      $stmt = $this->db->prepare("SELECT *
+                                  FROM {$this->tbl_staff}
+                                  WHERE {$this->tbl_staff}.id=:sid");
+      $stmt->bindparam(":sid", $id);
+      $stmt->execute();
+      $editRow=$stmt->fetch(PDO::FETCH_ASSOC);
+      return $editRow;
+    }
+
+   public function getAllStaffObj() {
+     $staff_array = array();
+
+     $stmt = $this->db->prepare("SELECT *
+                                 FROM {$this->tbl_staff}");
+     $stmt->execute();
+
+     if ($stmt->rowCount()>0) {
+         while ( $editRow = $stmt->fetch(PDO::FETCH_ASSOC) ) {
+             $staff_array[] = $editRow;
+         }
+     }
+
+     return $staff_array;
+   }
+
     public function getStaff($category = null) {
           $staff_array = array();
 
@@ -250,12 +276,17 @@ class crud
 
     public function getStaffById($id)
     {
-        $stmt = $this->db->prepare("SELECT ".$this->tbl_staff.".last_name as `last_name`, ".
-                                             $this->tbl_staff.".first_name as `first_name`, ".
-                                             $this->tbl_category.".category as `category`
-                                    FROM ".$this->tbl_staff."
-                                    LEFT JOIN ".$this->tbl_category." on ".$this->tbl_staff.".category = ".$this->tbl_category.".id
-                                    WHERE ".$this->tbl_staff.".id=:sid");
+        $stmt = $this->db->prepare("SELECT
+                                      {$this->tbl_staff}.id as `id`
+                                      {$this->tbl_staff}.last_name as `last_name`,
+                                      {$this->tbl_staff}.first_name as `first_name`,
+                                      {$this->tbl_category}.category as `category`
+                                    FROM
+                                      {$this->tbl_staff}
+                                    LEFT JOIN
+                                      {$this->tbl_category} on {$this->tbl_staff}.category = {$this->tbl_category}.id
+                                    WHERE
+                                      {$this->tbl_staff}.id=:sid");
         $stmt->bindparam(":sid", $id);
         $stmt->execute();
         $editRow=$stmt->fetch(PDO::FETCH_ASSOC);
@@ -267,34 +298,73 @@ class crud
         return ''.$row['last_name'].', '.$row['first_name'].', '.$row['category'].'';
     }
 
+    public function getAllRoleObj() {
+      $role_array = array();
+
+      $stmt = $this->db->prepare("SELECT * FROM ".$this->tbl_role."");
+      $stmt->execute();
+
+      if ($stmt->rowCount()>0) {
+          while ( $editRow = $stmt->fetch(PDO::FETCH_ASSOC) ) {
+              $role_array[] = $editRow;
+          }
+      }
+
+      return $role_array;
+    }
+
     public function getAllRoles()
     {
-        $role_array = array();
+      $role_array = array();
 
-        $stmt = $this->db->prepare("SELECT * FROM ".$this->tbl_role."");
-        $stmt->execute();
+      $stmt = $this->db->prepare("SELECT * FROM ".$this->tbl_role."");
+      $stmt->execute();
 
-        if ($stmt->rowCount()>0) {
-            while ( $editRow = $stmt->fetch(PDO::FETCH_ASSOC) ) {
-                $role_array[$editRow['id']] = $editRow['role'];
-            }
-        }
+      if ($stmt->rowCount()>0) {
+          while ( $editRow = $stmt->fetch(PDO::FETCH_ASSOC) ) {
+              $role_array[$editRow['id']] = $editRow['role'];
+          }
+      }
 
-        return $role_array;
+      return $role_array;
+    }
+
+    public function getRoleObjById($id)
+    {
+      $stmt = $this->db->prepare("SELECT id, role FROM ".$this->tbl_role." WHERE id=:id");
+      $stmt->bindparam(":id", $id);
+      $stmt->execute();
+      $editRow=$stmt->fetch(PDO::FETCH_ASSOC);
+      return $editRow;
     }
 
     public function getRoleById($id)
     {
-        $stmt = $this->db->prepare("SELECT role FROM ".$this->tbl_role." WHERE id=:id");
-        $stmt->bindparam(":id", $id);
-        $stmt->execute();
-        $editRow=$stmt->fetch(PDO::FETCH_ASSOC);
-        return $editRow;
+      $stmt = $this->db->prepare("SELECT role FROM ".$this->tbl_role." WHERE id=:id");
+      $stmt->bindparam(":id", $id);
+      $stmt->execute();
+      $editRow=$stmt->fetch(PDO::FETCH_ASSOC);
+      return $editRow;
     }
 
     public function getRoleNameById($id)
     {
-        return ($this->getRoleById($id))["role"];
+      return ($this->getRoleById($id))["role"];
+    }
+
+    public function getAllCategoryObj() {}
+      $cat_array = array();
+
+      $stmt = $this->db->prepare("SELECT * FROM ".$this->tbl_category."");
+      $stmt->execute();
+
+      if ($stmt->rowCount()>0) {
+          while ( $editRow = $stmt->fetch(PDO::FETCH_ASSOC) ) {
+              $cat_array[] = $editRow;
+          }
+      }
+
+      return $cat_array;
     }
 
     public function getAllCateories()
@@ -320,6 +390,21 @@ class crud
         $stmt->execute();
         $editRow=$stmt->fetch(PDO::FETCH_ASSOC);
         return $editRow;
+    }
+
+    public function getAllAssignmentObj() {
+      $a_array = array();
+
+      $stmt = $this->db->prepare("SELECT * FROM ".$this->tbl_assignment." ORDER BY `id`");
+      $stmt->execute();
+
+      if ($stmt->rowCount()>0) {
+          while ( $editRow = $stmt->fetch(PDO::FETCH_ASSOC) ) {
+              $a_array[] = $editRow;
+          }
+      }
+
+      return $a_array;
     }
 
     public function getAllAssignments()
@@ -351,8 +436,15 @@ class crud
         return ($this->getAssignmentById($id))["assignment"];
     }
 
-    public function getShiftEntry($id)
-    {
+    public function getShiftEntryObj() {
+      $stmt = $this->db->prepare("SELECT * FROM " . $this->tbl_shift_entry . " WHERE id=:id");
+      $stmt->bindparam(":id", $id);
+      $stmt->execute();
+      $editRow=$stmt->fetch(PDO::FETCH_ASSOC);
+      return $editRow;
+    }
+
+    public function getShiftEntry($id) {
         $stmt = $this->db->prepare("SELECT * FROM " . $this->tbl_shift_entry . " WHERE id=:id");
         $stmt->bindparam(":id", $id);
         $stmt->execute();

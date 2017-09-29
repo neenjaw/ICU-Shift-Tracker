@@ -617,7 +617,7 @@ $form_select_assignment = $crud->getAllAssignments();
   foreach ($form_select_assignment as $k => $v) {
     array_push($objAssignment, array('id' => $k, 'name' => $v) );
   }
-  ?>var assignmentList = <?= json_encode($objAssignment) ?>;
+  ?>var assignmentList = JSON.parse('<?= json_encode($objAssignment) ?>');
 
 
   //TODO Bind to the window, so that if user tries to back out while form is dirty, then prompts to ask
