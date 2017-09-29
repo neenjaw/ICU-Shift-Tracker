@@ -191,6 +191,8 @@ class crud
     $stmt->execute();
 
     $editRow=$stmt->fetch(PDO::FETCH_ASSOC);
+    $editRow['id'] = intval($editRow['id']);
+    $editRow['category_id'] = intval($editRow['category_id']);
 
     return $editRow;
   }
@@ -214,6 +216,8 @@ class crud
 
     if ($stmt->rowCount()>0) {
       while ( $editRow = $stmt->fetch(PDO::FETCH_ASSOC) ) {
+        $editRow['id'] = intval($editRow['id']);
+        $editRow['category_id'] = intval($editRow['category_id']);
         $staff_array[] = $editRow;
       }
     }
@@ -232,6 +236,8 @@ class crud
     $stmt->bindparam(":sid", $id);
     $stmt->execute();
     $editRow=$stmt->fetch(PDO::FETCH_ASSOC);
+    $editRow['id'] = intval($editRow['id']);
+    $editRow['category_id'] = intval($editRow['category_id']);
 
     return $editRow;
   }
@@ -248,6 +254,8 @@ class crud
 
     if ($stmt->rowCount()>0) {
       while ( $editRow = $stmt->fetch(PDO::FETCH_ASSOC) ) {
+        $editRow['id'] = intval($editRow['id']);
+        $editRow['category_id'] = intval($editRow['category_id']);
         $staff_array[] = $editRow;
       }
     }
@@ -340,6 +348,7 @@ class crud
 
     if ($stmt->rowCount()>0) {
       while ( $editRow = $stmt->fetch(PDO::FETCH_ASSOC) ) {
+        $editRow['id'] = intval($editRow['id']);
         $role_array[] = $editRow;
       }
     }
@@ -394,6 +403,7 @@ class crud
 
     if ($stmt->rowCount()>0) {
       while ( $editRow = $stmt->fetch(PDO::FETCH_ASSOC) ) {
+        $editRow['id'] = intval($editRow['id']);
         $cat_array[] = $editRow;
       }
     }
@@ -433,6 +443,7 @@ class crud
 
     if ($stmt->rowCount()>0) {
       while ( $editRow = $stmt->fetch(PDO::FETCH_ASSOC) ) {
+        $editRow['id'] = intval($editRow['id']);
         $a_array[] = $editRow;
       }
     }
@@ -474,6 +485,7 @@ class crud
     $stmt->bindparam(":id", $id);
     $stmt->execute();
     $editRow=$stmt->fetch(PDO::FETCH_ASSOC);
+    $editRow['id'] = intval($editRow['id']);
     return $editRow;
   }
 

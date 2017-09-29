@@ -129,16 +129,16 @@ input.parsley-error:focus{
   display: inherit;
 }
 
-#nc-select {
+#nc-select, #cn-select {
   max-height: 150px;
 }
 
-#cn-select {
-  max-height: 150px;
-}
-
-#apod-rn-select, #bpod-rn-select, #cpod-rn-select, #outreach-rn-select, #na-select, #uc-select {
+#float-rn-select, #apod-rn-select, #bpod-rn-select, #cpod-rn-select, #outreach-rn-select, #na-select, #uc-select {
   max-height: 300px;
+}
+
+#float-rn-select-group {
+	display: none;
 }
 
 div.staff-select-group {
@@ -154,5 +154,5 @@ div.inner-item:not(:last-child) {
 }
 
 .dropdown-toggle::after {
-    display:none
+    display: none;
 }

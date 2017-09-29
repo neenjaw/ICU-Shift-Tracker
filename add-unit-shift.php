@@ -56,6 +56,12 @@ $form_select_assignment = $crud->getAllAssignments();
         <!-- Multi-step form goes here -->
         <form id="unit-shift-form" class="unit-shift-form">
 
+          <div class="form-navigation m-1 text-center">
+            <button type="button" id="btn-prev" class="previous btn btn-secondary">&lt; Previous</button>
+            <button type="button" id="btn-next" class="next btn btn-secondary">Next &gt;</button>
+            <button type="submit" id="btn-submit" class="btn btn-secondary">Submit</button>
+          </div>
+
           <div id="section-date-select" class="form-section form-inline mt-4 mb-4">
 
             <!-- DATE SELECT -->
@@ -236,6 +242,77 @@ $form_select_assignment = $crud->getAllAssignments();
                 ?>
               </div>
 
+            </div>
+          </div>
+
+
+
+          <!-- Floating nurse -->
+          <div id="section-float-rn-select" class="form-section mt-4 mb-4">
+            <div class="form-group">
+              <label class="control-label" for="float-rn-check">
+                Was there a float nurse?
+              </label>
+              <div id="float-rn-check-errors"></div>
+              <div id="float-rn-check" class="staff-select-group p-0 m-0">
+                <div class="inner-item list-group-item-action">
+                  <label class="custom-control custom-radio m-1">
+                    <input id="float-rn-check-yes"
+                    name="float-rn-check"
+                    type="radio"
+                    value="Yes"
+                    required
+                    data-parsley-errors-container="#float-rn-check-errors"
+                    class="custom-control-input">
+                    <span class="custom-control-indicator"></span>
+                    <span class="custom-control-description">Yes</span>
+                  </label>
+                </div>
+                <div class="inner-item list-group-item-action">
+                  <label class="custom-control custom-radio m-1">
+                    <input id="float-rn-check-no"
+                    name="float-rn-check"
+                    type="radio"
+                    value="No"
+                    checked
+                    class="custom-control-input">
+                    <span class="custom-control-indicator"></span>
+                    <span class="custom-control-description">No</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div id="float-rn-select-group" class="form-group">
+              <label class="control-label" for="float-rn-select">
+                Who floated?
+              </label>
+              <div id="float-rn-select-errors"></div>
+              <div id="float-rn-select" class="staff-select-group p-0 m-0">
+              <?php
+              //Build Staff Select List
+              $i = true;
+              foreach ($form_select_rn as $k => $v):
+              ?>
+                <div class="inner-item list-group-item-action">
+                  <label class="custom-control custom-checkbox m-1">
+                    <input id="float-rn-<?= $k ?>"
+                           name="float-rn-select[]"
+                           type="checkbox"
+                           value="<?= $k ?>"
+                           <?= ($i === true)? ' data-parsley-errors-container="#float-rn-errors"':'' ?>
+                           data-staff-name="<?= $v ?>"
+                           class="custom-control-input">
+                    <span class="custom-control-indicator"></span>
+                    <span class="custom-control-description"><?= $v ?></span>
+                  </label>
+                </div>
+              <?php
+              $i = false;
+              endforeach;
+              //END Build Staff Select List
+              ?>
+              </div>
             </div>
           </div>
 
@@ -578,7 +655,7 @@ $form_select_assignment = $crud->getAllAssignments();
           <div id="step-progress" class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
         </div>
 
-        <p id="step-x-of-y" class="text-center"></p>
+        <!-- <p id="step-x-of-y" class="text-center"></p> -->
       </div>
     </div>
 
@@ -612,12 +689,8 @@ $form_select_assignment = $crud->getAllAssignments();
   var bedsideRnStaffList = [];
   var naStaffList = [];
   var ucStaffList = [];
-  <?php
-  $objAssignment = array();
-  foreach ($form_select_assignment as $k => $v) {
-    array_push($objAssignment, array('id' => $k, 'name' => $v) );
-  }
-  ?>var assignmentList = JSON.parse('<?= json_encode($objAssignment) ?>');
+  var assignmentList = JSON.parse('<?= json_encode($crud->getAllAssignmentObj()) ?>');
+  var roleList = JSON.parse('<?= json_encode($crud->getAllRoleObj()) ?>');
 
 
   //TODO Bind to the window, so that if user tries to back out while form is dirty, then prompts to ask
@@ -671,7 +744,7 @@ $form_select_assignment = $crud->getAllAssignments();
       //update progress bar
       var progress = (index + 1)/$sections.length*100;
       $('#step-progress').attr('aria-valuenow', progress).css("width",(progress+"%"));
-      $('#step-x-of-y').html(`Step ${index + 1} of ${$sections.length}`);
+      //$('#step-x-of-y').html(`Step ${index + 1} of ${$sections.length}`);
 
       //update reference index
       oldIndex = index;
@@ -754,7 +827,7 @@ $form_select_assignment = $crud->getAllAssignments();
 
     //catch the on-submit event, collect/format data from the form, submit via ajax
     $('#unit-shift-form').parsley().on('form:submit', function () {
-      alert("hi");
+      submitUnitShiftForm();
       return false;
     });
 
@@ -782,6 +855,19 @@ $form_select_assignment = $crud->getAllAssignments();
         disableFormInnerItem($elem);
         $disabledPrn = $elem;
       }
+    });
+
+    $(`#float-rn-check-yes`).closest('div').click(function() {
+      $(`#float-rn-select-group`).toggle(true); //show float nurse select
+      $(`input[name='float-rn-select']`).first().prop("required", true); // add the required property to the cn-select select
+    });
+
+    $(`#float-rn-check-no`).closest('div').click(function() {
+      $(`#float-rn-select-group`).toggle(false); //show float nurse select
+      $(`input[name='float-rn-select']`).first().prop("required", false); // add the required property to the cn-select select
+
+      let $frnElem = $(`input[type='checkbox'][name='float-rn-select[]']:checked`); //unselect any selected cn-select value
+      if ($frnElem !== null) { $frnElem.prop("checked", false); }
     });
 
     //listener to change behavior of form if day shift is selected for input
@@ -977,6 +1063,29 @@ $form_select_assignment = $crud->getAllAssignments();
     } catch (e) {
       return false;
     }
+  }
+
+  function submitUnitShiftForm() {
+    // ["staff"]["date"]["role"]["assignment"]["d-or-n"]["ck-nonvent"]["ck-doubled"] -> cont'd
+    //   -> ["ck-vsick"]["ck-crrt"]["ck-admit"]["ck-codepg"]["ck-evd"]["ck-burn"]
+    //
+    //
+    // ["staff"] - staff-id
+    // ["date"] - date - yyyy-mm-dd
+    // ["role"] - role-id
+    // ["assignment"] - assignment-id
+    // ["d-or-n"] - 'D'/'N'
+    // ["ck-nonvent"] - Yes/''
+    // ["ck-doubled"] - Yes/''
+    // ["ck-vsick"] - Yes/''
+    // ["ck-crrt"] - Yes/''
+    // ["ck-admit"] - Yes/''
+    // ["ck-codepg"] - Yes/''
+    // ["ck-evd"] - Yes/''
+    // ["ck-burn"] - Yes/''
+
+    let formData = $('#unit-shift-form').serializeArray();
+    console.log(formData);
   }
 
   </script>
