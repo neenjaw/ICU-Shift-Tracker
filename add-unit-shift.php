@@ -1075,17 +1075,51 @@ $form_select_assignment = $crud->getAllAssignments();
     // ["role"] - role-id
     // ["assignment"] - assignment-id
     // ["d-or-n"] - 'D'/'N'
-    // ["ck-nonvent"] - Yes/''
-    // ["ck-doubled"] - Yes/''
-    // ["ck-vsick"] - Yes/''
-    // ["ck-crrt"] - Yes/''
-    // ["ck-admit"] - Yes/''
-    // ["ck-codepg"] - Yes/''
-    // ["ck-evd"] - Yes/''
-    // ["ck-burn"] - Yes/''
+    // ["ck-nonvent"] - true/false
+    // ["ck-doubled"] - true/false
+    // ["ck-vsick"] - true/false
+    // ["ck-crrt"] - true/false
+    // ["ck-admit"] - true/false
+    // ["ck-codepg"] - true/false
+    // ["ck-evd"] - true/false
+    // ["ck-burn"] - true/false
+    let assignmentLookup = createAssignmentLookup(assignmentList);
+    let roleLookup = createRoleLookup(roleList);
 
+    let submission = [];
     let formData = $('#unit-shift-form').serializeArray();
     console.log(formData);
+
+    //add the clinician to the submission array
+    submission.push([
+      formData['nc-select'], formData['date'], roleLookup['Clinician'], formData['nc-pod-select'], formData['day-or-night'],
+      false, false, false, false, false, false, false, false
+    ]);
+    if (true) {} //check if charge nurse exists, if it does, push it too.
+    // submission.push([
+    //   formData['cn-select'], formData['date'], roleLookup['Charge'], formData['cn-pod-select'], formData['day-or-night'],
+    //   false, false, false, false, false, false, false, false
+    // ]);
+  }
+
+  function createAssignmentLookup(assignmentObjArr) {
+    let assignmentArr = {};
+
+    for(let i = 0; i < assignmentObjArr.length; i++) {
+      assignmentArr[assignmentObjArr[i].assignment] = assignmentObjArr[i].id;
+    }
+
+    return assignmentArr;
+  }
+
+  function createRoleLookup(roleObjArray) {
+    let rArray = {};
+
+    for(let i = 0; i < roleObjArray.length; i++) {
+      rArray[roleObjArray[i].role] = roleObjArray[i].id;
+    }
+
+    return rArray;
   }
 
   </script>
