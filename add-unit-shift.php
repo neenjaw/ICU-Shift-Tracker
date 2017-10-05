@@ -830,7 +830,7 @@ $form_select_assignment = $crud->getAllAssignments();
 
     //catch the on-submit event, collect/format data from the form, submit via ajax
     $('#unit-shift-form').parsley().on('form:submit', function () {
-      //submitUnitShiftForm();
+      submitUnitShiftForm();
       return false;
     });
 
@@ -1072,8 +1072,8 @@ $form_select_assignment = $crud->getAllAssignments();
     let assignmentLookup = createAssignmentLookup(assignmentList);
     let roleLookup = createRoleLookup(roleList);
 
-    console.log(assignmentLookup);
-    console.log(roleLookup);
+    // console.log(assignmentLookup);
+    // console.log(roleLookup);
 
     // ["staff"]["date"]["role"]["assignment"]["d-or-n"]["ck-nonvent"]["ck-doubled"] -> cont'd
     //   -> ["ck-vsick"]["ck-crrt"]["ck-admit"]["ck-codepg"]["ck-evd"]["ck-burn"]
@@ -1098,7 +1098,7 @@ $form_select_assignment = $crud->getAllAssignments();
     let formData = [];
     let serializedForm = $('#unit-shift-form').serializeArray();
 
-    console.log(serializedForm);
+    // console.log(serializedForm);
 
     for( let i=0; i < serializedForm.length; i++ ) {
       let formPropertyName = serializedForm[i].name;
@@ -1109,43 +1109,129 @@ $form_select_assignment = $crud->getAllAssignments();
       formData[formPropertyName].push(serializedForm[i].value);
     }
 
+    let nonVentLookup = createModLookup(formData['non-vent-mod-select']);
+    let doubledLookup = createModLookup(formData['double-mod-select']);
+    let vSickLookup = createModLookup(formData['very-sick-mod-select']);
+    let crrtLookup = createModLookup(formData['crrt-mod-select']);
+    let admitLookup = createModLookup(formData['admit-mod-select']);
+    let codePgLookup = createModLookup(formData['code-pager-mod-select']);
+    let evdLookup = createModLookup(formData['evd-mod-select']);
+    let burnLookup = createModLookup(formData['burn-mod-select']);
 
-    console.log(formData);
+    let date = formData['date'][0];
+    let dayOrNight = formData['day-or-night'][0];
+
+    // console.log(formData);
 
     //add the clinician to the submission array
     submission.push([
-      formData['nc-select'][0], formData['date'][0], roleLookup['Clinician'], formData['nc-pod-select'][0], formData['day-or-night'][0],
+      formData['nc-select'][0], formData['date'][0], roleLookup['Clinician'], formData['nc-pod-select'][0], dayOrNight,
       false, false, false, false, false, false, false, false
     ]);
 
     //check if charge nurse exists, if it does, push it too.
-    if (formData['day-or-night'][0] === 'D') {
+    if (dayOrNight === 'D') {
       submission.push([
-        formData['cn-select'][0], formData['date'][0], roleLookup['Charge'], formData['cn-pod-select'][0], formData['day-or-night'][0],
+        formData['cn-select'][0], formData['date'][0], roleLookup['Charge'], formData['cn-pod-select'][0], dayOrNight,
           false, false, false, false, false, false, false, false
       ]);
     }
 
     //float
     if ( formData['float-rn-check'][0] === "Yes" ) {
-      for ( let i = 0; i < formData['float-rn-select'].length; i++) {
+      for ( let i = 0; i < formData['float-rn-select'].length; i++ ) {
         submission.push([
-          formData['float-rn-select'][i], formData['date'][0], roleLookup['Bedside'], assignmentLookup['Float'], formData['day-or-night'][0],
+          formData['float-rn-select'][i], formData['date'][0], roleLookup['Bedside'], assignmentLookup['Float'], dayOrNight,
             false, false, false, false, false, false, false, false
         ]);
       }
     }
 
-    console.log(submission);
 
     //apod
+    for ( let i = 0; i < formData['apod-rn-select'].length; i++ ) {
+      let sid = formData['apod-rn-select'][i];
+
+      submission.push([
+        sid, date, roleLookup['Bedside'], assignmentLookup['A'], dayOrNight,
+          isModSelected(sid, nonVentLookup),
+          isModSelected(sid, doubledLookup),
+          isModSelected(sid, vSickLookup),
+          isModSelected(sid, crrtLookup),
+          isModSelected(sid, admitLookup),
+          isModSelected(sid, codePgLookup),
+          isModSelected(sid, evdLookup),
+          isModSelected(sid, burnLookup)
+      ]);
+    }
 
     //bpod
+    for ( let i = 0; i < formData['bpod-rn-select'].length; i++ ) {
+      let sid = formData['bpod-rn-select'][i];
+
+      submission.push([
+        sid, date, roleLookup['Bedside'], assignmentLookup['B'], dayOrNight,
+          isModSelected(sid, nonVentLookup),
+          isModSelected(sid, doubledLookup),
+          isModSelected(sid, vSickLookup),
+          isModSelected(sid, crrtLookup),
+          isModSelected(sid, admitLookup),
+          isModSelected(sid, codePgLookup),
+          isModSelected(sid, evdLookup),
+          isModSelected(sid, burnLookup)
+      ]);
+    }
+
     //cpod
+    for ( let i = 0; i < formData['cpod-rn-select'].length; i++ ) {
+      let sid = formData['cpod-rn-select'][i];
+
+      submission.push([
+        sid, date, roleLookup['Bedside'], assignmentLookup['C'], dayOrNight,
+          isModSelected(sid, nonVentLookup),
+          isModSelected(sid, doubledLookup),
+          isModSelected(sid, vSickLookup),
+          isModSelected(sid, crrtLookup),
+          isModSelected(sid, admitLookup),
+          isModSelected(sid, codePgLookup),
+          isModSelected(sid, evdLookup),
+          isModSelected(sid, burnLookup)
+      ]);
+    }
+
     //outreach
-    //float
+    for ( let i = 0; i < formData['outreach-rn-select'].length; i++ ) {
+      let sid = formData['outreach-rn-select'][i];
+
+      submission.push([
+        sid, date, roleLookup['Outreach'], assignmentLookup['Float'], dayOrNight,
+        false, false, false, false, false, false, false, false
+      ]);
+    }
+
     //na
+    for ( let i = 0; i < formData['na-select'].length; i++ ) {
+      let sid = formData['na-select'][i];
+
+      submission.push([
+        sid, date, roleLookup['NA'], formData[`na-pod-select-${sid}`][0], dayOrNight,
+        false, false, false, false, false, false, false, false
+      ]);
+    }
+
     //uc
+    for ( let i = 0; i < formData['uc-select'].length; i++ ) {
+      let sid = formData['uc-select'][i];
+
+      submission.push([
+        sid, date, roleLookup['UC'], formData[`uc-pod-select-${sid}`][0], dayOrNight,
+        false, false, false, false, false, false, false, false
+      ]);
+    }
+
+    console.log(submission);
+
+    //TODO == GOT ALL THE STAFF ENTRIES, NOW TO SUBMIT THEM!!!!!
   }
 
   function createAssignmentLookup(assignmentObjArr) {
@@ -1166,6 +1252,24 @@ $form_select_assignment = $crud->getAllAssignments();
     }
 
     return rArray;
+  }
+
+  function createModLookup(modSelectArray) {
+    let mArray = [];
+
+    for ( let i = 0; i < modSelectArray.length; i++ ) {
+      mArray[modSelectArray[i]] = true;
+    }
+
+    return mArray;
+  }
+
+  function isModSelected(staffId, modLookup) {
+    let b = false;
+
+    if ( (typeof(modLookup) != 'undefined') && (typeof(modLookup[staffId]) != 'undefined') ) { b = true; }
+
+    return b;
   }
 
   </script>
