@@ -11,7 +11,7 @@
         <select name="{{../section}}-{{id}}" class="custom-select" required data-parsley-errors-container="#{{../section}}-errors">
           <option value="">Select a pod...</option>
           {{#each ../pod}}
-          <option value="{{this.id}}">{{this.name}}</option>
+          <option value="{{this.id}}">{{this.assignment}}</option>
           {{/each}}
         </select>
       </td>

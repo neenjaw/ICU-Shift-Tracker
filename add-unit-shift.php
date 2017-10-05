@@ -300,7 +300,7 @@ $form_select_assignment = $crud->getAllAssignments();
                            name="float-rn-select[]"
                            type="checkbox"
                            value="<?= $k ?>"
-                           <?= ($i === true)? ' data-parsley-errors-container="#float-rn-errors"':'' ?>
+                           <?= ($i === true)? ' data-parsley-errors-container="#float-rn-select-errors"':'' ?>
                            data-staff-name="<?= $v ?>"
                            class="custom-control-input">
                     <span class="custom-control-indicator"></span>
@@ -769,17 +769,20 @@ $form_select_assignment = $crud->getAllAssignments();
 
         let currentSectionId = $('.current').prop('id');
 
-        if ( currentSectionId == 'section-apod-rn-select' ) {
-          hideAlreadyPicked('#apod-rn-select', ['nc-select', 'cn-select']);
+        if ( currentSectionId == 'section-float-rn-select' ) {
+          hideAlreadyPicked('#float-rn-select', ['nc-select', 'cn-select']);
+
+        } else if ( currentSectionId == 'section-apod-rn-select' ) {
+          hideAlreadyPicked('#apod-rn-select', ['nc-select', 'cn-select', 'float-rn-select[]']);
 
         } else if ( currentSectionId == 'section-bpod-rn-select' ) {
-          hideAlreadyPicked('#bpod-rn-select', ['nc-select', 'cn-select', 'apod-rn-select[]']);
+          hideAlreadyPicked('#bpod-rn-select', ['nc-select', 'cn-select', 'float-rn-select[]', 'apod-rn-select[]']);
 
         } else if ( currentSectionId == 'section-cpod-rn-select' ) {
-          hideAlreadyPicked('#cpod-rn-select', ['nc-select', 'cn-select', 'apod-rn-select[]', 'bpod-rn-select[]']);
+          hideAlreadyPicked('#cpod-rn-select', ['nc-select', 'cn-select', 'float-rn-select[]', 'apod-rn-select[]', 'bpod-rn-select[]']);
 
         } else if ( currentSectionId == 'section-outreach-rn-select' ) {
-          hideAlreadyPicked('#outreach-rn-select', ['nc-select', 'cn-select', 'apod-rn-select[]', 'bpod-rn-select[]', 'cpod-rn-select[]']);
+          hideAlreadyPicked('#outreach-rn-select', ['nc-select', 'cn-select', 'float-rn-select[]', 'apod-rn-select[]', 'bpod-rn-select[]', 'cpod-rn-select[]']);
 
         } else if ( currentSectionId == 'section-non-vent-mod-select' ) {
           bedsideRnStaffList = getStaffFromCheckboxes(['apod-rn-select[]', 'bpod-rn-select[]', 'cpod-rn-select[]']);
@@ -827,7 +830,7 @@ $form_select_assignment = $crud->getAllAssignments();
 
     //catch the on-submit event, collect/format data from the form, submit via ajax
     $('#unit-shift-form').parsley().on('form:submit', function () {
-      submitUnitShiftForm();
+      //submitUnitShiftForm();
       return false;
     });
 
@@ -859,14 +862,14 @@ $form_select_assignment = $crud->getAllAssignments();
 
     $(`#float-rn-check-yes`).closest('div').click(function() {
       $(`#float-rn-select-group`).toggle(true); //show float nurse select
-      $(`input[name='float-rn-select']`).first().prop("required", true); // add the required property to the cn-select select
+      $(`input[name='float-rn-select[]']`).first().prop("required", true); // add the required property to the float-rn-select select
     });
 
     $(`#float-rn-check-no`).closest('div').click(function() {
       $(`#float-rn-select-group`).toggle(false); //show float nurse select
-      $(`input[name='float-rn-select']`).first().prop("required", false); // add the required property to the cn-select select
+      $(`input[name='float-rn-select[]']`).first().prop("required", false); // add the required property to the float-rn-select select
 
-      let $frnElem = $(`input[type='checkbox'][name='float-rn-select[]']:checked`); //unselect any selected cn-select value
+      let $frnElem = $(`input[type='checkbox'][name='float-rn-select[]']:checked`); //unselect any selected float-rn-select value
       if ($frnElem !== null) { $frnElem.prop("checked", false); }
     });
 
@@ -1066,6 +1069,12 @@ $form_select_assignment = $crud->getAllAssignments();
   }
 
   function submitUnitShiftForm() {
+    let assignmentLookup = createAssignmentLookup(assignmentList);
+    let roleLookup = createRoleLookup(roleList);
+
+    console.log(assignmentLookup);
+    console.log(roleLookup);
+
     // ["staff"]["date"]["role"]["assignment"]["d-or-n"]["ck-nonvent"]["ck-doubled"] -> cont'd
     //   -> ["ck-vsick"]["ck-crrt"]["ck-admit"]["ck-codepg"]["ck-evd"]["ck-burn"]
     //
@@ -1075,6 +1084,7 @@ $form_select_assignment = $crud->getAllAssignments();
     // ["role"] - role-id
     // ["assignment"] - assignment-id
     // ["d-or-n"] - 'D'/'N'
+    //
     // ["ck-nonvent"] - true/false
     // ["ck-doubled"] - true/false
     // ["ck-vsick"] - true/false
@@ -1083,37 +1093,73 @@ $form_select_assignment = $crud->getAllAssignments();
     // ["ck-codepg"] - true/false
     // ["ck-evd"] - true/false
     // ["ck-burn"] - true/false
-    let assignmentLookup = createAssignmentLookup(assignmentList);
-    let roleLookup = createRoleLookup(roleList);
 
     let submission = [];
-    let formData = $('#unit-shift-form').serializeArray();
+    let formData = [];
+    let serializedForm = $('#unit-shift-form').serializeArray();
+
+    console.log(serializedForm);
+
+    for( let i=0; i < serializedForm.length; i++ ) {
+      let formPropertyName = serializedForm[i].name;
+      formPropertyName = formPropertyName.replace(/\[\]$/, '');
+
+      formData[formPropertyName] = formData[formPropertyName] || [];
+
+      formData[formPropertyName].push(serializedForm[i].value);
+    }
+
+
     console.log(formData);
 
     //add the clinician to the submission array
     submission.push([
-      formData['nc-select'], formData['date'], roleLookup['Clinician'], formData['nc-pod-select'], formData['day-or-night'],
+      formData['nc-select'][0], formData['date'][0], roleLookup['Clinician'], formData['nc-pod-select'][0], formData['day-or-night'][0],
       false, false, false, false, false, false, false, false
     ]);
-    if (true) {} //check if charge nurse exists, if it does, push it too.
-    // submission.push([
-    //   formData['cn-select'], formData['date'], roleLookup['Charge'], formData['cn-pod-select'], formData['day-or-night'],
-    //   false, false, false, false, false, false, false, false
-    // ]);
+
+    //check if charge nurse exists, if it does, push it too.
+    if (formData['day-or-night'][0] === 'D') {
+      submission.push([
+        formData['cn-select'][0], formData['date'][0], roleLookup['Charge'], formData['cn-pod-select'][0], formData['day-or-night'][0],
+          false, false, false, false, false, false, false, false
+      ]);
+    }
+
+    //float
+    if ( formData['float-rn-check'][0] === "Yes" ) {
+      for ( let i = 0; i < formData['float-rn-select'].length; i++) {
+        submission.push([
+          formData['float-rn-select'][i], formData['date'][0], roleLookup['Bedside'], assignmentLookup['Float'], formData['day-or-night'][0],
+            false, false, false, false, false, false, false, false
+        ]);
+      }
+    }
+
+    console.log(submission);
+
+    //apod
+
+    //bpod
+    //cpod
+    //outreach
+    //float
+    //na
+    //uc
   }
 
   function createAssignmentLookup(assignmentObjArr) {
-    let assignmentArr = {};
+    let aArray = [];
 
     for(let i = 0; i < assignmentObjArr.length; i++) {
-      assignmentArr[assignmentObjArr[i].assignment] = assignmentObjArr[i].id;
+      aArray[assignmentObjArr[i].assignment] = assignmentObjArr[i].id;
     }
 
-    return assignmentArr;
+    return aArray;
   }
 
   function createRoleLookup(roleObjArray) {
-    let rArray = {};
+    let rArray = [];
 
     for(let i = 0; i < roleObjArray.length; i++) {
       rArray[roleObjArray[i].role] = roleObjArray[i].id;
