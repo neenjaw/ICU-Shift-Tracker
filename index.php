@@ -83,7 +83,7 @@ if (isset($_SESSION['user_session'])) {
 
     </div>
     <!-- login modal content -->
- 
+
     <!-- /.modal-content -->
   </div>
   <!-- /.modal-dialog -->
@@ -92,15 +92,6 @@ if (isset($_SESSION['user_session'])) {
 
 <?php  include 'includes/script-include.php'; ?>
 
-<!-- onLoad, call login modal if not logged in. -->
-<?php if (!isset($_SESSION['user_session'])) { ?>
-  <script type="text/javascript">
-  $(window).on('load', function () {
-    $('#login-signup-modal').modal({ backdrop: 'static', keyboard: false })
-    $('#login-signup-modal').modal('show');
-  });
-  </script>
-<?php } ?>
 
 <script type="text/javascript">
 $(document).ready(function(){
@@ -135,6 +126,16 @@ $(document).ready(function(){
 
 });
 </script>
+
+<!-- on document ready, call login modal if not logged in. -->
+<?php if (!isset($_SESSION['user_session'])) { ?>
+  <script type="text/javascript">
+  $(document).ready(function () {
+    $('#login-signup-modal').modal({ backdrop: 'static', keyboard: false })
+    $('#login-signup-modal').modal('show');
+  });
+  </script>
+<?php } ?>
 
 <script type="text/javascript">
 $(function () {
@@ -186,7 +187,7 @@ $(function () {
       url: 'ajax/ajax_login_process.php',
       data: data + '&btn-login=1',
       beforeSend: function () {
-        $("#btn-login").html('<span class="fa fa-transfer"></span> &nbsp; sending ...');
+        $("#btn-login").html('<span class="fa fa-transfer"></span> &nbsp; Sending ...');
       },
       success: function (response) {
         if (response == "ok") {

@@ -91,8 +91,8 @@ if (!isset($_SESSION['user_session'])) {
 
               <!-- DAY / NIGHT SELECT -->
               <div class="col-sm-10 btn-group requiredField" data-toggle="buttons">
-                <label class="btn btn-outline-primary active"><input type="radio" name="d-or-n" id="radio-d-or-n-d" value="D" autocomplete="off" checked required>Day</label>
-                <label class="btn btn-outline-primary"><input type="radio" name="d-or-n" id="radio-d-or-n-n" value="N" autocomplete="off">Night</label>
+                <label class="btn btn-outline-primary active"><input type="radio" name="dayornight" id="radio-d-or-n-d" value="D" autocomplete="off" checked required>Day</label>
+                <label class="btn btn-outline-primary"><input type="radio" name="dayornight" id="radio-d-or-n-n" value="N" autocomplete="off">Night</label>
               </div>
 
             </div>
@@ -136,53 +136,53 @@ foreach ($form_select_assignment as $k => $v) {?>
             </div>
             <div class="row justify-content-center">
 
-              <div class="col-sm-10 form-group collapse show" id="check-box-group">
+              <div class="col-sm-10 form-group collapse show" id="chebox-group">
                 <label class="control-label">Check all that apply</label>
                 <div class="checkbox">
                   <label class="custom-control custom-checkbox">
-                    <input name="ck-nonvent" class="custom-control-input" type="checkbox" value="NV" data-parsley-excluded>
+                    <input name="nonvent" class="custom-control-input" type="checkbox" value="NV" data-parsley-excluded>
                     <span class="custom-control-indicator"></span><span class="custom-control-description">Non-vented?</span>
                   </label>
                 </div>
                 <div class="checkbox">
                   <label class="custom-control custom-checkbox">
-                    <input name="ck-doubled" class="custom-control-input" type="checkbox" value="D" data-parsley-excluded>
+                    <input name="doubled" class="custom-control-input" type="checkbox" value="D" data-parsley-excluded>
                     <span class="custom-control-indicator"></span><span class="custom-control-description">Doubled?</span>
                   </label>
                 </div>
                 <div class="checkbox">
                   <label class="custom-control custom-checkbox">
-                    <input name="ck-admit" class="custom-control-input" type="checkbox" value="A" data-parsley-excluded>
+                    <input name="admit" class="custom-control-input" type="checkbox" value="A" data-parsley-excluded>
                     <span class="custom-control-indicator"></span><span class="custom-control-description">Admitted?</span>
                   </label>
                 </div>
                 <div class="checkbox">
                   <label class="custom-control custom-checkbox">
-                    <input name="ck-codepg" class="custom-control-input" type="checkbox" value="P" data-parsley-excluded>
+                    <input name="codepg" class="custom-control-input" type="checkbox" value="P" data-parsley-excluded>
                     <span class="custom-control-indicator"></span><span class="custom-control-description">Code pager?</span>
                   </label>
                 </div>
                 <div class="checkbox">
                   <label class="custom-control custom-checkbox">
-                    <input name="ck-vsick" class="custom-control-input" type="checkbox" value="VS" data-parsley-excluded>
+                    <input name="vsick" class="custom-control-input" type="checkbox" value="VS" data-parsley-excluded>
                     <span class="custom-control-indicator"></span><span class="custom-control-description">Very sick?</span>
                   </label>
                 </div>
                 <div class="checkbox">
                   <label class="custom-control custom-checkbox">
-                    <input name="ck-crrt" class="custom-control-input" type="checkbox" value="C" data-parsley-excluded>
+                    <input name="crrt" class="custom-control-input" type="checkbox" value="C" data-parsley-excluded>
                     <span class="custom-control-indicator"></span><span class="custom-control-description">CRRT?</span>
                   </label>
                 </div>
                 <div class="checkbox">
                   <label class="custom-control custom-checkbox">
-                    <input name="ck-evd" class="custom-control-input" type="checkbox" value="E" data-parsley-excluded>
+                    <input name="evd" class="custom-control-input" type="checkbox" value="E" data-parsley-excluded>
                     <span class="custom-control-indicator"></span><span class="custom-control-description">EVD?</span>
                   </label>
                 </div>
                 <div class="checkbox">
                   <label class="custom-control custom-checkbox">
-                    <input name="ck-burn" class="custom-control-input" type="checkbox" value="B" data-parsley-excluded>
+                    <input name="burn" class="custom-control-input" type="checkbox" value="B" data-parsley-excluded>
                     <span class="custom-control-indicator"></span><span class="custom-control-description">Burn?</span>
                   </label>
                 </div>
@@ -237,10 +237,10 @@ foreach ($form_select_assignment as $k => $v) {?>
         var selectVal = $(this).val();
         switch(selectVal) {
           case "5": //If the bedside role is selected, then show the checkboxes
-            $("#check-box-group").collapse('show');
+            $("#chebox-group").collapse('show');
             break;
           default: //else hide them
-            $("#check-box-group").collapse('hide');
+            $("#chebox-group").collapse('hide');
         }
 
       });
@@ -300,7 +300,7 @@ foreach ($form_select_assignment as $k => $v) {?>
 
               //reset the form, return focus to first name
               $('#shift-form').trigger('reset');
-              $("#check-box-group").collapse('show');
+              $("#chebox-group").collapse('show');
               $('#select-staff').val('').trigger('change');
 
               //scroll to top
