@@ -94,7 +94,55 @@ class crud
   }
 
   public function createMultipleShiftEntries($data) {
-    return false;
+    try {
+      $this->db->beginTransaction();
+
+      $sql = "INSERT INTO {$this->tbl_shift_entry}
+                (shift_date, staff_id, role_id, assignment_id, bool_doubled, bool_vented,
+                 bool_new_admit, bool_very_sick, bool_code_pager, bool_crrt, bool_evd, bool_burn,
+                 bool_day_or_night)
+              VALUES
+                (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+      $stmt = $this->db->prepare($sql);
+
+      foreach ($data as $entry) {
+        $stmt->bindparam(1, $entry->date);
+        $stmt->bindparam(2, $entry->staff);
+        $stmt->bindparam(3, $entry->role);
+        $stmt->bindparam(4, $entry->assignment);
+        $stmt->bindparam(5, $entry->doubled);
+        $stmt->bindparam(6, $entry->vented);
+        $stmt->bindparam(7, $entry->admit);
+        $stmt->bindparam(8, $entry->vsick);
+        $stmt->bindparam(9, $entry->codepg);
+        $stmt->bindparam(10, $entry->crrt);
+        $stmt->bindparam(11, $entry->evd);
+        $stmt->bindparam(12, $entry->burn);
+        $stmt->bindparam(13, $entry->dayornight);
+        $stmt->execute();
+      }
+
+      $this->db->commit(); 
+      return true;
+    } catch (Exception $e) {
+      $this->db->rollBack();
+
+      $err_string = $e->getMessage();
+      if ( strpos($err_string, 'Duplicate entry') !== false) {
+
+        preg_match("/\'([0-9]{4}-[01]{1}[0-9]{1}-[0-3]{1}[0-9]{1})-([0-9]+)\'/",$err_string,$duplicate);
+
+        // var_dump($duplicate);
+        $staff = $this->getStaffObj($duplicate[2]);
+
+        throw new CRUD_SQL_Exception("Database error occured, transaction aborted: Duplicate entry attempted for {$staff['first_name']} {$staff['last_name']} on {$duplicate[1]}.");
+      } else {
+        throw new CRUD_SQL_Exception("Database error occured, transaction aborted: {$e}");
+      }
+
+      return false;
+    }
   }
 
   public function createShiftEntry($shift_date, $staff_id, $role_id, $assignment_id, $bool_day_or_night, $bool_doubled = false, $bool_vented = false, $bool_new_admit = false, $bool_very_sick = false, $bool_code_pager = false, $bool_crrt = false, $bool_evd = false, $bool_burn = false)

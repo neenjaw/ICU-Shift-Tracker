@@ -24,7 +24,7 @@ function get_numeric($val) {
     return $val + 0;
   }
   return 0;
-} 
+}
 
 try {
     if (isset($_POST['shiftData'])) {
@@ -70,7 +70,7 @@ try {
 
     }
 } catch (CRUD_SQL_Exception $e) {
-  echo "Unable to create shift entry, transaction aborted: {$e->getMessage()}\n";
+  echo "Unable to create shift entry: {$e->getMessage()}\n";
 } catch (PDOException $e) {
   echo $e->getMessage();
 }
