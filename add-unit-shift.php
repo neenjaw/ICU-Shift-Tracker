@@ -94,8 +94,6 @@ $form_select_assignment = $crud->getAllAssignments();
 
           </div>
 
-          <!-- TODO add in the ajax to submit them all -->
-
           <!-- Select Clinician/Charge -->
           <div id="section-nc-cn-select" class="form-section mt-4 mb-4">
             <!-- RN Clinician SELECT -->
@@ -680,7 +678,7 @@ $form_select_assignment = $crud->getAllAssignments();
         </div>
         <div class="modal-body" id="submission-modal-body"></div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button id="close-modal" type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         </div>
       </div>
       <!-- /.submission modal content -->
@@ -896,7 +894,9 @@ $form_select_assignment = $crud->getAllAssignments();
     $(`#day-or-night-day`).closest('label').click(function() {
       $(`#cn-select-group`).toggle(true); // show charge nurse select
       $(`#section-nc-cn-pod-select`).toggleClass('skip-section', false); // show section for pod selection for nc/cn
-      $(`input[name='cn-select']`).first().prop("required", true); // add the required property to the cn-select select
+
+      $(`input[name='cn-select']`).first().prop("required", true); // add the required property to the first cn-select
+      $(`#cn-pod-select input`).first().prop("required", true); // add the required property to the first cn-pod-select
 
       hideFormInnerItem($(`#nc-pod-8`));
     });
@@ -906,7 +906,10 @@ $form_select_assignment = $crud->getAllAssignments();
       $(`#cn-select-group`).toggle(false); // hide charge nurse select
 
       $(`#section-nc-cn-pod-select`).toggleClass('skip-section', true); // hide section for pod selection for nc/cn
+
       $(`input[name='cn-select'][required]`).prop("required", false); // remove the required property from the cn-select select
+      $(`input[name='cn-pod-select'][required]`).prop("required", false); // remove the required property from the cn-select select
+
       showFormInnerItem($(`#nc-pod-8`)); //auto-select pod A/B/C for the nc
       $(`#nc-pod-8`).prop("checked", true);
 
@@ -1298,11 +1301,29 @@ $form_select_assignment = $crud->getAllAssignments();
   	   type: 'post',
   	   data: {"shiftData" : JSON.stringify(submissionData)},
        beforeSend: function () {
+         if (debug) { console.log("AJAX sent."); }
          $('#submission-modal-body').html(`<i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i><span class="sr-only">Loading...</span>`);
          $('#submission-modal').modal('show');	//show the modal
        },
   	   success: function(data) {
-  	     $('#submission-modal-body').html(data);
+         if (debug) { console.log("AJAX returned."); }
+
+         if (data === "ok") {
+
+           if (debug) { console.log("Data submission ok."); }
+    	     $('#submission-modal-body').html("<h3>Success!</h3><p>click close to reset the form.</p>");
+           $('#modal-close').on('click', function(){
+             location.reload();
+           });
+
+         } else {
+
+           if (debug) { console.log("Data submission not ok."); }
+           $('#submission-modal-body').html(`<h3>There was a problem!</h3><p>${data}</p><p>Click close, find the problem, resubmit.</p>`);
+
+         }
+
+         if (debug) { console.log(data); }
   	   }
   	});
   }
