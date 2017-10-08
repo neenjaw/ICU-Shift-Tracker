@@ -1,5 +1,12 @@
 <?php
 
+/**
+ * CRUD SQL Exception
+ */
+class CRUD_SQL_Exception extends Exception {
+
+}
+
 class crud
 {
   private $db;
@@ -84,6 +91,10 @@ class crud
       echo $e->getMessage();
       return false;
     }
+  }
+
+  public function createMultipleShiftEntries($data) {
+    return false;
   }
 
   public function createShiftEntry($shift_date, $staff_id, $role_id, $assignment_id, $bool_day_or_night, $bool_doubled = false, $bool_vented = false, $bool_new_admit = false, $bool_very_sick = false, $bool_code_pager = false, $bool_crrt = false, $bool_evd = false, $bool_burn = false)

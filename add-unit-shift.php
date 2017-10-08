@@ -703,7 +703,7 @@ $form_select_assignment = $crud->getAllAssignments();
 
   <!-- Aux Scripts -->
   <script>
-
+  var debug = true;
   var shiftModifierCheckboxTemplate = null;
   var bedsideRnStaffList = [];
   var naStaffList = [];
@@ -1220,7 +1220,7 @@ $form_select_assignment = $crud->getAllAssignments();
       ));
     }
 
-    console.log(submission);
+    if (debug) { console.log(submission); }
 
     ajaxSubmitUnitShifts(submission);
   }
@@ -1228,21 +1228,21 @@ $form_select_assignment = $crud->getAllAssignments();
   function createStaffEntryObj(staffId, date, roleId, assignmentId, dayOrNight,
     nonVent = false, doubled = false, vsick = false, crrt = false, admit = false, codepg = false, evd = false, burn = false) {
 
-    let staffEntry = {};
-
-    staffEntry.staff = staffId;
-    staffEntry.date = date;
-    staffEntry.role = roleId;
-    staffEntry.assignment = assignmentId;
-    staffEntry.dayornight = dayOrNight;
-    staffEntry.nonvent = nonVent;
-    staffEntry.doubled = doubled;
-    staffEntry.vsick = vsick;
-    staffEntry.crrt = crrt;
-    staffEntry.admit = admit;
-    staffEntry.codepg = codepg;
-    staffEntry.evd = evd;
-    staffEntry.burn = burn;
+    let staffEntry = {
+            staff : staffId,
+            date : date,
+            role : roleId,
+            assignment : assignmentId,
+            dayornight : dayOrNight,
+            nonvent : nonVent,
+            doubled : doubled,
+            vsick : vsick,
+            crrt : crrt,
+            admit : admit,
+            codepg : codepg,
+            evd : evd,
+            burn : burn
+          };
 
     return staffEntry;
   }
@@ -1287,6 +1287,11 @@ $form_select_assignment = $crud->getAllAssignments();
 
   function ajaxSubmitUnitShifts(submissionData) {
     submissionData = submissionData || []; // catch null/undefined arguments
+
+    if ( submissionData === [] ) {
+      if (debug) { console.log("Warning: no data passed to submit via ajax handler"); }
+      return;
+    }
 
     $.ajax({
   	   url: 'ajax/ajax_add_multi_shift_process.php',

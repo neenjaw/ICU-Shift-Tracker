@@ -2,41 +2,75 @@
 session_start();
 require_once '../includes/dbconfig.php';
 
+/**
+ * Shift Entry Exception
+ */
+class ShiftEntryException extends Exception {
+
+}
+
+function checkIfNumAndInt($num) {
+  if (is_numeric($num)) {
+    $num = get_numeric($num);
+    if (is_int($num)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function get_numeric($val) {
+  if (is_numeric($val)) {
+    return $val + 0;
+  }
+  return 0;
+} 
+
 try {
     if (isset($_POST['shiftData'])) {
 
-        $data = json_decode($_POST['shiftData']);
+      $data = json_decode($_POST['shiftData']);
 
-        foreach ($data as $entry) {
+      foreach ($data as $entry) {
+        try {
 
-          //required variables
-          if (isset($entry->staff)) { $staff_id = $entry->staff; } else { throw new Exception('No staff id submitted.'); }
-          if (isset($entry->date)) { $shift_date = $entry->date; } else { throw new Exception('No date submitted.'); }
-          if (isset($entry->role)) { $role = $entry->role; } else { throw new Exception('No role submitted.'); }
-          if (isset($entry->assignment)) { $assignment = $entry->assignment; } else { throw new Exception('No assignment submitted.'); }
-          if (isset($entry->dayornight)) { $d_or_n = (($entry->dayornight == 'D') ? false : true); } else { throw new Exception('No day or night modifier submitted.'); }
+          //check data, if wrong throw exception for malformed data
+          if (!isset($entry->staff)) { throw new ShiftEntryException('Need Staff ID'); }
+          if (!isset($entry->date)) { throw new ShiftEntryException('Need Shift Date'); }
+          if (!isset($entry->role)) { throw new ShiftEntryException('Need role ID'); }
+          if (!isset($entry->assignment)) { throw new ShiftEntryException('Need assignment ID'); }
+          if (!isset($entry->dayornight)) { throw new ShiftEntryException('Need day/night modifier'); }
 
-        //
-        //   //optional variables
-        //   $ck_v = (isset($entry->nonvent)) ? false : true;
-        //   $ck_doubled = (isset($entry->doubled)) ? true : false;
-        //   $ck_vsick = (isset($entry->vsick)) ? true : false;
-        //   $ck_crrt = (isset($entry->crrt)) ? true : false;
-        //   $ck_admit = (isset($entry->admit)) ? true : false;
-        //   $ck_codepgr = (isset($entry->codepg)) ? true : false;
-        //   $ck_evd = (isset($entry->evd)) ? true : false;
-        //   $ck_burn = (isset($entry->burn)) ? true : false;
-        //
-        //   if ($crud->createShiftEntry($shift_date, $staff_id, $role, $assignment, $d_or_n, $ck_doubled, $ck_v, $ck_admit, $ck_vsick, $ck_codepgr, $ck_crrt, $ck_evd, $ck_burn)) {
-        //       echo "ok";
-        //   } else {
-        //       throw new Exception("Could not add new shift entry, check details."); // wrong details
-        //   }
-        //
-        echo "received";
+          if (!checkIfNumAndInt($entry->staff)) { throw new ShiftEntryException('Staff ID needs to be an integer'); }
+          if (!checkIfNumAndInt($entry->role)) { throw new ShiftEntryException('Role ID needs to be an integer'); }
+          if (!checkIfNumAndInt($entry->assignment)) { throw new ShiftEntryException('Assignment ID needs to be an integer'); }
+
+          //format data as needed for insertion
+          if ($entry->dayornight == "D") {
+            $entry->dayornight = 0;
+          } elseif ($entry->dayornight == "N") {
+            $entry->dayornight = 1;
+          } else {
+            throw new ShiftEntryException('Day/night modifier needs to be either [D\N]');
+          }
+
+          //create vented property of entry, as db tracks vents, not nonvents
+          $entry->vented = !$entry->nonvent;
+
+        } catch (ShiftEntryException $e) {
+          echo "Error, malformed data: {$e->getMessage()}\n";
         }
+      }
+
+      if ($crud->createMultipleShiftEntries($data)) {
+        echo "ok";
+      } else {
+        echo "not ok";
+      }
 
     }
+} catch (CRUD_SQL_Exception $e) {
+  echo "Unable to create shift entry, transaction aborted: {$e->getMessage()}\n";
 } catch (PDOException $e) {
-    echo $e->getMessage();
+  echo $e->getMessage();
 }
