@@ -123,7 +123,11 @@ class crud
         $stmt->execute();
       }
 
+<<<<<<< HEAD
       $this->db->commit(); 
+=======
+      $this->db->commit(); // TODO - remove this later
+>>>>>>> 07aeb63b5938530ab063d9e7fc44c48024832a5d
       return true;
     } catch (Exception $e) {
       $this->db->rollBack();
