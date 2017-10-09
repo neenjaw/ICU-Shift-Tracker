@@ -96,6 +96,11 @@ if (!isset($_SESSION['user_session'])) {
   <script src="assets/build-shift-table.js"></script>
 
   <script>
+    //TODO - Add edit / Delete buttons to shift details modal
+    //TODO - create shift edit option
+    //TODO - revamp table 3col-9col format
+    //TODO - revamp table output for also RN, LPN, NA, UC
+    //TODO - lump in LPN / NA together
     var debug = true;
     var shiftTemplate = null;
 
