@@ -138,6 +138,8 @@ $(document).ready(function(){
 <?php } ?>
 
 <script type="text/javascript">
+var debug = true;
+
 $(function () {
   $('#callout-login-error').hide();
   $('#callout-form-error').hide();
@@ -153,7 +155,7 @@ $(function () {
         }
       }
       catch (err) {
-        console.log(err);
+        if (debug) { console.log(err); }
       }
 
       $('#callout-form-error').fadeOut('fast');
@@ -172,7 +174,7 @@ $(function () {
         }
       }
       catch (err) {
-        console.log(err);
+        if (debug) { console.log(err); }
       }
 
       this.$element.closest('.form-group').removeClass('has-success').addClass('has-danger');
@@ -208,7 +210,7 @@ $(function () {
             }
           }
           catch (err) {
-            console.log(err);
+            if (debug) { console.log(err); }
           }
 
           $("#login-email").closest('.form-group').removeClass('has-success').addClass('has-danger');

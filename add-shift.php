@@ -219,6 +219,8 @@ foreach ($form_select_assignment as $k => $v) {?>
 
   <!-- Aux Scripts -->
   <script>
+    var debug = true;
+    
     $(function() {
       <?php if (!$detect->isMobile()): ?>
       $('#date').datepicker({

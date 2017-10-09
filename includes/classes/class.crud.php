@@ -123,15 +123,12 @@ class crud
         $stmt->execute();
       }
 
-<<<<<<< HEAD
-      $this->db->commit(); 
-=======
-      $this->db->commit(); // TODO - remove this later
->>>>>>> 07aeb63b5938530ab063d9e7fc44c48024832a5d
+      $this->db->commit(); //if no errors at the end of iterating through the entries, commit
       return true;
     } catch (Exception $e) {
-      $this->db->rollBack();
+      $this->db->rollBack(); //if an error is thrown, rollback the transaction
 
+      //get the error string, see if it is because of duplicate entry
       $err_string = $e->getMessage();
       if ( strpos($err_string, 'Duplicate entry') !== false) {
 

@@ -117,6 +117,7 @@ if (!isset($_SESSION['user_session'])) {
 
   <!-- Aux Scripts -->
   <script>
+  var debug = true;
 
   /*
   * Bind parsley.js event listeners here.
@@ -147,7 +148,7 @@ if (!isset($_SESSION['user_session'])) {
           $('#btn-submit-new-staff').html('<span class="fa fa-transfer"></span> &nbsp; adding ...');
         },
         success: function (response) {
-          console.log(response);
+          if (debug) { console.log(response); }
 
           if (response == "ok") {
 

@@ -28,7 +28,7 @@ if (!isset($_SESSION['user_session'])) {
       <div class="col-12">
 
         <!-- Nav menu include -->
-<?php include 'includes/nav-menu.php' ?>
+        <?php include 'includes/nav-menu.php' ?>
         <!-- END nav menu include -->
 
       </div>
@@ -86,32 +86,17 @@ if (!isset($_SESSION['user_session'])) {
   </div>
 
   <!-- Script include -->
-<?php include 'includes/script-include.php'; ?>
+  <?php include 'includes/script-include.php'; ?>
   <!-- END Script include -->
 
   <script id="shift-entry-template" type="text/x-handlebars-template">
-    <input type="hidden" name="shift-id" value="{{Id-Number}}">
-    <div class="card-block">
-      <h4 class="card-title">{{Name}}'s shift</h4>
-      <h5 class="card-text">{{Date}}-{{D-or-N}}</h5>
-    </div>
-    <ul class="list-group list-group-flush">
-      <li class="list-group-item">Role: {{Role}}</li>
-      <li class="list-group-item">Pod: {{Assignment}}</li>
-      <li class="list-group-item">Non-vented: {{NV}}</li>
-      <li class="list-group-item">Doubled: {{Double}}</li>
-      <li class="list-group-item">Admitted: {{Admit}}</li>
-      <li class="list-group-item">Very sick: {{Very-Sick}}</li>
-      <li class="list-group-item">Code pager: {{Code-Pager}}</li>
-      <li class="list-group-item">CRRT: {{CRRT}}</li>
-      <li class="list-group-item">EVD: {{EVD}}</li>
-      <li class="list-group-item">Burn: {{Burn}}</li>
-    </ul>
+    <?php include 'includes/templates/ShiftEntry.handlebars'; ?>
   </script>
 
   <script src="assets/build-shift-table.js"></script>
 
   <script>
+    var debug = true;
     var shiftTemplate = null;
 
     //When document is ready
@@ -146,29 +131,34 @@ if (!isset($_SESSION['user_session'])) {
 
           //Set click event listeners to call up modal after ajax query is returned
           $('.shift-cell a').click(function(){
-            var i = $(this).parent().attr('data-shift-id'); //get the shift id
+            var i = $(this).parent().data('shiftId'); //get the shift id
 
-            $.ajax({
-              type: 'POST',
-              url: 'ajax/ajax_shift_details.php',
-              data: 'shift_id='+i+'',
-              beforeSend: function () {
-                $('#shift-detail-text').html();
-              },
-              success: function (response) {
-                console.log(response);
-                $('#shift-detail-text').html(shiftTemplate(JSON.parse(response))); //add the result between the div tags
-                $('#shift-detail-modal').modal('show');	//show the modal
-              }
-            });
+            showShiftDetail(i);
           });
         }
       });
     }
+
+    function showShiftDetail(id) {
+      $.ajax({
+        type: 'POST',
+        url: 'ajax/ajax_shift_details.php',
+        data: 'shift_id='+id+'',
+        beforeSend: function () {
+          $('#shift-detail-text').html();
+        },
+        success: function (response) {
+          if (debug) { console.log(response); }
+          $('#shift-detail-text').html(shiftTemplate(JSON.parse(response))); //add the result between the div tags
+          $('#shift-detail-modal').modal('show');	//show the modal
+        }
+      });
+    }
+
   </script>
 
   <!-- Footer include -->
-<?php include 'includes/footer.php'; ?>
+  <?php include 'includes/footer.php'; ?>
   <!-- END Footer include -->
 
 </body>
