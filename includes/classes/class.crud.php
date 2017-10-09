@@ -7,6 +7,14 @@ class CRUD_SQL_Exception extends Exception {
 
 }
 
+function createResult($wasSuccessful, $msg = "") {
+  $result = (object) [];
+  $result->success = $wasSuccessful;
+  $result->message = $msg;
+
+  return $result;
+}
+
 class crud
 {
   private $db;
@@ -902,10 +910,18 @@ class crud
 
   public function deleteShiftEntry($id)
   {
-    $stmt = $this->db->prepare("DELETE FROM ".$this->tbl_shift_entry." WHERE id=:id");
-    $stmt->bindparam(":id", $id);
-    $stmt->execute();
-    return true;
+    try {
+
+      $stmt = $this->db->prepare("DELETE FROM {$this->tbl_shift_entry} WHERE id=:id");
+      $stmt->bindparam(":id", $id);
+      $stmt->execute();
+
+      return createResult(true, "Deleted {$stmt->rowCount()} rows.");
+    } catch (Exception $e) {
+      throw new CRUD_SQL_Exception("Unable to delete entry: {$e->getMessage()}");
+    }
+
+    return createResult(false);
   }
 }
 

@@ -73,8 +73,10 @@ if (!isset($_SESSION['user_session'])) {
         <div class="modal-body" id="shift-detail-text">
         </div>
 
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <div class="modal-footer clearfix">
+          <button id='modal-edit-shift-btn' class="btn btn-secondary">Edit</button>
+          <button id='modal-delete-shift-btn' class="btn btn-danger">Delete</button>
+          <button id='modal-close-btn' class="btn btn-primary" data-dismiss="modal">Close</button>
         </div>
 
       </div>
@@ -96,21 +98,26 @@ if (!isset($_SESSION['user_session'])) {
   <script src="assets/build-shift-table.js"></script>
 
   <script>
-    //TODO - Add edit / Delete buttons to shift details modal
     //TODO - create shift edit option
     //TODO - revamp table 3col-9col format
     //TODO - revamp table output for also RN, LPN, NA, UC
-    //TODO - lump in LPN / NA together
+    //TODO - lump in LPN / NA together for shift adding
     var debug = true;
     var shiftTemplate = null;
+    var daysToPrint = 20;
+    var daysOffset = 0;
 
     //When document is ready
     $(function () {
 
       //get the first shift table
-      getShiftTable(20,0);
+      getShiftTable(daysToPrint,daysOffset);
 
-      $("#shift-number").html("20");
+      $("#shift-number").html(daysToPrint);
+
+      $("#modal-delete-shift-btn").on("click", function(){
+        deleteShiftEntry($(`#shift-details-shift-id`).val());
+      });
 
       //compile the shift template with Handlebars
       shiftTemplate = Handlebars.compile($("#shift-entry-template").html());
@@ -144,7 +151,11 @@ if (!isset($_SESSION['user_session'])) {
       });
     }
 
-    function showShiftDetail(id) {
+    function showShiftDetail(id = null) {
+      if (id === null) {
+        return;
+      }
+
       $.ajax({
         type: 'POST',
         url: 'ajax/ajax_shift_details.php',
@@ -158,6 +169,55 @@ if (!isset($_SESSION['user_session'])) {
           $('#shift-detail-modal').modal('show');	//show the modal
         }
       });
+    }
+
+    function deleteShiftEntry(id = null) {
+      if (id === null) {
+        return;
+      }
+
+      $("#modal-button-delete").prop("disabled", true); //disable the button to prevent more clicks
+
+      if (confirm("Are you sure you want to delete this shift?")) {
+        $.ajax({
+          type: 'POST',
+          url: 'ajax/ajax_shift_delete.php',
+          data: 'shift_id='+id+'',
+          beforeSend: function () {
+            // nada
+          },
+          success: function (response) {
+            if (debug) { console.log(response); }
+
+            $(`#bin`).html(`<i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i><span class="sr-only">Loading...</span>`);
+            getShiftTable(daysToPrint,daysOffset);
+
+            $('#shift-detail-modal').modal('hide');
+
+            showAlert("Shift Deleted. Showing updated table.", 'alert-success', 5000);
+          }
+        });
+      }
+
+      $("#modal-button-delete").prop("disabled", false); // re-enable the button
+    }
+
+    function showAlert(message = '', alertClass = 'alert-success', alertTimeout = 5000) {
+      //display the alert to success
+      $('#form-alert').addClass(alertClass);
+      $('#form-alert p').html(`<h4>${message}</h4>`);
+      $('#alert-container').collapse('show');
+      $("#alert-container").focus();
+
+      //set timeout to hide the alert in x milliseconds
+      setTimeout(function(){
+        $("#alert-container").collapse('hide');
+
+        setTimeout(function(){
+          $("#form-alert p").html('');
+          $('#form-alert').removeClass(alertClass);
+        }, 1000);
+      }, alertTimeout);
     }
 
   </script>

@@ -1,5 +1,22 @@
 <?php
 
+function checkIfNumAndInt($num) {
+  if (is_numeric($num)) {
+    $num = get_numeric($num);
+    if (is_int($num)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function get_numeric($val) {
+  if (is_numeric($val)) {
+    return $val + 0;
+  }
+  return 0;
+}
+
 $DB_host = 'localhost';
 $DB_user = 'id1876647_neenjawtestuser';
 $DB_pass = 'testedninja4neenjaw';

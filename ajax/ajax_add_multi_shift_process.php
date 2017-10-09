@@ -9,25 +9,8 @@ class ShiftEntryException extends Exception {
 
 }
 
-function checkIfNumAndInt($num) {
-  if (is_numeric($num)) {
-    $num = get_numeric($num);
-    if (is_int($num)) {
-      return true;
-    }
-  }
-  return false;
-}
-
-function get_numeric($val) {
-  if (is_numeric($val)) {
-    return $val + 0;
-  }
-  return 0;
-}
-
 try {
-    if (isset($_POST['shiftData'])) {
+    if (isset($_SESSION['user_session']) && isset($_POST['shiftData'])) {
 
       $data = json_decode($_POST['shiftData']);
 
