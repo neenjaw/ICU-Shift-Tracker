@@ -139,7 +139,9 @@ if (!isset($_SESSION['user_session'])) {
     })
     .on('form:submit', function () {
       var data = $('#add-staff-form').serialize();
-      console.log(data + '&btn-submit-new-staff=1');
+
+      if (debug) { console.log(data + '&btn-submit-new-staff=1'); }
+
       $.ajax({
         type: 'POST',
         url: 'ajax/ajax_add_staff_process.php',

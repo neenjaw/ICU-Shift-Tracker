@@ -220,7 +220,7 @@ foreach ($form_select_assignment as $k => $v) {?>
   <!-- Aux Scripts -->
   <script>
     var debug = true;
-    
+
     $(function() {
       <?php if (!$detect->isMobile()): ?>
       $('#date').datepicker({
@@ -270,7 +270,7 @@ foreach ($form_select_assignment as $k => $v) {?>
             $('#shift-submit').html('<span class="fa fa-exchange"></span> &nbsp; Attempting ...');
           },
           success: function (response) {
-            console.log(response);
+            if (debug) { console.log(response); }
 
             if (response == "ok") {
               //clear the feedback message
