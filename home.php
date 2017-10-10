@@ -33,19 +33,22 @@ if (!isset($_SESSION['user_session'])) {
 
       </div>
     </div>
-    <div class="row justify-content-md-center">
-      <div class="col-md-10">
-      	<br>
+    <div class="row justify-content-center">
+      <div class="col-9">
         <h2>Home</h2>
         <h4>Showing last <span id="shift-number"></span> days of shifts entered</h4>
-
+      </div>
+    </div>
+    <div class="row">
+      <div id="shift-table-row-head" class="col-3">
+      </div>
+      <div class="col">
         <!-- GENERATED TABLE -->
-        <div id="bin" class="shift-table-div">
+        <div id="shift-table-body" class="shift-table-div">
           <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
           <span class="sr-only">Loading...</span>
         </div>
         <!-- END GENERATED TABLE -->
-
       </div>
     </div>
   </div>
@@ -99,19 +102,23 @@ if (!isset($_SESSION['user_session'])) {
 
   <script>
     //TODO - create shift edit option
-    //TODO - revamp table 3col-9col format
-    //TODO - revamp table output for also RN, LPN, NA, UC
-    //TODO - lump in LPN / NA together for shift adding
+    //TODO - revamp table 3col-9col format - INPROGRESS
+    //TODO - revamp table output for also RN, LPN, NA, UC - INPROGRESS
+    //     -> need to adjust table generatione
+    //          like split to two parts: table for left header column
+    //                                   table for right data columns
+    //TODO - lump in LPN / NA together for shift adding, with ?ability to skip???????
     var debug = true;
     var shiftTemplate = null;
     var daysToPrint = 20;
     var daysOffset = 0;
+    var categoryToFetch = "*";
 
     //When document is ready
     $(function () {
 
       //get the first shift table
-      getShiftTable(daysToPrint,daysOffset);
+      getShiftTable(daysToPrint, daysOffset, categoryToFetch);
 
       $("#shift-number").html(daysToPrint);
 
@@ -124,16 +131,16 @@ if (!isset($_SESSION['user_session'])) {
 
     });
 
-    function getShiftTable(days, offset) {
+    function getShiftTable(days, offset, category) {
       $.ajax({
         type: 'POST',
         url: 'ajax/ajax_shift_table.php',
-        data: 'days='+days+'&offset='+offset+'',
+        data: 'days='+days+'&offset='+offset+'&category='+category,
         beforeSend: function () {
         },
         success: function (response) {
-          //console.log(response);
-          $('#bin').html(buildShiftTable(JSON.parse(response),
+          if (debug) { console.log(response); }
+          $('#shift-table-body').html(buildShiftTable(JSON.parse(response),
             'table table-hover table-responsive table-striped table-sm shift-table',
             'thead-inverse',
             '',
@@ -189,8 +196,8 @@ if (!isset($_SESSION['user_session'])) {
           success: function (response) {
             if (debug) { console.log(response); }
 
-            $(`#bin`).html(`<i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i><span class="sr-only">Loading...</span>`);
-            getShiftTable(daysToPrint,daysOffset);
+            $(`#shift-table-body`).html(`<i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i><span class="sr-only">Loading...</span>`);
+            getShiftTable(daysToPrint, daysOffset, categoryToFetch);
 
             $('#shift-detail-modal').modal('hide');
 

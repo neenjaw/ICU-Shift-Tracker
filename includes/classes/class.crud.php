@@ -586,69 +586,61 @@ class crud
     return $readable_array;
   }
 
+  /**
+   * This is the function which returns an object suitable to build the table to be displayed
+   * on arrival to the main page
+   * @param  integer $days_to_print        How many unique days to print (default = 10 if unspecified)
+   * @param  integer $offset_from_last_day How many unique days to offset from the latest day (default = 0)
+   * @param  string  $staff_category       Which staff to return? (default = 'RN')
+   * @return Array[]                       returns an associative array of objects, suitable for conversion to JSON
+   */
   public function getShiftTableObject($days_to_print = 10, $offset_from_last_day = 0, $staff_category = 'RN')
   {
-    //Likely need to make a very complex table print of shift entries here
-    //
-    //         | date 1 | date 2 | date 3 | Single letter denoting the most important identifier
-    //  name 1 |   v    |   S    |   A    |   Cn => Clinician, Ch => Charge, O => Outreach, D => doubled, S => very sick, A => admit,
-    //  name 2 |   D    |   N    |   N    |   N => Non-vented, V => vented
-    //  name 3 |   -    |   -    |   D    |
-    //
-    //  First, determine the role id for NA / UC
-    //  Then, Select the table values that are NOT NA/UC
-    //  Then, left join the staff to the shift entry
-    //  Then, left join the assignment to the shift entry
-    //  Then, left join the role to the shift entry
-    //  Then, left join the category to the shift entry
-    //  Then, inner join on the results of the last x number of most recent days entered with an offset of y
-    //  Then, Where the entries are RN shifts
-    //  Then, order by the staff
+
+    $includeWhereClause = ($staff_category !== '*');
 
     //query the db to get all the shifts within the specified date range
-    $stmtShiftEntries = $this->db->prepare("
-      SELECT
-        {$this->v_entries_complete}.id AS `ID`,
-        CONCAT(
-          {$this->v_entries_complete}.last_name,
-          \", \",
-          {$this->v_entries_complete}.first_name
-        ) AS `Staff`,
-        {$this->v_entries_complete}.category AS `Category`,
-        {$this->v_entries_complete}.staff_id AS `Staff ID`,
-        {$this->v_entries_complete}.shift_date AS `Shift Date`,
-        {$this->v_entries_complete}.role AS `Role`,
-        {$this->v_entries_complete}.assignment AS `Assignment`,
-        {$this->v_entries_complete}.bool_doubled AS `Double`,
-        {$this->v_entries_complete}.bool_vented AS `Vented`,
-        {$this->v_entries_complete}.bool_new_admit AS `Admit`,
-        {$this->v_entries_complete}.bool_very_sick AS `Very Sick`,
-        {$this->v_entries_complete}.bool_code_pager AS `Code Pager`,
-        {$this->v_entries_complete}.bool_crrt AS `CRRT`,
-        {$this->v_entries_complete}.bool_evd AS `EVD`,
-        {$this->v_entries_complete}.bool_burn AS `Burn`,
-        {$this->v_entries_complete}.bool_day_or_night AS `Day/Night`
-      FROM
-        {$this->v_entries_complete}
-      INNER JOIN
-        (
-          SELECT
-            DISTINCT shift_date
-          FROM
-            {$this->v_entries_w_staff_w_category}
-          WHERE
-            category = \"{$staff_category}\"
-          ORDER BY
-            shift_date DESC
-          LIMIT
-            {$days_to_print}
-          OFFSET
-            {$offset_from_last_day}
-          ) AS t2 ON t2.shift_date = {$this->v_entries_complete}.shift_date
-        WHERE
-          category = \"{$staff_category}\"
-        ORDER BY `Staff` ASC");
+    $sql = "SELECT
+              {$this->v_entries_complete}.id AS `ID`,
+              CONCAT(
+                {$this->v_entries_complete}.last_name,
+                \", \",
+                {$this->v_entries_complete}.first_name
+              ) AS `Staff`,
+              {$this->v_entries_complete}.category AS `Category`,
+              {$this->v_entries_complete}.staff_id AS `Staff ID`,
+              {$this->v_entries_complete}.shift_date AS `Shift Date`,
+              {$this->v_entries_complete}.role AS `Role`,
+              {$this->v_entries_complete}.assignment AS `Assignment`,
+              {$this->v_entries_complete}.bool_doubled AS `Double`,
+              {$this->v_entries_complete}.bool_vented AS `Vented`,
+              {$this->v_entries_complete}.bool_new_admit AS `Admit`,
+              {$this->v_entries_complete}.bool_very_sick AS `Very Sick`,
+              {$this->v_entries_complete}.bool_code_pager AS `Code Pager`,
+              {$this->v_entries_complete}.bool_crrt AS `CRRT`,
+              {$this->v_entries_complete}.bool_evd AS `EVD`,
+              {$this->v_entries_complete}.bool_burn AS `Burn`,
+              {$this->v_entries_complete}.bool_day_or_night AS `Day/Night`
+            FROM
+              {$this->v_entries_complete}
+            INNER JOIN
+              (
+                SELECT
+                  DISTINCT shift_date
+                FROM
+                  {$this->v_entries_w_staff_w_category}
+                ".(($includeWhereClause)?" WHERE category = \"{$staff_category}\" ":"")."
+                ORDER BY
+                  shift_date DESC
+                LIMIT
+                  {$days_to_print}
+                OFFSET
+                  {$offset_from_last_day}
+              ) AS t2 ON t2.shift_date = {$this->v_entries_complete}.shift_date
+            ".(($includeWhereClause)?" WHERE category = \"{$staff_category}\" ":"")."
+            ORDER BY `Staff` ASC";
 
+    $stmtShiftEntries = $this->db->prepare($sql);
     $stmtShiftEntries->execute();
 
     //  Loop to:
@@ -664,7 +656,13 @@ class crud
         $letter_code = '-';
 
         // C => Clinician, P => Prn Charge, O => Outreach, D => doubled, S => very sick, R => CRRT, B => Burn, A => admit, N => Non-vented, V => vented, F => undefined
-        if (strpos($row['Role'], 'Clinician') !== false) {
+        if (strpos($row['Category'], 'UC') !== false) {
+          $letter_code = 'X';
+        } elseif (strpos($row['Category'], 'LPN') !== false) {
+          $letter_code = 'X';
+        } elseif (strpos($row['Category'], 'NA') !== false) {
+          $letter_code = 'X';
+        } elseif (strpos($row['Role'], 'Clinician') !== false) {
           $letter_code = 'C';
         } elseif (strpos($row['Role'], 'Charge') !== false) {
           $letter_code = 'P';
@@ -689,7 +687,7 @@ class crud
         }
 
         if (!isset($staff_array[ $row['Staff'] ]) ) {
-          $staff_array[ $row['Staff'] ] = $row['Staff ID'];
+          $staff_array[ $row['Staff'] ] = [ "id" => $row['Staff ID'], "category" => $row['Category'] ];
         }
         $staff_shifts_array[ $row['Staff'] ][ $row['Shift Date'] ] = array('shift_id' => $row['ID'], 'code' => $letter_code);
       }
@@ -700,20 +698,20 @@ class crud
     ksort($shift_dates_array);
 
     //make a new table object
-    $obj = new TableObj();
+    $obj = new ShiftTable();
     //for each staff member....
     foreach ( $staff_array as $k => $v) {
       //make a new staff entry object
-      $s = new StaffMinEntry($k, $v);
+      $s = new StaffEntry($k, $v['id'], $v['category']);
 
       //then for each date, enter shift data for that staff
       foreach ( $shift_dates_array as $x ) {
         //if there is a shift entry for the staff, record it
         if ( isset($staff_shifts_array[$k][$x]) ) {
-          $s->shifts[] = new ShiftMinEntry($x, $staff_shifts_array[$k][$x]['shift_id'], $staff_shifts_array[$k][$x]['code']);
+          $s->shifts[] = new ShiftEntry($x, $staff_shifts_array[$k][$x]['shift_id'], $staff_shifts_array[$k][$x]['code']);
           //or else put in dummy entry as placeholder
         } else {
-          $s->shifts[] = new ShiftMinEntry($x, -1, '-');
+          $s->shifts[] = new ShiftEntry($x, -1, '-');
         }
       }
 
@@ -925,7 +923,7 @@ class crud
   }
 }
 
-class ShiftMinEntry
+class ShiftEntry
 {
   public $date;
   public $id;
@@ -938,20 +936,22 @@ class ShiftMinEntry
   }
 }
 
-class StaffMinEntry
+class StaffEntry
 {
   public $name;
   public $id;
+  public $category;
   public $shifts;
 
-  function __construct($name, $id) {
+  function __construct($name, $id, $category) {
     $this->name = $name;
     $this->id = $id;
+    $this->category = $category;
     $this->shifts = array();
   }
 }
 
-class TableObj
+class ShiftTable
 {
   public $staff;
 
