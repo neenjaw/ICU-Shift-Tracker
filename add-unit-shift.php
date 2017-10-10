@@ -4,6 +4,7 @@ include 'includes/pre-head.php';
 if (!isset($_SESSION['user_session'])) {
   header("Location: index.php");
 }
+//FIXME - need to migrate this to a dynamic staff select based on which day is selected
 
 //use the CRUD object to access the database and to build option lists of the staff categories
 $form_select_rn = $crud->getRnStaff();
