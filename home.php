@@ -107,7 +107,6 @@ if (!isset($_SESSION['user_session'])) {
     //     -> need to adjust table generatione
     //          like split to two parts: table for left header column
     //                                   table for right data columns
-    //TODO - lump in LPN / NA together for shift adding, with ?ability to skip people
 
     var debug = true;
     var shiftTemplate = null;

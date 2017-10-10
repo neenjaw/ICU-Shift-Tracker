@@ -4,7 +4,10 @@ include 'includes/pre-head.php';
 if (!isset($_SESSION['user_session'])) {
   header("Location: index.php");
 }
-//FIXME - need to migrate this to a dynamic staff select based on which day is selected
+//FIXME - selecting NC doesnt limit CN
+//FIXME - make it so not required to select NA or UC
+//FIXME - make it so if no NA or UC selected, pod selection is also skipped
+//FIXME - make it so if no NA or UC selected, shift submission doesnt try to fix it.
 
 //use the CRUD object to access the database and to build option lists of the staff categories
 $form_select_rn = $crud->getRnStaff();
@@ -103,30 +106,10 @@ $form_select_assignment = $crud->getAllAssignments();
                 Who is the Clinician for the shift?<span class="asteriskField">*</span>
               </label>
               <div id="nc-select-errors"></div>
-              <div id="nc-select" class="staff-select-group p-0 m-0">
-              <?php
-              //Build Staff Select List
-              $i = true;
-              foreach ($form_select_rn as $k => $v):
-              ?>
-                <div class="inner-item list-group-item-action">
-                  <label class="custom-control custom-radio m-1">
-                    <input id="nc-<?= $k ?>"
-                           name="nc-select"
-                           type="radio"
-                           value="<?= $k ?>"
-                           <?= ($i === true)? ' required data-parsley-errors-container="#nc-select-errors"':'' ?>
-                           data-staff-name="<?= $v ?>"
-                           class="custom-control-input">
-                    <span class="custom-control-indicator"></span>
-                    <span class="custom-control-description"><?= $v ?></span>
-                  </label>
-                </div>
-              <?php
-              $i = false;
-              endforeach;
-              //END Build Staff Select List
-              ?>
+              <div id="nc-select" class="staff-select-group p-0 m-0" data-populate-with-staff-group="RN" data-populate-type="radio" data-populate-prefix="nc" data-populate-required="true">
+                <!-- dynamic staff select built here -->
+                <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+                <span class="sr-only">Loading...</span>
               </div>
 
             </div>
@@ -137,30 +120,10 @@ $form_select_assignment = $crud->getAllAssignments();
                 Who is the Charge for the shift?<span class="asteriskField">*</span>
               </label>
               <div id="cn-select-errors"></div>
-              <div id="cn-select" class="staff-select-group p-0 m-0">
-              <?php
-              //Build Staff Select List
-              $i = true;
-              foreach ($form_select_rn as $k => $v):
-              ?>
-                <div class="inner-item list-group-item-action">
-                  <label class="custom-control custom-radio m-1">
-                    <input id="cn-<?= $k ?>"
-                           name="cn-select"
-                           type="radio"
-                           value="<?= $k ?>"
-                           <?= ($i === true)? ' required data-parsley-errors-container="#cn-select-errors"':'' ?>
-                           data-staff-name="<?= $v ?>"
-                           class="custom-control-input">
-                    <span class="custom-control-indicator"></span>
-                    <span class="custom-control-description"><?= $v ?></span>
-                  </label>
-                </div>
-              <?php
-              $i = false;
-              endforeach;
-              //END Build Staff Select List
-              ?>
+              <div id="cn-select" class="staff-select-group p-0 m-0" data-populate-with-staff-group="RN" data-populate-type="radio" data-populate-prefix="cn" data-populate-required="true">
+                <!-- dynamic staff select built here -->
+                <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+                <span class="sr-only">Loading...</span>
               </div>
 
             </div>
@@ -287,30 +250,10 @@ $form_select_assignment = $crud->getAllAssignments();
                 Who floated?
               </label>
               <div id="float-rn-select-errors"></div>
-              <div id="float-rn-select" class="staff-select-group p-0 m-0">
-              <?php
-              //Build Staff Select List
-              $i = true;
-              foreach ($form_select_rn as $k => $v):
-              ?>
-                <div class="inner-item list-group-item-action">
-                  <label class="custom-control custom-checkbox m-1">
-                    <input id="float-rn-<?= $k ?>"
-                           name="float-rn-select[]"
-                           type="checkbox"
-                           value="<?= $k ?>"
-                           <?= ($i === true)? ' data-parsley-errors-container="#float-rn-select-errors"':'' ?>
-                           data-staff-name="<?= $v ?>"
-                           class="custom-control-input">
-                    <span class="custom-control-indicator"></span>
-                    <span class="custom-control-description"><?= $v ?></span>
-                  </label>
-                </div>
-              <?php
-              $i = false;
-              endforeach;
-              //END Build Staff Select List
-              ?>
+              <div id="float-rn-select" class="staff-select-group p-0 m-0" data-populate-with-staff-group="RN" data-populate-type="checkbox" data-populate-prefix="float-rn" data-populate-required="false">
+                <!-- dynamic staff select built here -->
+                <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+                <span class="sr-only">Loading...</span>
               </div>
             </div>
           </div>
@@ -323,30 +266,10 @@ $form_select_assignment = $crud->getAllAssignments();
                 Select the nurses for Pod A<span class="asteriskField">*</span>
               </label>
               <div id="apod-rn-select-errors"></div>
-              <div id="apod-rn-select" class="staff-select-group p-0 m-0">
-              <?php
-              //Build Staff Select List
-              $i = true;
-              foreach ($form_select_rn as $k => $v):
-              ?>
-                <div class="inner-item list-group-item-action">
-                  <label class="custom-control custom-checkbox m-1">
-                    <input id="apod-rn-<?= $k ?>"
-                           name="apod-rn-select[]"
-                           type="checkbox"
-                           value="<?= $k ?>"
-                           <?= ($i === true)? ' required data-parsley-errors-container="#apod-rn-select-errors"':'' ?>
-                           data-staff-name="<?= $v ?>"
-                           class="custom-control-input">
-                    <span class="custom-control-indicator"></span>
-                    <span class="custom-control-description"><?= $v ?></span>
-                  </label>
-                </div>
-              <?php
-              $i = false;
-              endforeach;
-              //END Build Staff Select List
-              ?>
+              <div id="apod-rn-select" class="staff-select-group p-0 m-0" data-populate-with-staff-group="RN" data-populate-type="checkbox" data-populate-prefix="apod-rn" data-populate-required="true">
+                <!-- dynamic staff select built here -->
+                <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+                <span class="sr-only">Loading...</span>
               </div>
 
             </div>
@@ -360,30 +283,10 @@ $form_select_assignment = $crud->getAllAssignments();
                 Select the nurses for Pod B<span class="asteriskField">*</span>
               </label>
               <div id="bpod-rn-select-errors"></div>
-              <div id="bpod-rn-select" class="staff-select-group p-0 m-0">
-              <?php
-              //Build Staff Select List
-              $i = true;
-              foreach ($form_select_rn as $k => $v):
-              ?>
-                <div class="inner-item list-group-item-action">
-                  <label class="custom-control custom-checkbox m-1">
-                    <input id="bpod-rn-<?= $k ?>"
-                           name="bpod-rn-select[]"
-                           type="checkbox"
-                           value="<?= $k ?>"
-                           <?= ($i === true)? ' required data-parsley-errors-container="#bpod-rn-select-errors"':'' ?>
-                           data-staff-name="<?= $v ?>"
-                           class="custom-control-input">
-                    <span class="custom-control-indicator"></span>
-                    <span class="custom-control-description"><?= $v ?></span>
-                  </label>
-                </div>
-              <?php
-              $i = false;
-              endforeach;
-              //END Build Staff Select List
-              ?>
+              <div id="bpod-rn-select" class="staff-select-group p-0 m-0" data-populate-with-staff-group="RN" data-populate-type="checkbox" data-populate-prefix="bpod-rn" data-populate-required="true">
+                <!-- dynamic staff select built here -->
+                <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+                <span class="sr-only">Loading...</span>
               </div>
 
             </div>
@@ -396,30 +299,10 @@ $form_select_assignment = $crud->getAllAssignments();
                 Select the nurses for Pod C<span class="asteriskField">*</span>
               </label>
               <div id="cpod-rn-select-errors"></div>
-              <div id="cpod-rn-select" class="staff-select-group p-0 m-0">
-              <?php
-              //Build Staff Select List
-              $i = true;
-              foreach ($form_select_rn as $k => $v):
-              ?>
-                <div class="inner-item list-group-item-action">
-                  <label class="custom-control custom-checkbox m-1">
-                    <input id="cpod-rn-<?= $k ?>"
-                           name="cpod-rn-select[]"
-                           type="checkbox"
-                           value="<?= $k ?>"
-                           <?= ($i === true)? ' required data-parsley-errors-container="#cpod-rn-select-errors"':'' ?>
-                           data-staff-name="<?= $v ?>"
-                           class="custom-control-input">
-                    <span class="custom-control-indicator"></span>
-                    <span class="custom-control-description"><?= $v ?></span>
-                  </label>
-                </div>
-              <?php
-              $i = false;
-              endforeach;
-              //END Build Staff Select List
-              ?>
+              <div id="cpod-rn-select" class="staff-select-group p-0 m-0" data-populate-with-staff-group="RN" data-populate-type="checkbox" data-populate-prefix="cpod-rn" data-populate-required="true">
+                <!-- dynamic staff select built here -->
+                <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+                <span class="sr-only">Loading...</span>
               </div>
 
             </div>
@@ -529,30 +412,10 @@ $form_select_assignment = $crud->getAllAssignments();
                 Who was on outreach?<span class="asteriskField">*</span>
               </label>
               <div id="outreach-rn-select-errors"></div>
-              <div id="outreach-rn-select" class="staff-select-group p-0 m-0">
-              <?php
-              //Build Staff Select List
-              $i = true;
-              foreach ($form_select_rn as $k => $v):
-              ?>
-                <div class="inner-item list-group-item-action">
-                  <label class="custom-control custom-radio m-1">
-                    <input id="outreach-rn-<?= $k ?>"
-                           name="outreach-rn-select"
-                           type="radio"
-                           value="<?= $k ?>"
-                           <?= ($i === true)? ' required data-parsley-errors-container="#outreach-rn-select-errors"':'' ?>
-                           data-staff-name="<?= $v ?>"
-                           class="custom-control-input">
-                    <span class="custom-control-indicator"></span>
-                    <span class="custom-control-description"><?= $v ?></span>
-                  </label>
-                </div>
-              <?php
-              $i = false;
-              endforeach;
-              //END Build Staff Select List
-              ?>
+              <div id="outreach-rn-select" class="staff-select-group p-0 m-0" data-populate-with-staff-group="RN" data-populate-type="radio" data-populate-prefix="outreach-rn" data-populate-required="true">
+                <!-- dynamic staff select built here -->
+                <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+                <span class="sr-only">Loading...</span>
               </div>
 
             </div>
@@ -565,30 +428,10 @@ $form_select_assignment = $crud->getAllAssignments();
                 Select the NA's<span class="asteriskField">*</span>
               </label>
               <div id="na-select-errors"></div>
-              <div id="na-select" class="staff-select-group p-0 m-0">
-              <?php
-              //Build Staff Select List
-              $i = true;
-              foreach ($form_select_na as $k => $v):
-              ?>
-                <div class="inner-item list-group-item-action">
-                  <label class="custom-control custom-checkbox m-1">
-                    <input id="na-<?= $k ?>"
-                           name="na-select[]"
-                           type="checkbox"
-                           value="<?= $k ?>"
-                           <?= ($i === true)? ' required data-parsley-errors-container="#na-select-errors"':'' ?>
-                           data-staff-name="<?= $v ?>"
-                           class="custom-control-input">
-                    <span class="custom-control-indicator"></span>
-                    <span class="custom-control-description"><?= $v ?></span>
-                  </label>
-                </div>
-              <?php
-              $i = false;
-              endforeach;
-              //END Build Staff Select List
-              ?>
+              <div id="na-select" class="staff-select-group p-0 m-0" data-populate-with-staff-group="NA,LPN" data-populate-type="checkbox" data-populate-prefix="na" data-populate-required="false">
+                <!-- dynamic staff select built here -->
+                <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+                <span class="sr-only">Loading...</span>
               </div>
 
             </div>
@@ -596,6 +439,7 @@ $form_select_assignment = $crud->getAllAssignments();
 
           <!-- assign pods to the na's -->
           <div id="section-na-pod-select" class="form-section mt-4 mb-4">
+            <!-- dynamic pod select template generated here -->
           </div>
 
           <div id="section-uc-select" class="form-section mt-4 mb-4">
@@ -605,36 +449,17 @@ $form_select_assignment = $crud->getAllAssignments();
                 Select the UC's<span class="asteriskField">*</span>
               </label>
               <div id="uc-select-errors"></div>
-              <div id="uc-select" class="staff-select-group p-0 m-0">
-              <?php
-              //Build Staff Select List
-              $i = true;
-              foreach ($form_select_uc as $k => $v):
-              ?>
-                <div class="inner-item list-group-item-action">
-                  <label class="custom-control custom-checkbox m-1">
-                    <input id="uc-<?= $k ?>"
-                           name="uc-select[]"
-                           type="checkbox"
-                           value="<?= $k ?>"
-                           <?= ($i === true)? ' required data-parsley-errors-container="#uc-select-errors"':'' ?>
-                           data-staff-name="<?= $v ?>"
-                           class="custom-control-input">
-                    <span class="custom-control-indicator"></span>
-                    <span class="custom-control-description"><?= $v ?></span>
-                  </label>
-                </div>
-              <?php
-              $i = false;
-              endforeach;
-              //END Build Staff Select List
-              ?>
+              <div id="uc-select" class="staff-select-group p-0 m-0" data-populate-with-staff-group="UC" data-populate-type="checkbox" data-populate-prefix="uc" data-populate-required="false">
+                <!-- dynamic staff select built here -->
+                <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+                <span class="sr-only">Loading...</span>
               </div>
             </div>
           </div>
 
           <!-- assign pods to the uc's -->
           <div id="section-uc-pod-select" class="form-section mt-4 mb-4">
+            <!-- dynamic pod select template generated here -->
           </div>
 
           <div class="form-navigation m-1 text-center">
@@ -703,13 +528,22 @@ $form_select_assignment = $crud->getAllAssignments();
   <!-- Aux Scripts -->
   <script>
   var debug = true;
+
   var shiftModifierCheckboxTemplate = null;
+  var staffPodSelectTemplate = null;
+
+  var lastDate = null;
+  var $disabledPrn = null;
+
+  var staffList = {}; //Object of all the staff not previously selected for the date to be added
   var bedsideRnStaffList = [];
-  var naStaffList = [];
-  var ucStaffList = [];
   var assignmentList = JSON.parse('<?= json_encode($crud->getAllAssignmentObj()) ?>');
   var roleList = JSON.parse('<?= json_encode($crud->getAllRoleObj()) ?>');
 
+  var $sections = null;
+
+  var dateChangeTimer; //variable to prevent ajax request for staff to not update too often
+  var dateChangeTimerInterval = 3000;
 
   //TODO Bind to the window, so that if user tries to back out while form is dirty, then prompts to ask
   $(function() {
@@ -726,7 +560,7 @@ $form_select_assignment = $crud->getAllAssignments();
     /********************************************************
      * FORM PAGINATION - CREDIT TO Parsely.js DOCUMENTATION *
      ********************************************************/
-    var $sections = $('.form-section'); // list all all the form-section elements
+    $sections = $('.form-section'); // list all all the form-section elements
     var oldIndex = -1; //reference to be able to know if traverseing forward or backward
     function navigateTo(index) {
       // Mark the current section with the class 'current'
@@ -787,23 +621,26 @@ $form_select_assignment = $crud->getAllAssignments();
 
         let currentSectionId = $('.current').prop('id');
 
-        if ( currentSectionId == 'section-float-rn-select' ) {
+        if ( currentSectionId == 'section-nc-cn-select' ) {
+          //getStaffFilteredByDate($('#date').val());
+
+        } else if ( currentSectionId == 'section-float-rn-select' ) {
           hideAlreadyPicked('#float-rn-select', ['nc-select', 'cn-select']);
 
         } else if ( currentSectionId == 'section-apod-rn-select' ) {
-          hideAlreadyPicked('#apod-rn-select', ['nc-select', 'cn-select', 'float-rn-select[]']);
+          hideAlreadyPicked('#apod-rn-select', ['nc-select', 'cn-select', 'float-rn-select']);
 
         } else if ( currentSectionId == 'section-bpod-rn-select' ) {
-          hideAlreadyPicked('#bpod-rn-select', ['nc-select', 'cn-select', 'float-rn-select[]', 'apod-rn-select[]']);
+          hideAlreadyPicked('#bpod-rn-select', ['nc-select', 'cn-select', 'float-rn-select', 'apod-rn-select']);
 
         } else if ( currentSectionId == 'section-cpod-rn-select' ) {
-          hideAlreadyPicked('#cpod-rn-select', ['nc-select', 'cn-select', 'float-rn-select[]', 'apod-rn-select[]', 'bpod-rn-select[]']);
+          hideAlreadyPicked('#cpod-rn-select', ['nc-select', 'cn-select', 'float-rn-select', 'apod-rn-select', 'bpod-rn-select']);
 
         } else if ( currentSectionId == 'section-outreach-rn-select' ) {
-          hideAlreadyPicked('#outreach-rn-select', ['nc-select', 'cn-select', 'float-rn-select[]', 'apod-rn-select[]', 'bpod-rn-select[]', 'cpod-rn-select[]']);
+          hideAlreadyPicked('#outreach-rn-select', ['nc-select', 'cn-select', 'float-rn-select', 'apod-rn-select', 'bpod-rn-select', 'cpod-rn-select']);
 
         } else if ( currentSectionId == 'section-non-vent-mod-select' ) {
-          bedsideRnStaffList = getStaffFromCheckboxes(['apod-rn-select[]', 'bpod-rn-select[]', 'cpod-rn-select[]']);
+          bedsideRnStaffList = getStaffFromCheckboxes(['apod-rn-select', 'bpod-rn-select', 'cpod-rn-select']);
           popStaffShiftModifierList('#non-vent-mod-select', 'non-vent-mod-select', bedsideRnStaffList);
 
         } else if ( currentSectionId == 'section-double-mod-select' ) {
@@ -828,11 +665,11 @@ $form_select_assignment = $crud->getAllAssignments();
           popStaffShiftModifierList('#burn-mod-select', 'burn-mod-select', bedsideRnStaffList);
 
         } else if ( currentSectionId == 'section-na-pod-select' ) {
-          popPodSelectList('#section-na-pod-select', 'na-pod-select', getStaffFromCheckboxes(['na-select[]']), assignmentList);
+          popPodSelectList('#section-na-pod-select', 'na-pod-select', getStaffFromCheckboxes(['na-select']), assignmentList);
           setParsleyJsGroup('#section-na-pod-select', $('#section-na-pod-select').data('blockIndex'));
 
         } else if ( currentSectionId == 'section-uc-pod-select' ) {
-          popPodSelectList('#section-uc-pod-select', 'uc-pod-select', getStaffFromCheckboxes(['uc-select[]']), assignmentList);
+          popPodSelectList('#section-uc-pod-select', 'uc-pod-select', getStaffFromCheckboxes(['uc-select']), assignmentList);
           setParsleyJsGroup('#section-uc-pod-select', $('#section-uc-pod-select').data('blockIndex'));
 
         }
@@ -841,7 +678,7 @@ $form_select_assignment = $crud->getAllAssignments();
 
     // Prepare sections by setting the `data-parsley-group` attribute to 'block-0', 'block-1', etc.
     $sections.each(function(index, section) {
-      $(section).data('blockIndex', index);
+      $(this).data('blockIndex', index);
       setParsleyJsGroup(section, index);
     });
     navigateTo(0); // Start at the beginning
@@ -852,19 +689,20 @@ $form_select_assignment = $crud->getAllAssignments();
       return false;
     });
 
-
     /***************************************
      * END -- FORM PAGINATION / VALIDATION *
      ***************************************/
 
     //call the function to set listeners on the div's that contain the checkboxes to make more accessible
-    setClickAreaListeners("div.inner-item");
+    setClickAreaListeners("div.staff-select-group");
     //hide the option for the nc to select pod 'A/B/C' when the day shift button is preselected (default state)
     hideFormInnerItem($(`#nc-pod-8`));
 
-    //listener which disables/clear chage nurse value depending on nurse clinician value
-    var $disabledPrn = null;
-    $(`#nc-select div.inner-item`).click(function() {
+    /**
+     * listener which disables/clear chage nurse value depending on nurse clinician value
+     * @var [type]
+     */
+    $(`#nc-select div.inner-item`).click(function() { // FIXME -- this is a bad call, only calls at the beginning.
       if ($disabledPrn !== null) {
           enableFormInnerItem($disabledPrn);
       }
@@ -878,20 +716,32 @@ $form_select_assignment = $crud->getAllAssignments();
       }
     });
 
+    /**
+     * listener to change behavior of form if float nurse is to be selected
+     * @var [type]
+     */
     $(`#float-rn-check-yes`).closest('div').click(function() {
       $(`#float-rn-select-group`).toggle(true); //show float nurse select
-      $(`input[name='float-rn-select[]']`).first().prop("required", true); // add the required property to the float-rn-select select
+      $(`input[name='float-rn-select']`).first().prop("required", true); // add the required property to the float-rn-select select
     });
 
+    /**
+     * listener to change behavior of form if no float nurse is to be added
+     * @var [type]
+     */
     $(`#float-rn-check-no`).closest('div').click(function() {
       $(`#float-rn-select-group`).toggle(false); //show float nurse select
-      $(`input[name='float-rn-select[]']`).first().prop("required", false); // add the required property to the float-rn-select select
+      $(`input[name='float-rn-select']`).first().prop("required", false); // add the required property to the float-rn-select select
 
-      let $frnElem = $(`input[type='checkbox'][name='float-rn-select[]']:checked`); //unselect any selected float-rn-select value
+      let $frnElem = $(`input[type='checkbox'][name='float-rn-select']:checked`); //unselect any selected float-rn-select value
       if ($frnElem !== null) { $frnElem.prop("checked", false); }
     });
 
-    //listener to change behavior of form if day shift is selected for input
+
+    /**
+     * listener to change behavior of form if day shift is selected for input
+     * @var [type]
+     */
     $(`#day-or-night-day`).closest('label').click(function() {
       $(`#cn-select-group`).toggle(true); // show charge nurse select
       $(`#section-nc-cn-pod-select`).toggleClass('skip-section', false); // show section for pod selection for nc/cn
@@ -902,7 +752,10 @@ $form_select_assignment = $crud->getAllAssignments();
       hideFormInnerItem($(`#nc-pod-8`));
     });
 
-    //listener to change behavior of form if night shift is selected for input
+    /**
+     * listener to change behavior of form if night shift is selected for input
+     * @var [type]
+     */
     $(`#day-or-night-night`).closest('label').click(function() {
       $(`#cn-select-group`).toggle(false); // hide charge nurse select
 
@@ -921,7 +774,10 @@ $form_select_assignment = $crud->getAllAssignments();
       if ($cnPodElem !== null) { $cnPodElem.prop("checked", false); }
     });
 
-    //when the nc's assigned pod is clicked, the charge nurse's pod changes to the appropriate selection
+    /**
+     * when the nc's assigned pod is clicked, the charge nurse's pod changes to the appropriate selection
+     * @var [type]
+     */
     $(`#nc-pod-select div.inner-item`).click(function() {
       let clickedPodName = $(this).find('input').data('podName').replace(/[\/B]/g, ''); //which main pod was chosen, get rid of the B-pod
 
@@ -935,6 +791,10 @@ $form_select_assignment = $crud->getAllAssignments();
       return true;
     });
 
+    /**
+     * when the cn's assigned pod is clicked, the nc's pod changes to the appropriate selection
+     * @var [type]
+     */
     $(`#cn-pod-select div.inner-item`).click(function() {
       let clickedPodName = $(this).find('input').data('podName'); //which main pod was chosen
 
@@ -960,13 +820,15 @@ $form_select_assignment = $crud->getAllAssignments();
 
   function setClickAreaListeners(target) {
     //listener for click in the div to increase radio/checkbox active area
-    $(target).click(function() {
-      var $elem = $(this).find("input[type='checkbox'], input[type='radio']"); // find checkbox associated
-      if (!$elem.prop("disabled")) {
-        $elem.prop("checked", !($elem.prop("checked"))); // toggle checked state
-      }
-      return false; // return false to stop click propigation
-    });
+    $(target).find(`div.inner-item`).each(function(){
+      $(this).click(function() {
+        var $elem = $(this).find("input[type='checkbox'], input[type='radio']"); // find checkbox associated
+        if (!$elem.prop("disabled")) {
+          $elem.prop("checked", !($elem.prop("checked"))); // toggle checked state
+        }
+        return false; // return false to stop click propigation
+      });
+    })
   }
 
   function getStaffFromCheckboxes(names) {
@@ -992,7 +854,7 @@ $form_select_assignment = $crud->getAllAssignments();
    */
   function popStaffShiftModifierList(target, shiftModName, staffList) {
     $(target).html(shiftModifierCheckboxTemplate({modifier: shiftModName, staff: staffList}));
-    setClickAreaListeners(`${target} div.inner-item`);
+    setClickAreaListeners(`${target}`);
   }
 
   /**
@@ -1226,7 +1088,7 @@ $form_select_assignment = $crud->getAllAssignments();
 
     if (debug) { console.log(submission); }
 
-    ajaxSubmitUnitShifts(submission);
+    submitUnitShifts(submission);
   }
 
   function createStaffEntryObj(staffId, date, roleId, assignmentId, dayOrNight,
@@ -1289,7 +1151,7 @@ $form_select_assignment = $crud->getAllAssignments();
     return b;
   }
 
-  function ajaxSubmitUnitShifts(submissionData) {
+  function submitUnitShifts(submissionData) {
     submissionData = submissionData || []; // catch null/undefined arguments
 
     if ( submissionData === [] ) {
@@ -1327,6 +1189,96 @@ $form_select_assignment = $crud->getAllAssignments();
          if (debug) { console.log(data); }
   	   }
   	});
+  }
+
+  function getStaffFilteredByDate(date) {
+    date = date || null;
+
+    if (date === null) { return null; }
+    if (date === lastDate) { return false; }
+
+    $.ajax({
+  	   url: 'ajax/ajax_get_staff.php',
+  	   type: 'post',
+  	   data: `date=${date}`,
+       beforeSend: function () {
+
+       },
+  	   success: function(data) {
+         if (debug) { console.log("AJAX returned."); }
+
+         if (data !== 'Not ok.') {
+           lastDate = date;
+           staffList = JSON.parse(data);
+
+           if (debug) { console.log(staffList); }
+
+           populateStaffSelect(staffList);
+         }
+  	   }
+  	});
+  }
+
+  function populateStaffSelect(list) {
+    $('div[data-populate-with-staff-group]').each(function(index, element) {
+      let group = $( this ).data('populateWithStaffGroup').split(',');
+      let type = $( this ).data('populateType');
+      let prefix = $( this ).data('populatePrefix');
+      let required = $( this ).data('populateRequired');
+
+      if (group.length == 0) throw `'data-populate-with-staff-group' attribute requires at least 1 group to be specified`;
+
+      $( this ).empty();
+      for (let i = 0; i < group.length; i++) {
+        if (group[i] in list) {
+          createCustomSelect($( this ), type, required, prefix, list[group[i]]);
+        }
+      }
+      setParsleyJsGroup($(this), $( this ).closest('div.form-section').data('blockIndex'));
+      setClickAreaListeners($(this));
+    });
+  }
+
+  function createCustomSelect($container, type, required, prefix, staff) {
+    let first = true; //boolean flag for first iteration
+    for (let i = 0; i < staff.length; i++) {
+      //create wrapper div, set classes, append to fragment
+      let $div = $('<div></div>').addClass(`inner-item list-group-item-action`);
+      $container.append($div);
+
+      //create child label, wrapper for input, span contents
+      let $label = $('<label></label>').addClass(`custom-control custom-${type} m-1`);
+      $div.append($label);
+
+      //create input with properties, on first iteration add extra properties as specified
+      let $input = $('<input></input>')
+                    .prop("id", `${prefix}-${staff[i].id}`)
+                    .prop("name", `${prefix}-select`)
+                    .prop("type", `${type}`)
+                    .prop("value", `${staff[i].id}`)
+                    .attr("data-staff-name", `${staff[i].name} (${staff[i].category})`)
+                    .addClass('custom-control-input');
+      if (first) {
+        $input.prop("required", required);
+        $input.attr("data-parsley-errors-container", `#${prefix}-select-errors`);
+      }
+      $label.append($input);
+
+      //create control indicator span
+      $label.append($('<span></span>')
+                      .addClass('custom-control-indicator'));
+
+      //create description span
+      $label.append($('<span></span>')
+                      .addClass('custom-control-description')
+                      .text(`${staff[i].name} (${staff[i].category})`));
+
+      //set first iteration boolean flag to false
+      first = false;
+    }
+
+    //return the DOM fragement
+    return $container;
   }
 
   </script>

@@ -331,6 +331,51 @@ class crud
     return $staff_array;
   }
 
+  public function getStaffFilteredByDate($date) {
+    $staff_array = array();
+
+    $sql = "SELECT
+              {$this->tbl_staff}.id,
+              {$this->tbl_staff}.last_name,
+              {$this->tbl_staff}.first_name,
+              {$this->tbl_category}.category
+            FROM
+              {$this->tbl_staff}
+            LEFT JOIN
+              (
+              SELECT
+                staff_id
+              FROM
+                {$this->tbl_shift_entry}
+              WHERE
+                shift_date = '{$date}'
+            ) AS t2
+            ON
+              t2.staff_id = {$this->tbl_staff}.id
+            LEFT JOIN
+          	  {$this->tbl_category}
+            ON
+              {$this->tbl_category}.id = {$this->tbl_staff}.category_id
+            WHERE
+            	t2.staff_id IS NULL
+            ORDER BY
+            	{$this->tbl_staff}.last_name, {$this->tbl_staff}.first_name";
+
+    $stmt = $this->db->prepare($sql);
+    $stmt->execute();
+
+    if ($stmt->rowCount()>0) {
+      while ( $editRow = $stmt->fetch(PDO::FETCH_ASSOC) ) {
+        $editRow['id'] = intval($editRow['id']);
+
+        $s = new Staff("{$editRow['last_name']}, {$editRow['first_name']}", $editRow['id'], $editRow['category']);
+        $staff_array[$editRow['category']][] = $s;
+      }
+    }
+
+    return $staff_array;
+  }
+
   public function getStaff($category = null) {
     $staff_array = array();
 
@@ -702,16 +747,16 @@ class crud
     //for each staff member....
     foreach ( $staff_array as $k => $v) {
       //make a new staff entry object
-      $s = new StaffEntry($k, $v['id'], $v['category']);
+      $s = new ShiftTableStaffEntry($k, $v['id'], $v['category']);
 
       //then for each date, enter shift data for that staff
       foreach ( $shift_dates_array as $x ) {
         //if there is a shift entry for the staff, record it
         if ( isset($staff_shifts_array[$k][$x]) ) {
-          $s->shifts[] = new ShiftEntry($x, $staff_shifts_array[$k][$x]['shift_id'], $staff_shifts_array[$k][$x]['code']);
+          $s->shifts[] = new ShiftTableShiftEntry($x, $staff_shifts_array[$k][$x]['shift_id'], $staff_shifts_array[$k][$x]['code']);
           //or else put in dummy entry as placeholder
         } else {
-          $s->shifts[] = new ShiftEntry($x, -1, '-');
+          $s->shifts[] = new ShiftTableShiftEntry($x, -1, '-');
         }
       }
 
@@ -923,7 +968,7 @@ class crud
   }
 }
 
-class ShiftEntry
+class ShiftTableShiftEntry
 {
   public $date;
   public $id;
@@ -936,7 +981,7 @@ class ShiftEntry
   }
 }
 
-class StaffEntry
+class ShiftTableStaffEntry
 {
   public $name;
   public $id;
@@ -957,6 +1002,19 @@ class ShiftTable
 
   function __construct() {
     $this->staff = array();
+  }
+}
+
+class Staff
+{
+  public $name;
+  public $id;
+  public $category;
+
+  function __construct($name, $id, $category) {
+    $this->name = $name;
+    $this->id = $id;
+    $this->category = $category;
   }
 }
 
