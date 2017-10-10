@@ -4,10 +4,8 @@ include 'includes/pre-head.php';
 if (!isset($_SESSION['user_session'])) {
   header("Location: index.php");
 }
-//FIXME - selecting NC doesnt limit CN
-//FIXME - make it so not required to select NA or UC
-//FIXME - make it so if no NA or UC selected, pod selection is also skipped
-//FIXME - make it so if no NA or UC selected, shift submission doesnt try to fix it.
+
+//FIXME - The form doesnt close or reset once submitted
 
 //use the CRUD object to access the database and to build option lists of the staff categories
 $form_select_rn = $crud->getRnStaff();
@@ -404,23 +402,6 @@ $form_select_assignment = $crud->getAllAssignments();
             </div>
           </div>
 
-          <div id="section-outreach-rn-select" class="form-section mt-4 mb-4">
-            <!-- Select Bedside Nurses for C -->
-
-            <div class="form-group">
-              <label class="control-label requiredField" for="outrach-rn">
-                Who was on outreach?<span class="asteriskField">*</span>
-              </label>
-              <div id="outreach-rn-select-errors"></div>
-              <div id="outreach-rn-select" class="staff-select-group p-0 m-0" data-populate-with-staff-group="RN" data-populate-type="radio" data-populate-prefix="outreach-rn" data-populate-required="true">
-                <!-- dynamic staff select built here -->
-                <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
-                <span class="sr-only">Loading...</span>
-              </div>
-
-            </div>
-          </div>
-
           <div id="section-na-select" class="form-section mt-4 mb-4">
             <!-- Select NA's -->
             <div class="form-group">
@@ -428,7 +409,11 @@ $form_select_assignment = $crud->getAllAssignments();
                 Select the NA's<span class="asteriskField">*</span>
               </label>
               <div id="na-select-errors"></div>
-              <div id="na-select" class="staff-select-group p-0 m-0" data-populate-with-staff-group="NA,LPN" data-populate-type="checkbox" data-populate-prefix="na" data-populate-required="false">
+              <div id="na-select" class="staff-select-group p-0 m-0"
+                data-populate-with-staff-group="NA,LPN"
+                data-populate-type="checkbox"
+                data-populate-prefix="na"
+                data-populate-required="false">
                 <!-- dynamic staff select built here -->
                 <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
                 <span class="sr-only">Loading...</span>
@@ -438,7 +423,7 @@ $form_select_assignment = $crud->getAllAssignments();
           </div>
 
           <!-- assign pods to the na's -->
-          <div id="section-na-pod-select" class="form-section mt-4 mb-4">
+          <div id="section-na-pod-select" class="form-section mt-4 mb-4 skip-section">
             <!-- dynamic pod select template generated here -->
           </div>
 
@@ -449,7 +434,11 @@ $form_select_assignment = $crud->getAllAssignments();
                 Select the UC's<span class="asteriskField">*</span>
               </label>
               <div id="uc-select-errors"></div>
-              <div id="uc-select" class="staff-select-group p-0 m-0" data-populate-with-staff-group="UC" data-populate-type="checkbox" data-populate-prefix="uc" data-populate-required="false">
+              <div id="uc-select" class="staff-select-group p-0 m-0"
+                data-populate-with-staff-group="UC"
+                data-populate-type="checkbox"
+                data-populate-prefix="uc"
+                data-populate-required="false">
                 <!-- dynamic staff select built here -->
                 <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
                 <span class="sr-only">Loading...</span>
@@ -458,8 +447,27 @@ $form_select_assignment = $crud->getAllAssignments();
           </div>
 
           <!-- assign pods to the uc's -->
-          <div id="section-uc-pod-select" class="form-section mt-4 mb-4">
+          <div id="section-uc-pod-select" class="form-section mt-4 mb-4 skip-section">
             <!-- dynamic pod select template generated here -->
+          </div>
+
+          <!-- Select Outreach RN -->
+          <div id="section-outreach-rn-select" class="form-section mt-4 mb-4">
+            <div class="form-group">
+              <label class="control-label requiredField" for="outrach-rn">
+                Who was on outreach?<span class="asteriskField">*</span>
+              </label>
+              <div id="outreach-rn-select-errors"></div>
+              <div id="outreach-rn-select" class="staff-select-group p-0 m-0"
+                data-populate-with-staff-group="RN"
+                data-populate-type="radio"
+                data-populate-prefix="outreach-rn"
+                data-populate-required="true">
+                <!-- dynamic staff select built here -->
+                <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+                <span class="sr-only">Loading...</span>
+              </div>
+            </div>
           </div>
 
           <div class="form-navigation m-1 text-center">
@@ -543,7 +551,7 @@ $form_select_assignment = $crud->getAllAssignments();
   var $sections = null;
 
   var dateChangeTimer; //variable to prevent ajax request for staff to not update too often
-  var dateChangeTimerInterval = 3000;
+  var dateChangeTimerInterval = 1500;
 
   //TODO Bind to the window, so that if user tries to back out while form is dirty, then prompts to ask
   $(function() {
@@ -557,15 +565,43 @@ $form_select_assignment = $crud->getAllAssignments();
     });
     <?php endif; ?>
 
+    /**
+     * Event listener for change of date to populate the staff list
+     * Prevents ajax from being called too often
+     */
+    $('#date').on('change', function(){
+      if (debug) console.log("Date change event occured.");
+      //clear out the old timer
+      clearTimeout(dateChangeTimer);
+      //get the value of the current date selected
+      let d = $(this).val();
+      //make a new timer
+      dateChangeTimer = setTimeout( function(){
+                                      if (debug) console.log("Change timeout elapsed, calling function.");
+                                      getStaffFilteredByDate(d);
+                                    }, dateChangeTimerInterval);
+    })
+
+    //get the initial list of staff based on default date
+    getStaffFilteredByDate($('#date').val());
+
     /********************************************************
      * FORM PAGINATION - CREDIT TO Parsely.js DOCUMENTATION *
      ********************************************************/
     $sections = $('.form-section'); // list all all the form-section elements
     var oldIndex = -1; //reference to be able to know if traverseing forward or backward
     function navigateTo(index) {
+
+
+
+
+
+
       // Mark the current section with the class 'current'
       var $temp = $sections.removeClass('current')
                            .eq(index);
+
+      updateFormSection($temp);
 
       //check if section should be skipped
       while ( $temp.hasClass('skip-section') ) { //loop until section found which shouldnt be skipped
@@ -574,6 +610,7 @@ $form_select_assignment = $crud->getAllAssignments();
         } else if ( oldIndex < index ) { //if moving forwards
           $temp = $sections.eq(++index); //look ahead one more section
         }
+        updateFormSection($temp);
       }
 
       $temp.addClass('current'); //IDEA << ADD SHOW TRANSITION ANIMATION HERE BETWEEN FORMS
@@ -602,6 +639,64 @@ $form_select_assignment = $crud->getAllAssignments();
       oldIndex = index;
     }
 
+    function updateFormSection($section) {
+      let sectionId = $section.prop('id');
+
+      if (debug) console.log(`Updating form section: '${sectionId}'`);
+
+      if ( sectionId == 'section-nc-cn-select' ) {
+        //getStaffFilteredByDate($('#date').val());
+      } else if ( sectionId == 'section-float-rn-select' ) {
+        hideAlreadyPicked('#float-rn-select', ['nc-select', 'cn-select']);
+
+      } else if ( sectionId == 'section-apod-rn-select' ) {
+        hideAlreadyPicked('#apod-rn-select', ['nc-select', 'cn-select', 'float-rn-select']);
+
+      } else if ( sectionId == 'section-bpod-rn-select' ) {
+        hideAlreadyPicked('#bpod-rn-select', ['nc-select', 'cn-select', 'float-rn-select', 'apod-rn-select']);
+
+      } else if ( sectionId == 'section-cpod-rn-select' ) {
+        hideAlreadyPicked('#cpod-rn-select', ['nc-select', 'cn-select', 'float-rn-select', 'apod-rn-select', 'bpod-rn-select']);
+
+      } else if ( sectionId == 'section-outreach-rn-select' ) {
+        hideAlreadyPicked('#outreach-rn-select', ['nc-select', 'cn-select', 'float-rn-select', 'apod-rn-select', 'bpod-rn-select', 'cpod-rn-select']);
+
+      } else if ( sectionId == 'section-non-vent-mod-select' ) {
+        bedsideRnStaffList = getStaffFromCheckboxes(['apod-rn-select', 'bpod-rn-select', 'cpod-rn-select']);
+        popStaffShiftModifierList('#non-vent-mod-select', 'non-vent-mod-select', bedsideRnStaffList);
+
+      } else if ( sectionId == 'section-double-mod-select' ) {
+        popStaffShiftModifierList('#double-mod-select', 'double-mod-select', bedsideRnStaffList);
+
+      } else if ( sectionId == 'section-admit-mod-select' ) {
+        popStaffShiftModifierList('#admit-mod-select', 'admit-mod-select', bedsideRnStaffList);
+
+      } else if ( sectionId == 'section-very-sick-mod-select' ) {
+        popStaffShiftModifierList('#very-sick-mod-select', 'very-sick-mod-select', bedsideRnStaffList);
+
+      } else if ( sectionId == 'section-code-pager-mod-select' ) {
+        popStaffShiftModifierList('#code-pager-mod-select', 'code-pager-mod-select', bedsideRnStaffList);
+
+      } else if ( sectionId == 'section-crrt-mod-select' ) {
+        popStaffShiftModifierList('#crrt-mod-select', 'crrt-mod-select', bedsideRnStaffList);
+
+      } else if ( sectionId == 'section-evd-mod-select' ) {
+        popStaffShiftModifierList('#evd-mod-select', 'evd-mod-select', bedsideRnStaffList);
+
+      } else if ( sectionId == 'section-burn-mod-select' ) {
+        popStaffShiftModifierList('#burn-mod-select', 'burn-mod-select', bedsideRnStaffList);
+
+      } else if ( sectionId == 'section-na-pod-select' ) {
+        popPodSelectList('#section-na-pod-select', 'na-pod-select', getStaffFromCheckboxes(['na-select']), assignmentList);
+        setParsleyJsGroup('#section-na-pod-select', $('#section-na-pod-select').data('blockIndex'));
+        //make it required if there are entries
+      } else if ( sectionId == 'section-uc-pod-select' ) {
+        popPodSelectList('#section-uc-pod-select', 'uc-pod-select', getStaffFromCheckboxes(['uc-select']), assignmentList);
+        setParsleyJsGroup('#section-uc-pod-select', $('#section-uc-pod-select').data('blockIndex'));
+
+      }
+    }
+
     // Return the current index by looking at which section has the class 'current'
     function curIndex() {
       return $sections.index($sections.filter('.current'));
@@ -618,61 +713,6 @@ $form_select_assignment = $crud->getAllAssignments();
         group: 'block-' + curIndex()
       }).done(function() {
         navigateTo(curIndex() + 1);
-
-        let currentSectionId = $('.current').prop('id');
-
-        if ( currentSectionId == 'section-nc-cn-select' ) {
-          //getStaffFilteredByDate($('#date').val());
-
-        } else if ( currentSectionId == 'section-float-rn-select' ) {
-          hideAlreadyPicked('#float-rn-select', ['nc-select', 'cn-select']);
-
-        } else if ( currentSectionId == 'section-apod-rn-select' ) {
-          hideAlreadyPicked('#apod-rn-select', ['nc-select', 'cn-select', 'float-rn-select']);
-
-        } else if ( currentSectionId == 'section-bpod-rn-select' ) {
-          hideAlreadyPicked('#bpod-rn-select', ['nc-select', 'cn-select', 'float-rn-select', 'apod-rn-select']);
-
-        } else if ( currentSectionId == 'section-cpod-rn-select' ) {
-          hideAlreadyPicked('#cpod-rn-select', ['nc-select', 'cn-select', 'float-rn-select', 'apod-rn-select', 'bpod-rn-select']);
-
-        } else if ( currentSectionId == 'section-outreach-rn-select' ) {
-          hideAlreadyPicked('#outreach-rn-select', ['nc-select', 'cn-select', 'float-rn-select', 'apod-rn-select', 'bpod-rn-select', 'cpod-rn-select']);
-
-        } else if ( currentSectionId == 'section-non-vent-mod-select' ) {
-          bedsideRnStaffList = getStaffFromCheckboxes(['apod-rn-select', 'bpod-rn-select', 'cpod-rn-select']);
-          popStaffShiftModifierList('#non-vent-mod-select', 'non-vent-mod-select', bedsideRnStaffList);
-
-        } else if ( currentSectionId == 'section-double-mod-select' ) {
-          popStaffShiftModifierList('#double-mod-select', 'double-mod-select', bedsideRnStaffList);
-
-        } else if ( currentSectionId == 'section-admit-mod-select' ) {
-          popStaffShiftModifierList('#admit-mod-select', 'admit-mod-select', bedsideRnStaffList);
-
-        } else if ( currentSectionId == 'section-very-sick-mod-select' ) {
-          popStaffShiftModifierList('#very-sick-mod-select', 'very-sick-mod-select', bedsideRnStaffList);
-
-        } else if ( currentSectionId == 'section-code-pager-mod-select' ) {
-          popStaffShiftModifierList('#code-pager-mod-select', 'code-pager-mod-select', bedsideRnStaffList);
-
-        } else if ( currentSectionId == 'section-crrt-mod-select' ) {
-          popStaffShiftModifierList('#crrt-mod-select', 'crrt-mod-select', bedsideRnStaffList);
-
-        } else if ( currentSectionId == 'section-evd-mod-select' ) {
-          popStaffShiftModifierList('#evd-mod-select', 'evd-mod-select', bedsideRnStaffList);
-
-        } else if ( currentSectionId == 'section-burn-mod-select' ) {
-          popStaffShiftModifierList('#burn-mod-select', 'burn-mod-select', bedsideRnStaffList);
-
-        } else if ( currentSectionId == 'section-na-pod-select' ) {
-          popPodSelectList('#section-na-pod-select', 'na-pod-select', getStaffFromCheckboxes(['na-select']), assignmentList);
-          setParsleyJsGroup('#section-na-pod-select', $('#section-na-pod-select').data('blockIndex'));
-
-        } else if ( currentSectionId == 'section-uc-pod-select' ) {
-          popPodSelectList('#section-uc-pod-select', 'uc-pod-select', getStaffFromCheckboxes(['uc-select']), assignmentList);
-          setParsleyJsGroup('#section-uc-pod-select', $('#section-uc-pod-select').data('blockIndex'));
-
-        }
       });
     });
 
@@ -697,24 +737,6 @@ $form_select_assignment = $crud->getAllAssignments();
     setClickAreaListeners("div.staff-select-group");
     //hide the option for the nc to select pod 'A/B/C' when the day shift button is preselected (default state)
     hideFormInnerItem($(`#nc-pod-8`));
-
-    /**
-     * listener which disables/clear chage nurse value depending on nurse clinician value
-     * @var [type]
-     */
-    $(`#nc-select div.inner-item`).click(function() { // FIXME -- this is a bad call, only calls at the beginning.
-      if ($disabledPrn !== null) {
-          enableFormInnerItem($disabledPrn);
-      }
-      let $ncChoice = $(this).find("input[type='radio']");
-
-      let $elem = $(`input[type='radio'][name='cn-select'][value='${$ncChoice.val()}']`);
-
-      if ($elem !== null) {
-        disableFormInnerItem($elem);
-        $disabledPrn = $elem;
-      }
-    });
 
     /**
      * listener to change behavior of form if float nurse is to be selected
@@ -818,17 +840,50 @@ $form_select_assignment = $crud->getAllAssignments();
     return $(section).find(':input').attr('data-parsley-group', 'block-' + index);
   }
 
+  /**
+   * [setClickAreaListeners description]
+   * @param [type] target [description]
+   */
   function setClickAreaListeners(target) {
     //listener for click in the div to increase radio/checkbox active area
     $(target).find(`div.inner-item`).each(function(){
       $(this).click(function() {
-        var $elem = $(this).find("input[type='checkbox'], input[type='radio']"); // find checkbox associated
+        let $elem = $(this).find("input[type='checkbox'], input[type='radio']"); // find checkbox associated
         if (!$elem.prop("disabled")) {
           $elem.prop("checked", !($elem.prop("checked"))); // toggle checked state
         }
+
+        let parentId = $(this).parent().prop('id');
+        if (parentId == "nc-select") {
+          if ($disabledPrn !== null) {
+              enableFormInnerItem($disabledPrn);
+          }
+          let $ncChoice = $(this).find("input[type='radio']");
+
+          let $elem = $(`input[type='radio'][name='cn-select'][value='${$ncChoice.val()}']`);
+
+          if ($elem !== null) {
+            disableFormInnerItem($elem);
+            $disabledPrn = $elem;
+          }
+        } else if (parentId == "na-select") {
+          if ($(`input[name='na-select']:checked`).length) {
+            $(`#section-na-pod-select`).removeClass('skip-section');
+          } else {
+            $(`#section-na-pod-select`).addClass('skip-section');
+          }
+        } else if (parentId == "uc-select") {
+          if ($(`input[name='uc-select']:checked`).length) {
+            $(`#section-uc-pod-select`).removeClass('skip-section');
+          } else {
+            $(`#section-uc-pod-select`).addClass('skip-section');
+          }
+        }
+
         return false; // return false to stop click propigation
       });
-    })
+    });
+
   }
 
   function getStaffFromCheckboxes(names) {
@@ -1069,21 +1124,27 @@ $form_select_assignment = $crud->getAllAssignments();
     }
 
     //na
-    for ( let i = 0; i < formData['na-select'].length; i++ ) {
-      let sid = formData['na-select'][i];
+    formData['na-select'] = formData['na-select'] || [];
+    if (formData['na-select'] !== []) {
+      for ( let i = 0; i < formData['na-select'].length; i++ ) {
+        let sid = formData['na-select'][i];
 
-      submission.push(createStaffEntryObj(
-        sid, date, roleLookup['NA'], formData[`na-pod-select-${sid}`][0], dayOrNight
-      ));
+        submission.push(createStaffEntryObj(
+          sid, date, roleLookup['NA'], formData[`na-pod-select-${sid}`][0], dayOrNight
+        ));
+      }
     }
 
     //uc
-    for ( let i = 0; i < formData['uc-select'].length; i++ ) {
-      let sid = formData['uc-select'][i];
+    formData['uc-select'] = formData['uc-select'] || [];
+    if (formData['uc-select'] !== []) {
+      for ( let i = 0; i < formData['uc-select'].length; i++ ) {
+        let sid = formData['uc-select'][i];
 
-      submission.push(createStaffEntryObj(
-        sid, date, roleLookup['UC'], formData[`uc-pod-select-${sid}`][0], dayOrNight
-      ));
+        submission.push(createStaffEntryObj(
+          sid, date, roleLookup['UC'], formData[`uc-pod-select-${sid}`][0], dayOrNight
+        ));
+      }
     }
 
     if (debug) { console.log(submission); }
@@ -1234,8 +1295,13 @@ $form_select_assignment = $crud->getAllAssignments();
           createCustomSelect($( this ), type, required, prefix, list[group[i]]);
         }
       }
-      setParsleyJsGroup($(this), $( this ).closest('div.form-section').data('blockIndex'));
-      setClickAreaListeners($(this));
+
+      if ( $(this).children().length ) {
+        setParsleyJsGroup($(this), $( this ).closest('div.form-section').data('blockIndex'));
+        setClickAreaListeners($(this));
+      } else {
+        $(this).html("<p>There are no staff unassigned to select from.</p>");
+      }
     });
   }
 
