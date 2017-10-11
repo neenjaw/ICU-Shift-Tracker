@@ -113,6 +113,16 @@ if (!isset($_SESSION['user_session'])) {
     var daysToPrint = 20;
     var daysOffset = 0;
     var categoryToFetch = "*";
+    var staffList = null;
+    var options = {};
+    options.tableClasses = 'table table-hover table-responsive table-striped table-sm shift-table';
+    options.theadClasses = 'thead-inverse';
+    options.tbodyClasses = '';
+    options.dheadClasses = 'shift-row-head shift-date';
+    options.rheadClasses = 'shift-row-head';
+    options.staffDividerClasses = 'table-dark';
+    options.cellClasses = 'shift-cell';
+    options.locale = 'en-us';
 
     //When document is ready
     $(function () {
@@ -139,8 +149,10 @@ if (!isset($_SESSION['user_session'])) {
         beforeSend: function () {
         },
         success: function (response) {
-          if (debug) { console.log(response); }
-          $('#shift-table-body').html(buildShiftTable(JSON.parse(response),
+          staffList = JSON.parse(response);
+          if (debug) console.log("AJAX returned, staff list:");
+          if (debug) console.log(staffList);
+          $('#shift-table-body').html(buildShiftTable(staffList,
             'table table-hover table-responsive table-striped table-sm shift-table',
             'thead-inverse',
             '',

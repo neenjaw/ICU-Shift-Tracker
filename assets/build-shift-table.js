@@ -216,3 +216,41 @@ function buildShiftTable(staffObj, tableClasses = '', theadClasses = '', tbodyCl
   //return the completed table to caller so can be appended to dom at correct place.
   return shiftTable;
 }
+
+function buildShiftTableHead(staff, args) {
+  //load options, supplied or default
+  options = args || {};
+  options.tableClasses = args.tableClasses || '';
+  options.theadClasses = args.theadClasses || '';
+  options.tbodyClasses = args.tbodyClasses || '';
+  options.dheadClasses = args.dheadClasses || '';
+  options.rheadClasses = args.rheadClasses || '';
+  options.staffDividerClasses = args.staffDividerClasses || '';
+  options.cellClasses = args.cellClasses || '';
+  options.locale = args.locale || 'en-us';
+  options.staffOrder = args.staffOrder || ['RN', 'LPN', 'NA', 'UC'];
+
+  if (debug) console.log(options);
+
+  //divide the staff by category
+  let staffByCategory = [];
+  for (let i = 0; i < staff.length; i++) {
+    staffByCategory[staff[i].category] = staffByCategory[staff[i].category] || [];
+    staffByCategory[staff[i].category].push({name:staff[i].name, id:staff[i].id, category:staff[i].category});
+  }
+  if (debug) console.log(staffByCategory);
+
+  let $table = $(`<table></table>`).addClass(options.tableClasses);
+  $table.append($(`<tr><th>Month</th</tr>`).addClass(options.dheadClasses));
+  $table.append($(`<tr><th>Date</th</tr>`).addClass(options.dheadClasses));
+  for (let i = 0; i < options.staffOrder.length; i++) {
+    if (options.staffOrder[i] in staffByCategory) {
+      $table.append($(`<tr><th>${options.staffOrder[i]}</th</tr>`)
+                      .addClass(options.rheadClasses)
+                      .addClass(options.staffDividerClasses)
+                    );
+    }
+  }
+
+  if (debug) console.log($table);
+}
