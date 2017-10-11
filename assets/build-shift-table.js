@@ -241,16 +241,47 @@ function buildShiftTableHead(staff, args) {
   if (debug) console.log(staffByCategory);
 
   let $table = $(`<table></table>`).addClass(options.tableClasses);
-  $table.append($(`<tr><th>Month</th</tr>`).addClass(options.dheadClasses));
-  $table.append($(`<tr><th>Date</th</tr>`).addClass(options.dheadClasses));
+
+  $table.append(
+    $(`<thead></thead>`)
+      .append(
+        $(`<tr><th>Month</th></tr>`).addClass(options.dheadClasses),
+        $(`<tr><th>Date</th></tr>`).addClass(options.dheadClasses)
+        )
+      .addClass(options.theadClasses)
+    );
+
+  let $tbody = $(`<tbody></tbody>`);
+  $table.append($tbody);
+
   for (let i = 0; i < options.staffOrder.length; i++) {
-    if (options.staffOrder[i] in staffByCategory) {
-      $table.append($(`<tr><th>${options.staffOrder[i]}</th</tr>`)
+    let c = options.staffOrder[i];
+
+    if (c in staffByCategory) {
+      $tbody.append($(`<tr><th>${c}</th</tr>`)
                       .addClass(options.rheadClasses)
-                      .addClass(options.staffDividerClasses)
-                    );
+                      .addClass(options.staffDividerClasses));
+
+      for (let j = 0; j < staffByCategory[c].length; j++) {
+        let s = staffByCategory[c][j];
+
+        $tbody.append(
+          $(`<tr></tr>`)
+            .append(
+              $(`<td></td>`)
+                .addClass(options.rheadClasses)
+                .attr('data-staff-name', s.name)
+                .attr('data-staff-id', s.id)
+                .append(
+                  $(`<pre>${s.name}</pre>`)
+                )
+            )
+          );
+      }
     }
   }
 
   if (debug) console.log($table);
+
+  return $table;
 }
