@@ -5,8 +5,6 @@ if (!isset($_SESSION['user_session'])) {
   header("Location: index.php");
 }
 
-//FIXME - The form doesnt close or reset once submitted
-
 //use the CRUD object to access the database and to build option lists of the staff categories
 $form_select_rn = $crud->getRnStaff();
 $form_select_na = $crud->getNaStaff();
@@ -512,7 +510,7 @@ $form_select_assignment = $crud->getAllAssignments();
         </div>
         <div class="modal-body" id="submission-modal-body"></div>
         <div class="modal-footer">
-          <button id="close-modal" type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button id="modal-close" type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         </div>
       </div>
       <!-- /.submission modal content -->
@@ -535,7 +533,8 @@ $form_select_assignment = $crud->getAllAssignments();
 
   <!-- Aux Scripts -->
   <script>
-  var debug = true;
+  //Global scope variables
+  var debug = true; // debug flag
 
   var shiftModifierCheckboxTemplate = null;
   var staffPodSelectTemplate = null;
@@ -577,9 +576,9 @@ $form_select_assignment = $crud->getAllAssignments();
       let d = $(this).val();
       //make a new timer
       dateChangeTimer = setTimeout( function(){
-                                      if (debug) console.log("Change timeout elapsed, calling function.");
-                                      getStaffFilteredByDate(d);
-                                    }, dateChangeTimerInterval);
+        if (debug) console.log("Change timeout elapsed, calling function.");
+        getStaffFilteredByDate(d);
+      }, dateChangeTimerInterval);
     })
 
     //get the initial list of staff based on default date
@@ -589,14 +588,13 @@ $form_select_assignment = $crud->getAllAssignments();
      * FORM PAGINATION - CREDIT TO Parsely.js DOCUMENTATION *
      ********************************************************/
     $sections = $('.form-section'); // list all all the form-section elements
+
+    /**
+     * navigateTo - shows/hides the appropriate form section based on the index
+     * @var integer index Numeric index of the element in the $sections array of DOM elements
+     */
     var oldIndex = -1; //reference to be able to know if traverseing forward or backward
     function navigateTo(index) {
-
-
-
-
-
-
       // Mark the current section with the class 'current'
       var $temp = $sections.removeClass('current')
                            .eq(index);
@@ -613,7 +611,7 @@ $form_select_assignment = $crud->getAllAssignments();
         updateFormSection($temp);
       }
 
-      $temp.addClass('current'); //IDEA << ADD SHOW TRANSITION ANIMATION HERE BETWEEN FORMS
+      $temp.addClass('current');
 
       // Show only the navigation buttons that make sense for the current section:
       $('.form-navigation .previous').attr("disabled", !(index > 0))
@@ -639,11 +637,17 @@ $form_select_assignment = $crud->getAllAssignments();
       oldIndex = index;
     }
 
+    /**
+     * Control logic to update each form based on the previous sections of the form completed.
+     * @param  DOMelement $section reference to the div which has the 'sec'
+     * @return [type]          [description]
+     */
     function updateFormSection($section) {
-      let sectionId = $section.prop('id');
+      let sectionId = $section.prop('id'); //get the current section's name
 
       if (debug) console.log(`Updating form section: '${sectionId}'`);
 
+      //each block allows it to update itself based on previously completed form sections
       if ( sectionId == 'section-nc-cn-select' ) {
         //getStaffFilteredByDate($('#date').val());
       } else if ( sectionId == 'section-float-rn-select' ) {
@@ -689,11 +693,9 @@ $form_select_assignment = $crud->getAllAssignments();
       } else if ( sectionId == 'section-na-pod-select' ) {
         popPodSelectList('#section-na-pod-select', 'na-pod-select', getStaffFromCheckboxes(['na-select']), assignmentList);
         setParsleyJsGroup('#section-na-pod-select', $('#section-na-pod-select').data('blockIndex'));
-        //make it required if there are entries
       } else if ( sectionId == 'section-uc-pod-select' ) {
         popPodSelectList('#section-uc-pod-select', 'uc-pod-select', getStaffFromCheckboxes(['uc-select']), assignmentList);
         setParsleyJsGroup('#section-uc-pod-select', $('#section-uc-pod-select').data('blockIndex'));
-
       }
     }
 
@@ -726,7 +728,7 @@ $form_select_assignment = $crud->getAllAssignments();
     //catch the on-submit event, collect/format data from the form, submit via ajax
     $('#unit-shift-form').parsley().on('form:submit', function () {
       submitUnitShiftForm();
-      return false;
+      return false; //return false to prevent HTML form submission
     });
 
     /***************************************
@@ -1008,6 +1010,9 @@ $form_select_assignment = $crud->getAllAssignments();
     }
   }
 
+  /**
+   * Gathers the form data, reorganizes to make appropriate for AJAX submission to backend
+   */
   function submitUnitShiftForm() {
     let assignmentLookup = createAssignmentLookup(assignmentList);
     let roleLookup = createRoleLookup(roleList);
@@ -1016,7 +1021,8 @@ $form_select_assignment = $crud->getAllAssignments();
     let formData = [];
     let serializedForm = $('#unit-shift-form').serializeArray();
 
-    // console.log(serializedForm);
+    if (debug) console.log("Serialized Array Form Contents:");
+    if (debug) console.log(serializedForm);
 
     for( let i=0; i < serializedForm.length; i++ ) {
       let formPropertyName = serializedForm[i].name;
@@ -1027,6 +1033,7 @@ $form_select_assignment = $crud->getAllAssignments();
       formData[formPropertyName].push(serializedForm[i].value);
     }
 
+    //create lookup tables, catch non-existing data with '|| []'
     let nonVentLookup = createModLookup(formData['non-vent-mod-select'] || []);
     let doubleLookup = createModLookup(formData['double-mod-select'] || []);
     let vSickLookup = createModLookup(formData['very-sick-mod-select'] || []);
@@ -1038,8 +1045,6 @@ $form_select_assignment = $crud->getAllAssignments();
 
     let date = formData['date'][0];
     let dayOrNight = formData['day-or-night'][0];
-
-    // console.log(formData);
 
     //add the clinician to the submission array
     submission.push(createStaffEntryObj(
@@ -1123,7 +1128,7 @@ $form_select_assignment = $crud->getAllAssignments();
       ));
     }
 
-    //na
+    //na - there may not always be an NA specified, check
     formData['na-select'] = formData['na-select'] || [];
     if (formData['na-select'] !== []) {
       for ( let i = 0; i < formData['na-select'].length; i++ ) {
@@ -1135,7 +1140,7 @@ $form_select_assignment = $crud->getAllAssignments();
       }
     }
 
-    //uc
+    //uc - there may not always be a UC specified, check
     formData['uc-select'] = formData['uc-select'] || [];
     if (formData['uc-select'] !== []) {
       for ( let i = 0; i < formData['uc-select'].length; i++ ) {
@@ -1149,9 +1154,27 @@ $form_select_assignment = $crud->getAllAssignments();
 
     if (debug) { console.log(submission); }
 
+    //data is appropriate for submission, now submit it
     submitUnitShifts(submission);
   }
 
+  /**
+   * Helper function to create shift entry object to be returned for submission
+   * @param  int  staffId         [description]
+   * @param  string  date         [description]
+   * @param  int  roleId          [description]
+   * @param  int  assignmentId    [description]
+   * @param  char  dayOrNight     [description]
+   * @param  boolean nonVent      [description]
+   * @param  boolean doubled      [description]
+   * @param  boolean vsick        [description]
+   * @param  boolean crrt         [description]
+   * @param  boolean admit        [description]
+   * @param  boolean codepg       [description]
+   * @param  boolean evd          [description]
+   * @param  boolean burn         [description]
+   * @return Object               [description]
+   */
   function createStaffEntryObj(staffId, date, roleId, assignmentId, dayOrNight,
     nonVent = false, doubled = false, vsick = false, crrt = false, admit = false, codepg = false, evd = false, burn = false) {
 
@@ -1212,9 +1235,14 @@ $form_select_assignment = $crud->getAllAssignments();
     return b;
   }
 
+  /**
+   * Submit the form data to backend
+   * @param  Array[Object] submissionData   An Array of ShiftEntry Objects, ready for submission to backend
+   */
   function submitUnitShifts(submissionData) {
     submissionData = submissionData || []; // catch null/undefined arguments
 
+    //catch bad parameter data, return to exit function
     if ( submissionData === [] ) {
       if (debug) { console.log("Warning: no data passed to submit via ajax handler"); }
       return;
@@ -1226,7 +1254,8 @@ $form_select_assignment = $crud->getAllAssignments();
   	   data: {"shiftData" : JSON.stringify(submissionData)},
        beforeSend: function () {
          if (debug) { console.log("AJAX sent."); }
-         $('#submission-modal-body').html(`<i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i><span class="sr-only">Loading...</span>`);
+         $('#submission-modal-body').html(`<i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+                                           <span class="sr-only">Loading...</span>`);
          $('#submission-modal').modal('show');	//show the modal
        },
   	   success: function(data) {
@@ -1243,7 +1272,9 @@ $form_select_assignment = $crud->getAllAssignments();
          } else {
 
            if (debug) { console.log("Data submission not ok."); }
-           $('#submission-modal-body').html(`<h3>There was a problem!</h3><p>${data}</p><p>Click close, find the problem, resubmit.</p>`);
+           $('#submission-modal-body').html(`<h3>There was a problem!</h3>
+                                             <p>${data}</p>
+                                             <p>Click close, find the problem, resubmit.</p>`);
 
          }
 
@@ -1252,6 +1283,10 @@ $form_select_assignment = $crud->getAllAssignments();
   	});
   }
 
+  /**
+   * based on the date selected, get a list of staff not already entered for that day
+   * @param  string date a date in the 'yyyy-mm-dd' format
+   */
   function getStaffFilteredByDate(date) {
     date = date || null;
 
@@ -1280,31 +1315,49 @@ $form_select_assignment = $crud->getAllAssignments();
   	});
   }
 
+  /**
+   * for each staff selection, read data attribute parameters, then create the form group
+   * @param  Object list An object containing staff
+   * @return [type]      [description]
+   */
   function populateStaffSelect(list) {
     $('div[data-populate-with-staff-group]').each(function(index, element) {
+      //get the data parameters
       let group = $( this ).data('populateWithStaffGroup').split(',');
       let type = $( this ).data('populateType');
       let prefix = $( this ).data('populatePrefix');
       let required = $( this ).data('populateRequired');
 
+      //if there is no group specified for the select, cannot proceed.
       if (group.length == 0) throw `'data-populate-with-staff-group' attribute requires at least 1 group to be specified`;
 
-      $( this ).empty();
+      //build the new select list
+      $( this ).empty(); // get rid of any old contents
       for (let i = 0; i < group.length; i++) {
-        if (group[i] in list) {
+        if (group[i] in list) { //for group in the select parameters list, and if that matches a group in the staff list
           createCustomSelect($( this ), type, required, prefix, list[group[i]]);
         }
       }
 
+      //if there are staff to be selected, add in the listeners to make the select more usable and validate properly
       if ( $(this).children().length ) {
         setParsleyJsGroup($(this), $( this ).closest('div.form-section').data('blockIndex'));
         setClickAreaListeners($(this));
+      //else let the users know why they can't select
       } else {
-        $(this).html("<p>There are no staff unassigned to select from.</p>");
+        $(this).html("<p>There are no staff to select from for this date.</p>");
       }
     });
   }
 
+  /**
+   * Helper function to create the select form group with jquery
+   * @param  DOMelement $container    Which DOM element should the group be appended to
+   * @param  string type              radio or checkbox
+   * @param  boolean required         is the select form group a required entry
+   * @param  string prefix            how should it be named for consistent convention
+   * @param  [Object] staff           an array of staff objects
+   */
   function createCustomSelect($container, type, required, prefix, staff) {
     let first = true; //boolean flag for first iteration
     for (let i = 0; i < staff.length; i++) {
@@ -1324,6 +1377,7 @@ $form_select_assignment = $crud->getAllAssignments();
                     .prop("value", `${staff[i].id}`)
                     .attr("data-staff-name", `${staff[i].name} (${staff[i].category})`)
                     .addClass('custom-control-input');
+      //only add required and parsley data parameter to first element
       if (first) {
         $input.prop("required", required);
         $input.attr("data-parsley-errors-container", `#${prefix}-select-errors`);
