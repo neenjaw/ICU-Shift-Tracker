@@ -235,22 +235,63 @@ function buildShiftTableHead(staff, args) {
   //divide the staff by category
   let staffByCategory = [];
   for (let i = 0; i < staff.length; i++) {
+    //check if the array at this index exists, if not make a new array
     staffByCategory[staff[i].category] = staffByCategory[staff[i].category] || [];
+    //push the staff member object to the array at the index
     staffByCategory[staff[i].category].push({name:staff[i].name, id:staff[i].id, category:staff[i].category});
   }
+
   if (debug) console.log(staffByCategory);
 
+  //make the table
   let $table = $(`<table></table>`).addClass(options.tableClasses);
-  $table.append($(`<tr><th>Month</th</tr>`).addClass(options.dheadClasses));
-  $table.append($(`<tr><th>Date</th</tr>`).addClass(options.dheadClasses));
+
+  //build the first two rows
+  $table.append(
+    $(`<thead></thead>`)
+      .append(
+        $(`<tr><th>Month</th></tr>`).addClass(options.dheadClasses),
+        $(`<tr><th>Date</th></tr>`).addClass(options.dheadClasses)
+        )
+      .addClass(options.theadClasses)
+    );
+
+  //build the table's body, keep reference to it for the loop
+  let $tbody = $(`<tbody></tbody>`);
+  $table.append($tbody);
+
+  //loop through the staff categories in order
   for (let i = 0; i < options.staffOrder.length; i++) {
-    if (options.staffOrder[i] in staffByCategory) {
-      $table.append($(`<tr><th>${options.staffOrder[i]}</th</tr>`)
+    let c = options.staffOrder[i];
+
+    //if the category is in the list of staff, build the table for that category
+    if (c in staffByCategory) {
+      //first row for each category, make a light weight header
+      $tbody.append($(`<tr><th>${c}</th</tr>`)
                       .addClass(options.rheadClasses)
-                      .addClass(options.staffDividerClasses)
-                    );
+                      .addClass(options.staffDividerClasses));
+
+      //for each staff member, build a row for them
+      for (let j = 0; j < staffByCategory[c].length; j++) {
+        let s = staffByCategory[c][j];
+
+        $tbody.append(
+          $(`<tr></tr>`)
+            .append(
+              $(`<td></td>`)
+                .addClass(options.rheadClasses)
+                .attr('data-staff-name', s.name)
+                .attr('data-staff-id', s.id)
+                .append(
+                  $(`<pre>${s.name}</pre>`)
+                )
+            )
+          );
+      }
     }
   }
 
   if (debug) console.log($table);
+
+  return $table;
 }
