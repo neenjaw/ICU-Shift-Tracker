@@ -246,10 +246,7 @@ function buildShiftTableHead(staff, args) {
   //make the table
   let $table = $(`<table></table>`).addClass(options.tableClasses);
 
-<<<<<<< HEAD
   //build the first two rows
-=======
->>>>>>> 022b89f3ee5e542b3ad6b69c60e92d5ee3d4c93a
   $table.append(
     $(`<thead></thead>`)
       .append(
@@ -259,7 +256,6 @@ function buildShiftTableHead(staff, args) {
       .addClass(options.theadClasses)
     );
 
-<<<<<<< HEAD
   //build the table's body, keep reference to it for the loop
   let $tbody = $(`<tbody></tbody>`);
   $table.append($tbody);
@@ -271,23 +267,11 @@ function buildShiftTableHead(staff, args) {
     //if the category is in the list of staff, build the table for that category
     if (c in staffByCategory) {
       //first row for each category, make a light weight header
-=======
-  let $tbody = $(`<tbody></tbody>`);
-  $table.append($tbody);
-
-  for (let i = 0; i < options.staffOrder.length; i++) {
-    let c = options.staffOrder[i];
-
-    if (c in staffByCategory) {
->>>>>>> 022b89f3ee5e542b3ad6b69c60e92d5ee3d4c93a
       $tbody.append($(`<tr><th>${c}</th</tr>`)
                       .addClass(options.rheadClasses)
                       .addClass(options.staffDividerClasses));
 
-<<<<<<< HEAD
       //for each staff member, build a row for them
-=======
->>>>>>> 022b89f3ee5e542b3ad6b69c60e92d5ee3d4c93a
       for (let j = 0; j < staffByCategory[c].length; j++) {
         let s = staffByCategory[c][j];
 
