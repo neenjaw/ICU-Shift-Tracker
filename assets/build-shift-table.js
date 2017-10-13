@@ -238,16 +238,25 @@ function buildShiftTableHead(staff, args) {
     //check if the array at this index exists, if not make a new array
     staffByCategory[staff[i].category] = staffByCategory[staff[i].category] || [];
     //push the staff member object to the array at the index
-    staffByCategory[staff[i].category].push({name:staff[i].name, id:staff[i].id, category:staff[i].category});
+    staffByCategory[staff[i].category].push(staff[i]);
   }
 
   if (debug) console.log(staffByCategory);
 
   //make the table
-  let $table = $(`<table></table>`).addClass(options.tableClasses);
+  let $htable = $(`<table></table>`).addClass(options.tableClasses);
+  let $btable = $(`<table></table>`).addClass(options.tableClasses);
 
+  /*
+   *
+   * Need to add a lot in here interms of building the $btable
+   * Need to create a loop to build the dates to be contained in the table, either build in the first staff object iteration
+   * or in a separate loop before hand. 
+   *
+   */
+ 
   //build the first two rows
-  $table.append(
+  $htable.append(
     $(`<thead></thead>`)
       .append(
         $(`<tr><th>Month</th></tr>`).addClass(options.dheadClasses),
@@ -255,10 +264,10 @@ function buildShiftTableHead(staff, args) {
         )
       .addClass(options.theadClasses)
     );
-
+ 
   //build the table's body, keep reference to it for the loop
-  let $tbody = $(`<tbody></tbody>`);
-  $table.append($tbody);
+  let $htbody = $(`<tbody></tbody>`);
+  $htable.append($htbody);
 
   //loop through the staff categories in order
   for (let i = 0; i < options.staffOrder.length; i++) {
@@ -267,7 +276,7 @@ function buildShiftTableHead(staff, args) {
     //if the category is in the list of staff, build the table for that category
     if (c in staffByCategory) {
       //first row for each category, make a light weight header
-      $tbody.append($(`<tr><th>${c}</th</tr>`)
+      $htbody.append($(`<tr><th>${c}</th</tr>`)
                       .addClass(options.rheadClasses)
                       .addClass(options.staffDividerClasses));
 
@@ -275,7 +284,7 @@ function buildShiftTableHead(staff, args) {
       for (let j = 0; j < staffByCategory[c].length; j++) {
         let s = staffByCategory[c][j];
 
-        $tbody.append(
+        $htbody.append(
           $(`<tr></tr>`)
             .append(
               $(`<td></td>`)
@@ -291,7 +300,8 @@ function buildShiftTableHead(staff, args) {
     }
   }
 
-  if (debug) console.log($table);
-
-  return $table;
+  if (debug) console.log($htable);
+  if (debug) console.log($btable);
+ 
+  return {head: $htable, body: $btable};
 }
