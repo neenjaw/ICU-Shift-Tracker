@@ -13,6 +13,8 @@ if (!isset($_SESSION['user_session'])) {
   <!-- Header include -->
   <?php include 'includes/head.php';?>
   <!-- END Header include -->
+
+  <link rel="stylesheet" type="text/css" href="includes/libraries/meetselva-fixed-table-rows-cols/css/fixed_table_rc.css" />
 </head>
 <body>
   <!-- NAV bar include -->
@@ -23,7 +25,7 @@ if (!isset($_SESSION['user_session'])) {
   <?php include 'includes/alert-header.php' ?>
   <!-- END Alert include -->
 
-  <div class="container">
+  <div class="container-fluid">
     <div class="row">
       <div class="col-12">
 
@@ -40,14 +42,10 @@ if (!isset($_SESSION['user_session'])) {
       </div>
     </div>
     <div class="row">
-      <div id="shift-table-row-head" class="col-3">
-      </div>
-      <div class="col">
+      <div id="shift-table-div" class="col-12">
         <!-- GENERATED TABLE -->
-        <div id="shift-table-body" class="shift-table-div">
           <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
           <span class="sr-only">Loading...</span>
-        </div>
         <!-- END GENERATED TABLE -->
       </div>
     </div>
@@ -99,6 +97,7 @@ if (!isset($_SESSION['user_session'])) {
   </script>
 
   <script src="assets/build-shift-table.js"></script>
+  <script src="includes/libraries/meetselva-fixed-table-rows-cols/js/fixed_table_rc.js"></script>
 
   <script>
     //TODO - create shift edit option
@@ -110,19 +109,21 @@ if (!isset($_SESSION['user_session'])) {
 
     var debug = true;
     var shiftTemplate = null;
-    var daysToPrint = 20;
+    var daysToPrint = 15;
     var daysOffset = 0;
     var categoryToFetch = "*";
     var staffList = null;
-    var options = {};
-    options.tableClasses = 'table table-hover table-responsive table-striped table-sm shift-table';
-    options.theadClasses = 'thead-inverse';
-    options.tbodyClasses = '';
-    options.dheadClasses = 'shift-row-head shift-date';
-    options.rheadClasses = 'shift-row-head';
-    options.staffDividerClasses = 'table-dark';
-    options.cellClasses = 'shift-cell';
-    options.locale = 'en-us';
+    var options = {
+      tableId : 'shift-table',
+      tableClasses : 'table table-hover table-striped table-sm shift-table',
+      theadClasses : 'thead-inverse',
+      tbodyClasses : '',
+      dheadClasses : 'shift-row-head shift-date',
+      rheadClasses : 'shift-row-head',
+      staffDividerClasses : 'table-dark',
+      cellClasses : 'shift-cell',
+      locale : 'en-us'
+    };
 
     //When document is ready
     $(function () {
@@ -152,13 +153,7 @@ if (!isset($_SESSION['user_session'])) {
           staffList = JSON.parse(response);
           if (debug) console.log("AJAX returned, staff list:");
           if (debug) console.log(staffList);
-          $('#shift-table-body').html(buildShiftTable(staffList,
-            'table table-hover table-responsive table-striped table-sm shift-table',
-            'thead-inverse',
-            '',
-            'shift-row-head shift-date',
-            'shift-row-head',
-            'shift-cell'));
+          $('#shift-table-div').html(buildShiftTable(staffList.staff,options));
 
           //Set click event listeners to call up modal after ajax query is returned
           $('.shift-cell a').click(function(){
@@ -208,7 +203,7 @@ if (!isset($_SESSION['user_session'])) {
           success: function (response) {
             if (debug) { console.log(response); }
 
-            $(`#shift-table-body`).html(`<i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i><span class="sr-only">Loading...</span>`);
+            $(`#shift-table-div`).html(`<i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i><span class="sr-only">Loading...</span>`);
             getShiftTable(daysToPrint, daysOffset, categoryToFetch);
 
             $('#shift-detail-modal').modal('hide');
