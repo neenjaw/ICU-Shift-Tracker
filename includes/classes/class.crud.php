@@ -822,7 +822,7 @@ class crud
   public function updateRole($id, $r_name)
   {
     try {
-      $stmt = $this->db->prepare("UPDATE ".$this->tbl_role." SET role=:rn WHERE id=:id");
+      $stmt = $this->db->prepare("UPDATE {$this->tbl_role} SET role=:rn WHERE id=:id");
       $stmt->bindparam(":rn", $r_name);
       $stmt->bindparam(":id", $id);
       $stmt->execute();
