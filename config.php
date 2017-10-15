@@ -39,24 +39,56 @@ if (!isset($_SESSION['user_session'])) {
         <h2>Config</h2>
         </div>
     </div>
-    <div class="row">
-
-    <!-- <php if (intval($row['admin']) !== 1): >
-      <div class="col-12">
-        <p>You do are not an administrator of this page, contact an administrator for configuration actions.</p>
-      </div>
-    <php else: >
-    <php endif; > -->
-
-      <div class="col">
+    <div class="row justify-content-center">
+      <div class="col-6">
         <div id='cmd-options' class="btn-group" role="group" aria-label="First group">
-          <button type="button" class="btn btn-secondary">Change Password</button>
-          <button type="button" class="btn btn-secondary">Add a user</button>
-          <button type="button" class="btn btn-secondary">Modify User</button>
-          <button type="button" class="btn btn-secondary">Delete User</button>
+          <button type="button" class="btn btn-primary" data-cmd="changepw">Change Password</button>
+          <button type="button" class="btn btn-secondary" data-cmd="addusr">Add a user</button>
+          <button type="button" class="btn btn-secondary" data-cmd="modusr">Modify User</button>
+          <button type="button" class="btn btn-secondary" data-cmd="delusr">Delete User</button>
         </div>
+      </div>
+    </div>
+    <div id="cmd-row" class="row">
+      <div id="cmd-changepw" class="col form-section current">
 
-        <span class="border border-secondary">Pick an option</span>
+        <form>
+          <div class="form-group">
+            <label for="exampleInputPassword1">Old Password</label>
+            <input type="password" class="form-control" name="old-pw" id="old-pw" placeholder="Old Password" autocomplete="off">
+          </div>
+          <div class="form-group">
+              <label for="exampleInputPassword1">New Password</label>
+              <input type="password" class="form-control" name="new-pw" id="new-pw" placeholder="New Password" autocomplete="off">
+          </div>
+          <div class="form-group">
+            <label for="exampleInputPassword1">Repeat Password</label>
+            <input type="password" class="form-control" name="rpt-pw" id="rpt-pw" placeholder="Repeat Password" autocomplete="off">
+          </div>
+          <button type="submit" class="btn btn-primary">Change Password</button>
+        </form>
+
+      </div>
+      <div id="cmd-addusr" class="col form-section">
+        <?php if (intval($row['admin']) !== 1): ?>
+          <p>You do are not an administrator of this page, contact an administrator to add users.</p>
+        <?php else: ?>
+          <p>add user</p>
+        <?php endif; ?>
+      </div>
+      <div id="cmd-modusr" class="col form-section">
+        <?php if (intval($row['admin']) !== 1): ?>
+          <p>You do are not an administrator of this page, contact an administrator to modify users.</p>
+        <?php else: ?>
+          <p>mod user</p>
+        <?php endif; ?>
+      </div>
+      <div id="cmd-delusr" class="col form-section">
+        <?php if (intval($row['admin']) !== 1): ?>
+          <p>You do are not an administrator of this page, contact an administrator to delete users.</p>
+        <?php else: ?>
+          <p>del user</p>
+        <?php endif; ?>
       </div>
     </div>
   </div>
@@ -79,6 +111,10 @@ if (!isset($_SESSION['user_session'])) {
     $(`#cmd-options`).children().click(function(){
       $(this).removeClass(`btn-secondary`).addClass(`btn-primary`);
       $(this).siblings().removeClass(`btn-primary`).addClass(`btn-secondary`);
+
+      $(`#cmd-row`).children().removeClass('current');
+      let cmd = $(this).data('cmd');
+      $(`#cmd-${cmd}`).addClass('current');
     });
   });
   </script>

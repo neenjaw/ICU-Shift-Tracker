@@ -49,7 +49,7 @@ if (!isset($_SESSION['user_session'])) {
       </div>
       <div id="shift-table-legend" class="col-md-2">
         <!-- <div class="card"> -->
-        <div class="card" style="width: 170px; position: fixed;">
+        <div class="card sticky-top" style="width: 170px;">
           <div class="card-body">
             <h4 class="card-title">Legend</h4>
             <p class="card-text">Each letter represents a quick look at the entered shift.</p>
