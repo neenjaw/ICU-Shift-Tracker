@@ -7,8 +7,10 @@ function buildShiftTable(stafflist, args) {
   options.tbodyClasses = args.tbodyClasses || '';
   options.dheadClasses = args.dheadClasses || '';
   options.rheadClasses = args.rheadClasses || '';
+  options.monthClasses = args.monthClasses || '';
+  options.dateClasses = args.dateClasses || '';
   options.staffDividerClasses = args.staffDividerClasses || '';
-  options.cellClasses = args.cellClasses || '';
+  options.shiftCellClasses = args.shiftCellClasses || 'shift-cell';
   options.locale = args.locale || 'en-us';
   options.staffOrder = args.staffOrder || ['RN', 'LPN', 'NA', 'UC'];
 
@@ -67,13 +69,10 @@ function buildShiftTable(stafflist, args) {
         $sRow = $(`<tr></tr>`);
         $tbody.append($sRow);
 
-        $sRow.append($(`<td></td>`)
+        $sRow.append($(`<td><pre>${s.name}</pre></td>`)
                        .addClass(options.rheadClasses)
                        .attr('data-staff-name', s.name)
-                       .attr('data-staff-id', s.id)
-                       .append(
-                         $(`<pre>${s.name}</pre>`)
-                       ));
+                       .attr('data-staff-id', s.id));
 
         for (let k = 0, prevDate = new Date("0001-01-01"); k < s.shifts.length; k++) {
           let shift = s.shifts[k];
@@ -89,11 +88,14 @@ function buildShiftTable(stafflist, args) {
 
               month = date.toLocaleString(options.locale, { month: "short", timeZone: 'UTC' });
               prevDate = date;
+
+              $tMonthHead.append($(`<th>${month}</th>`).addClass(options.monthClasses));
+            } else {
+              $tMonthHead.append($(`<th>${month}</th>`));
             }
 
-            $tMonthHead.append($(`<th>${month}</th>`));
 
-            $tDateHead.append($(`<th>${date.getUTCDate()}</th>`));
+            $tDateHead.append($(`<th>${date.getUTCDate()}</th>`).addClass(options.dateClasses));
           }
 
           //on the first iteration of the staff loop, build the new category row
@@ -109,7 +111,7 @@ function buildShiftTable(stafflist, args) {
           }
 
           $sRow.append($(`<td></td>`)
-                         .addClass(options.cellClasses)
+                         .addClass(options.shiftCellClasses)
                          .attr('data-shift-id', shift.id)
                          .append($sCell));
         }

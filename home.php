@@ -14,7 +14,6 @@ if (!isset($_SESSION['user_session'])) {
   <?php include 'includes/head.php';?>
   <!-- END Header include -->
 
-  <link rel="stylesheet" type="text/css" href="includes/libraries/meetselva-fixed-table-rows-cols/css/fixed_table_rc.css" />
 </head>
 <body>
   <!-- NAV bar include -->
@@ -36,17 +35,40 @@ if (!isset($_SESSION['user_session'])) {
       </div>
     </div>
     <div class="row justify-content-center">
-      <div class="col-9">
+      <div class="col">
         <h2>Home</h2>
         <h4>Showing last <span id="shift-number"></span> days of shifts entered</h4>
       </div>
     </div>
     <div class="row">
-      <div id="shift-table-div" class="col-12">
+      <div id="shift-table-div" class="col-md-10">
         <!-- GENERATED TABLE -->
           <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
           <span class="sr-only">Loading...</span>
         <!-- END GENERATED TABLE -->
+      </div>
+      <div id="shift-table-legend" class="col-md-2">
+        <!-- <div class="card"> -->
+        <div class="card" style="width: 170px; position: fixed;">
+          <div class="card-body">
+            <h4 class="card-title">Legend</h4>
+            <p class="card-text">Each letter represents a quick look at the entered shift.</p>
+          </div>
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item">C: Clinician</li>
+            <li class="list-group-item">P: Charge</li>
+            <li class="list-group-item">V: Bedside</li>
+            <li class="list-group-item">O: Outreach</li>
+            <li class="list-group-item">D: Doubled</li>
+            <li class="list-group-item">S: Sick</li>
+            <li class="list-group-item">R: CRRT</li>
+            <li class="list-group-item">B: Burn</li>
+            <li class="list-group-item">A: Admit</li>
+            <li class="list-group-item">N: Non-vented</li>
+            <li class="list-group-item">X: LPN/NA/UC</li>
+            <li class="list-group-item">F: Undefined</li>
+          </ul>
+        </div>
       </div>
     </div>
   </div>
@@ -97,15 +119,9 @@ if (!isset($_SESSION['user_session'])) {
   </script>
 
   <script src="assets/build-shift-table.js"></script>
-  <script src="includes/libraries/meetselva-fixed-table-rows-cols/js/fixed_table_rc.js"></script>
 
   <script>
     //TODO - create shift edit option
-    //TODO - revamp table 3col-9col format - INPROGRESS
-    //TODO - revamp table output for also RN, LPN, NA, UC - INPROGRESS
-    //     -> need to adjust table generatione
-    //          like split to two parts: table for left header column
-    //                                   table for right data columns
 
     var debug = true;
     var shiftTemplate = null;
@@ -115,13 +131,11 @@ if (!isset($_SESSION['user_session'])) {
     var staffList = null;
     var options = {
       tableId : 'shift-table',
-      tableClasses : 'table table-hover table-striped table-sm shift-table',
+      tableClasses : 'table table-striped table-responsive table-hover table-sm',
       theadClasses : 'thead-inverse',
-      tbodyClasses : '',
-      dheadClasses : 'shift-row-head shift-date',
-      rheadClasses : 'shift-row-head',
+      monthClasses : 'month',
+      dateClasses : 'date',
       staffDividerClasses : 'table-dark',
-      cellClasses : 'shift-cell',
       locale : 'en-us'
     };
 

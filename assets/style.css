@@ -8,28 +8,6 @@ body {
 	text-align: center;
 }
 
-/** validation */
-/*
-input.parsley-error		{
-    border-color:#843534;
-    box-shadow: none;
-}
-input.parsley-error:focus{
-    border-color:#843534;
-    box-shadow:inset 0 1px 1px rgba(0,0,0,.075),0 0 6px #ce8483
-}
-.parsley-errors-list.filled {
-    opacity: 1;
-    color: #a94442;
-    display: none;
-}
-
-.form-group.error input.parsley-validated{
-    color: #b94a48 !important;
-    background-color: #f2dede !important;
-    border: 1px solid #EED3D7 !important;
-}*/
-
 /*
  * Call out styling, credit to: https://cpratt.co/twitter-bootstrap-callout-css-styles/
  */
@@ -94,22 +72,6 @@ input.parsley-error:focus{
  *
  */
 
-.shift-row-head > pre {
-  margin:0;
-  padding:0;
-}
-
-.shift-cell {
-    width: 25px;
-    text-align: center;
-}
-
-.shift-date {
-    width: 25px;
-    text-align: center;
-		overflow-x: visible;
-}
-
 .modal-open {
   padding-right: 0 !important;
   overflow-y: scroll;
@@ -155,4 +117,8 @@ div.inner-item:not(:last-child) {
 
 .dropdown-toggle::after {
     display: none;
+}
+
+#shift-table td, #shift-table th {
+	text-align: center;
 }
