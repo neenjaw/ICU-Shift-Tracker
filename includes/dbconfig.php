@@ -22,7 +22,7 @@ $DB_user = 'id1876647_neenjawtestuser';
 $DB_pass = 'testedninja4neenjaw';
 $DB_name = 'id1876647_neenjawtest';
 
-$DB_tbl_users = 'logindemo01_tbl_users';
+$DB_tbl_users = 'shift_login_tbl_users';
 
 try
 {

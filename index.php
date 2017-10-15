@@ -43,12 +43,11 @@ if (isset($_SESSION['user_session'])) {
           <form method="post" id="login-form" role="form" data-parsley-validate>
 
             <div class="form-group">
-              <label for="login-email">Email address</label>
+              <label for="login">Login</label>
               <div class="input-group">
-                <div class="input-group-addon"><span class="fa fa-envelope"></span></div>
-                <input type="email" class="form-control" name="email" id="login-email" placeholder="name@website.com" aria-describedby="emailHelp" placeholder="Enter email" data-parsley-required data-parsley-type="email" data-parsley-trigger="change" autocomplete="off" spellcheck="false" data-parsley-errors-messages-disabled>
+                <div class="input-group-addon"><span class="fa fa-user"></span></div>
+                <input type="text" class="form-control" name="login" id="login" placeholder="login name" aria-describedby="loginHelp" placeholder="Enter login" data-parsley-required data-parsley-trigger="change" autocomplete="off" spellcheck="false" data-parsley-errors-messages-disabled>
               </div>
-              <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
             </div>
 
             <div class="form-group">

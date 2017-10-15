@@ -12,7 +12,7 @@
       <ul class="navbar-nav">
         <li class="nav-item active"><a class="nav-link" href="#"><?php
               if (isset($_SESSION['user_session'])) {
-                  echo '<strong>Hello '.$row['email'].'</strong>' ;
+                  echo '<strong>Hello '.$row['login'].'</strong>' ;
               } else {
                   echo 'Not logged in.';
               }
