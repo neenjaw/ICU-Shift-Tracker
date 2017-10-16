@@ -23,6 +23,11 @@ $DB_pass = 'testedninja4neenjaw';
 $DB_name = 'id1876647_neenjawtest';
 
 $DB_tbl_users = 'shift_login_tbl_users';
+$DB_tbl_auth_states = 'shift_login_tbl_user_auth';
+
+$DB_table = (object) array();
+$DB_table->users = $DB_tbl_users;
+$DB_table->auth_states = $DB_tbl_auth_states;
 
 try
 {
