@@ -1,10 +1,13 @@
 <?php
-
 session_start();
 require_once '../includes/dbconfig.php';
 
+if (!isset($_SESSION['authenticated'])) {
+  die("Unauthorized.");
+}
+
 try {
-  if (isset($_SESSION['user_session']) && isset($_POST['days']) && isset($_POST['offset']) && isset($_POST['category'])) {
+  if (isset($_POST['days']) && isset($_POST['offset']) && isset($_POST['category'])) {
 
     if (!is_numeric($_POST['days'])) { throw new Exception('Arg 1 not an integer'); }
     if (!is_numeric($_POST['offset'])) { throw new Exception('Arg 2 not an integer'); }

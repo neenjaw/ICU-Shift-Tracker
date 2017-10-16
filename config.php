@@ -1,7 +1,7 @@
 <?php
 include 'includes/pre-head.php';
 
-if (!isset($_SESSION['user_session'])) {
+if (!isset($_SESSION['user'])) {
   header("Location: index.php");
 }
 ?>
@@ -70,21 +70,21 @@ if (!isset($_SESSION['user_session'])) {
 
       </div>
       <div id="cmd-addusr" class="col form-section">
-        <?php if (intval($row['auth_id']) !== 4): ?>
+        <?php if (intval($_SESSION['user']->auth_id) !== 4): ?>
           <p>You do are not an administrator of this page, contact an administrator to add users.</p>
         <?php else: ?>
           <p>add user</p>
         <?php endif; ?>
       </div>
       <div id="cmd-modusr" class="col form-section">
-        <?php if (intval($row['auth_id']) !== 4): ?>
+        <?php if (intval($_SESSION['user']->auth_id) !== 4): ?>
           <p>You do are not an administrator of this page, contact an administrator to modify users.</p>
         <?php else: ?>
           <p>mod user</p>
         <?php endif; ?>
       </div>
       <div id="cmd-delusr" class="col form-section">
-        <?php if (intval($row['auth_id']) !== 4): ?>
+        <?php if (intval($_SESSION['user']->auth_id) !== 4): ?>
           <p>You do are not an administrator of this page, contact an administrator to delete users.</p>
         <?php else: ?>
           <p>del user</p>

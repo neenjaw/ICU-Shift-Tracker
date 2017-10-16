@@ -1,7 +1,7 @@
 <?php
 include 'includes/pre-head.php';
 
-if (isset($_SESSION['user_session'])) {
+if (isset($_SESSION['user'])) {
   header("Location: home.php");
 }
 ?>
@@ -127,7 +127,7 @@ $(document).ready(function(){
 </script>
 
 <!-- on document ready, call login modal if not logged in. -->
-<?php if (!isset($_SESSION['user_session'])) { ?>
+<?php if (!isset($_SESSION['user'])) { ?>
   <script type="text/javascript">
   $(document).ready(function () {
     $('#login-signup-modal').modal({ backdrop: 'static', keyboard: false })

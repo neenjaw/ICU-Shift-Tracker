@@ -8,10 +8,11 @@ $detect = new Mobile_Detect;
 
 date_default_timezone_set('America/Edmonton');
 
-if (isset($_SESSION['user_session'])) {
-    $stmt = $DB_con->prepare("SELECT * FROM ".$DB_tbl_users." WHERE login=:log");
-    $stmt->execute(array(":log"=>$_SESSION['user_session']));
-    $row=$stmt->fetch(PDO::FETCH_ASSOC);
-}
+// if (isset($_SESSION['user'])) {
+//     $stmt = $DB_con->prepare("SELECT * FROM {$DB_table->users} WHERE login=:log");
+//     $stmt->bindparam(":log", $_SESSION['user']);
+//     $stmt->execute();
+//     $row=$stmt->fetch(PDO::FETCH_ASSOC);
+// }
 
 ?>

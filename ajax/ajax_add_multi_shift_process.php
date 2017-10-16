@@ -2,6 +2,10 @@
 session_start();
 require_once '../includes/dbconfig.php';
 
+if (!isset($_SESSION['authenticated'])) {
+  die("Unauthorized.");
+}
+
 /**
  * Shift Entry Exception
  */
@@ -10,7 +14,7 @@ class ShiftEntryException extends Exception {
 }
 
 try {
-    if (isset($_SESSION['user_session']) && isset($_POST['shiftData'])) {
+    if (isset($_POST['shiftData'])) {
 
       $data = json_decode($_POST['shiftData']);
 
@@ -18,14 +22,14 @@ try {
         try {
 
           //check data, if wrong throw exception for malformed data
-          if (!isset($entry->staff)) { throw new ShiftEntryException('Need Staff ID'); }
-          if (!isset($entry->date)) { throw new ShiftEntryException('Need Shift Date'); }
-          if (!isset($entry->role)) { throw new ShiftEntryException('Need role ID'); }
+          if (!isset($entry->staff))  { throw new ShiftEntryException('Need Staff ID'); }
+          if (!isset($entry->date))   { throw new ShiftEntryException('Need Shift Date'); }
+          if (!isset($entry->role))   { throw new ShiftEntryException('Need role ID'); }
           if (!isset($entry->assignment)) { throw new ShiftEntryException('Need assignment ID'); }
           if (!isset($entry->dayornight)) { throw new ShiftEntryException('Need day/night modifier'); }
 
           if (!checkIfNumAndInt($entry->staff)) { throw new ShiftEntryException('Staff ID needs to be an integer'); }
-          if (!checkIfNumAndInt($entry->role)) { throw new ShiftEntryException('Role ID needs to be an integer'); }
+          if (!checkIfNumAndInt($entry->role))  { throw new ShiftEntryException('Role ID needs to be an integer'); }
           if (!checkIfNumAndInt($entry->assignment)) { throw new ShiftEntryException('Assignment ID needs to be an integer'); }
 
           //format data as needed for insertion

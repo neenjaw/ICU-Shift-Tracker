@@ -11,14 +11,14 @@
     <div class="collapse navbar-collapse justify-content-end" id="navbarNavDropdown">
       <ul class="navbar-nav">
         <li class="nav-item active"><a class="nav-link" href="#"><?php
-              if (isset($_SESSION['user_session'])) {
-                  echo '<strong>Hello '.$row['login'].'</strong>' ;
+              if (isset($_SESSION['authenticated'])) {
+                  echo '<strong>Hello '.$_SESSION['user']->login.'</strong>' ;
               } else {
                   echo 'Not logged in.';
               }
               ?><span class="sr-only">(current)</span></a></li>
         <?php
-          if (isset($_SESSION['user_session'])) {
+          if (isset($_SESSION['authenticated'])) {
             echo "<li class=\"nav-item\">";
             echo "<a class=\"nav-link\" href=\"logout.php\">Logout</a>" ;
             echo "</li>\r\n";

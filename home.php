@@ -1,7 +1,7 @@
 <?php
 include 'includes/pre-head.php';
 
-if (!isset($_SESSION['user_session'])) {
+if (!isset($_SESSION['authenticated'])) {
   header("Location: index.php");
 }
 ?>
