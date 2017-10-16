@@ -1,7 +1,7 @@
 <?php
 include 'includes/pre-head.php';
 
-if (!isset($_SESSION['user_session'])) {
+if (!isset($_SESSION['user'])) {
   header("Location: index.php");
 }
 ?>
@@ -37,11 +37,11 @@ if (!isset($_SESSION['user_session'])) {
     <div class="row justify-content-center">
       <div class="col">
         <h2>Config</h2>
-        </div>
+      </div>
     </div>
     <div class="row justify-content-center">
-      <div class="col-6">
-        <div id='cmd-options' class="btn-group" role="group" aria-label="First group">
+      <div class="col">
+        <div id='cmd-options' class="btn-group mt-3 mb-3" role="group" aria-label="First group">
           <button type="button" class="btn btn-primary" data-cmd="changepw">Change Password</button>
           <button type="button" class="btn btn-secondary" data-cmd="addusr">Add a user</button>
           <button type="button" class="btn btn-secondary" data-cmd="modusr">Modify User</button>
@@ -55,39 +55,119 @@ if (!isset($_SESSION['user_session'])) {
         <form>
           <div class="form-group">
             <label for="exampleInputPassword1">Old Password</label>
-            <input type="password" class="form-control" name="old-pw" id="old-pw" placeholder="Old Password" autocomplete="off">
+            <input type="password" class="form-control" id="old-pw" placeholder="Old Password" autocomplete="off">
           </div>
           <div class="form-group">
               <label for="exampleInputPassword1">New Password</label>
-              <input type="password" class="form-control" name="new-pw" id="new-pw" placeholder="New Password" autocomplete="off">
+              <input type="password" class="form-control" id="new-pw" placeholder="New Password" autocomplete="off">
           </div>
           <div class="form-group">
             <label for="exampleInputPassword1">Repeat Password</label>
-            <input type="password" class="form-control" name="rpt-pw" id="rpt-pw" placeholder="Repeat Password" autocomplete="off">
+            <input type="password" class="form-control" id="rpt-pw" placeholder="Repeat Password" autocomplete="off">
           </div>
           <button type="submit" class="btn btn-primary">Change Password</button>
         </form>
 
       </div>
-      <div id="cmd-addusr" class="col form-section">
-        <?php if (intval($row['auth_id']) !== 4): ?>
+      <div id="cmd-addusr" class="col-4 form-section">
+        <?php if ($_SESSION['user']->auth_state !== 'admin'): ?>
           <p>You do are not an administrator of this page, contact an administrator to add users.</p>
         <?php else: ?>
-          <p>add user</p>
+          <form>
+            <div class="form-group">
+              <label for="exampleFormControlInput1">New Username</label>
+              <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Username">
+            </div>
+            <div class="form-group">
+                <label for="new-pw">New Password</label>
+                <input type="password" class="form-control" id="new-pw" placeholder="New Password" autocomplete="off">
+            </div>
+            <div class="form-group">
+              <label for="rpt-pw">Repeat Password</label>
+              <input type="password" class="form-control" id="rpt-pw" placeholder="Repeat Password" autocomplete="off">
+            </div>
+            <div class="form-group">
+              <label for="exampleFormControlSelect1">App Authorization:</label>
+              <select class="form-control" id="state">
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+                <option>4</option>
+                <option>5</option>
+              </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Add New User</button>
+          </form>
         <?php endif; ?>
       </div>
-      <div id="cmd-modusr" class="col form-section">
-        <?php if (intval($row['auth_id']) !== 4): ?>
+      <div id="cmd-modusr" class="col-4 form-section">
+        <?php if ($_SESSION['user']->auth_state !== 'admin'): ?>
           <p>You do are not an administrator of this page, contact an administrator to modify users.</p>
         <?php else: ?>
-          <p>mod user</p>
+          <form>
+            <div class="form-group">
+              <label for="exampleFormControlSelect1">Select user to modify:</label>
+              <select class="form-control" id="state">
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+                <option>4</option>
+                <option>5</option>
+              </select>
+            </div>
+            <div class="p-2 mb-2 border border-secondary">
+              <label class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input">
+                <span class="custom-control-indicator"></span>
+                <span class="custom-control-description">Change this user's password?</span>
+              </label>
+              <div class="form-group">
+                  <label for="new-pw">New Password</label>
+                  <input type="password" class="form-control" id="new-pw" placeholder="New Password" autocomplete="off"  disabled>
+              </div>
+              <div class="form-group">
+                <label for="rpt-pw">Repeat Password</label>
+                <input type="password" class="form-control" id="rpt-pw" placeholder="Repeat Password" autocomplete="off"  disabled>
+              </div>
+            </div>
+            <div class="p-2 mb-2 border border-secondary">
+              <label class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input">
+                <span class="custom-control-indicator"></span>
+                <span class="custom-control-description">Change this user's app authorization?</span>
+              </label>
+              <div class="form-group">
+                <label for="exampleFormControlSelect1">App Authorization:</label>
+                <select class="form-control" id="state" disabled>
+                  <option>1</option>
+                  <option>2</option>
+                  <option>3</option>
+                  <option>4</option>
+                  <option>5</option>
+                </select>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Add New User</button>
+          </form>
         <?php endif; ?>
       </div>
-      <div id="cmd-delusr" class="col form-section">
-        <?php if (intval($row['auth_id']) !== 4): ?>
+      <div id="cmd-delusr" class="col-4 form-section">
+        <?php if ($_SESSION['user']->auth_state !== 'admin'): ?>
           <p>You do are not an administrator of this page, contact an administrator to delete users.</p>
-        <?php else: ?>
-          <p>del user</p>
+        <?php else: ?><form>
+          <form>
+            <div class="form-group">
+              <label for="exampleFormControlSelect1">Select user to delete:</label>
+              <select class="form-control" id="state">
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+                <option>4</option>
+                <option>5</option>
+              </select>
+            </div>
+            <button type="submit" class="btn btn-danger">Delete user</button>
+          </form>
         <?php endif; ?>
       </div>
     </div>

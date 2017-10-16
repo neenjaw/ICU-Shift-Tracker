@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Oct 16, 2017 at 09:32 AM
+-- Generation Time: Oct 16, 2017 at 06:46 PM
 -- Server version: 10.1.20-MariaDB
 -- PHP Version: 7.0.8
 
@@ -22,7 +22,7 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `shift_login_tbl_users` (
   `id` int(11) NOT NULL,
-  `login` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `login` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `password` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `auth_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

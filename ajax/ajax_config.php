@@ -2,11 +2,11 @@
 session_start();
 require_once '../includes/dbconfig.php';
 
-try {
-  if (!isset($_SESSION['user_session'])) {
-    die("Unauthorized.");
-  }
+if (!isset($_SESSION['authenticated'])) {
+  die("Unauthorized.");
+}
 
+try {
   if (!isset($_GET['cmd-submit'])) {
     die("Wrong parameters.");
   }
@@ -18,7 +18,7 @@ try {
      */
 
     //required arguments
-    $usr = $_SESSION['user_session'];
+    $usr = $_SESSION['user']['login'];
     if (isset($_GET['old-pw'])) { $pw = trim($_GET['old-pw']);     } else { throw new ConfigException();}
     if (isset($_GET['new-pw'])) { $new_pw = trim($_GET['new-pw']); } else { throw new ConfigException();}
     if (isset($_GET['rpt-pw'])) { $rpt_pw = trim($_GET['rpt-pw']); } else { throw new ConfigException();}
@@ -32,7 +32,7 @@ try {
      */
 
     //required arguments
-    $adm_usr = $_SESSION['user_session'];
+    $adm_usr = $_SESSION['user']['login'];
     if (isset($_GET['username'])) { $usr = trim($_GET['username']);  } else { throw new ConfigException();}
     if (isset($_GET['new-pw']))   { $new_pw = trim($_GET['new-pw']); } else { throw new ConfigException();}
     if (isset($_GET['rpt-pw']))   { $rpt_pw = trim($_GET['rpt-pw']); } else { throw new ConfigException();}
@@ -49,7 +49,7 @@ try {
      *  MODIFY A USER'S ENTRY
      */
 
-    $adm_usr = $_SESSION['user_session'];
+    $adm_usr = $_SESSION['user']['login'];
     if (isset($_GET['username'])) { $usr = trim($_GET['username']); } else { throw new ConfigException();}
 
     $args = (object) array();
@@ -68,7 +68,7 @@ try {
      *  DELETE A USER
      */
 
-    $adm_usr = $_SESSION['user_session'];
+    $adm_usr = $_SESSION['user']['login'];
     if (isset($_GET['username'])) { $usr = trim($_GET['username']); } else { throw new ConfigException();}
 
     $result = delUser($DB_con, $DB_table, $adm_usr, $usr);

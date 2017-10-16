@@ -2,6 +2,10 @@
 session_start();
 require_once '../includes/dbconfig.php';
 
+if (!isset($_SESSION['authenticated'])) {
+  die("Unauthorized.");
+}
+
 try {
     if (isset($_POST['btn-submit-new-shift'])) {
 

@@ -39,7 +39,7 @@ catch(PDOException $e)
  echo $e->getMessage();
 }
 
-if (isset($_SESSION['user_session'])) {
+if (isset($_SESSION['authenticated'])) {
     include_once 'classes/class.crud.php';
 
     $crud = new crud($DB_con);
