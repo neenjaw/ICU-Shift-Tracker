@@ -69,8 +69,13 @@ if (!isset($_SESSION['user'])) {
         </form>
 
       </div>
+<<<<<<< HEAD
       <div id="cmd-addusr" class="col-4 form-section">
         <?php if ($_SESSION['user']->auth_state !== 'admin'): ?>
+=======
+      <div id="cmd-addusr" class="col form-section">
+        <?php if (intval($_SESSION['user']->auth_id) !== 4): ?>
+>>>>>>> d1f83a5d5909d115268251121a8cbba7732b7d4d
           <p>You do are not an administrator of this page, contact an administrator to add users.</p>
         <?php else: ?>
           <form>
@@ -100,8 +105,13 @@ if (!isset($_SESSION['user'])) {
           </form>
         <?php endif; ?>
       </div>
+<<<<<<< HEAD
       <div id="cmd-modusr" class="col-4 form-section">
         <?php if ($_SESSION['user']->auth_state !== 'admin'): ?>
+=======
+      <div id="cmd-modusr" class="col form-section">
+        <?php if (intval($_SESSION['user']->auth_id) !== 4): ?>
+>>>>>>> d1f83a5d5909d115268251121a8cbba7732b7d4d
           <p>You do are not an administrator of this page, contact an administrator to modify users.</p>
         <?php else: ?>
           <form>
@@ -151,8 +161,13 @@ if (!isset($_SESSION['user'])) {
           </form>
         <?php endif; ?>
       </div>
+<<<<<<< HEAD
       <div id="cmd-delusr" class="col-4 form-section">
         <?php if ($_SESSION['user']->auth_state !== 'admin'): ?>
+=======
+      <div id="cmd-delusr" class="col form-section">
+        <?php if (intval($_SESSION['user']->auth_id) !== 4): ?>
+>>>>>>> d1f83a5d5909d115268251121a8cbba7732b7d4d
           <p>You do are not an administrator of this page, contact an administrator to delete users.</p>
         <?php else: ?><form>
           <form>
