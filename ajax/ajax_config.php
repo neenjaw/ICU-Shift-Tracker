@@ -19,7 +19,7 @@ try {
 
     //required arguments
     $usr = $_SESSION['user_session'];
-    if (isset($_GET['old-pw'])) { $pw = trim($_GET['old-pw']); } else { throw new ConfigException();}
+    if (isset($_GET['old-pw'])) { $pw = trim($_GET['old-pw']);     } else { throw new ConfigException();}
     if (isset($_GET['new-pw'])) { $new_pw = trim($_GET['new-pw']); } else { throw new ConfigException();}
     if (isset($_GET['rpt-pw'])) { $rpt_pw = trim($_GET['rpt-pw']); } else { throw new ConfigException();}
 
@@ -33,9 +33,9 @@ try {
 
     //required arguments
     $adm_usr = $_SESSION['user_session'];
-    if (isset($_GET['username'])) { $usr = trim($_GET['username']); } else { throw new ConfigException();}
-    if (isset($_GET['new-pw'])) { $new_pw = trim($_GET['new-pw']); } else { throw new ConfigException();}
-    if (isset($_GET['rpt-pw'])) { $rpt_pw = trim($_GET['rpt-pw']); } else { throw new ConfigException();}
+    if (isset($_GET['username'])) { $usr = trim($_GET['username']);  } else { throw new ConfigException();}
+    if (isset($_GET['new-pw']))   { $new_pw = trim($_GET['new-pw']); } else { throw new ConfigException();}
+    if (isset($_GET['rpt-pw']))   { $rpt_pw = trim($_GET['rpt-pw']); } else { throw new ConfigException();}
 
     //optional arguments
     $args = (object) array();
@@ -54,11 +54,14 @@ try {
     if (isset($_GET['username'])) { $usr = trim($_GET['username']); } else { throw new ConfigException();}
 
     $args = (object) array();
-    if (isset($_GET['new-pw'])) $args->new_pw = trim($_GET['new-pw']);
-    if (isset($_GET['rpt-pw'])) $args->rpt_pw = trim($_GET['rpt-pw']);
-    if (isset($_GET['admin'])) $args->admin = trim($_GET['admin']);
-    if (isset($_GET['viewonly'])) $args->viewonly = trim($_GET['viewonly']);
-    if (isset($_GET['active'])) $args->viewonly = trim($_GET['active']);
+    $args->pw = (object) array();
+    if (isset($_GET['new-pw'])) $args->pw->new_pw = trim($_GET['new-pw']);
+    if (isset($_GET['rpt-pw'])) $args->pw->rpt_pw = trim($_GET['rpt-pw']);
+
+    $args->flags = (object) array();
+    if (isset($_GET['admin']))    $args->flags->admin     = trim($_GET['admin']);
+    if (isset($_GET['viewonly'])) $args->flags->viewonly  = trim($_GET['viewonly']);
+    if (isset($_GET['active']))   $args->flags->active  = trim($_GET['active']);
 
     $result = modUser($DB_con, $DB_tbl_users, $adm_usr, $usr, $args);
 
@@ -211,15 +214,17 @@ function addUser($db, $db_table, $adm_usr, $new_usr, $pw, $rpt_pw, $args = null)
   }
 
   //default flags
-  if (!isset($args->admin) || (filter_var($args->admin, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) === NULL)) {
-    $args->admin = false;
+  if (isset($args->admin)) {
+    $args->admin = filterBool($args->admin);
+    if ($args->admin === null) return new Result(false, "Not valid admin flag value");
   } else {
-    $args->admin = boolval($args->admin);
+    $args->admin = false;
   }
-  if (!isset($args->viewonly) || (filter_var($args->admin, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) === NULL)) {
+  if (isset($args->viewonly)) {
+    $args->viewonly = filterBool($args->viewonly);
+    if ($args->viewonly === null) return new Result(false, "Not valid viewonly flag value");
+  } else {
     $args->viewonly = false;
-  }else {
-    $args->viewonly = boolval($args->viewonly);
   }
   $args->active = true;
 
@@ -274,11 +279,37 @@ function addUser($db, $db_table, $adm_usr, $new_usr, $pw, $rpt_pw, $args = null)
 function modUser($db, $db_table, $adm_usr, $usr_id, $args = null) {
   if ($args === null) {
     $args = (object) array();
+    $args->pw = (object) array();
+    $args->flags = (object) array();
   }
 
   //validate arguments if none specified, fail
-  if (count(get_object_vars($args)) <= 0) {
+  $pw_count = count(get_object_vars($args->pw));
+  $flag_count = count(get_object_vars($args->flags));
+  if (($pw_count === 0) && ($flag_count === 0)) {
     return new Result(false, "No modifications specified for user.");
+  } elseif (!in_array($pw_count, [0,2], true)) {
+    return new Result(false, "Wrong number of password arguments");
+  }
+
+  //make sure set flags are boolean of some sort
+  if (isset($args->flags->admin)) {
+    $args->flags->admin = filterBool($args->flags->admin);
+    if ($args->flags->admin === null) return new Result(false, "Not valid admin flag value");
+  } else {
+    $args->flags->admin = null;
+  }
+  if (isset($args->flags->viewonly)) {
+    $args->flags->viewonly = filterBool($args->flags->viewonly);
+    if ($args->flags->viewonly === null) return new Result(false, "Not valid viewonly flag value");
+  } else {
+    $args->flags->viewonly = null;
+  }
+  if (isset($args->flags->active)) {
+    $args->flags->active = filterBool($args->flags->active);
+    if ($args->flags->active === null) return new Result(false, "Not valid active flag value");
+  } else {
+    $args->flags->active = null;
   }
 
   //check is user is the admin
@@ -288,54 +319,75 @@ function modUser($db, $db_table, $adm_usr, $usr_id, $args = null) {
 
   //get the user's original entry, verifying that it exists
   try {
-      $stmt = $db->prepare("SELECT * FROM {$db_table} WHERE login=:log");
-      $stmt->bindparam(":log", $usr_id);
-      $stmt->execute();
+    $stmt = $db->prepare("SELECT * FROM {$db_table} WHERE login=:log");
+    $stmt->bindparam(":log", $usr_id);
+    $stmt->execute();
 
-      $row_before_update = $stmt->fetch(PDO::FETCH_ASSOC);
+    $row_before_update = $stmt->fetch(PDO::FETCH_ASSOC);
 
-      if ( $stmt->rowCount() < 0 ) {
-        return new Result(false, "User not found.");
-      }
+    if ( $stmt->rowCount() < 0 ) {
+      return new Result(false, "User not found.");
+    }
   } catch (Exception $e) {
-    throw new Exception("Error updating flags: {$e->getMessage()}");
+    throw new Exception("Error retriving user: {$e->getMessage()}");
   }
 
-  //make sure flags are boolean of some sort
-  $flag_fail = array();
-  if ( !isset($args->admin) || (filter_var($args->admin, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) === NULL)) {
-    $args->admin = $row_before_update['admin'];
-  }
+  //if try to be admin and view only, fail
+  if ($args->flags->admin && $args->flags->viewonly) {
+    return new Result(false, "Can't be both admin and viewonly");
+  //if tries to be only one
+  } elseif ($args->flags->admin XOR $args->flags->viewonly) {
+    //if tries to set privleges and be inactive, fail
+    if ($args->flags->active === false) {
+      return new Result(false, "Can't be inactive with specific privleges");
+    //if active-ness unspecified, make active
+    } elseif ($args->flags->active === null) {
+      $args->flags->active = true;
+    }
 
-  if ( !isset($args->active) || (filter_var($args->admin, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) === NULL) ) {
-    $args->active = $row_before_update['active'];
-  }
+    //if admin unspecified, means viewonly was true, therefore this is false
+    if ($args->flags->admin === null) {
+      $args->flags->admin = false;
+    }
 
-  if ( !isset($args->viewonly) || (filter_var($args->admin, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) === NULL) ) {
-    $args->viewonly = $row_before_update['viewonly'];
-  }
+    //if viewonly unspecified, means admin was true, therefore this is false
+    if ($args->flags->viewonly === null) {
+      $args->flags->viewonly = false;
+    }
+  //if the view and admin are either unspecified or false
+  } else {
+    //get the old values if need nothing was specified
+    //this assumes the old entry was acurate and in an error-free state
+    if ($args->flags->admin===null) {
+      $args->flags->admin = $row_before_update['admin'];
+    }
+    if ($args->flags->viewonly===null) {
+      $args->flags->viewonly = $row_before_update['viewonly'];
+    }
+    if ($args->flags->active === null) {
+      $args->flags->active = $row_before_update['active'];
+    }
 
-  //if admin is true as well as viewonly or not active, fail
-  if ($args->admin && $args->viewonly) {
-    return new Result(false, "Admin and Viewonly flag options not compatible with  flag.");
-  }
-
-  //if active is false as well as $admin or not active, fail
-  if (!$args->active && ($args->admin || $args->viewonly) ) {
-    return new Result(false, "Flag options not compatible with Active flag.");
+    //if active specified to false, then make the others false since they were
+    //either unspecified or false to get to this logic block (eg, the old state
+    //is actually meaningless)
+    if ($args->flags->active === false) {
+      $args->flags->admin = false;
+      $args->flags->viewonly = false;
+    }
   }
 
   //if only one password supplied, fail
-  if (isset($args->new_pw) XOR isset($args->rpt_pw)) {
+  if (isset($args->pw->new_pw) XOR isset($args->pw->rpt_pw)) {
     return new Result(false, "Need both password and repeat to modify the user's password");
   //if both supplied
-  } elseif ( isset($args->new_pw) && isset($args->rpt_pw) ) {
+  } elseif ( isset($args->pw->new_pw) && isset($args->pw->rpt_pw) ) {
     //if both supplied passwords dont match, fail
-    if ($args->new_pw !== $args->rpt_pw) {
+    if ($args->pw->new_pw !== $args->pw->rpt_pw) {
       return new Result(false, "Supplied passwords don't match.");
     } else {
       //attempt to change the password
-      if (!changePassword($db, $db_table, $usr_id, $args->new_pw)) {
+      if (!changePassword($db, $db_table, $usr_id, $args->pw->new_pw)) {
         //if unable, fail
         return new Result(false, "Unable to update password.");
       }
@@ -343,18 +395,18 @@ function modUser($db, $db_table, $adm_usr, $usr_id, $args = null) {
   }
 
   try {
-      $stmt = $db->prepare("UPDATE {$db_table} SET admin=:ad, active=:ac, viewonly=:vo WHERE login=:log");
-      $stmt->bindparam(":log", $usr_id);
+    $stmt = $db->prepare("UPDATE {$db_table} SET admin=:ad, active=:ac, viewonly=:vo WHERE login=:log");
+    $stmt->bindparam(":log", $usr_id);
 
-      $stmt->bindparam(":ad", $args->admin);
-      $stmt->bindparam(":ac", $args->active);
-      $stmt->bindparam(":vo", $args->viewonly);
+    $stmt->bindparam(":ad", $args->flags->admin);
+    $stmt->bindparam(":ac", $args->flags->active);
+    $stmt->bindparam(":vo", $args->flags->viewonly);
 
-      $stmt->execute();
+    $stmt->execute();
 
-      if ( $stmt->rowCount() < 0 ) {
-        return new Result(false, "Unable to update record.");
-      }
+    if ( $stmt->rowCount() <= 0 ) {
+      return new Result(false, "Unable to update record.");
+    }
   } catch (Exception $e) {
     throw new Exception("Error updating flags: {$e->getMessage()}");
   }
@@ -398,9 +450,18 @@ function changePassword($db, $db_table, $usr, $pw) {
  * @return Result               Result object to relay success state, message
  */
 function delUser($db, $db_table, $adm_usr, $usr_id) {
-  if (!isAdmin($adm_usr, $adm_pw)) {
+  if (!isAdmin($db, $db_table, $adm_usr)) {
     return new Result(false, "Must be an administrator to perform this action");
   }
 
   return new Result(false, "Incomplete.");
+}
+
+/**
+ * [filterBool description]
+ * @param  mixed $val [description]
+ * @return mixed      [description]
+ */
+function filterBool($val) {
+  return filter_var($val, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
 }
