@@ -4,7 +4,6 @@
  * CRUD SQL Exception
  */
 class CRUD_SQL_Exception extends Exception {
-
 }
 
 function createResult($wasSuccessful, $msg = "") {

@@ -2,61 +2,88 @@
 session_start();
 require_once '../includes/dbconfig.php';
 
-if (!isset($_SESSION['user_session'])) {
-  die("Unauthorized.");
-}
-
-if (!isset($_GET['cmd-submit'])) {
-  die("Wrong parameters.");
-}
-
-if (isset($_POST['cmd-changepw'])) {
-  $usr = $_SESSION['user_session'];
-  $pw = trim($_POST['old-pw']);
-  $new_pw = trim($_POST['new-pw']);
-  $rpt_pw = trim($_POST['rpt-pw']);
-
-  $result = changeOwnPassword($DB_con, $DB_tbl_users, $usr, $pw, $new_pw, $rpt_pw);
-
-  if ($result->getSuccess()) {
-    echo "Ok: {$result->getMessage()}";
-  } else {
-    echo "Problem: {$result->getMessage()}";
+try {
+  if (!isset($_SESSION['user_session'])) {
+    die("Unauthorized.");
   }
 
-} elseif (isset($_GET['cmd-addusr'])) {
-
-  echo 'addUser incomplete';
-
-} elseif (isset($_GET['cmd-modusr'])) {
-  $adm_usr = $_SESSION['user_session'];
-  $adm_pw = trim($_GET['adm-pw']);
-  $usr_id = trim($_GET['username']);
-
-  $args = (object) array();
-
-  if (isset($_GET['new-pw'])) $args->new_pw = trim($_GET['new-pw']);
-
-  if (isset($_GET['rpt-pw'])) $args->rpt_pw = trim($_GET['rpt-pw']);
-
-  if (isset($_GET['admin'])) $args->admin = trim($_GET['admin']);
-
-  if (isset($_GET['viewonly'])) $args->viewonly = trim($_GET['viewonly']);
-
-  if (isset($_GET['active'])) $args->viewonly = trim($_GET['active']);
-
-  $result = modUser($DB_con, $DB_tbl_users, $adm_usr, $adm_pw, $usr_id, $args);
-
-  if ($result->getSuccess()) {
-    echo "Ok: {$result->getMessage()}";
-  } else {
-    echo "Problem: {$result->getMessage()}";
+  if (!isset($_GET['cmd-submit'])) {
+    die("Wrong parameters.");
   }
 
-} elseif (isset($_GET['cmd-delusr'])) {
+  if (isset($_GET['cmd-changepw'])) {
 
-  echo 'Del user incomplete';
+    /*
+     *  CHANGE CURRENT USER'S PW
+     */
 
+    //required arguments
+    $usr = $_SESSION['user_session'];
+    if (isset($_GET['old-pw'])) { $pw = trim($_GET['old-pw']); } else { throw new ConfigException();}
+    if (isset($_GET['new-pw'])) { $new_pw = trim($_GET['new-pw']); } else { throw new ConfigException();}
+    if (isset($_GET['rpt-pw'])) { $rpt_pw = trim($_GET['rpt-pw']); } else { throw new ConfigException();}
+
+    $result = changeOwnPassword($DB_con, $DB_tbl_users, $usr, $pw, $new_pw, $rpt_pw);
+
+  } elseif (isset($_GET['cmd-addusr'])) {
+
+    /*
+     *  ADD A NEW USER
+     */
+
+    //required arguments
+    $adm_usr = $_SESSION['user_session'];
+    if (isset($_GET['username'])) { $usr = trim($_GET['username']); } else { throw new ConfigException();}
+    if (isset($_GET['new-pw'])) { $new_pw = trim($_GET['new-pw']); } else { throw new ConfigException();}
+    if (isset($_GET['rpt-pw'])) { $rpt_pw = trim($_GET['rpt-pw']); } else { throw new ConfigException();}
+
+    //optional arguments
+    $args = (object) array();
+    if (isset($_GET['admin'])) $args->admin = trim($_GET['admin']);
+    if (isset($_GET['viewonly'])) $args->viewonly = trim($_GET['viewonly']);
+
+    $result = addUser($DB_con, $DB_tbl_users, $adm_usr, $usr, $new_pw, $rpt_pw, $args);
+
+  } elseif (isset($_GET['cmd-modusr'])) {
+
+    /*
+     *  MODIFY A USER'S ENTRY
+     */
+
+    $adm_usr = $_SESSION['user_session'];
+    if (isset($_GET['username'])) { $usr = trim($_GET['username']); } else { throw new ConfigException();}
+
+    $args = (object) array();
+    if (isset($_GET['new-pw'])) $args->new_pw = trim($_GET['new-pw']);
+    if (isset($_GET['rpt-pw'])) $args->rpt_pw = trim($_GET['rpt-pw']);
+    if (isset($_GET['admin'])) $args->admin = trim($_GET['admin']);
+    if (isset($_GET['viewonly'])) $args->viewonly = trim($_GET['viewonly']);
+    if (isset($_GET['active'])) $args->viewonly = trim($_GET['active']);
+
+    $result = modUser($DB_con, $DB_tbl_users, $adm_usr, $usr, $args);
+
+  } elseif (isset($_GET['cmd-delusr'])) {
+
+    /*
+     *  DELETE A USER
+     */
+
+    $adm_usr = $_SESSION['user_session'];
+    if (isset($_GET['username'])) { $usr = trim($_GET['username']); } else { throw new ConfigException();}
+
+    $result = delUser($DB_con, $DB_tbl_users, $adm_usr, $usr);
+
+  }
+
+  if (isset($result)) {
+    if ($result->getSuccess()) {
+      echo "Ok: {$result->getMessage()}";
+    } else {
+      echo "Problem: {$result->getMessage()}";
+    }
+  }
+} catch (ConfigException $e) {
+  echo "Error: {$e->getMessage()}";
 }
 
 die();
@@ -64,6 +91,9 @@ die();
 /*
  * Support classes and functions
  */
+
+class ConfigException extends Exception {
+}
 
 class Result
 {
@@ -88,6 +118,16 @@ class Result
   }
 }
 
+/**
+ * Function to change the current session user's password, based on logged in user
+ * @param  Database $db       A reference to the database instance
+ * @param  String $db_table   String value containing the user table name string
+ * @param  String $usr        String value of the login name
+ * @param  String $pw         String value of old password
+ * @param  String $new_pw     String value of new password
+ * @param  String $rpt_pw     String value, repeat of new password
+ * @return Result             Result object to relay success state, message
+ */
 function changeOwnPassword($db, $db_table, $usr, $pw, $new_pw, $rpt_pw) {
 
   if ($new_pw !== $rpt_pw) {
@@ -117,7 +157,14 @@ function changeOwnPassword($db, $db_table, $usr, $pw, $new_pw, $rpt_pw) {
   }
 }
 
-function isAdmin($db, $db_table, $adm_usr, $adm_pw) {
+/**
+ * Check if the current logged in user is an Administrator
+ * @param  Database $db         A reference to the database instance
+ * @param  String   $db_table   String value containing the user table name string
+ * @param  String   $adm_usr    String value containing a login name, to be tested if is an administrator
+ * @return boolean              true/false whether $adm_usr is an administrator login
+ */
+function isAdmin($db, $db_table, $adm_usr) {
   try {
     //get the user's record
     $stmt = $db->prepare("SELECT * FROM {$db_table} WHERE login=:log");
@@ -129,14 +176,10 @@ function isAdmin($db, $db_table, $adm_usr, $adm_pw) {
       return false;
     }
 
+
     $row = $stmt->fetch(PDO::FETCH_ASSOC);
   } catch (Exception $e) {
     throw new Exception("Error retrieveing user: {$e->getMessage()}");
-  }
-
-  //authenticate the user
-  if( !password_verify($adm_pw, $row['password']) ){
-    return false;
   }
 
   //if the user is authenticated and check for auth as admin
@@ -148,16 +191,87 @@ function isAdmin($db, $db_table, $adm_usr, $adm_pw) {
   return false;
 }
 
-function addUser($db, $db_table, $adm_usr, $adm_pw, $new_usr, $pw, $rpt_pw, $args = null) {
+/**
+ * Function to add a new user to the system
+ * @param  Database $db         A reference to the database instance
+ * @param  String   $db_table   String value containing the user table name string
+ * @param  String   $adm_usr    String value containing a login name, to be tested if is an administrator
+ * @param  String   $new_usr    String value, new user's login name
+ * @param  String   $pw         String value, new user's pw
+ * @param  String   $rpt_pw     String value, repeat of pw for confirmation
+ * @param  Array    $args       Optional, stdClass object with flags for the creation of the user
+ * @return Result             Result object to relay success state, message
+ */
+function addUser($db, $db_table, $adm_usr, $new_usr, $pw, $rpt_pw, $args = null) {
+  $debug = false;
+  if ($debug) var_dump($args);
 
-  if (!isAdmin($adm_usr, $adm_pw)) {
-    return new Result(false, "Must be an administrator to perform this action");
+  if ($args === null) {
+    $args = (object) array();
   }
 
-  return new Result(false, "Incomplete.");
+  //default flags
+  if (!isset($args->admin) || (filter_var($args->admin, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) === NULL)) {
+    $args->admin = false;
+  } else {
+    $args->admin = boolval($args->admin);
+  }
+  if (!isset($args->viewonly) || (filter_var($args->admin, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) === NULL)) {
+    $args->viewonly = false;
+  }else {
+    $args->viewonly = boolval($args->viewonly);
+  }
+  $args->active = true;
+
+  if ($args->admin && $args->viewonly) return new Result(false, "User can't be admin and viewonly.");
+  if ($new_usr === null) return new Result(false, "Bad new username.");
+  if ($pw === null || $pw !== $rpt_pw) return new Result(false, "Bad Password.");
+
+  if (!isAdmin($db, $db_table, $adm_usr)) return new Result(false, "Must be an administrator to perform this action");
+
+  try {
+    $stmt = $db->prepare("SELECT * FROM {$db_table} WHERE login=:log");
+    $stmt->bindparam(":log", $new_usr);
+    $stmt->execute();
+
+    if ( $stmt->rowCount() > 0 ) {
+      return new Result(false, "Username already chosen. Pick another");
+    }
+  } catch (Exception $e) {
+    throw new Exception("Error with select: {$e->getMessage()}");
+  }
+
+  try {
+    $hashed_pw = password_hash($pw, PASSWORD_DEFAULT);
+
+    $stmt = $db->prepare("INSERT INTO {$db_table} (login,	password,	active,	viewonly,	admin) VALUES (?,?,?,?,?)");
+    $stmt->bindparam(1, $new_usr);
+    $stmt->bindparam(2, $hashed_pw);
+    $stmt->bindparam(3, $args->active);
+    $stmt->bindparam(4, $args->viewonly);
+    $stmt->bindparam(5, $args->admin);
+    $stmt->execute();
+
+    if ( $stmt->rowCount() <= 0 ) {
+      return new Result(false, "Unable to insert new record.");
+    }
+  } catch (Exception $e) {
+    throw new Exception("Error with insert: {$e->getMessage()}");
+  }
+
+  return new Result(true, "Record inserted successfully.");
 }
 
-function modUser($db, $db_table, $adm_usr, $adm_pw, $usr_id, $args = null) {
+/**
+ * [modUser description]
+ * @param  Database $db         A reference to the database instance
+ * @param  String   $db_table   String value containing the user table name string
+ * @param  String   $adm_usr    String value containing a login name, to be tested if is an administrator
+ * @param  String   $usr_id     String value, subject user's login name
+ * @param  Array    $args       Optional, stdClass object with flags for the modification of the user
+ * @return Result             Result object to relay success state, message
+ */
+function modUser($db, $db_table, $adm_usr, $usr_id, $args = null) {
   if ($args === null) {
     $args = (object) array();
   }
@@ -168,10 +282,11 @@ function modUser($db, $db_table, $adm_usr, $adm_pw, $usr_id, $args = null) {
   }
 
   //check is user is the admin
-  if (!isAdmin($db, $db_table, $adm_usr, $adm_pw)) {
+  if (!isAdmin($db, $db_table, $adm_usr)) {
     return new Result(false, "Must be an administrator to perform this action");
   }
 
+  //get the user's original entry, verifying that it exists
   try {
       $stmt = $db->prepare("SELECT * FROM {$db_table} WHERE login=:log");
       $stmt->bindparam(":log", $usr_id);
@@ -186,21 +301,33 @@ function modUser($db, $db_table, $adm_usr, $adm_pw, $usr_id, $args = null) {
     throw new Exception("Error updating flags: {$e->getMessage()}");
   }
 
-  if ( !isset($args->admin) ) {
+  //make sure flags are boolean of some sort
+  $flag_fail = array();
+  if ( !isset($args->admin) || (filter_var($args->admin, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) === NULL)) {
     $args->admin = $row_before_update['admin'];
   }
 
-  if ( !isset($args->active) ) {
+  if ( !isset($args->active) || (filter_var($args->admin, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) === NULL) ) {
     $args->active = $row_before_update['active'];
   }
 
-  if ( !isset($args->viewonly) ) {
+  if ( !isset($args->viewonly) || (filter_var($args->admin, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) === NULL) ) {
     $args->viewonly = $row_before_update['viewonly'];
+  }
+
+  //if admin is true as well as viewonly or not active, fail
+  if ($args->admin && $args->viewonly) {
+    return new Result(false, "Admin and Viewonly flag options not compatible with  flag.");
+  }
+
+  //if active is false as well as $admin or not active, fail
+  if (!$args->active && ($args->admin || $args->viewonly) ) {
+    return new Result(false, "Flag options not compatible with Active flag.");
   }
 
   //if only one password supplied, fail
   if (isset($args->new_pw) XOR isset($args->rpt_pw)) {
-    return new Result(false, "Supplied password doesnt match.");
+    return new Result(false, "Need both password and repeat to modify the user's password");
   //if both supplied
   } elseif ( isset($args->new_pw) && isset($args->rpt_pw) ) {
     //if both supplied passwords dont match, fail
@@ -215,34 +342,6 @@ function modUser($db, $db_table, $adm_usr, $adm_pw, $usr_id, $args = null) {
     }
   }
 
-  //make sure flags are boolean of some sort
-  $flag_fail = array();
-  if (filter_var($args->admin, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) === NULL) {
-    array_push($flag_fail, "Admin");
-  }
-  if (filter_var($args->viewonly, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) === NULL) {
-    array_push($flag_fail, "View-Only");
-  }
-  if (filter_var($args->active, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) === NULL) {
-    array_push($flag_fail, "Active");
-  }
-
-  //if flags not boolean, fail
-  if (count($flag_fail) > 0 ) {
-    $s = implode(', ', $flag_fail);
-    return new Result(false, "{$s} flag(s) are not boolean values.");
-  }
-
-  //if admin is true as well as viewonly or not active, fail
-  if ($args->admin && $args->viewonly) {
-    return new Result(false, "Admin and Viewonly flag options not compatible with  flag.");
-  }
-
-  //if active is false as well as $admin or not active, fail
-  if (!$args->active && ($args->admin || $args->viewonly) ) {
-    return new Result(false, "Flag options not compatible with Active flag.");
-  }
-
   try {
       $stmt = $db->prepare("UPDATE {$db_table} SET admin=:ad, active=:ac, viewonly=:vo WHERE login=:log");
       $stmt->bindparam(":log", $usr_id);
@@ -251,8 +350,7 @@ function modUser($db, $db_table, $adm_usr, $adm_pw, $usr_id, $args = null) {
       $stmt->bindparam(":ac", $args->active);
       $stmt->bindparam(":vo", $args->viewonly);
 
-      //TODO REMOVE THIS AFTER TESTING
-      //$stmt->execute();
+      $stmt->execute();
 
       if ( $stmt->rowCount() < 0 ) {
         return new Result(false, "Unable to update record.");
@@ -264,6 +362,14 @@ function modUser($db, $db_table, $adm_usr, $adm_pw, $usr_id, $args = null) {
   return new Result(true, "Record updated.");
 }
 
+/**
+ * [changePassword description]
+ * @param  Database $db         A reference to the database instance
+ * @param  String   $db_table   String value containing the user table name string
+ * @param  String   $usr        String value of subject's login, where pw to be changed
+ * @param  String   $pw         String value of new pw
+ * @return Boolean              true/false to represent success/fail state
+ */
 function changePassword($db, $db_table, $usr, $pw) {
   try{
     $hashed_pw = password_hash($pw, PASSWORD_DEFAULT);
@@ -283,7 +389,15 @@ function changePassword($db, $db_table, $usr, $pw) {
   return false;
 }
 
-function delUser($db, $db_table, $adm_usr, $adm_pw, $usr_id) {
+/**
+ * [delUser description]
+ * @param  Database $db         A reference to the database instance
+ * @param  String   $db_table   String value containing the user table name string
+ * @param  String   $adm_usr    String value containing a login name, to be tested if is an administrator
+ * @param  String   $usr_id     String value, subject user's login name
+ * @return Result               Result object to relay success state, message
+ */
+function delUser($db, $db_table, $adm_usr, $usr_id) {
   if (!isAdmin($adm_usr, $adm_pw)) {
     return new Result(false, "Must be an administrator to perform this action");
   }
