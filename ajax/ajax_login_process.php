@@ -8,10 +8,7 @@ if (isset($_POST['btn-login'])) {
 
   try {
     $sql = "SELECT
-<<<<<<< HEAD
               {$DB_table->users}.id as `id`,
-=======
->>>>>>> d1f83a5d5909d115268251121a8cbba7732b7d4d
               {$DB_table->users}.login as `login`,
               {$DB_table->users}.password as `password`,
               {$DB_table->users}.auth_id as `auth_id`,
@@ -35,10 +32,7 @@ if (isset($_POST['btn-login'])) {
         echo "ok"; // log in
         $_SESSION['authenticated'] = true;
         $_SESSION['user'] = (object) array();
-<<<<<<< HEAD
         $_SESSION['user']->id = $row['id'];
-=======
->>>>>>> d1f83a5d5909d115268251121a8cbba7732b7d4d
         $_SESSION['user']->login = $row['login'];
         $_SESSION['user']->auth_id = $row['auth_id'];
         $_SESSION['user']->auth_state = $row['auth_state'];
