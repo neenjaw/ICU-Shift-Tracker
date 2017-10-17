@@ -84,8 +84,8 @@ if (!isset($_SESSION['user'])) {
             </div>
             <div class="form-group">
               <label for="cmd-addusr-auth-id">App Authorization:</label>
-              <select class="form-control fa" id="cmd-addusr-auth-id">
-                <option selected disabled>&#xf085; loading...</option>
+              <select class="form-control" id="cmd-addusr-auth-id">
+                <option selected disabled>loading...</option>
               </select>
             </div>
             <button id="cmd-addusr-submit" type="submit" class="btn btn-primary">Add New User</button>
@@ -97,8 +97,8 @@ if (!isset($_SESSION['user'])) {
           <?php else: ?>
             <div class="form-group">
               <label for="cmd-modusr-uid">Select user to modify:</label>
-              <select class="form-control fa" id="cmd-modusr-uid">
-                <option selected disabled>&#xf085; loading...</option>
+              <select class="form-control" id="cmd-modusr-uid">
+                <option selected disabled>loading...</option>
               </select>
             </div>
             <div class="p-2 mb-2 border border-secondary">
@@ -124,8 +124,8 @@ if (!isset($_SESSION['user'])) {
               </label>
               <div class="form-group">
                 <label for="exampleFormControlSelect1">App Authorization:</label>
-                <select class="form-control fa" id="cmd-modusr-auth-id" disabled>
-                  <option class="fa" selected disabled>&#xf085; loading...</option>
+                <select class="form-control" id="cmd-modusr-auth-id" disabled>
+                  <option selected disabled>loading...</option>
                 </select>
               </div>
             </div>
@@ -138,8 +138,8 @@ if (!isset($_SESSION['user'])) {
           <?php else: ?><form>
             <div class="form-group">
               <label for="exampleFormControlSelect1">Select user to delete:</label>
-              <select class="form-control fa" id="cmd-delusr-uid">
-                <option selected disabled>&#xf085; loading...</option>
+              <select class="form-control" id="cmd-delusr-uid">
+                <option selected disabled>loading...</option>
               </select>
             </div>
             <button id="cmd-delusr-submit" type="submit" class="btn btn-danger">Delete user</button>
@@ -170,7 +170,7 @@ if (!isset($_SESSION['user'])) {
   var debug = true;
 
   var optionTemplate;
-  var optionLoading = [{value:'', text:'&#xf085; loading...'}];
+  var optionLoading = [{value:'', text:'loading...'}];
 
   var users;
   var authStates;
@@ -186,82 +186,71 @@ if (!isset($_SESSION['user'])) {
     });
 
     optionTemplate = Handlebars.compile($("#select-option-template").html());
+
+    getAuthStates(optionTemplate, authStates, optionLoading);
+    getUsers(optionTemplate, users, optionLoading);
   });
 
-<<<<<<< HEAD
-  /*
-   * IDEA = Could probably refactor both of these ajax get statements into one
-   *        get with a few call back functions (specific mapping functions, list of elemets to update)
-   */
-  function getAuthStates(passedTemplate, defaultList) {
+  function getAuthStates(passedTemplate, aList, defaultList) {
     $.ajax({
       type: 'GET',
-=======
-  function getAuthStates(passedTemplate, defaultList) {
-    $.ajax({
-      type: 'POST',
->>>>>>> 91d38182ae5923289fcba38cf6a10ebe34fe726c
       url: 'ajax/ajax_get_auth_states.php',
       data: '',
       beforeSend: function () {
-        authStates = defaultList;
-        emptySelect($('#cmd-addusr-auth-id'), passedTemplate, authStates);
-        emptySelect($('#cmd-modusr-auth-id'), passedTemplate, authStates);
+        aList = defaultList;
+        setSelectToLoading($('#cmd-addusr-auth-id'), passedTemplate, {entry: aList});
+        setSelectToLoading($('#cmd-modusr-auth-id'), passedTemplate, {entry: aList});
       },
       success: function (response) {
-        authStates = JSON.parse(response);
+        aList = JSON.parse(response);
         if (debug) console.log("AJAX returned, states list:");
-        if (debug) console.log(authStates);
+        if (debug) console.log(aList);
 
         //map authStates to appropriate format for makeSelect id->value, state->text
-        let mappedStates = $.map(authStates, function(e, i) {
+        let mappedStates = $.map(aList, function(e, i) {
                              return {value:e.id, text:e.state};
                            });
 
-        $('#cmd-addusr-auth-id').removeClass('fa');
-        $('#cmd-addusr-auth-id').append(passedTemplate(mappedStates));
-        $('#cmd-modusr-auth-id').removeClass('fa');
-        $('#cmd-modusr-auth-id').append(passedTemplate(mappedStates));
+        fillSelect($('#cmd-addusr-auth-id'), passedTemplate, {entry: mappedStates});
+        fillSelect($('#cmd-modusr-auth-id'), passedTemplate, {entry: mappedStates});
       }
     });
   }
 
-  function getUsers(passedTemplate, defaultList) {
+  function getUsers(passedTemplate, uList, defaultList) {
     $.ajax({
-<<<<<<< HEAD
       type: 'GET',
-=======
-      type: 'POST',
->>>>>>> 91d38182ae5923289fcba38cf6a10ebe34fe726c
       url: 'ajax/ajax_get_users.php',
       data: '',
       beforeSend: function () {
-        users = defaultList;
-        emptySelect($('#cmd-delusr-uid'), passedTemplate, defaultList);
-        emptySelect($('#cmd-modusr-uid'), passedTemplate, defaultList);
+        uList = defaultList;
+        setSelectToLoading($('#cmd-delusr-uid'), passedTemplate, {entry: uList});
+        setSelectToLoading($('#cmd-modusr-uid'), passedTemplate, {entry: uList});
       },
       success: function (response) {
-        users = JSON.parse(response);
+        uList = JSON.parse(response);
         if (debug) console.log("AJAX returned, user list:");
-        if (debug) console.log(users);
+        if (debug) console.log(uList);
 
         //map users to appropriate format for makeSelect id->value, login->text
-        let mappedUsers = $.map(users, function(e, i) {
+        let mappedUsers = $.map(uList, function(e, i) {
                             return {value:e.id, text:e.login};
                           });
 
-        $('#cmd-delusr-uid').removeClass('fa');
-        $('#cmd-delusr-uid').append(passedTemplate(mappedUsers));
-        $('#cmd-modusr-uid').removeClass('fa');
-        $('#cmd-modusr-uid').append(passedTemplate(mappedUsers));
+        fillSelect($('#cmd-modusr-uid'), passedTemplate, {entry: mappedUsers});
+        fillSelect($('#cmd-delusr-uid'), passedTemplate, {entry: mappedUsers});
       }
     });
   }
 
-  function emptySelect($target, passedTemplate, defaultList) {
+  function fillSelect($target, passedTemplate, entryList) {
     $target.empty()
-           .addClass('fa')
-           .append(passedTemplate(defaultList))
+           .append(passedTemplate(entryList));
+  }
+
+  function setSelectToLoading($target, passedTemplate, entryList) {
+    $target.empty()
+           .append(passedTemplate(entryList))
            .children()
            .first()
            .attr('disabled', true)
