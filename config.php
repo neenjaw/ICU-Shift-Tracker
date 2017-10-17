@@ -167,6 +167,14 @@ if (!isset($_SESSION['user'])) {
   </script>
 
   <script>
+  /*
+   * TODO mod chk enables form
+   * TODO Form submission
+   *
+   * QUESTION if I can't set the global from the async function, THEN HOW?!?!?!?
+   */
+
+
   var debug = true;
 
   var optionTemplate;
