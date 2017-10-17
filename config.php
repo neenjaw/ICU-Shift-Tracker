@@ -188,6 +188,7 @@ if (!isset($_SESSION['user'])) {
     optionTemplate = Handlebars.compile($("#select-option-template").html());
   });
 
+<<<<<<< HEAD
   /*
    * IDEA = Could probably refactor both of these ajax get statements into one
    *        get with a few call back functions (specific mapping functions, list of elemets to update)
@@ -195,6 +196,11 @@ if (!isset($_SESSION['user'])) {
   function getAuthStates(passedTemplate, defaultList) {
     $.ajax({
       type: 'GET',
+=======
+  function getAuthStates(passedTemplate, defaultList) {
+    $.ajax({
+      type: 'POST',
+>>>>>>> 91d38182ae5923289fcba38cf6a10ebe34fe726c
       url: 'ajax/ajax_get_auth_states.php',
       data: '',
       beforeSend: function () {
@@ -222,7 +228,11 @@ if (!isset($_SESSION['user'])) {
 
   function getUsers(passedTemplate, defaultList) {
     $.ajax({
+<<<<<<< HEAD
       type: 'GET',
+=======
+      type: 'POST',
+>>>>>>> 91d38182ae5923289fcba38cf6a10ebe34fe726c
       url: 'ajax/ajax_get_users.php',
       data: '',
       beforeSend: function () {
