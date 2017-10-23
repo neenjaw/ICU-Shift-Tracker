@@ -48,27 +48,46 @@ if (!isset($_SESSION['user'])) {
           <button type="button" class="btn btn-secondary btn-block" data-cmd="delusr">Delete User</button>
         </div>
       </div>
-      <div class="col-sm-9">
-        <form id="cmd-form">
-          <div id="cmd-changepw" class="form-section current">
+      <div id="cmd-container" class="col-sm-9">
+        <div id="cmd-changepw" class="form-section current">
+          <form id="cmd-changepw-form">
             <div class="form-group">
               <label for="cmd-changepw-old-pw">Old Password</label>
-              <input type="password" class="form-control" id="cmd-changepw-old-pw" placeholder="Old Password" autocomplete="off">
+              <input id="cmd-changepw-old-pw"
+                     type="password"
+                     class="form-control"
+                     placeholder="Old Password"
+                     autocomplete="off"
+                     required>
             </div>
             <div class="form-group">
               <label for="cmd-changepw-new-pw">New Password</label>
-              <input type="password" class="form-control" id="cmd-changepw-new-pw" placeholder="New Password" autocomplete="off">
+              <input id="cmd-changepw-new-pw"
+                     type="password"
+                     class="form-control"
+                     placeholder="New Password"
+                     autocomplete="off"
+                     data-parsley-equalto="#cmd-changepw-rpt-pw"
+                     required>
             </div>
             <div class="form-group">
               <label for="cmd-changepw-rpt-pw">Repeat Password</label>
-              <input type="password" class="form-control" id="cmd-changepw-rpt-pw" placeholder="Repeat Password" autocomplete="off">
+              <input id="cmd-changepw-rpt-pw"
+                     type="password"
+                     class="form-control"
+                     placeholder="Repeat Password"
+                     autocomplete="off"
+                     data-parsley-equalto="#cmd-changepw-new-pw"
+                     required>
             </div>
             <button id="cmd-changepw-submit" type="submit" class="btn btn-primary">Change Password</button>
-          </div>
-          <div id="cmd-addusr" class="form-section">
-            <?php if ($_SESSION['user']->auth_state !== 'admin'): ?>
-              <p>You do are not an administrator of this page, contact an administrator to add users.</p>
-            <?php else: ?>
+          </form>
+        </div>
+        <div id="cmd-addusr" class="form-section">
+          <?php if ($_SESSION['user']->auth_state !== 'admin'): ?>
+            <p>You do are not an administrator of this page, contact an administrator to add users.</p>
+          <?php else: ?>
+            <form id="cmd-addusr-form">
               <div class="form-group">
                 <label for="cmd-addusr-new-username">New Username</label>
                 <input type="text" class="form-control" id="cmd-addusr-new-username" placeholder="Username">
@@ -88,15 +107,17 @@ if (!isset($_SESSION['user'])) {
                 </select>
               </div>
               <button id="cmd-addusr-submit" type="submit" class="btn btn-primary">Add New User</button>
-            <?php endif; ?>
-          </div>
-          <div id="cmd-modusr" class="form-section">
-            <?php if ($_SESSION['user']->auth_state !== 'admin'): ?>
-              <p>You do are not an administrator of this page, contact an administrator to modify users.</p>
-            <?php else: ?>
+            </form>
+          <?php endif; ?>
+        </div>
+        <div id="cmd-modusr" class="form-section">
+          <?php if ($_SESSION['user']->auth_state !== 'admin'): ?>
+            <p>You do are not an administrator of this page, contact an administrator to modify users.</p>
+          <?php else: ?>
+            <form id="cmd-modusr-form">
               <div class="form-group">
                 <label for="cmd-modusr-uid">Select user to modify:</label>
-                <select class="form-control" id="cmd-modusr-uid">
+                <select class="form-control" id="cmd-modusr-uid" required>
                   <option selected disabled>loading...</option>
                 </select>
               </div>
@@ -108,11 +129,23 @@ if (!isset($_SESSION['user'])) {
                 </label>
                 <div class="form-group">
                   <label for="cmd-modusr-new-pw">New Password</label>
-                  <input type="password" class="form-control" id="cmd-modusr-new-pw" placeholder="New Password" autocomplete="off"  disabled>
+                  <input id="cmd-modusr-new-pw"
+                         type="password"
+                         class="form-control"
+                         placeholder="New Password"
+                         autocomplete="off"
+                         data-parsley-equalto="#cmd-modusr-rpt-pw"
+                         disabled>
                 </div>
                 <div class="form-group">
                   <label for="cmd-modusr-rpt-pw">Repeat Password</label>
-                  <input type="password" class="form-control" id="cmd-modusr-rpt-pw" placeholder="Repeat Password" autocomplete="off"  disabled>
+                  <input id="cmd-modusr-rpt-pw"
+                         type="password"
+                         class="form-control"
+                         placeholder="Repeat Password"
+                         autocomplete="off"
+                         data-parsley-equalto="#cmd-modusr-new-pw"
+                         disabled>
                 </div>
               </div>
               <div class="p-2 mb-2 border border-secondary">
@@ -129,22 +162,24 @@ if (!isset($_SESSION['user'])) {
                 </div>
               </div>
               <button id="cmd-modusr-submit" type="submit" class="btn btn-primary">Add New User</button>
-            <?php endif; ?>
-          </div>
-          <div id="cmd-delusr" class="form-section">
-            <?php if ($_SESSION['user']->auth_state !== 'admin'): ?>
-              <p>You do are not an administrator of this page, contact an administrator to delete users.</p>
-            <?php else: ?><form>
+            </form>
+          <?php endif; ?>
+        </div>
+        <div id="cmd-delusr" class="form-section">
+          <?php if ($_SESSION['user']->auth_state !== 'admin'): ?>
+            <p>You do are not an administrator of this page, contact an administrator to delete users.</p>
+          <?php else: ?>
+            <form id="cmd-delusr-form">
               <div class="form-group">
                 <label for="exampleFormControlSelect1">Select user to delete:</label>
-                <select class="form-control" id="cmd-delusr-uid">
+                <select class="form-control" id="cmd-delusr-uid" required>
                   <option selected disabled>loading...</option>
                 </select>
               </div>
               <button id="cmd-delusr-submit" type="submit" class="btn btn-danger">Delete user</button>
-            <?php endif; ?>
-          </div>
-        </form>
+            </form>
+          <?php endif; ?>
+        </div>
       </div>
     </div>
   </div>
@@ -180,12 +215,15 @@ if (!isset($_SESSION['user'])) {
   var optionTemplate;
   var optionLoading = [{value:'', text:'loading...'}];
 
+  //ON DOCUMENT READY START
   $(function() {
+  //ON DOCUMENT READY START
+
     $(`#cmd-options`).children().click(function(){
       $(this).removeClass(`btn-secondary`).addClass(`btn-primary`);
       $(this).siblings().removeClass(`btn-primary`).addClass(`btn-secondary`);
 
-      $(`#cmd-form`).children().removeClass('current');
+      $(`#cmd-container`).children().removeClass('current');
       let cmd = $(this).data('cmd');
       $(`#cmd-${cmd}`).addClass('current');
     });
@@ -215,7 +253,35 @@ if (!isset($_SESSION['user'])) {
 
     getAuthStates(optionTemplate, optionLoading);
     getUsers(optionTemplate, optionLoading);
+
+    $('#cmd-changepw-form').parsley()
+    .on('form:submit', function () {
+      alert("Change pw");
+      return false;
+    });
+
+    $('#cmd-addusr-form').parsley()
+    .on('form:submit', function () {
+      alert("addusr");
+      return false;
+    });
+
+    $('#cmd-modusr-form').parsley()
+    .on('form:submit', function () {
+      alert("moduser");
+      return false;
+    });
+
+    //FIXME states this is undefined... why?!?!
+    $(`#cmd-delusr-form`).parsley()
+    .on('form:submit', function () {
+      alert("deluser");
+      return false;
+    });
+
+  //ON DOCUMENT READY END
   });
+  //ON DOCUMENT READY END
 
   function getAuthStates(pTemplate, defaultList) {
     $.ajax({
