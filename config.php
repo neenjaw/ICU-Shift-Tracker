@@ -51,6 +51,8 @@ if (!isset($_SESSION['user'])) {
       <div id="cmd-container" class="col-sm-9">
         <div id="cmd-changepw" class="form-section current">
           <form id="cmd-changepw-form">
+            <div id="cmd-changepw-form-errors">
+            </div>
             <div class="form-group">
               <label for="cmd-changepw-old-pw">Old Password</label>
               <input id="cmd-changepw-old-pw"
@@ -88,21 +90,23 @@ if (!isset($_SESSION['user'])) {
             <p>You do are not an administrator of this page, contact an administrator to add users.</p>
           <?php else: ?>
             <form id="cmd-addusr-form">
+              <div id="cmd-addusr-form-errors">
+              </div>
               <div class="form-group">
                 <label for="cmd-addusr-new-username">New Username</label>
-                <input type="text" class="form-control" id="cmd-addusr-new-username" placeholder="Username">
+                <input type="text" class="form-control" id="cmd-addusr-new-username" placeholder="Username" required>
               </div>
               <div class="form-group">
                 <label for="cmd-addusr-new-pw">New Password</label>
-                <input type="password" class="form-control" id="cmd-addusr-new-pw" placeholder="New Password" autocomplete="off">
+                <input type="password" class="form-control" id="cmd-addusr-new-pw" placeholder="New Password" autocomplete="off" required>
               </div>
               <div class="form-group">
                 <label for="cmd-addusr-rpt-pw">Repeat Password</label>
-                <input type="password" class="form-control" id="cmd-addusr-rpt-pw" placeholder="Repeat Password" autocomplete="off">
+                <input type="password" class="form-control" id="cmd-addusr-rpt-pw" placeholder="Repeat Password" autocomplete="off" required>
               </div>
               <div class="form-group">
                 <label for="cmd-addusr-auth-id">App Authorization:</label>
-                <select class="form-control" id="cmd-addusr-auth-id">
+                <select class="form-control" id="cmd-addusr-auth-id" required>
                   <option selected disabled>loading...</option>
                 </select>
               </div>
@@ -115,6 +119,8 @@ if (!isset($_SESSION['user'])) {
             <p>You do are not an administrator of this page, contact an administrator to modify users.</p>
           <?php else: ?>
             <form id="cmd-modusr-form">
+              <div id="cmd-modusr-form-errors">
+              </div>
               <div class="form-group">
                 <label for="cmd-modusr-uid">Select user to modify:</label>
                 <select class="form-control" id="cmd-modusr-uid" required>
@@ -123,7 +129,11 @@ if (!isset($_SESSION['user'])) {
               </div>
               <div class="p-2 mb-2 border border-secondary">
                 <label class="custom-control custom-checkbox">
-                  <input type="checkbox" class="custom-control-input" id="cmd-modusr-chk-pw">
+                  <input id="cmd-modusr-chk-pw"
+                         name="cmd-moduser-chk"
+                         type="checkbox"
+                         class="custom-control-input"
+                         required>
                   <span class="custom-control-indicator"></span>
                   <span class="custom-control-description">Change this user's password?</span>
                 </label>
@@ -150,7 +160,10 @@ if (!isset($_SESSION['user'])) {
               </div>
               <div class="p-2 mb-2 border border-secondary">
                 <label class="custom-control custom-checkbox">
-                  <input type="checkbox" class="custom-control-input" id="cmd-modusr-chk-auth">
+                  <input id="cmd-modusr-chk-auth"
+                         name="cmd-moduser-chk"
+                         type="checkbox"
+                         class="custom-control-input">
                   <span class="custom-control-indicator"></span>
                   <span class="custom-control-description">Change this user's app authorization?</span>
                 </label>
@@ -170,6 +183,8 @@ if (!isset($_SESSION['user'])) {
             <p>You do are not an administrator of this page, contact an administrator to delete users.</p>
           <?php else: ?>
             <form id="cmd-delusr-form">
+              <div id="cmd-delusr-form-errors">
+              </div>
               <div class="form-group">
                 <label for="exampleFormControlSelect1">Select user to delete:</label>
                 <select class="form-control" id="cmd-delusr-uid" required>
@@ -204,9 +219,7 @@ if (!isset($_SESSION['user'])) {
   <script>
   /*
    * TODO Form validation and submission
-   *
-   * QUESTION if I can't set the global from the async function, THEN HOW?!?!?!? -->
-   * is why you need ES2017 JS or a framework that facilitates asynchronous
+   * TODO add in form error messages
    */
 
 
@@ -214,6 +227,10 @@ if (!isset($_SESSION['user'])) {
 
   var optionTemplate;
   var optionLoading = [{value:'', text:'loading...'}];
+  var parsleyConfigChg = { errorsContainer: "#cmd-changepw-form-errors" };
+  var parsleyConfigAdd = { errorsContainer: "#cmd-addusr-form-errors" };
+  var parsleyConfigMod = { errorsContainer: "#cmd-modusr-form-errors" };
+  var parsleyConfigDel = { errorsContainer: "#cmd-delusr-form-errors" };
 
   //ON DOCUMENT READY START
   $(function() {
@@ -232,9 +249,16 @@ if (!isset($_SESSION['user'])) {
       if ($(this).prop(`checked`)) {
         $(`#cmd-modusr-new-pw`).prop(`disabled`, false);
         $(`#cmd-modusr-rpt-pw`).prop(`disabled`, false);
+
+        $(`#cmd-modusr-new-pw`).prop(`required`, true);
+        $(`#cmd-modusr-rpt-pw`).prop(`required`, true);
       } else {
+        $(`#cmd-modusr-new-pw`).prop(`required`, false);
+        $(`#cmd-modusr-rpt-pw`).prop(`required`, false);
+
         $(`#cmd-modusr-new-pw`).prop(`disabled`, true);
         $(`#cmd-modusr-rpt-pw`).prop(`disabled`, true);
+
         $(`#cmd-modusr-new-pw`).prop(`value`, ``);
         $(`#cmd-modusr-rpt-pw`).prop(`value`, ``);
       }
@@ -243,8 +267,10 @@ if (!isset($_SESSION['user'])) {
     $(`#cmd-modusr-chk-auth`).click(function(){
       if ($(this).prop(`checked`)) {
         $(`#cmd-modusr-auth-id`).prop(`disabled`, false);
+        $(`#cmd-modusr-auth-id`).prop(`required`, true);
       } else {
         $(`#cmd-modusr-auth-id`).prop(`disabled`, true);
+        $(`#cmd-modusr-auth-id`).prop(`required`, false);
         $(`#cmd-modusr-auth-id`).prop(`value`, ``);
       }
     });
@@ -254,26 +280,29 @@ if (!isset($_SESSION['user'])) {
     getAuthStates(optionTemplate, optionLoading);
     getUsers(optionTemplate, optionLoading);
 
-    $('#cmd-changepw-form').parsley()
+    $('#cmd-changepw-form')
+    .parsley(parsleyConfigChg)
     .on('form:submit', function () {
       alert("Change pw");
       return false;
     });
 
-    $('#cmd-addusr-form').parsley()
+    $('#cmd-addusr-form')
+    .parsley(parsleyConfigAdd)
     .on('form:submit', function () {
       alert("addusr");
       return false;
     });
 
-    $('#cmd-modusr-form').parsley()
+    $('#cmd-modusr-form')
+    .parsley(parsleyConfigMod)
     .on('form:submit', function () {
       alert("moduser");
       return false;
     });
 
-    //FIXME states this is undefined... why?!?!
-    $(`#cmd-delusr-form`).parsley()
+    $(`#cmd-delusr-form`)
+    .parsley(parsleyConfigDel)
     .on('form:submit', function () {
       alert("deluser");
       return false;
