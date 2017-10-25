@@ -43,7 +43,7 @@ $a_active = ' active';
 				<?= makeNavLink($page_name, 'config.php', '<i class="fa fa-cogs" aria-hidden="true"></i>
 ', 'nav-link dropdown-toggle', 'data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"'); ?>
 				<div class="dropdown-menu">
-					<?= makeNavLink($page_name, 'config.php', 'Config', 'dropdown-item disabled'); ?>
+					<?= makeNavLink($page_name, 'config.php', 'Config', 'dropdown-item'); ?>
 				</div>
 			</li>
 		</ul>
