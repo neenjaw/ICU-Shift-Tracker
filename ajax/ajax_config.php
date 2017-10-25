@@ -7,69 +7,70 @@ if (!isset($_SESSION['authenticated'])) {
 }
 
 try {
-  if (!isset($_GET['cmd-submit'])) {
+  if (!isset($_POST['cmd-submit'])) {
     die("Wrong parameters.");
   }
 
-  if (isset($_GET['cmd-changepw'])) {
+  if (isset($_POST['cmd-changepw'])) {
 
     /*
      *  CHANGE CURRENT USER'S PW
      */
 
     //required arguments
-    $usr = $_SESSION['user']['login'];
-    if (isset($_GET['old-pw'])) { $pw = trim($_GET['old-pw']);     } else { throw new ConfigException();}
-    if (isset($_GET['new-pw'])) { $new_pw = trim($_GET['new-pw']); } else { throw new ConfigException();}
-    if (isset($_GET['rpt-pw'])) { $rpt_pw = trim($_GET['rpt-pw']); } else { throw new ConfigException();}
+    $usr = $_SESSION['user']->login;
+    if (isset($_POST['old-pw'])) { $pw = trim($_POST['old-pw']);     } else { throw new ConfigException();}
+    if (isset($_POST['new-pw'])) { $new_pw = trim($_POST['new-pw']); } else { throw new ConfigException();}
+    if (isset($_POST['rpt-pw'])) { $rpt_pw = trim($_POST['rpt-pw']); } else { throw new ConfigException();}
 
     $result = changeOwnPassword($DB_con, $DB_table, $usr, $pw, $new_pw, $rpt_pw);
 
-  } elseif (isset($_GET['cmd-addusr'])) {
+  } elseif (isset($_POST['cmd-addusr'])) {
+
 
     /*
      *  ADD A NEW USER
      */
 
     //required arguments
-    $adm_usr = $_SESSION['user']['login'];
-    if (isset($_GET['username'])) { $usr = trim($_GET['username']);  } else { throw new ConfigException();}
-    if (isset($_GET['new-pw']))   { $new_pw = trim($_GET['new-pw']); } else { throw new ConfigException();}
-    if (isset($_GET['rpt-pw']))   { $rpt_pw = trim($_GET['rpt-pw']); } else { throw new ConfigException();}
+    $adm_usr = $_SESSION['user']->login;
+    if (isset($_POST['username'])) { $usr = trim($_POST['username']);  } else { throw new ConfigException();}
+    if (isset($_POST['new-pw']))   { $new_pw = trim($_POST['new-pw']); } else { throw new ConfigException();}
+    if (isset($_POST['rpt-pw']))   { $rpt_pw = trim($_POST['rpt-pw']); } else { throw new ConfigException();}
 
     //optional arguments
     $args = (object) array();
-    if (isset($_GET['state'])) $args->state = trim($_GET['state']);
+    if (isset($_POST['state'])) $args->state = trim($_POST['state']);
 
     $result = addUser($DB_con, $DB_table, $adm_usr, $usr, $new_pw, $rpt_pw, $args);
 
-  } elseif (isset($_GET['cmd-modusr'])) {
+  } elseif (isset($_POST['cmd-modusr'])) {
 
     /*
      *  MODIFY A USER'S ENTRY
      */
 
-    $adm_usr = $_SESSION['user']['login'];
-    if (isset($_GET['username'])) { $usr = trim($_GET['username']); } else { throw new ConfigException();}
+    $adm_usr = $_SESSION['user']->login;
+    if (isset($_POST['userid'])) { $usr = trim($_POST['userid']); } else { throw new ConfigException();}
 
     $args = (object) array();
     $args->pw = (object) array();
-    if (isset($_GET['new-pw'])) $args->pw->new_pw = trim($_GET['new-pw']);
-    if (isset($_GET['rpt-pw'])) $args->pw->rpt_pw = trim($_GET['rpt-pw']);
+    if (isset($_POST['new-pw'])) $args->pw->new_pw = trim($_POST['new-pw']);
+    if (isset($_POST['rpt-pw'])) $args->pw->rpt_pw = trim($_POST['rpt-pw']);
 
     $args->flags = (object) array();
-    if (isset($_GET['state'])) $args->flags->state = trim($_GET['state']);
+    if (isset($_POST['state'])) $args->flags->state = trim($_POST['state']);
 
     $result = modUser($DB_con, $DB_table, $adm_usr, $usr, $args);
 
-  } elseif (isset($_GET['cmd-delusr'])) {
+  } elseif (isset($_POST['cmd-delusr'])) {
 
     /*
      *  DELETE A USER
      */
 
-    $adm_usr = $_SESSION['user']['login'];
-    if (isset($_GET['username'])) { $usr = trim($_GET['username']); } else { throw new ConfigException();}
+    $adm_usr = $_SESSION['user']->login;
+    if (isset($_POST['userid'])) { $usr = trim($_POST['userid']); } else { throw new ConfigException();}
 
     $result = delUser($DB_con, $DB_table, $adm_usr, $usr);
 
@@ -325,8 +326,8 @@ function modUser($DB, $DB_table, $adm_usr, $usr_id, $args = null) {
   }
 
   try {
-    $stmt = $DB->prepare("UPDATE {$DB_table->users} SET auth_id=:ai WHERE login=:log");
-    $stmt->bindparam(":log", $usr_id);
+    $stmt = $DB->prepare("UPDATE {$DB_table->users} SET auth_id=:ai WHERE id=:uid");
+    $stmt->bindparam(":uid", $usr_id);
     $stmt->bindparam(":ai", $args->flags->state);
 
     $stmt->execute();
@@ -381,7 +382,19 @@ function delUser($DB, $DB_table, $adm_usr, $usr_id) {
     return new Result(false, "Must be an administrator to perform this action");
   }
 
-  return new Result(false, "Incomplete.");
+  try {
+    $stmt = $DB->prepare("DELETE FROM {$DB_table->users} WHERE id=:uid");
+    $stmt->bindparam(":uid", $usr_id);
+    $stmt->execute();
+
+    if ( $stmt->rowCount() < 0 ) {
+      return new Result(false, "User not deleted.");
+    }
+  } catch (Exception $e) {
+    throw new Exception("Error deleting recod: {$e->getMessage()}");
+  }
+
+  return new Result(true, "User Deleted.");
 }
 
 /**

@@ -50,12 +50,16 @@ if (!isset($_SESSION['user'])) {
       </div>
       <div id="cmd-container" class="col-sm-9">
         <div id="cmd-changepw" class="form-section current">
+          <h4>Change Your Password</h4>
+          <hr>
           <form id="cmd-changepw-form">
+            <input type="hidden" name="cmd-changepw" value="1">
             <div id="cmd-changepw-form-errors">
             </div>
             <div class="form-group">
               <label for="cmd-changepw-old-pw">Old Password</label>
               <input id="cmd-changepw-old-pw"
+                     name="old-pw"
                      type="password"
                      class="form-control"
                      placeholder="Old Password"
@@ -65,6 +69,7 @@ if (!isset($_SESSION['user'])) {
             <div class="form-group">
               <label for="cmd-changepw-new-pw">New Password</label>
               <input id="cmd-changepw-new-pw"
+                     name="new-pw"
                      type="password"
                      class="form-control"
                      placeholder="New Password"
@@ -75,6 +80,7 @@ if (!isset($_SESSION['user'])) {
             <div class="form-group">
               <label for="cmd-changepw-rpt-pw">Repeat Password</label>
               <input id="cmd-changepw-rpt-pw"
+                     name="rpt-pw"
                      type="password"
                      class="form-control"
                      placeholder="Repeat Password"
@@ -89,24 +95,53 @@ if (!isset($_SESSION['user'])) {
           <?php if ($_SESSION['user']->auth_state !== 'admin'): ?>
             <p>You do are not an administrator of this page, contact an administrator to add users.</p>
           <?php else: ?>
+            <h4>Add a New User</h4>
+            <hr>
             <form id="cmd-addusr-form">
+              <input type="hidden" name="cmd-addusr" value="1">
               <div id="cmd-addusr-form-errors">
               </div>
               <div class="form-group">
                 <label for="cmd-addusr-new-username">New Username</label>
-                <input type="text" class="form-control" id="cmd-addusr-new-username" placeholder="Username" required>
+                <input id="cmd-addusr-new-username"
+                       name="username"
+                       type="text"
+                       class="form-control"
+                       placeholder="Username"
+                       data-parsley-pattern="^[a-zA-Z0-9]{4,}$"
+                       data-parsley-error-message="New Username must be at least four characters, and only have letters and numbers."
+                       required>
               </div>
               <div class="form-group">
                 <label for="cmd-addusr-new-pw">New Password</label>
-                <input type="password" class="form-control" id="cmd-addusr-new-pw" placeholder="New Password" autocomplete="off" required>
+                <input id="cmd-addusr-new-pw"
+                       name="new-pw"
+                       type="password"
+                       class="form-control"
+                       placeholder="New Password"
+                       autocomplete="off"
+                       data-parsley-equalto="#cmd-addusr-rpt-pw"
+                       data-parsley-error-message="Passwords don't match."
+                       required>
               </div>
               <div class="form-group">
                 <label for="cmd-addusr-rpt-pw">Repeat Password</label>
-                <input type="password" class="form-control" id="cmd-addusr-rpt-pw" placeholder="Repeat Password" autocomplete="off" required>
+                <input id="cmd-addusr-rpt-pw"
+                       name="rpt-pw"
+                       type="password"
+                       class="form-control"
+                       placeholder="Repeat Password"
+                       autocomplete="off"
+                       data-parsley-equalto="#cmd-addusr-new-pw"
+                       data-parsley-error-message="Passwords don't match."
+                       required>
               </div>
               <div class="form-group">
                 <label for="cmd-addusr-auth-id">App Authorization:</label>
-                <select class="form-control" id="cmd-addusr-auth-id" required>
+                <select id="cmd-addusr-auth-id"
+                        name="state"
+                        class="form-control"
+                        required>
                   <option selected disabled>loading...</option>
                 </select>
               </div>
@@ -118,12 +153,18 @@ if (!isset($_SESSION['user'])) {
           <?php if ($_SESSION['user']->auth_state !== 'admin'): ?>
             <p>You do are not an administrator of this page, contact an administrator to modify users.</p>
           <?php else: ?>
+            <h4>Modify a User Entry</h4>
+            <hr>
             <form id="cmd-modusr-form">
+              <input type="hidden" name="cmd-modusr" value="1">
               <div id="cmd-modusr-form-errors">
               </div>
               <div class="form-group">
                 <label for="cmd-modusr-uid">Select user to modify:</label>
-                <select class="form-control" id="cmd-modusr-uid" required>
+                <select id="cmd-modusr-uid"
+                        name="userid"
+                        class="form-control"
+                        required>
                   <option selected disabled>loading...</option>
                 </select>
               </div>
@@ -133,6 +174,7 @@ if (!isset($_SESSION['user'])) {
                          name="cmd-moduser-chk"
                          type="checkbox"
                          class="custom-control-input"
+                         data-parsley-error-message="You must choose at least one thing to modify."
                          required>
                   <span class="custom-control-indicator"></span>
                   <span class="custom-control-description">Change this user's password?</span>
@@ -140,21 +182,25 @@ if (!isset($_SESSION['user'])) {
                 <div class="form-group">
                   <label for="cmd-modusr-new-pw">New Password</label>
                   <input id="cmd-modusr-new-pw"
+                         name="new-pw"
                          type="password"
                          class="form-control"
                          placeholder="New Password"
                          autocomplete="off"
                          data-parsley-equalto="#cmd-modusr-rpt-pw"
+                         data-parsley-error-message="Passwords don't match."
                          disabled>
                 </div>
                 <div class="form-group">
                   <label for="cmd-modusr-rpt-pw">Repeat Password</label>
                   <input id="cmd-modusr-rpt-pw"
+                         name="rpt-pw"
                          type="password"
                          class="form-control"
                          placeholder="Repeat Password"
                          autocomplete="off"
                          data-parsley-equalto="#cmd-modusr-new-pw"
+                         data-parsley-error-message="Passwords don't match."
                          disabled>
                 </div>
               </div>
@@ -169,7 +215,10 @@ if (!isset($_SESSION['user'])) {
                 </label>
                 <div class="form-group">
                   <label for="exampleFormControlSelect1">App Authorization:</label>
-                  <select class="form-control" id="cmd-modusr-auth-id" disabled>
+                  <select id="cmd-modusr-auth-id"
+                          name="state"
+                          class="form-control"
+                          disabled>
                     <option selected disabled>loading...</option>
                   </select>
                 </div>
@@ -182,12 +231,18 @@ if (!isset($_SESSION['user'])) {
           <?php if ($_SESSION['user']->auth_state !== 'admin'): ?>
             <p>You do are not an administrator of this page, contact an administrator to delete users.</p>
           <?php else: ?>
+            <h4>Delete a User</h4>
+            <hr>
             <form id="cmd-delusr-form">
+              <input type="hidden" name="cmd-delusr" value="1">
               <div id="cmd-delusr-form-errors">
               </div>
               <div class="form-group">
                 <label for="exampleFormControlSelect1">Select user to delete:</label>
-                <select class="form-control" id="cmd-delusr-uid" required>
+                <select id="cmd-delusr-uid"
+                        name="userid"
+                        class="form-control"
+                        required>
                   <option selected disabled>loading...</option>
                 </select>
               </div>
@@ -283,34 +338,74 @@ if (!isset($_SESSION['user'])) {
     $('#cmd-changepw-form')
     .parsley(parsleyConfigChg)
     .on('form:submit', function () {
-      alert("Change pw");
+      if (debug) console.log(`Change password:`);
+
+      let data = $(`#cmd-changepw-form`).serialize();
+      if (debug) console.log(data);
+
+      submitConfig(data);
+
       return false;
     });
 
     $('#cmd-addusr-form')
     .parsley(parsleyConfigAdd)
     .on('form:submit', function () {
-      alert("addusr");
+      if (debug) console.log(`Add User:`);
+
+      let data = $(`#cmd-addusr-form`).serialize();
+      if (debug) console.log(data);
+
+      submitConfig(data);
+
       return false;
     });
 
     $('#cmd-modusr-form')
     .parsley(parsleyConfigMod)
     .on('form:submit', function () {
-      alert("moduser");
+      if (debug) console.log(`Modify User:`);
+
+      let data = $(`#cmd-modusr-form`).serialize();
+      if (debug) console.log(data);
+
+      submitConfig(data);
+
       return false;
     });
 
     $(`#cmd-delusr-form`)
     .parsley(parsleyConfigDel)
     .on('form:submit', function () {
-      alert("deluser");
+      if (debug) console.log(`Delete User:`);
+
+      let data = $(`#cmd-delusr-form`).serialize();
+      if (debug) console.log(data);
+
+      submitConfig(data);
+
       return false;
     });
 
   //ON DOCUMENT READY END
   });
   //ON DOCUMENT READY END
+
+  function submitConfig(data) {
+    $.ajax({
+      type: 'POST',
+      url: 'ajax/ajax_config.php',
+      data: `cmd-submit=1&${data}`,
+      beforeSend: function () {
+        if (debug) console.log("Change submitted:");
+        if (debug) console.log(data);
+      },
+      success: function (response) {
+        if (debug) console.log("Change reponse:");
+        if (debug) console.log(response);
+      }
+    });
+  }
 
   function getAuthStates(pTemplate, defaultList) {
     $.ajax({
