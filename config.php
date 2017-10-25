@@ -278,7 +278,7 @@ if (!isset($_SESSION['user'])) {
    */
 
 
-  var debug = true;
+  var debug = false;
 
   var optionTemplate;
   var optionLoading = [{value:'', text:'loading...'}];
