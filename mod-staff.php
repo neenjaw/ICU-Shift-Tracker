@@ -133,6 +133,9 @@ if (!isset($_SESSION['user'])) {
 
   <script>
 
+  //TODO LIST -- How to get the user's info to modify?
+  //TODO      -- Adapt the checkbox enable disable
+
   var debug = true;
 
   var optionTemplate;
@@ -144,30 +147,39 @@ if (!isset($_SESSION['user'])) {
   //ON DOCUMENT READY START
 
     //TODO adapt this one....
-    $(`#cmd-modusr-chk-auth`).click(function(){
-      if ($(this).prop(`checked`)) {
-        $(`#cmd-modusr-auth-id`).prop(`disabled`, false);
-        $(`#cmd-modusr-auth-id`).prop(`required`, true);
-      } else {
-        $(`#cmd-modusr-auth-id`).prop(`disabled`, true);
-        $(`#cmd-modusr-auth-id`).prop(`required`, false);
-        $(`#cmd-modusr-auth-id`).prop(`value`, ``);
-      }
+    // $(`#cmd-modusr-chk-auth`).click(function(){
+    //   if ($(this).prop(`checked`)) {
+    //     $(`#cmd-modusr-auth-id`).prop(`disabled`, false);
+    //     $(`#cmd-modusr-auth-id`).prop(`required`, true);
+    //   } else {
+    //     $(`#cmd-modusr-auth-id`).prop(`disabled`, true);
+    //     $(`#cmd-modusr-auth-id`).prop(`required`, false);
+    //     $(`#cmd-modusr-auth-id`).prop(`value`, ``);
+    //   }
+    // });
+    $(`#modstaff-name-chk`).click(function(){
+      //TODO finish
+    });
+    $(`#modstaff-category-chk`).click(function(){
+      //TODO finish
+    });
+    $(`#modstaff-activity-chk`).click(function(){
+      //TODO finish
     });
 
     optionTemplate = Handlebars.compile($("#select-option-template").html());
 
     getUsers(optionTemplate, optionLoading);
 
-    $('#cmd-changepw-form')
+    $('#modstaff-form')
     .parsley(parsleyConfigChg)
     .on('form:submit', function () {
-      if (debug) console.log(`Change password:`);
+      if (debug) console.log(`Mod Staff:`);
 
       let data = $(`#cmd-changepw-form`).serialize();
       if (debug) console.log(data);
 
-      submitConfig(data);
+      submitModStaff(data);
 
       return false;
     });
@@ -176,11 +188,11 @@ if (!isset($_SESSION['user'])) {
   });
   //ON DOCUMENT READY END
 
-  function submitConfig(data) {
+  function submitModStaff(data) {
     $.ajax({
       type: 'POST',
-      url: 'ajax/ajax_config.php',
-      data: `cmd-submit=1&${data}`,
+      url: 'ajax/ajax_mod_staff.php',
+      data: data,
       beforeSend: function () {
         if (debug) console.log("Change submitted:");
         if (debug) console.log(data);
@@ -195,24 +207,22 @@ if (!isset($_SESSION['user'])) {
   function getUsers(pTemplate, defaultList) {
     $.ajax({
       type: 'GET',
-      url: 'ajax/ajax_get_users.php',
+      url: 'ajax/ajax_get_staff.php',
       data: '',
       beforeSend: function () {
-        setSelectToLoading($('#cmd-delusr-uid'), pTemplate, {entry: defaultList});
-        setSelectToLoading($('#cmd-modusr-uid'), pTemplate, {entry: defaultList});
+        setSelectToLoading($('#staff-uid'), pTemplate, {entry: defaultList});
       },
       success: function (response) {
         let ul = JSON.parse(response);
         if (debug) console.log("AJAX returned, user list:");
         if (debug) console.log(ul);
 
-        //map users to appropriate format for makeSelect id->value, login->text
+        //map users to appropriate format for makeSelect id->value, names->text
         let mappedUsers = $.map(ul, function(e, i) {
-                            return {value:e.id, text:e.login};
+                            return {value: e.id, text: `${e.last_name}, ${e.first_name}`};
                           });
 
-        fillSelect($('#cmd-modusr-uid'), pTemplate, {entry: mappedUsers});
-        fillSelect($('#cmd-delusr-uid'), pTemplate, {entry: mappedUsers});
+        fillSelect($('#staff-uid'), pTemplate, {entry: mappedUsers});
       }
     });
   }

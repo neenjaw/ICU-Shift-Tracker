@@ -12,7 +12,7 @@ if (isset($_POST['date'])) {
 
 } else {
 
-  echo "Problem.";
+  echo json_encode($crud->getAllStaffObj());
 
 }
 
