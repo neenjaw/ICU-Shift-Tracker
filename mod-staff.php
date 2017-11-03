@@ -72,9 +72,13 @@ if (!isset($_SESSION['user'])) {
             </label>
             <!-- First Name -->
             <div class="form-group">
+              <label for="first-name">First Name</label>
+              <input type="text" class="form-control" id="first-name" name="first-name" placeholder="First Name" disabled>
             </div>
             <!-- Last Name -->
             <div class="form-group">
+              <label for="last-name">Last Name</label>
+              <input type="text" class="form-control" id="last-name" name="last-name" placeholder="Last Name" disabled>
             </div>
           </div>
 
@@ -89,6 +93,10 @@ if (!isset($_SESSION['user'])) {
             </label>
             <!-- Category -->
             <div class="form-group">
+              <label for="staff-category">Staff Category</label>
+              <select class="form-control" id="staff-category" name="staff-category" disabled>
+                <option selected disabled>loading...</option>
+              </select>
             </div>
           </div>
 
@@ -103,6 +111,11 @@ if (!isset($_SESSION['user'])) {
             </label>
             <!-- Active / Inactive -->
             <div class="form-group">
+              <label for="staff-active">Staff Active?</label>
+              <select class="form-control" id="staff-active" name="staff-active" disabled>
+                <option value="1">Active</option>
+                <option value="0">Inactive</option>
+              </select>
             </div>
           </div>
 
@@ -133,7 +146,7 @@ if (!isset($_SESSION['user'])) {
 
   <script>
 
-  //TODO LIST -- How to get the user's info to modify?
+  //TODO LIST -- Got the user, need to uupdate the name and category to match the user selected
   //TODO      -- Adapt the checkbox enable disable
 
   var debug = true;
@@ -157,6 +170,10 @@ if (!isset($_SESSION['user'])) {
     //     $(`#cmd-modusr-auth-id`).prop(`value`, ``);
     //   }
     // });
+    $(`#staff-uid`).change(function() {
+      if (debug) console.log(`Handler for .change() called.`);
+      getStaff($(`#staff-uid`).val());
+    });
     $(`#modstaff-name-chk`).click(function(){
       //TODO finish
     });
@@ -169,7 +186,8 @@ if (!isset($_SESSION['user'])) {
 
     optionTemplate = Handlebars.compile($("#select-option-template").html());
 
-    getUsers(optionTemplate, optionLoading);
+    getCategories(optionTemplate, optionLoading);
+    getAllStaff(optionTemplate, optionLoading);
 
     $('#modstaff-form')
     .parsley(parsleyConfigChg)
@@ -204,9 +222,49 @@ if (!isset($_SESSION['user'])) {
     });
   }
 
-  function getUsers(pTemplate, defaultList) {
+  function getStaff(uid) {
+    let data = `uid=${uid}`;
+
     $.ajax({
-      type: 'GET',
+      type: 'POST',
+      url: 'ajax/ajax_get_staff.php',
+      data: data,
+      beforeSend: function () {
+        if (debug) console.log("Uid submitted:");
+        if (debug) console.log(data);
+      },
+      success: function (response) {
+        let user = JSON.parse(response);
+
+        if (debug) console.log("Staff reponse:");
+        if (debug) console.log(user);
+
+        setStaffName(user);
+        setStaffCategory(user);
+        setStaffActive(user);
+      }
+    });
+  }
+
+  function setStaffName(user) {
+    let u = user || {};
+    u.last_name = user.last_name || '';
+    u.first_name = user.first_name || '';
+
+    return null;
+  }
+
+  function setStaffCategory(user) {
+    return null;
+  }
+
+  function setStaffActive(user) {
+    return null;
+  }
+
+  function getAllStaff(pTemplate, defaultList) {
+    $.ajax({
+      type: 'POST',
       url: 'ajax/ajax_get_staff.php',
       data: '',
       beforeSend: function () {
@@ -223,6 +281,34 @@ if (!isset($_SESSION['user'])) {
                           });
 
         fillSelect($('#staff-uid'), pTemplate, {entry: mappedUsers});
+      }
+    });
+  }
+
+  function getCategories(pTemplate, defaultList) {
+    let data = `category=all`;
+
+    $.ajax({
+      type: 'POST',
+      url: 'ajax/ajax_get_staff.php',
+      data: data,
+      beforeSend: function () {
+        if (debug) console.log("AJAX called, data sent:");
+        if (debug) console.log(data);
+
+        setSelectToLoading($('#staff-category'), pTemplate, {entry: defaultList});
+      },
+      success: function (response) {
+        let cl = JSON.parse(response);
+        if (debug) console.log("AJAX returned, category list:");
+        if (debug) console.log(cl);
+
+        //map users to appropriate format for makeSelect id->value, names->text
+        let mappedCategories = $.map(cl, function(e, i) {
+                                 return {value: e.id, text: e.category};
+                               });
+
+        fillSelect($('#staff-category'), pTemplate, {entry: mappedCategories});
       }
     });
   }
