@@ -36,16 +36,13 @@ if (!isset($_SESSION['user'])) {
     </div>
     <div class="row justify-content-center">
       <div class="col">
-        <h2>Modify / Delete Staff</h2>
+        <h2>Modify Staff</h2>
+        <hr>
       </div>
     </div>
     <div class="row">
       <div id="container" class="col">
-        <h4>Modify a Staff Entry</h4>
-        <hr>
         <form id="modstaff-form">
-          <input type="hidden" name="modstaff" value="1">
-
           <div id="modstaff-form-errors">
           </div>
 
@@ -62,7 +59,8 @@ if (!isset($_SESSION['user'])) {
           <div class="p-2 mb-2 border border-secondary">
             <label class="custom-control custom-checkbox">
               <input id="modstaff-name-chk"
-                     name="modstaff-chk"
+                     name="modstaff-chk[]"
+                     value="name"
                      type="checkbox"
                      class="custom-control-input"
                      data-parsley-error-message="You must choose at least one thing to modify."
@@ -73,37 +71,64 @@ if (!isset($_SESSION['user'])) {
             <!-- First Name -->
             <div class="form-group">
               <label for="first-name">First Name</label>
-              <input type="text" class="form-control" id="first-name" name="first-name" placeholder="First Name" disabled>
+              <input type="text"
+                      id="first-name"
+                      class="form-control"
+                      name="first-name"
+                      placeholder="First Name"
+                      disabled
+                      required
+                      minlength="2"
+                      data-parsley-error-message="First name is required. Minimum 2 characters.">
+              <input type="hidden" id="first-name-original">
             </div>
             <!-- Last Name -->
             <div class="form-group">
               <label for="last-name">Last Name</label>
-              <input type="text" class="form-control" id="last-name" name="last-name" placeholder="Last Name" disabled>
+              <input type="text"
+                      class="form-control"
+                      id="last-name"
+                      name="last-name"
+                      placeholder="Last Name"
+                      disabled
+                      required
+                      minlength="2"
+                      data-parsley-error-message="Last name is required. Minimum 2 characters.">
+              <input type="hidden" id="last-name-original">
             </div>
           </div>
 
           <div class="p-2 mb-2 border border-secondary">
             <label class="custom-control custom-checkbox">
               <input id="modstaff-category-chk"
-                     name="modstaff-chk"
+                     name="modstaff-chk[]"
+                     value="category"
                      type="checkbox"
                      class="custom-control-input">
               <span class="custom-control-indicator"></span>
               <span class="custom-control-description">Change this staff's category?</span>
             </label>
+
             <!-- Category -->
             <div class="form-group">
               <label for="staff-category">Staff Category</label>
-              <select class="form-control" id="staff-category" name="staff-category" disabled>
+              <select class="form-control"
+                      id="staff-category"
+                      name="staff-category"
+                      required
+                      disabled>
                 <option selected disabled>loading...</option>
               </select>
             </div>
+
+            <input type="hidden" id="staff-category-original">
           </div>
 
           <div class="p-2 mb-2 border border-secondary">
             <label class="custom-control custom-checkbox">
               <input id="modstaff-activity-chk"
-                     name="modstaff-chk"
+                     name="modstaff-chk[]"
+                     value="active"
                      type="checkbox"
                      class="custom-control-input">
               <span class="custom-control-indicator"></span>
@@ -112,11 +137,16 @@ if (!isset($_SESSION['user'])) {
             <!-- Active / Inactive -->
             <div class="form-group">
               <label for="staff-active">Staff Active?</label>
-              <select class="form-control" id="staff-active" name="staff-active" disabled>
+              <select class="form-control"
+                      id="staff-active"
+                      name="staff-active"
+                      disabled>
                 <option value="1">Active</option>
                 <option value="0">Inactive</option>
               </select>
             </div>
+
+            <input type="hidden" id="staff-active-original">
           </div>
 
           <button id="cmd-modusr-submit" type="submit" class="btn btn-primary">Modify Staff</button>
@@ -146,42 +176,57 @@ if (!isset($_SESSION['user'])) {
 
   <script>
 
-  //TODO LIST -- Got the user, need to uupdate the name and category to match the user selected
-  //TODO      -- Adapt the checkbox enable disable
+  //TODO LIST -- Need to handle the response from the mod-staff ajax
 
   var debug = true;
 
   var optionTemplate;
   var optionLoading = [{value:'', text:'loading...'}];
-  var parsleyConfigChg = { errorsContainer: "#modstaff-form-errors" };
+  var parsleyConfig = { errorsContainer: "#modstaff-form-errors" };
+
 
   //ON DOCUMENT READY START
   $(function() {
   //ON DOCUMENT READY START
 
-    //TODO adapt this one....
-    // $(`#cmd-modusr-chk-auth`).click(function(){
-    //   if ($(this).prop(`checked`)) {
-    //     $(`#cmd-modusr-auth-id`).prop(`disabled`, false);
-    //     $(`#cmd-modusr-auth-id`).prop(`required`, true);
-    //   } else {
-    //     $(`#cmd-modusr-auth-id`).prop(`disabled`, true);
-    //     $(`#cmd-modusr-auth-id`).prop(`required`, false);
-    //     $(`#cmd-modusr-auth-id`).prop(`value`, ``);
-    //   }
-    // });
     $(`#staff-uid`).change(function() {
       if (debug) console.log(`Handler for .change() called.`);
       getStaff($(`#staff-uid`).val());
     });
+
     $(`#modstaff-name-chk`).click(function(){
-      //TODO finish
+      if ($(this).prop(`checked`)) {
+        $(`#first-name`).prop('disabled', false);
+        $(`#last-name`).prop('disabled', false);
+      } else {
+        $(`#first-name`).prop('disabled', true);
+        $(`#first-name`).val($(`#first-name-original`).val());
+
+        $(`#last-name`).prop('disabled', true);
+        $(`#last-name`).val($(`#last-name-original`).val());
+      }
     });
+
     $(`#modstaff-category-chk`).click(function(){
-      //TODO finish
+      if ($(this).prop(`checked`)) {
+        $(`#staff-category`).prop('disabled', false);
+      } else {
+        $(`#staff-category`).prop('disabled', true);
+
+        let prevCategory = $(`#staff-category-original`).val();
+        $(`#staff-category option[value='${prevCategory}']`).prop('selected', true);
+      }
     });
+
     $(`#modstaff-activity-chk`).click(function(){
-      //TODO finish
+      if ($(this).prop(`checked`)) {
+        $(`#staff-active`).prop('disabled', false);
+      } else {
+        $(`#staff-active`).prop('disabled', true);
+
+        let prevActive = $(`#staff-active-original`).val();
+        $(`#staff-active option[value='${prevActive}']`).prop('selected', true);
+      }
     });
 
     optionTemplate = Handlebars.compile($("#select-option-template").html());
@@ -190,11 +235,11 @@ if (!isset($_SESSION['user'])) {
     getAllStaff(optionTemplate, optionLoading);
 
     $('#modstaff-form')
-    .parsley(parsleyConfigChg)
+    .parsley(parsleyConfig)
     .on('form:submit', function () {
-      if (debug) console.log(`Mod Staff:`);
+      let data = $('#modstaff-form').serialize();
 
-      let data = $(`#cmd-changepw-form`).serialize();
+      if (debug) console.log("Form submitted:");
       if (debug) console.log(data);
 
       submitModStaff(data);
@@ -251,15 +296,21 @@ if (!isset($_SESSION['user'])) {
     u.last_name = user.last_name || '';
     u.first_name = user.first_name || '';
 
-    return null;
+    $(`#first-name-original`).val(u.first_name);
+    $(`#first-name`).val(u.first_name);
+
+    $(`#last-name-original`).val(u.last_name);
+    $(`#last-name`).val(u.last_name);
   }
 
   function setStaffCategory(user) {
-    return null;
+    $(`#staff-category-original`).val(user.category_id);
+    $(`#staff-category option[value='${user.category_id}']`).prop('selected', true);
   }
 
   function setStaffActive(user) {
-    return null;
+    $(`#staff-active-original`).val(user.bool_is_active);
+    $(`#staff-active option[value='${user.bool_is_active}']`).prop('selected', true);
   }
 
   function getAllStaff(pTemplate, defaultList) {
@@ -281,6 +332,8 @@ if (!isset($_SESSION['user'])) {
                           });
 
         fillSelect($('#staff-uid'), pTemplate, {entry: mappedUsers});
+
+        getStaff($(`#staff-uid option`).first().val());
       }
     });
   }
