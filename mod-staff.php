@@ -184,7 +184,6 @@ if (!isset($_SESSION['user'])) {
   var optionLoading = [{value:'', text:'loading...'}];
   var parsleyConfig = { errorsContainer: "#modstaff-form-errors" };
 
-
   //ON DOCUMENT READY START
   $(function() {
   //ON DOCUMENT READY START

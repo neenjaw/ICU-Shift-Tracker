@@ -6,7 +6,6 @@ if (!isset($_SESSION['authenticated'])) {
   die("Unauthorized.");
 }
 
-
 // staff-id=1&
 // modstaff-chk=name&
 // first-name=joe&
@@ -29,9 +28,36 @@ if (!isset($_SESSION['authenticated'])) {
 //   ["staff-active"]=> string(1) "1"
 // }
 
-$field_name = array();
-$update_value = array();
+if (isset($_POST['modstaff-chk'])) {
+  if (isset($_POST['first-name'])) {
+    $first_name = trim($_POST['first-name']);
+  } else {
+    $first_name = null;
+  }
 
-var_dump($_POST);
+  if (isset($_POST['last-name'])) {
+    $last_name = trim($_POST['last-name']);
+  } else {
+    $last_name = null;
+  }
+
+  if (isset($_POST['staff-category'])) {
+    $category_id = trim($_POST['staff-category']);
+  } else {
+    $category_id = null;
+  }
+
+  if (isset($_POST['staff-active'])) {
+    $active = trim($_POST['staff-active']);
+  } else {
+    $active = null;
+  }
+
+  if ($crud->updateStaff($_POST['staff-id'], $first_name, $last_name, $category_id, $active)) {
+    echo "Ok. Updated.";
+  } else {
+    echo "Problem.";
+  }
+}
 
 ?>

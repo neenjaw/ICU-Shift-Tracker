@@ -27,7 +27,7 @@ $a_active = ' active';
 					<h6 class="dropdown-header">Staff</h6>
 					<?= makeNavLink($page_name, 'add-staff.php', 'Add new', 'dropdown-item'); ?>
 					<div class="dropdown-divider"></div>
-					<?= makeNavLink($page_name, 'mod-staff.php', 'Modify / Delete', 'dropdown-item disabled'); ?>
+					<?= makeNavLink($page_name, 'mod-staff.php', 'Modify', 'dropdown-item'); ?>
 				</div>
 			</li>
 			<li class="nav-item dropdown">

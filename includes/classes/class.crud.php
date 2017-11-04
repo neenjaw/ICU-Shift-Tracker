@@ -775,14 +775,49 @@ class crud
 
   public function updateStaff($id, $f_name, $l_name, $id_category, $is_active)
   {
+    $field_name = array();
+    $param_name = array();
+    $update_value = array();
+
+    if ($f_name !== null) {
+      array_push($field_name, "first_name");
+      array_push($param_name, ":fn");
+      array_push($update_value, $f_name);
+    }
+    if ($l_name !== null) {
+      array_push($field_name, "last_name");
+      array_push($param_name, ":ln");
+      array_push($update_value, $l_name);
+    }
+    if ($id_category !== null) {
+      array_push($field_name, "category_id");
+      array_push($param_name, ":cid");
+      array_push($update_value, $id_category);
+    }
+    if ($is_active !== null) {
+      array_push($field_name, "bool_is_active");
+      array_push($param_name, ":bia");
+      array_push($update_value, $is_active);
+    }
+
+    $update_string = array();
+
+    for ($i = 0; $i < count($field_name); $i++) {
+      array_push($update_string,"{$field_name[$i]}={$param_name[$i]}");
+    }
+
+    $sql = "UPDATE {$this->tbl_staff} SET ".implode(", ", $update_string)." WHERE id=:id";
+
     try {
-      $stmt = $this->db->prepare("UPDATE ".$this->tbl_staff." SET first_name=:fname, last_name=:lname, category_id=:cid, bool_is_active=:ia WHERE id=:id ");
-      $stmt->bindparam(":fname", $f_name);
-      $stmt->bindparam(":lname", $l_name);
-      $stmt->bindparam(":cid", $id_category);
-      $stmt->bindparam(":ia", $is_active);
+      $stmt = $this->db->prepare($sql);
+
+      for($i = 0; $i < count($param_name); $i++) {
+        $stmt->bindparam($param_name[$i], $update_value[$i]);
+      }
+
       $stmt->bindparam(":id", $id);
       $stmt->execute();
+
       return true;
     } catch (PDOException $e) {
       echo $e->getMessage();
