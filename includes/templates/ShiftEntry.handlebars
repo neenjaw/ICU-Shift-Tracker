@@ -1,18 +1,50 @@
 {{!-- Shift Details entries --}}
-<input id="shift-details-shift-id" type="hidden" name="shift-id" value="{{Id-Number}}">
-<div class="card-block">
-  <h4 class="card-title">{{Name}}'s shift</h4>
-  <h5 class="card-text">{{Date}}-{{D-or-N}}</h5>
-</div>
-<ul class="list-group list-group-flush">
-  <li class="list-group-item">Role: {{Role}}</li>
-  <li class="list-group-item">Pod: {{Assignment}}</li>
-  <li class="list-group-item">Non-vented: {{NV}}</li>
-  <li class="list-group-item">Doubled: {{Double}}</li>
-  <li class="list-group-item">Admitted: {{Admit}}</li>
-  <li class="list-group-item">Very sick: {{Very-Sick}}</li>
-  <li class="list-group-item">Code pager: {{Code-Pager}}</li>
-  <li class="list-group-item">CRRT: {{CRRT}}</li>
-  <li class="list-group-item">EVD: {{EVD}}</li>
-  <li class="list-group-item">Burn: {{Burn}}</li>
-</ul>
+<form id="shift-entry-form">
+  <input id="shift-details-shift-id" type="hidden" name="shift-id" value="{{Id-Number}}">
+  <div class="card-block">
+    <h4 class="card-title">{{Name}}'s shift</h4>
+    <h5 class="card-text">{{Date}}-{{D-or-N}}</h5>
+  </div>
+  <ul class="list-group list-group-flush">
+    <li class="list-group-item">
+      <span>Role: {{Role}} <a href="javascript:void(0);"><i class="fa fa-pencil" aria-hidden="true"></i></a></span>
+      <!-- Hidden input to edit role -->
+    </li>
+    <li class="list-group-item">
+      <span>Pod: {{Assignment}} <a href="javascript:void(0);"><i class="fa fa-pencil" aria-hidden="true"></i></a></span>
+      <!-- Hidden input to edit Pod -->
+    </li>
+    <li class="list-group-item">
+      <span>Non-vented: {{NV}} <a href="javascript:void(0);"><i class="fa fa-pencil" aria-hidden="true"></i></a></i></span>
+      <!-- Hidden input to edit Non-vented -->
+    </li>
+    <li class="list-group-item">
+      <span>Doubled: {{Double}} <a href="javascript:void(0);"><i class="fa fa-pencil" aria-hidden="true"></i></a></i></span>
+      <!-- Hidden input to edit Doubled -->
+    </li>
+    <li class="list-group-item">
+      <span>Admitted: {{Admit}} <a href="javascript:void(0);"><i class="fa fa-pencil" aria-hidden="true"></i></a></i></span>
+      <!-- Hidden input to edit Admitted -->
+    </li>
+    <li class="list-group-item">
+      <span>Very sick: {{Very-Sick}} <a href="javascript:void(0);"><i class="fa fa-pencil" aria-hidden="true"></i></a></span>
+      <!-- Hidden input to edit Very -->
+    </li>
+    <li class="list-group-item">
+      <span>Code pager: {{Code-Pager}} <a href="javascript:void(0);"><i class="fa fa-pencil" aria-hidden="true"></i></a></span>
+      <!-- Hidden input to edit Code -->
+    </li>
+    <li class="list-group-item">
+      <span>CRRT: {{CRRT}} <a href="javascript:void(0);"><i class="fa fa-pencil" aria-hidden="true"></i></a></span>
+      <!-- Hidden input to edit CRRT -->
+    </li>
+    <li class="list-group-item">
+      <span>EVD: {{EVD}} <a href="javascript:void(0);"><i class="fa fa-pencil" aria-hidden="true"></i></a></span>
+      <!-- Hidden input to edit EVD -->
+    </li>
+    <li class="list-group-item">
+      <span>Burn: {{Burn}} <a href="javascript:void(0);"><i class="fa fa-pencil" aria-hidden="true"></i></a></span>
+      <!-- Hidden input to edit Burn -->
+    </li>
+  </ul>
+</form>
