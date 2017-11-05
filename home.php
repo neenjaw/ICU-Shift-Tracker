@@ -133,6 +133,7 @@ if (!isset($_SESSION['authenticated'])) {
       tableId : 'shift-table',
       tableClasses : 'table table-striped table-responsive table-hover table-sm',
       theadClasses : 'thead-inverse',
+      rheadClasses : 'staff',
       monthClasses : 'month',
       dateClasses : 'date',
       staffDividerClasses : 'table-dark',

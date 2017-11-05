@@ -224,7 +224,7 @@ if (!isset($_SESSION['user'])) {
                   </select>
                 </div>
               </div>
-              <button id="cmd-modusr-submit" type="submit" class="btn btn-primary">Add New User</button>
+              <button id="cmd-modusr-submit" type="submit" class="btn btn-primary">Modify User</button>
             </form>
           <?php endif; ?>
         </div>
@@ -462,6 +462,12 @@ if (!isset($_SESSION['user'])) {
       success: function (response) {
         if (debug) console.log("Change reponse:");
         if (debug) console.log(response);
+
+        if (response.substring(0, 2) === "Ok") {
+          alertPop(response);
+          getUsers(optionTemplate, optionLoading);
+          $(`#cmd-delusr-form, #cmd-modusr-form, #cmd-addusr-form, #cmd-changepw-form`).trigger('reset');
+        }
       }
     });
   }
@@ -552,6 +558,25 @@ if (!isset($_SESSION['user'])) {
            .attr('disabled', true)
            .attr('selected', true);
   }
+
+  function alertPop(message, showDuration = 5000, classDuration = 1000) {
+    //display the alert to success
+    $('#form-alert').addClass('alert-success');
+    $('#form-alert p').html(`<h4>${message}</h4>`);
+    $('#alert-container').collapse('show');
+    $("#alert-container").focus();
+
+    //set timeout to hide the alert in x milliseconds
+    setTimeout(function(){
+      $("#alert-container").collapse('hide');
+
+      setTimeout(function(){
+        $("#form-alert p").html('');
+        $('#form-alert').removeClass('alert-success');
+      }, classDuration);
+    }, showDuration);
+  }
+
   </script>
 
   <!-- Footer include -->

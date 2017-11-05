@@ -262,6 +262,33 @@ if (!isset($_SESSION['user'])) {
       success: function (response) {
         if (debug) console.log("Change reponse:");
         if (debug) console.log(response);
+
+        if (response.substring(0, 2) === "Ok") {
+          getAllStaff(optionTemplate, optionLoading);
+
+          let fname = $(`#first-name`).val();
+          let lname = $(`#last-name`).val();
+
+          //display the alert to success
+          $('#form-alert').addClass('alert-success');
+          $('#form-alert p').html(`<h4>${fname} ${lname} successfully modified!</h4>`);
+          $('#alert-container').collapse('show');
+          $("#alert-container").focus();
+
+          //set timeout to hide the alert in x milliseconds
+          setTimeout(function(){
+            $("#alert-container").collapse('hide');
+
+            setTimeout(function(){
+              $("#form-alert p").html('');
+              $('#form-alert').removeClass('alert-success');
+            }, 1000);
+          }, 5000);
+
+          $('#modstaff-form').trigger("reset");
+
+          $(`#first-name, #last-name, #staff-category, #staff-active`).prop("disabled", true);
+        }
       }
     });
   }
