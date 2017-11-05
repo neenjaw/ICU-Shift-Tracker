@@ -27,8 +27,19 @@ if (!isset($_SESSION['authenticated'])) {
 //   ["staff-category"]=> string(1) "1"
 //   ["staff-active"]=> string(1) "1"
 // }
+if (isset($_POST['cmd-submit']) && isset($_POST['cmd-delstaff'])) {
+  if (isset($_POST['staff-id'])) {
+    $sid = trim($_POST['staff-id']);
 
-if (isset($_POST['modstaff-chk'])) {
+    if ($crud->deleteStaff($sid)) {
+      echo "Ok. Deleted.";
+    } else {
+      echo "Problem. Unable to Delete Staff.";
+    }
+  } else {
+    echo "Problem.  Staff unspecified for delete.";
+  }
+} elseif (isset($_POST['modstaff-chk'])) {
   if (isset($_POST['first-name'])) {
     $first_name = trim($_POST['first-name']);
   } else {
@@ -59,5 +70,4 @@ if (isset($_POST['modstaff-chk'])) {
     echo "Problem.";
   }
 }
-
 ?>

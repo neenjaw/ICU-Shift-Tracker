@@ -46,6 +46,7 @@ if (!isset($_SESSION['user'])) {
           <button type="button" class="btn btn-secondary btn-block" data-cmd="addusr">Add a user</button>
           <button type="button" class="btn btn-secondary btn-block" data-cmd="modusr">Modify User</button>
           <button type="button" class="btn btn-secondary btn-block" data-cmd="delusr">Delete User</button>
+          <button type="button" class="btn btn-secondary btn-block" data-cmd="delstaff">Delete Staff</button>
         </div>
       </div>
       <div id="cmd-container" class="col-sm-9">
@@ -250,6 +251,33 @@ if (!isset($_SESSION['user'])) {
             </form>
           <?php endif; ?>
         </div>
+        <div id="cmd-delstaff" class="form-section">
+          <?php if ($_SESSION['user']->auth_state !== 'admin'): ?>
+            <p>You do are not an administrator of this page, contact an administrator to delete users.</p>
+          <?php else: ?>
+            <h4>Delete a Staff</h4>
+            <hr>
+            <div class="bs-callout bs-callout-danger">
+              <h4>Warning:</h4>
+              <p>Deleting staff members from the system will also irreversably delete all of their records.</p>
+            </div>
+            <form id="cmd-delstaff-form">
+              <input type="hidden" name="cmd-delstaff" value="1">
+              <div id="cmd-delstaff-form-errors">
+              </div>
+              <div class="form-group">
+                <label for="exampleFormControlSelect1">Select staff to delete:</label>
+                <select id="cmd-delstaff-uid"
+                        name="staff-id"
+                        class="form-control"
+                        required>
+                  <option selected disabled>loading...</option>
+                </select>
+              </div>
+              <button id="cmd-delstaff-submit" type="submit" class="btn btn-danger">Delete staff</button>
+            </form>
+          <?php endif; ?>
+        </div>
       </div>
     </div>
   </div>
@@ -272,13 +300,8 @@ if (!isset($_SESSION['user'])) {
   </script>
 
   <script>
-  /*
-   * TODO Form validation and submission
-   * TODO add in form error messages
-   */
 
-
-  var debug = false;
+  var debug = true;
 
   var optionTemplate;
   var optionLoading = [{value:'', text:'loading...'}];
@@ -286,6 +309,7 @@ if (!isset($_SESSION['user'])) {
   var parsleyConfigAdd = { errorsContainer: "#cmd-addusr-form-errors" };
   var parsleyConfigMod = { errorsContainer: "#cmd-modusr-form-errors" };
   var parsleyConfigDel = { errorsContainer: "#cmd-delusr-form-errors" };
+  var parsleyConfigDelStaff = { errorsContainer: "#cmd-delstaff-form-errors" };
 
   //ON DOCUMENT READY START
   $(function() {
@@ -334,6 +358,7 @@ if (!isset($_SESSION['user'])) {
 
     getAuthStates(optionTemplate, optionLoading);
     getUsers(optionTemplate, optionLoading);
+    getAllStaff(optionTemplate, optionLoading);
 
     $('#cmd-changepw-form')
     .parsley(parsleyConfigChg)
@@ -383,6 +408,40 @@ if (!isset($_SESSION['user'])) {
       if (debug) console.log(data);
 
       submitConfig(data);
+
+      return false;
+    });
+
+    $(`#cmd-delstaff-form`)
+    .parsley(parsleyConfigDelStaff)
+    .on('form:submit', function () {
+      if (debug) console.log(`Delete Staff:`);
+
+      let data = $(`#cmd-delstaff-form`).serialize();
+      if (debug) console.log(data);
+
+      data = `cmd-submit=1&${data}`;
+
+      $.ajax({
+        type: 'POST',
+        url: 'ajax/ajax_mod_staff.php',
+        data: data,
+        beforeSend: function () {
+          if (debug) console.log("Delete staff submitted:");
+          if (debug) console.log(data);
+        },
+        success: function (response) {
+          if (debug) console.log("Delete staff reponse:");
+          if (debug) console.log(response);
+
+          if (response.substring(0, 2) === "Ok") {
+            if (debug) console.log("Staff deleted.");
+            getAllStaff(optionTemplate, optionLoading);
+          } else {
+            if (debug) console.log("Staff not deleted.");
+          }
+        }
+      });
 
       return false;
     });
@@ -453,6 +512,29 @@ if (!isset($_SESSION['user'])) {
 
         fillSelect($('#cmd-modusr-uid'), pTemplate, {entry: mappedUsers});
         fillSelect($('#cmd-delusr-uid'), pTemplate, {entry: mappedUsers});
+      }
+    });
+  }
+
+  function getAllStaff(pTemplate, defaultList) {
+    $.ajax({
+      type: 'POST',
+      url: 'ajax/ajax_get_staff.php',
+      data: '',
+      beforeSend: function () {
+        setSelectToLoading($('#cmd-delstaff-uid'), pTemplate, {entry: defaultList});
+      },
+      success: function (response) {
+        let ul = JSON.parse(response);
+        if (debug) console.log("AJAX returned, user list:");
+        if (debug) console.log(ul);
+
+        //map users to appropriate format for makeSelect id->value, names->text
+        let mappedUsers = $.map(ul, function(e, i) {
+                            return {value: e.id, text: `${e.last_name}, ${e.first_name}`};
+                          });
+
+        fillSelect($('#cmd-delstaff-uid'), pTemplate, {entry: mappedUsers});
       }
     });
   }

@@ -958,7 +958,7 @@ class crud
     $stmt = $this->db->prepare("DELETE FROM ".$this->tbl_staff." WHERE id=:id");
     $stmt->bindparam(":id", $id);
     $stmt->execute();
-    return true;
+    return ($stmt->rowCount() > 0);
   }
 
   public function deleteRole($id)

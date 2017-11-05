@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Oct 16, 2017 at 06:46 PM
+-- Generation Time: Nov 05, 2017 at 02:54 AM
 -- Server version: 10.1.20-MariaDB
 -- PHP Version: 7.0.8
 
@@ -32,12 +32,12 @@ CREATE TABLE `shift_login_tbl_users` (
 --
 
 INSERT INTO `shift_login_tbl_users` (`id`, `login`, `password`, `auth_id`) VALUES
-(1, 'user', '$2y$10$YDXwhCB9ocn/yZ0YQyY2suEYAer8GfaoIw9YJW3laZsLA7d4VAZty', 4),
+(1, 'user', '$2y$10$D0v7DhKS2dEK5xnX5K4m0eLG04LxlnvBmChnNWRwETtI4NBQ8BJSu', 4),
 (2, 'testuser', '$2y$10$1dYSW0u86rhdPbMuBlhAqOLyCU09fiQSS2OsugNAllAH5.BkNgwuS', 2),
 (3, 'firsttestuser', '$2y$10$mnWUoYZBj3ih/BTPACazuOiQ.nx5exwoWIpRcFCTiXkX7C7xxoiaG', 2),
 (9, 'admintestuser', '$2y$10$lQpq4Wv0k1mKhHRl.rqkqOnBteejpFa1q8rO65UHoWCsbZn8V80me', 4),
 (10, 'viewonlytestuser', '$2y$10$Oqx30gIRzrzVP4LLaDVCrO/m2jJExNK/49qNRRgl/S0BWH/2hUT7y', 3),
-(14, 'testtesttest', '$2y$10$ccHGJhSWnDqd0BHlG1.2VOidV7hnBE6E3LVOTir5oTP2w3gVw8RUq', 3);
+(14, 'testtesttest', '$2y$10$ccHGJhSWnDqd0BHlG1.2VOidV7hnBE6E3LVOTir5oTP2w3gVw8RUq', 1);
 
 -- --------------------------------------------------------
 
@@ -540,14 +540,14 @@ CREATE TABLE `shift_tracker_tbl_staff` (
 --
 
 INSERT INTO `shift_tracker_tbl_staff` (`id`, `last_name`, `first_name`, `category_id`, `bool_is_active`) VALUES
-(1, 'smith', 'joe', 1, 1),
+(1, 'smith', 'joes', 1, 1),
 (2, 'Kasprzak', 'Margurite', 1, 1),
 (3, 'Carone', 'Claretta', 1, 1),
 (4, 'Gambrell', 'Johnny', 1, 1),
 (5, 'Lundy', 'Basilia', 1, 1),
 (6, 'Sargent', 'Tamar', 1, 1),
 (7, 'Brecht', 'Mai', 1, 1),
-(8, 'Bakos', 'Audie', 1, 1),
+(8, 'Bakos', 'Audie', 1, 0),
 (9, 'Feher', 'Shanae', 1, 1),
 (10, 'Hong', 'Ken', 1, 1),
 (11, 'Estevez', 'Kimberely', 1, 1),
@@ -791,7 +791,7 @@ ALTER TABLE `userdemo01_tbl_users`
 -- AUTO_INCREMENT for table `shift_login_tbl_users`
 --
 ALTER TABLE `shift_login_tbl_users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 --
 -- AUTO_INCREMENT for table `shift_login_tbl_user_auth`
 --
@@ -843,7 +843,7 @@ ALTER TABLE `shift_login_tbl_users`
 ALTER TABLE `shift_tracker_tbl_shift_entry`
   ADD CONSTRAINT `FK_assignment_id` FOREIGN KEY (`assignment_id`) REFERENCES `shift_tracker_tbl_assignment` (`id`) ON UPDATE CASCADE,
   ADD CONSTRAINT `FK_role_id` FOREIGN KEY (`role_id`) REFERENCES `shift_tracker_tbl_staff_role` (`id`) ON UPDATE CASCADE,
-  ADD CONSTRAINT `FK_staff_id` FOREIGN KEY (`staff_id`) REFERENCES `shift_tracker_tbl_staff` (`id`) ON UPDATE CASCADE;
+  ADD CONSTRAINT `FK_staff_id` FOREIGN KEY (`staff_id`) REFERENCES `shift_tracker_tbl_staff` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `shift_tracker_tbl_staff`
