@@ -611,27 +611,6 @@ class crud
     return $editRow;
   }
 
-  public function getReadableShiftEntry($id) {
-    $shift_array = $this->getShiftEntry($id);
-    $readable_array = array();
-    $readable_array['Id-Number'] = $shift_array['id'];
-    $readable_array['Name'] = $this->getStaffNameById($shift_array['staff_id']);
-    $readable_array['Date'] = $shift_array['shift_date'];
-    $readable_array['Role'] = $this->getRoleNameById($shift_array['role_id']);
-    $readable_array['Assignment'] = $this->getAssignmentNamebyID($shift_array['assignment_id']);
-    $readable_array['NV'] = ($shift_array['bool_vented'] === '0') ? 'Yes':'No';
-    $readable_array['Double'] = ($shift_array['bool_doubled'] === '1') ? 'Yes':'No';
-    $readable_array['Admit'] = ($shift_array['bool_new_admit'] === '1') ? 'Yes':'No';
-    $readable_array['Very-Sick'] = ($shift_array['bool_very_sick'] === '1') ? 'Yes':'No';
-    $readable_array['Code-Pager'] = ($shift_array['bool_code_pager'] === '1') ? 'Yes':'No';
-    $readable_array['CRRT'] = ($shift_array['bool_crrt'] === '1') ? 'Yes':'No';
-    $readable_array['Burn'] = ($shift_array['bool_burn'] === '1') ? 'Yes':'No';
-    $readable_array['EVD'] = ($shift_array['bool_evd'] === '1') ? 'Yes':'No';
-    $readable_array['D-or-N'] = ($shift_array['bool_day_or_night'] === '1') ? 'N':'D';
-
-    return $readable_array;
-  }
-
   public function getShiftEntryForDisplay($id) {
     // Outputs a stdClass object which can be translated to the following JSON:
     // {
