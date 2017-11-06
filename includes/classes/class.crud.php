@@ -23,6 +23,7 @@ class crud
   private $tbl_role;
   private $tbl_category;
   private $tbl_assignment;
+  private $tbl_shift_entry_ref;
   private $v_entries_complete;
   private $v_entries_w_staff_w_category;
 
@@ -32,6 +33,7 @@ class crud
 
     $this->tbl_staff = 'shift_tracker_tbl_staff';
     $this->tbl_shift_entry = 'shift_tracker_tbl_shift_entry';
+    $this->tbl_shift_entry_ref = 'shift_tracker_tbl_shift_entry_ref';
     $this->tbl_role = 'shift_tracker_tbl_staff_role';
     $this->tbl_category = 'shift_tracker_tbl_staff_category';
     $this->tbl_assignment = 'shift_tracker_tbl_assignment';
@@ -628,6 +630,115 @@ class crud
     $readable_array['D-or-N'] = ($shift_array['bool_day_or_night'] === '1') ? 'N':'D';
 
     return $readable_array;
+  }
+
+  public function getShiftEntryForDisplay($id) {
+
+    // Need to create this for JSON output
+    // {
+    //   name: <name>,
+    //   date: <date>,
+    //   d-or-n: <d-or-n>,
+    //   item: [
+    //     {
+    //       item-id: <i-id>,
+    //       item-display-name: <i-display-name>,
+    //       item-value: <i-value>,
+    //       item-display-value: <i-display-value>,
+    //       select : [
+    //         {value: <value>, text: <text>},
+    //         {value: <value>, text: <text>},
+    //         {value: <value>, text: <text>}
+    //       ],
+    //       checkbox: true/false
+    //     }
+    //   ]
+    // }
+    //
+    // bool_doubled 0 = no, 1 = yes
+    // bool_non_vented 0 = no vent, 1 = yes
+    // vent	bool_new_admit 0 = no, 1 = yes
+    // bool_very_sick 0 = no, 1 = yes
+    // bool_code_pager 0 = no, 1 = yes
+    // bool_crrt 0 = no, 1 = yes
+    // bool_burn 0 = no, 1 = yes
+    // bool_evd 0 = no, 1 = yes
+    // bool_day_or_night 0 = D, 1 = N
+
+    $shift_array = $this->getShiftEntry($id);
+    $ref = $this->getShiftColumnRefArray();
+
+    $shift = (object) array();
+    $shift->item = array();
+
+    foreach ( $staff_array as $k => $v) {
+      if ($k === 'id') {
+        $shift->{'shift-id'} = $v;
+
+      } elseif ($k === 'staff_id') {
+        $shift->{'staff-id'} = $shift_array['staff_id'];
+        $shift->{'staff-name'} = $this->getStaffNameById($shift_array['staff_id']);
+
+      } elseif ($k === 'shift_date') {
+        $shift->{'date'} = $shift_array['shift_date'];
+
+      } else {
+        //TODO CREATE THE $item OBJECT, PUSH IT TO THE $shift->item ARRAY
+        $item = (object) array();
+        $item->{'item-id'} = $k;
+        $item->{'item-display-name'} = $ref[$k];
+        $item->{'item-value'} = $v;
+
+        if ($k === 'role_id') {
+          //query for all roles, add the select statements
+          //add the display value
+          $item->{'select'} = array();
+          $roles = $this->getAllRoles();
+
+          //loop through, build the select list, when one matches, add it as the display value.
+
+        } elseif ($k === 'assignment_id') {
+          //query for all assignments, add the select statements
+          //add the display value
+          $item->{'select'} = array();
+        } else {
+          if ($k === 'bool_day_or_night') {
+            if (intval($v) === 0) {
+              $item->{'item-display-value'} = 'D';
+            } else {
+              $item->{'item-display-value'} = 'N';
+            }
+          } else {
+            if (intval($v) === 0) {
+              $item->{'item-display-value'} = 'No';
+            } else {
+              $item->{'item-display-value'} = 'Yes';
+            }
+          }
+
+          $item->{'checkbox'} = true
+        }
+      }
+    }
+  }
+
+  private function getShiftColumnRefArray() {
+    $sql = "SELECT * FROM {$this->tbl_shift_entry_ref}";
+
+    try {
+      $stmt = $this->db->prepare($sql);
+      $stmt->execute();
+
+      $ref = array();
+
+      while ($row=$stmt->fetch(PDO::FETCH_ASSOC)) {
+        $ref[$row['column_name']] = $row['display_name'];
+      }
+    } catch (Exception $e) {
+      $ref = null;
+    }
+
+    return $ref;
   }
 
   /**

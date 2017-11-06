@@ -122,3 +122,10 @@ div.inner-item:not(:last-child) {
 #shift-table td, #shift-table th {
 	text-align: center;
 }
+
+/*
+ */
+
+.shift-item-edit {
+	display: none;
+}

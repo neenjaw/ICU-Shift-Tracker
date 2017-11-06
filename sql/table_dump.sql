@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Nov 05, 2017 at 02:54 AM
+-- Generation Time: Nov 05, 2017 at 11:53 PM
 -- Server version: 10.1.20-MariaDB
 -- PHP Version: 7.0.8
 
@@ -33,7 +33,6 @@ CREATE TABLE `shift_login_tbl_users` (
 
 INSERT INTO `shift_login_tbl_users` (`id`, `login`, `password`, `auth_id`) VALUES
 (1, 'user', '$2y$10$D0v7DhKS2dEK5xnX5K4m0eLG04LxlnvBmChnNWRwETtI4NBQ8BJSu', 4),
-(2, 'testuser', '$2y$10$1dYSW0u86rhdPbMuBlhAqOLyCU09fiQSS2OsugNAllAH5.BkNgwuS', 2),
 (3, 'firsttestuser', '$2y$10$mnWUoYZBj3ih/BTPACazuOiQ.nx5exwoWIpRcFCTiXkX7C7xxoiaG', 2),
 (9, 'admintestuser', '$2y$10$lQpq4Wv0k1mKhHRl.rqkqOnBteejpFa1q8rO65UHoWCsbZn8V80me', 4),
 (10, 'viewonlytestuser', '$2y$10$Oqx30gIRzrzVP4LLaDVCrO/m2jJExNK/49qNRRgl/S0BWH/2hUT7y', 3),
@@ -121,12 +120,10 @@ INSERT INTO `shift_tracker_tbl_shift_entry` (`id`, `shift_date`, `staff_id`, `ro
 (6, '2017-07-12', 21, 5, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0),
 (7, '2017-04-02', 17, 5, 2, 0, 1, 0, 0, 0, 0, 0, 0, 0),
 (8, '2017-01-19', 26, 5, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0),
-(9, '2017-04-26', 1, 5, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0),
 (10, '2017-07-15', 15, 5, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0),
 (11, '2017-05-22', 5, 5, 2, 0, 1, 0, 0, 0, 0, 0, 0, 0),
 (12, '2017-05-02', 14, 5, 2, 0, 1, 0, 0, 0, 0, 0, 0, 0),
 (13, '2017-07-18', 8, 5, 2, 0, 1, 0, 0, 0, 0, 0, 0, 0),
-(14, '2017-05-02', 1, 5, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0),
 (15, '2017-04-15', 22, 5, 2, 0, 1, 0, 0, 0, 0, 0, 0, 0),
 (16, '2017-05-16', 26, 5, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0),
 (17, '2017-05-14', 3, 5, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0),
@@ -135,7 +132,6 @@ INSERT INTO `shift_tracker_tbl_shift_entry` (`id`, `shift_date`, `staff_id`, `ro
 (20, '2017-02-05', 4, 5, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0),
 (21, '2017-04-17', 4, 5, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0),
 (22, '2017-05-19', 19, 5, 2, 0, 1, 0, 0, 0, 0, 0, 0, 0),
-(23, '2017-03-31', 1, 5, 2, 0, 1, 0, 0, 0, 0, 0, 0, 0),
 (24, '2017-01-10', 14, 5, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0),
 (25, '2017-06-10', 24, 5, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0),
 (26, '2017-07-06', 21, 5, 2, 0, 1, 0, 0, 0, 0, 0, 0, 0),
@@ -167,7 +163,6 @@ INSERT INTO `shift_tracker_tbl_shift_entry` (`id`, `shift_date`, `staff_id`, `ro
 (52, '2017-01-11', 22, 5, 2, 0, 1, 0, 0, 0, 0, 0, 0, 0),
 (53, '2017-01-19', 13, 5, 2, 0, 1, 0, 0, 0, 0, 0, 0, 0),
 (54, '2017-07-12', 3, 5, 2, 0, 1, 0, 0, 0, 0, 0, 0, 0),
-(55, '2017-02-20', 1, 5, 2, 0, 1, 0, 0, 0, 0, 0, 0, 0),
 (56, '2017-02-18', 2, 5, 2, 0, 1, 0, 0, 0, 0, 0, 0, 0),
 (57, '2017-02-21', 9, 5, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0),
 (58, '2017-04-05', 15, 5, 2, 0, 1, 0, 0, 0, 0, 0, 0, 0),
@@ -219,7 +214,6 @@ INSERT INTO `shift_tracker_tbl_shift_entry` (`id`, `shift_date`, `staff_id`, `ro
 (104, '2017-07-02', 11, 5, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0),
 (105, '2017-06-09', 23, 5, 2, 0, 1, 0, 0, 0, 0, 0, 0, 0),
 (106, '2017-02-10', 29, 5, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0),
-(107, '2017-02-24', 1, 5, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0),
 (108, '2017-06-26', 28, 5, 2, 0, 1, 0, 0, 0, 0, 0, 0, 0),
 (109, '2017-06-30', 16, 5, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0),
 (110, '2017-03-05', 26, 5, 2, 0, 1, 0, 0, 0, 0, 0, 0, 0),
@@ -236,9 +230,7 @@ INSERT INTO `shift_tracker_tbl_shift_entry` (`id`, `shift_date`, `staff_id`, `ro
 (121, '2017-05-23', 9, 5, 2, 0, 1, 0, 0, 0, 0, 0, 0, 0),
 (122, '2017-04-18', 13, 5, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0),
 (123, '2017-06-23', 4, 5, 2, 0, 1, 0, 0, 0, 0, 0, 0, 0),
-(124, '2017-04-13', 1, 5, 2, 0, 1, 0, 0, 0, 0, 0, 0, 0),
 (125, '2017-05-05', 8, 5, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0),
-(126, '2017-01-27', 1, 5, 2, 0, 1, 0, 0, 0, 0, 0, 0, 0),
 (127, '2017-06-07', 19, 5, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0),
 (128, '2017-02-18', 9, 5, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0),
 (129, '2017-06-12', 13, 5, 2, 0, 1, 0, 0, 0, 0, 0, 0, 0),
@@ -276,7 +268,6 @@ INSERT INTO `shift_tracker_tbl_shift_entry` (`id`, `shift_date`, `staff_id`, `ro
 (161, '2017-07-03', 11, 5, 2, 0, 1, 0, 0, 0, 0, 0, 0, 0),
 (162, '2017-05-19', 24, 5, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0),
 (163, '2017-06-14', 28, 5, 2, 0, 1, 0, 0, 0, 0, 0, 0, 0),
-(164, '2017-06-18', 1, 5, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0),
 (165, '2017-01-20', 6, 5, 2, 0, 1, 0, 0, 0, 0, 0, 0, 0),
 (166, '2017-07-05', 16, 5, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0),
 (167, '2017-06-25', 12, 5, 2, 0, 1, 0, 0, 0, 0, 0, 0, 0),
@@ -304,7 +295,6 @@ INSERT INTO `shift_tracker_tbl_shift_entry` (`id`, `shift_date`, `staff_id`, `ro
 (189, '2017-02-13', 29, 5, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0),
 (190, '2017-06-11', 2, 5, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0),
 (191, '2017-07-10', 17, 5, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0),
-(192, '2017-04-18', 1, 5, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0),
 (193, '2017-02-24', 19, 5, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0),
 (194, '2017-07-13', 7, 5, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0),
 (195, '2017-04-07', 6, 5, 2, 0, 1, 0, 0, 0, 0, 0, 0, 0),
@@ -333,7 +323,6 @@ INSERT INTO `shift_tracker_tbl_shift_entry` (`id`, `shift_date`, `staff_id`, `ro
 (218, '2017-05-26', 10, 5, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0),
 (219, '2017-03-09', 5, 5, 2, 0, 1, 0, 0, 0, 0, 0, 0, 0),
 (220, '2017-06-13', 26, 5, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0),
-(221, '2017-02-09', 1, 5, 2, 0, 1, 0, 0, 0, 0, 0, 0, 0),
 (222, '2017-06-08', 10, 5, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0),
 (223, '2017-03-24', 17, 5, 2, 0, 1, 0, 0, 0, 0, 0, 0, 0),
 (224, '2017-02-24', 14, 5, 2, 0, 1, 0, 0, 0, 0, 0, 0, 0),
@@ -352,7 +341,6 @@ INSERT INTO `shift_tracker_tbl_shift_entry` (`id`, `shift_date`, `staff_id`, `ro
 (237, '2017-02-24', 27, 5, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0),
 (238, '2017-01-23', 4, 5, 2, 0, 1, 0, 0, 0, 0, 0, 0, 0),
 (239, '2017-02-17', 28, 5, 2, 0, 1, 0, 0, 0, 0, 0, 0, 0),
-(240, '2017-06-24', 1, 5, 2, 0, 1, 0, 0, 0, 0, 0, 0, 0),
 (241, '2017-06-15', 19, 5, 2, 0, 1, 0, 0, 0, 0, 0, 0, 0),
 (242, '2017-04-09', 19, 5, 2, 0, 1, 0, 0, 0, 0, 0, 0, 0),
 (243, '2017-01-03', 22, 5, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0),
@@ -378,7 +366,6 @@ INSERT INTO `shift_tracker_tbl_shift_entry` (`id`, `shift_date`, `staff_id`, `ro
 (263, '2017-01-28', 25, 5, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0),
 (264, '2017-05-03', 18, 5, 2, 0, 1, 0, 0, 0, 0, 0, 0, 0),
 (265, '2017-07-07', 10, 5, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0),
-(266, '2017-02-28', 1, 5, 2, 0, 1, 0, 0, 0, 0, 0, 0, 0),
 (267, '2017-05-27', 13, 5, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0),
 (268, '2017-01-16', 26, 5, 2, 0, 1, 0, 0, 0, 0, 0, 0, 0),
 (269, '2017-07-22', 12, 5, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0),
@@ -449,7 +436,6 @@ INSERT INTO `shift_tracker_tbl_shift_entry` (`id`, `shift_date`, `staff_id`, `ro
 (477, '2017-10-05', 42, 5, 1, 1, 1, 0, 0, 0, 1, 0, 1, 1),
 (478, '2017-10-05', 17, 5, 2, 0, 1, 0, 0, 0, 0, 0, 0, 1),
 (479, '2017-10-05', 43, 5, 2, 1, 1, 0, 0, 1, 0, 0, 0, 1),
-(480, '2017-10-05', 1, 5, 2, 0, 0, 0, 0, 0, 0, 0, 0, 1),
 (481, '2017-10-05', 22, 5, 3, 0, 1, 0, 0, 0, 0, 0, 0, 1),
 (482, '2017-10-05', 6, 5, 3, 0, 0, 0, 0, 1, 0, 0, 0, 1),
 (483, '2017-10-05', 21, 5, 3, 0, 1, 0, 0, 0, 0, 0, 0, 1),
@@ -524,6 +510,38 @@ INSERT INTO `shift_tracker_tbl_shift_entry` (`id`, `shift_date`, `staff_id`, `ro
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `shift_tracker_tbl_shift_entry_ref`
+--
+
+CREATE TABLE `shift_tracker_tbl_shift_entry_ref` (
+  `column_name` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
+  `display_name` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
+  `form_type` varchar(20) COLLATE utf8_unicode_ci DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Dumping data for table `shift_tracker_tbl_shift_entry_ref`
+--
+
+INSERT INTO `shift_tracker_tbl_shift_entry_ref` (`column_name`, `display_name`, `form_type`) VALUES
+('assignment_id', 'Assignment', 'select'),
+('bool_burn', 'Burn', 'checkbox'),
+('bool_code_pager', 'Code Pager', 'checkbox'),
+('bool_crrt', 'CRRT', 'checkbox'),
+('bool_day_or_night', 'D-or-N', 'checkbox'),
+('bool_doubled', 'Doubled', 'checkbox'),
+('bool_evd', 'EVD', 'checkbox'),
+('bool_new_admit', 'Admitted', 'checkbox'),
+('bool_vented', 'Vented', 'checkbox'),
+('bool_very_sick', 'Very Sick', 'checkbox'),
+('id', 'shift-id', NULL),
+('role_id', 'Role', 'select'),
+('shift_date', 'Date', NULL),
+('staff_id', 'Staff', NULL);
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `shift_tracker_tbl_staff`
 --
 
@@ -540,7 +558,6 @@ CREATE TABLE `shift_tracker_tbl_staff` (
 --
 
 INSERT INTO `shift_tracker_tbl_staff` (`id`, `last_name`, `first_name`, `category_id`, `bool_is_active`) VALUES
-(1, 'smith', 'joes', 1, 1),
 (2, 'Kasprzak', 'Margurite', 1, 1),
 (3, 'Carone', 'Claretta', 1, 1),
 (4, 'Gambrell', 'Johnny', 1, 1),
@@ -579,7 +596,8 @@ INSERT INTO `shift_tracker_tbl_staff` (`id`, `last_name`, `first_name`, `categor
 (44, 'Asd', 'Adas', 2, 1),
 (45, 'Ada', 'Dasdas', 1, 1),
 (46, 'Ggd', 'Ggdd', 2, 1),
-(47, 'Porter', 'Dave', 4, 1);
+(47, 'Porter', 'Dave', 4, 1),
+(49, 'Bleu', 'Menu', 4, 1);
 
 -- --------------------------------------------------------
 
@@ -756,6 +774,12 @@ ALTER TABLE `shift_tracker_tbl_shift_entry`
   ADD KEY `FK_staff_id` (`staff_id`);
 
 --
+-- Indexes for table `shift_tracker_tbl_shift_entry_ref`
+--
+ALTER TABLE `shift_tracker_tbl_shift_entry_ref`
+  ADD PRIMARY KEY (`column_name`);
+
+--
 -- Indexes for table `shift_tracker_tbl_staff`
 --
 ALTER TABLE `shift_tracker_tbl_staff`
@@ -791,7 +815,7 @@ ALTER TABLE `userdemo01_tbl_users`
 -- AUTO_INCREMENT for table `shift_login_tbl_users`
 --
 ALTER TABLE `shift_login_tbl_users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 --
 -- AUTO_INCREMENT for table `shift_login_tbl_user_auth`
 --
@@ -806,12 +830,12 @@ ALTER TABLE `shift_tracker_tbl_assignment`
 -- AUTO_INCREMENT for table `shift_tracker_tbl_shift_entry`
 --
 ALTER TABLE `shift_tracker_tbl_shift_entry`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=564;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=565;
 --
 -- AUTO_INCREMENT for table `shift_tracker_tbl_staff`
 --
 ALTER TABLE `shift_tracker_tbl_staff`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=50;
 --
 -- AUTO_INCREMENT for table `shift_tracker_tbl_staff_category`
 --
