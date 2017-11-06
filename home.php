@@ -197,30 +197,20 @@ if (!isset($_SESSION['authenticated'])) {
           $('#shift-detail-modal').modal('show');	//show the modal
 
           //set click listeners for edit, submit, cancel here.
-          //TODO BUTTON LOGIC
           $(`.shift-item-show a`).click(function() {
-            $(this).parent().hide();
-            $(this).parent().siblings().show();
+            shiftDetailEdit($(this));
 
-            return false;
+            return false; //stop click propagation
           });
           $(`button.shift-edit-submit`).click(function() {
-            //
+            shiftDetailEditSubmit($(this));
 
-            $elem = $(this).closest('span');
-            $elem.hide();
-            $elem.siblings().show();
-
-            return false;
+            return false; //stop click propagation
           });
           $(`button.shift-edit-cancel`).click(function() {
-            //
+            shiftDetailEditCancel($(this));
 
-            $elem = $(this).closest('span');
-            $elem.hide();
-            $elem.siblings().show();
-
-            return false;
+            return false; //stop click propagation
           });
         }
       });
@@ -273,6 +263,22 @@ if (!isset($_SESSION['authenticated'])) {
           $('#form-alert').removeClass(alertClass);
         }, 1000);
       }, alertTimeout);
+    }
+
+    //TODO finish these.
+    function shiftDetailEdit($elem) {
+      $elem.parent().hide();
+      $elem.parent().siblings().show();
+    }
+    function shiftDetailEditSubmit($elem) {
+      $parentSpan = $elem.closest('span');
+      $parentSpan.hide();
+      $parentSpan.siblings().show();
+    }
+    function shiftDetailEditCancel($elem) {
+      $parentSpan = $elem.closest('span');
+      $parentSpan.hide();
+      $parentSpan.siblings().show();
     }
 
   </script>
