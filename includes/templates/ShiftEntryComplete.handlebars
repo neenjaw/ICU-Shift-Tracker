@@ -50,36 +50,36 @@ let x = {
 --}}
 
 {{!-- Shift Details entries --}}
-
+<input id="shift-details-shift-id" type="hidden" value="{{shift-id}}">
 <div class="card-block">
-  <h4 class="card-title">{{name}}'s shift</h4>
-  <h5 class="card-text">{{date}}-{{d-or-n}}</h5>
+  <h4 class="card-title">{{staff-name}}'s shift</h4>
+  <h5 class="card-text">{{date}}</h5>
 </div>
-<ul class="list-group list-group-flush">
+<ul class="list-group list-group-flush mt-2">
   {{#each item}}
     <li class="list-group-item">
       <span class="shift-item-show">{{item-display-name}}: {{item-display-value}} <a href="javascript:void(0);"><i class="fa fa-pencil" aria-hidden="true"></i></a></span>
 
       <span class="shift-item-edit">
-        <form id="form-{{item-name}}" class="form-inline">
+        <form id="form-{{item-id}}" class="form-inline">
           <input type="hidden" name="shift-id" value="{{../shift-id}}">
-          <input type="hidden" name="shift-item-value" value="{{item-value}}">
+          <input type="hidden" name="shift-{{item-id}}-value" value="{{item-value}}">
 
           <div class="form-check mb-2 mr-sm-2 mb-sm-0">
 
             {{!-- only output if checkbox data exists --}}
             {{#if checkbox}}
               <label class="form-check-label">
-                <input class="form-check-input" id="check-{{item-name}}" type="checkbox"> {{item-display-name}}
+                <input class="form-check-input" id="check-{{item-id}}" type="checkbox"> {{item-display-name}}
               </label>
             {{/if}}
 
             {{!-- only output if select data exists --}}
             {{#if select}}
-              <label class="mr-sm-2" for="inlineFormCustomSelectPref">
+              <label class="mr-sm-2" for="select-{{item-id}}">
                 {{item-display-name}}
               </label>
-              <select class="custom-select mb-2 mr-sm-2 mb-sm-0" id="select-{{item-name}}">
+              <select class="custom-select mb-2 mr-sm-2 mb-sm-0" id="select-{{item-id}}">
                 {{#each select}}
                   <option value="{{this.value}}">{{this.text}}</option>
                 {{/each}}

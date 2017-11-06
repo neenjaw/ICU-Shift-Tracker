@@ -633,8 +633,7 @@ class crud
   }
 
   public function getShiftEntryForDisplay($id) {
-
-    // Need to create this for JSON output
+    // Outputs a stdClass object which can be translated to the following JSON:
     // {
     //   name: <name>,
     //   date: <date>,
@@ -654,72 +653,98 @@ class crud
     //     }
     //   ]
     // }
-    //
-    // bool_doubled 0 = no, 1 = yes
-    // bool_non_vented 0 = no vent, 1 = yes
-    // vent	bool_new_admit 0 = no, 1 = yes
-    // bool_very_sick 0 = no, 1 = yes
-    // bool_code_pager 0 = no, 1 = yes
-    // bool_crrt 0 = no, 1 = yes
-    // bool_burn 0 = no, 1 = yes
-    // bool_evd 0 = no, 1 = yes
-    // bool_day_or_night 0 = D, 1 = N
 
+    //Get the shift from the db and get the reference table
     $shift_array = $this->getShiftEntry($id);
     $ref = $this->getShiftColumnRefArray();
 
+    //create the shift object to be returned, initialize the item property
     $shift = (object) array();
     $shift->item = array();
 
-    foreach ( $staff_array as $k => $v) {
-      if ($k === 'id') {
-        $shift->{'shift-id'} = $v;
+    //for each property of the shift, add it to the shift object
+    foreach ( $shift_array as $field => $f_value) {
+      //add the shift id
+      if ($field === 'id') {
+        $shift->{'shift-id'} = $f_value;
 
-      } elseif ($k === 'staff_id') {
+      //add the staff info
+      } elseif ($field === 'staff_id') {
         $shift->{'staff-id'} = $shift_array['staff_id'];
         $shift->{'staff-name'} = $this->getStaffNameById($shift_array['staff_id']);
 
-      } elseif ($k === 'shift_date') {
+      //add the date
+      } elseif ($field === 'shift_date') {
         $shift->{'date'} = $shift_array['shift_date'];
 
+      //add the other properties
       } else {
-        //TODO CREATE THE $item OBJECT, PUSH IT TO THE $shift->item ARRAY
+        //create the item property array
         $item = (object) array();
-        $item->{'item-id'} = $k;
-        $item->{'item-display-name'} = $ref[$k];
-        $item->{'item-value'} = $v;
+        $item->{'item-id'} = $field;
+        $item->{'item-display-name'} = $ref[$field];
+        $item->{'item-value'} = $f_value;
 
-        if ($k === 'role_id') {
-          //query for all roles, add the select statements
-          //add the display value
+        //if adding the roles
+        if ($field === 'role_id') {
           $item->{'select'} = array();
           $roles = $this->getAllRoles();
 
-          //loop through, build the select list, when one matches, add it as the display value.
+          //get the role options, and also if it matches the shift's role value, get the display name
+          foreach ($roles as $r_id => $r_name) {
+            if ($r_id == $f_value) {
+              $item->{'item-display-value'} = $r_name;
+            }
 
-        } elseif ($k === 'assignment_id') {
-          //query for all assignments, add the select statements
-          //add the display value
+            //add the role option to the select propery array
+            array_push($item->{'select'}, (object) ['value' => $r_id, 'text' => $r_name]);
+          }
+
+        //if adding assignments
+        } elseif ($field === 'assignment_id') {
           $item->{'select'} = array();
-        } else {
-          if ($k === 'bool_day_or_night') {
-            if (intval($v) === 0) {
+          $assignments = $this->getAllAssignments();
+
+          //get the assignment options, and also if it matches the shift's assignment value, get the display name
+          foreach ($assignments as $a_id => $a_name) {
+            if ($a_id == $f_value) {
+              $item->{'item-display-value'} = $a_name;
+            }
+
+            //add the assignment option to the select propery array
+            array_push($item->{'select'}, (object) ['value' => $a_id, 'text' => $a_name]);
+          }
+
+        //if adding day-or-night
+        } elseif ($field === 'bool_day_or_night') {
+            //determine the display value
+            if (intval($f_value) === 0) {
               $item->{'item-display-value'} = 'D';
             } else {
               $item->{'item-display-value'} = 'N';
             }
+
+            //create the select options
+            $item->{'select'} = array();
+            array_push($item->{'select'}, (object) ['value' => 0, 'text' => "Day"]);
+            array_push($item->{'select'}, (object) ['value' => 1, 'text' => "Night"]);
+
+        //if adding any of the other properties
+        } else {
+          if (intval($f_value) === 0) {
+            $item->{'item-display-value'} = 'No';
           } else {
-            if (intval($v) === 0) {
-              $item->{'item-display-value'} = 'No';
-            } else {
-              $item->{'item-display-value'} = 'Yes';
-            }
+            $item->{'item-display-value'} = 'Yes';
           }
 
-          $item->{'checkbox'} = true
+          $item->{'checkbox'} = true;
         }
+
+        array_push($shift->{'item'}, $item);
       }
     }
+
+    return $shift;
   }
 
   private function getShiftColumnRefArray() {
