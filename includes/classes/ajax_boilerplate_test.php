@@ -6,10 +6,7 @@ require_once '../dbconfig.php';
 try {
   if (true) {
 
-
-    echo json_encode($crud->getRnStaff(), JSON_PRETTY_PRINT);
-    echo "<hr />";
-    echo json_encode($crud->getAllStaffObj(), JSON_PRETTY_PRINT);
+    echo json_encode($crud->getShiftEntryForDisplay(533), JSON_PRETTY_PRINT);
 
   } else {
     throw new Exception('Wrong arguments.');

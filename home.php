@@ -115,7 +115,7 @@ if (!isset($_SESSION['authenticated'])) {
   <!-- END Script include -->
 
   <script id="shift-entry-template" type="text/x-handlebars-template">
-    <?php include 'includes/templates/ShiftEntry.handlebars'; ?>
+    <?php include 'includes/templates/ShiftEntryComplete.handlebars'; ?>
   </script>
 
   <script src="assets/build-shift-table.js"></script>
@@ -187,7 +187,7 @@ if (!isset($_SESSION['authenticated'])) {
 
       $.ajax({
         type: 'POST',
-        url: 'ajax/ajax_shift_details.php',
+        url: 'ajax/ajax_get_shift_details.php',
         data: 'shift_id='+id+'',
         beforeSend: function () {
           $('#shift-detail-text').html();
@@ -196,6 +196,8 @@ if (!isset($_SESSION['authenticated'])) {
           if (debug) { console.log(response); }
           $('#shift-detail-text').html(shiftTemplate(JSON.parse(response))); //add the result between the div tags
           $('#shift-detail-modal').modal('show');	//show the modal
+
+          //set click listeners for edit, submit, cancel here.
         }
       });
     }
