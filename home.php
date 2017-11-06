@@ -97,7 +97,6 @@ if (!isset($_SESSION['authenticated'])) {
         </div>
 
         <div class="modal-footer clearfix">
-          <button id='modal-edit-shift-btn' class="btn btn-secondary">Edit</button>
           <button id='modal-delete-shift-btn' class="btn btn-danger">Delete</button>
           <button id='modal-close-btn' class="btn btn-primary" data-dismiss="modal">Close</button>
         </div>
@@ -198,6 +197,31 @@ if (!isset($_SESSION['authenticated'])) {
           $('#shift-detail-modal').modal('show');	//show the modal
 
           //set click listeners for edit, submit, cancel here.
+          //TODO BUTTON LOGIC
+          $(`.shift-item-show a`).click(function() {
+            $(this).parent().hide();
+            $(this).parent().siblings().show();
+
+            return false;
+          });
+          $(`button.shift-edit-submit`).click(function() {
+            //
+
+            $elem = $(this).closest('span');
+            $elem.hide();
+            $elem.siblings().show();
+
+            return false;
+          });
+          $(`button.shift-edit-cancel`).click(function() {
+            //
+
+            $elem = $(this).closest('span');
+            $elem.hide();
+            $elem.siblings().show();
+
+            return false;
+          });
         }
       });
     }
