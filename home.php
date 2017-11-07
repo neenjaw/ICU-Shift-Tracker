@@ -271,11 +271,15 @@ if (!isset($_SESSION['authenticated'])) {
       $elem.parent().siblings().show();
     }
     function shiftDetailEditSubmit($elem) {
+      // submit the form
+
       $parentSpan = $elem.closest('span');
       $parentSpan.hide();
       $parentSpan.siblings().show();
     }
     function shiftDetailEditCancel($elem) {
+      $elem.parent().trigger('reset'); // reset the form
+
       $parentSpan = $elem.closest('span');
       $parentSpan.hide();
       $parentSpan.siblings().show();
