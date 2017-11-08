@@ -271,7 +271,35 @@ if (!isset($_SESSION['authenticated'])) {
       $elem.parent().siblings().show();
     }
     function shiftDetailEditSubmit($elem) {
-      // submit the form
+      let formData = $elem.closest('form').serializeArray();
+      let ref = [];
+
+      jQuery.each(formData, function( index, value ) {
+        //alert( `${index}: name: ${value.name}, value: ${value.value}` );
+        ref[value.name] = value.value;
+      });
+      ref[ref['shift-item-id']] = ref[ref['shift-item-id']] || '0';
+
+      if (ref[ref['shift-item-id']] !== ref[`shift-${ref['shift-item-id']}-value`]) {
+        let data = `shift-id=${ref['shift-id']}&${ref['shift-item-id']}=${ref[ref['shift-item-id']]}`;
+
+        // submit the form
+        $.ajax({
+          type: 'POST',
+          url: 'ajax/ajax_put_shift_update.php',
+          data: data,
+          beforeSend: function () {
+            if (debug) console.log(`Update to be submitted:`);
+            if (debug) console.log(data);
+          },
+          success: function (response) {
+            if (debug) console.log(`Update response:`);
+            if (debug) console.log(response);
+
+
+          }
+        });
+      }
 
       $parentSpan = $elem.closest('span');
       $parentSpan.hide();

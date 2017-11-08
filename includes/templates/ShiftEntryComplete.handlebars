@@ -58,11 +58,15 @@ let x = {
 <ul class="list-group list-group-flush mt-2">
   {{#each item}}
     <li class="list-group-item">
-      <span class="shift-item-show">{{item-display-name}}: {{item-display-value}} <a href="javascript:void(0);"><i class="fa fa-pencil" aria-hidden="true"></i></a></span>
+      <span class="shift-item-show">
+        {{item-display-name}}: <span id="show-{{item-id}}-value">{{item-display-value}}</span>
+        <a href="javascript:void(0);"><i class="fa fa-pencil" aria-hidden="true"></i></a>
+      </span>
 
       <span class="shift-item-edit">
         <form id="form-{{item-id}}" class="form-inline">
           <input type="hidden" name="shift-id" value="{{../shift-id}}">
+          <input type="hidden" name="shift-item-id" value="{{item-id}}">
           <input type="hidden" name="shift-{{item-id}}-value" value="{{item-value}}">
 
           <div class="form-check mb-2 mr-sm-2 mb-sm-0">
@@ -70,7 +74,7 @@ let x = {
             {{!-- only output if checkbox data exists --}}
             {{#if checkbox}}
               <label class="form-check-label">
-                <input class="form-check-input" id="check-{{item-id}}" name="{{item-id}}" type="checkbox"> {{item-display-name}}
+                <input class="form-check-input" id="check-{{item-id}}" name="{{item-id}}" type="checkbox" value="1"> {{item-display-name}}
               </label>
             {{/if}}
 
