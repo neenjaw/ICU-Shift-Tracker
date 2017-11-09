@@ -671,12 +671,15 @@ class crud
 
           //get the role options, and also if it matches the shift's role value, get the display name
           foreach ($roles as $r_id => $r_name) {
+            $option = (object) ['value' => $r_id, 'text' => $r_name];
+
             if ($r_id == $f_value) {
               $item->{'item-display-value'} = $r_name;
+              $option->{'selected'} = true;
             }
 
             //add the role option to the select propery array
-            array_push($item->{'select'}, (object) ['value' => $r_id, 'text' => $r_name]);
+            array_push($item->{'select'}, $option);
           }
 
         //if adding assignments
@@ -686,37 +689,46 @@ class crud
 
           //get the assignment options, and also if it matches the shift's assignment value, get the display name
           foreach ($assignments as $a_id => $a_name) {
+            $option = (object) ['value' => $a_id, 'text' => $a_name];
+
             if ($a_id == $f_value) {
               $item->{'item-display-value'} = $a_name;
+              $option->{'selected'} = true;
             }
 
             //add the assignment option to the select propery array
-            array_push($item->{'select'}, (object) ['value' => $a_id, 'text' => $a_name]);
+            array_push($item->{'select'}, $option);
           }
 
         //if adding day-or-night
         } elseif ($field === 'bool_day_or_night') {
-            //determine the display value
-            if (intval($f_value) === 0) {
-              $item->{'item-display-value'} = 'D';
-            } else {
-              $item->{'item-display-value'} = 'N';
-            }
+          //create the select options
+          $item->{'select'} = array();
+          $option_day = (object) ['value' => 0, 'text' => "Day"];
+          $option_night = (object) ['value' => 1, 'text' => "Night"];
 
-            //create the select options
-            $item->{'select'} = array();
-            array_push($item->{'select'}, (object) ['value' => 0, 'text' => "Day"]);
-            array_push($item->{'select'}, (object) ['value' => 1, 'text' => "Night"]);
+          //determine the display value
+          if (intval($f_value) === 0) {
+            $item->{'item-display-value'} = 'D';
+            $option_day->{'selected'} = true;
+          } else {
+            $item->{'item-display-value'} = 'N';
+            $option_night->{'selected'} = true;
+          }
+
+          array_push($item->{'select'}, $option_day);
+          array_push($item->{'select'}, $option_night);
 
         //if adding any of the other properties
         } else {
+          $item->{'checkbox'} = true;
+
           if (intval($f_value) === 0) {
             $item->{'item-display-value'} = 'No';
           } else {
             $item->{'item-display-value'} = 'Yes';
+            $item->{'checked'} = true;
           }
-
-          $item->{'checkbox'} = true;
         }
 
         array_push($shift->{'item'}, $item);

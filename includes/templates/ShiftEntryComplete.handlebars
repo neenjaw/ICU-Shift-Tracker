@@ -74,7 +74,7 @@ let x = {
             {{!-- only output if checkbox data exists --}}
             {{#if checkbox}}
               <label class="form-check-label">
-                <input class="form-check-input" id="check-{{item-id}}" name="{{item-id}}" type="checkbox" value="1"> {{item-display-name}}
+                <input class="form-check-input" id="check-{{item-id}}" name="{{item-id}}" type="checkbox" value="1" {{#if this.checked}}checked{{/if}}>{{item-display-name}}
               </label>
             {{/if}}
 
@@ -85,7 +85,7 @@ let x = {
               </label>
               <select class="custom-select mb-2 mr-sm-2 mb-sm-0" id="select-{{item-id}}" name="{{item-id}}">
                 {{#each select}}
-                  <option value="{{this.value}}">{{this.text}}</option>
+                  <option value="{{this.value}}" {{#if this.selected}}selected{{/if}}>{{this.text}}</option>
                 {{/each}}
               </select>
             {{/if}}
