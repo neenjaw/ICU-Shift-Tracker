@@ -68,6 +68,12 @@ let x = {
           <input type="hidden" name="shift-id" value="{{../shift-id}}">
           <input type="hidden" name="shift-item-id" value="{{item-id}}">
           <input type="hidden" name="shift-{{item-id}}-value" value="{{item-value}}">
+          {{#if checkbox}}
+            <input type="hidden" name="{{item-id}}-item-type" value="checkbox">
+          {{/if}}
+          {{#if select}}
+            <input type="hidden" name="{{item-id}}-item-type" value="select">
+          {{/if}}
 
           <div class="form-check mb-2 mr-sm-2 mb-sm-0">
 

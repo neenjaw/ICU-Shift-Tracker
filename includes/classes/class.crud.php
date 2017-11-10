@@ -1022,54 +1022,32 @@ class crud
     }
   }
 
-  public function updateShiftEntry($id, $shift_date, $staff_id, $role_id, $assignment_id, $bool_day_or_night, $bool_doubled = false, $bool_vented = false, $bool_new_admit = false, $bool_very_sick = false, $bool_code_pager = false, $bool_crrt = false, $bool_evd = false, $bool_burn = false)
+  public function updateShiftEntry($id, $params)
   {
+    $params_to_update = '';
+    $comma = "";
+    foreach($params as $key => $val) {
+      $params_to_update .= $comma . $key . "=?";
+      $comma = ", ";
+    }
+
     try {
-      $stmt = $this->db->prepare("UPDATE ".$this->tbl_shift_entry." SET shift_date=:date, staff_id=:sid, role_id=:rid, assignment_id=:aid, bool_doubled=:bd, bool_vented=:bv, bool_new_admit=:bna, bool_very_sick=:bvs, bool_code_pager=:bcp, bool_crrt=:brt, bool_evd=:bev, bool_burn=:bbu, bool_day_or_night=:bdon,  WHERE id=:id");
-      $stmt->bindparam(":date", $shift_date);
-      $stmt->bindparam(":sid", $staff_id);
-      $stmt->bindparam(":rid", $role_id);
-      $stmt->bindparam(":aid", $assignment_id);
-      $stmt->bindparam(":bd", $this->booleanToInt($bool_doubled));
-      $stmt->bindparam(":bv", $this->booleanToInt($bool_vented));
-      $stmt->bindparam(":bna", $this->booleanToInt($bool_new_admit));
-      $stmt->bindparam(":bvs", $this->booleanToInt($bool_very_sick));
-      $stmt->bindparam(":bcp", $this->booleanToInt($bool_code_pager));
-      $stmt->bindparam(":brt", $this->booleanToInt($bool_crrt));
-      $stmt->bindparam(":bev", $this->booleanToInt($bool_evd));
-      $stmt->bindparam(":bbu", $this->booleanToInt($bool_burn));
-      $stmt->bindparam(":bdon", $this->booleanToInt($bool_day_or_night));
-      $stmt->bindparam(":id", $id);
+      $sql = "UPDATE {$this->tbl_shift_entry} SET {$params_to_update} WHERE id=?";
+      $stmt = $this->db->prepare($sql);
+
+      $i = 1;
+      foreach($params as $key => $val) {
+        // echo "VAL: '{$val}'\n";
+        $stmt->bindparam($i, $val);
+        $i++;
+      }
+
+      $stmt->bindparam($i, $id);
       $stmt->execute();
       return true;
     } catch (PDOException $e) {
-      echo $e->getMessage();
-      return false;
-    }
-  }
-
-  public function updateNaShiftEntry($id, $shift_date, $staff_id, $assignment_id, $bool_day_or_night)
-  {
-    try {
-      $role_id = $this->db->query("SELECT id FROM ".$this->tbl_role." WHERE role='NA'");
-
-      $this->updateShiftEntry($id, $shift_date, $staff_id, $role_id, $assignment_id, $bool_day_or_night);
-      return true;
-    } catch (PDOException $e) {
-      echo $e->getMessage();
-      return false;
-    }
-  }
-
-  public function updateUcShiftEntry($id, $shift_date, $staff_id, $assignment_id, $bool_day_or_night)
-  {
-    try {
-      $role_id = $this->db->query("SELECT id FROM ".$this->tbl_role." WHERE role='UC'");
-
-      $this->updateShiftEntry($id, $shift_date, $staff_id, $role_id, $assignment_id, $bool_day_or_night);
-      return true;
-    } catch (PDOException $e) {
-      echo $e->getMessage();
+      echo "{$e->getMessage()}\n";
+      // echo "SQL query attempted: '{$sql}'\n";
       return false;
     }
   }

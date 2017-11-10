@@ -47,9 +47,9 @@ if (!isset($_SESSION['authenticated'])) {
           <span class="sr-only">Loading...</span>
         <!-- END GENERATED TABLE -->
       </div>
-      <div id="shift-table-legend" class="col-md-2">
+      <div class="col-md-2">
         <!-- <div class="card"> -->
-        <div class="card sticky-top" style="width: 170px;">
+        <div id="sidebar" class="card sticky-top affix" style="width: 170px;">
           <div class="card-body">
             <h4 class="card-title">Legend</h4>
             <p class="card-text">Each letter represents a quick look at the entered shift.</p>
@@ -97,6 +97,7 @@ if (!isset($_SESSION['authenticated'])) {
         </div>
 
         <div class="modal-footer clearfix">
+          <input type="hidden" id="shift-modified" value="no">
           <button id='modal-delete-shift-btn' class="btn btn-danger">Delete</button>
           <button id='modal-close-btn' class="btn btn-primary" data-dismiss="modal">Close</button>
         </div>
@@ -149,6 +150,12 @@ if (!isset($_SESSION['authenticated'])) {
 
       $("#modal-delete-shift-btn").on("click", function(){
         deleteShiftEntry($(`#shift-details-shift-id`).val());
+      });
+
+      $("#modal-close-btn").on("click", function(){
+        if ($(`#shift-modified`).val() != 'no') {
+          getShiftTable(daysToPrint, daysOffset, categoryToFetch);
+        }
       });
 
       //compile the shift template with Handlebars
@@ -265,11 +272,12 @@ if (!isset($_SESSION['authenticated'])) {
       }, alertTimeout);
     }
 
-    //TODO finish these.
+
     function shiftDetailEdit($elem) {
       $elem.parent().hide();
       $elem.parent().siblings().show();
     }
+
     function shiftDetailEditSubmit($elem) {
       let formData = $elem.closest('form').serializeArray();
       let ref = [];
@@ -296,7 +304,31 @@ if (!isset($_SESSION['authenticated'])) {
             if (debug) console.log(`Update response:`);
             if (debug) console.log(response);
 
+            if (response.substring(0, 2) === "Ok") {
+              if (debug) console.log("Shift updated.");
 
+              let inputType = $(`input[name='${ref['shift-item-id']}-item-type']`).val();
+              let newDisplayValue = '';
+              if (inputType == 'select') {
+
+                newDisplayValue = $(`select[name='${ref['shift-item-id']}'] option[value='${ref[ref['shift-item-id']]}']`).text();
+
+              } else if (inputType == 'checkbox') {
+
+                if (ref[ref['shift-item-id']] == '1') {
+                  newDisplayValue = 'Yes';
+                } else {
+                  newDisplayValue = 'No';
+                }
+
+              }
+
+              $(`#shift-modified`).val('yes');
+              $(`input[name='shift-${ref['shift-item-id']}-value']`).val(ref[ref['shift-item-id']]);
+              $(`#show-${ref['shift-item-id']}-value`).text(newDisplayValue);
+            } else {
+              if (debug) console.log("Shift not updated.");
+            }
           }
         });
       }
@@ -305,9 +337,8 @@ if (!isset($_SESSION['authenticated'])) {
       $parentSpan.hide();
       $parentSpan.siblings().show();
     }
-    function shiftDetailEditCancel($elem) {
-      $elem.parent().trigger('reset'); // reset the form
 
+    function shiftDetailEditCancel($elem) {
       $parentSpan = $elem.closest('span');
       $parentSpan.hide();
       $parentSpan.siblings().show();
