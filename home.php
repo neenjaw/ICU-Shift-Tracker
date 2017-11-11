@@ -90,7 +90,7 @@ if (!isset($_SESSION['authenticated'])) {
 
         <div class="modal-header">
           <h5 class="modal-title">Shift Details:</h5>
-          <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
+          <button id="modal-x-btn" type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
         </div>
 
         <div class="modal-body" id="shift-detail-text">
@@ -152,7 +152,7 @@ if (!isset($_SESSION['authenticated'])) {
         deleteShiftEntry($(`#shift-details-shift-id`).val());
       });
 
-      $("#modal-close-btn").on("click", function(){
+      $("#modal-close-btn, #modal-x-btn").on("click", function(){
         if ($(`#shift-modified`).val() != 'no') {
           getShiftTable(daysToPrint, daysOffset, categoryToFetch);
         }
