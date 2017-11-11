@@ -1,0 +1,114 @@
+{{!--
+Object accepted by template:
+
+let x = {
+  name: <name>,
+  date: <date>,
+  d-or-n: <d-or-n>,
+  item: [
+    {
+      item-id: <i-id>,
+      item-display-name: <i-display-name>,
+      item-value: <i-value>,
+      select : [
+        {value: <value>, text: <text>},
+        {value: <value>, text: <text>},
+        {value: <value>, text: <text>}
+      ],
+      checkbox: true/false
+    }
+  ]
+}
+
+ex)
+let x = {
+  name: "Dave Jones (RN)",
+  date: "1999-10-30",
+  d-or-n: "D",
+  shift-id:
+  item: [
+    {
+      item-name: "assignment",
+      item-display-name: "Assignment",
+      item-value: "1",
+      item-display-value: "A",
+      select : [
+        {value: 1, text: "A"},
+        {value: 2, text: "B"},
+        {value: 3, text: "C"}
+      ]
+    },
+    {
+      item-id: "non-vent",
+      item-display-name: "Non-vented",
+      item-value: "1",
+      checkbox: true
+    }
+  ]
+}
+
+--}}
+
+{{!-- Shift Details entries --}}
+<input id="shift-details-shift-id" type="hidden" value="{{shift-id}}">
+<div class="card-block">
+  <h4 class="card-title">{{staff-name}}'s shift</h4>
+  <h5 class="card-text">{{date}}</h5>
+</div>
+<ul class="list-group list-group-flush mt-2">
+  {{#each item}}
+    <li class="list-group-item">
+      <span class="shift-item-show">
+        {{item-display-name}}: <span id="show-{{item-id}}-value">{{item-display-value}}</span>
+        <a href="javascript:void(0);"><i class="fa fa-pencil" aria-hidden="true"></i></a>
+      </span>
+
+      <span class="shift-item-edit">
+        <form id="form-{{item-id}}" class="form-inline">
+          <input type="hidden" name="shift-id" value="{{../shift-id}}">
+          <input type="hidden" name="shift-item-id" value="{{item-id}}">
+          <input type="hidden" name="shift-{{item-id}}-value" value="{{item-value}}">
+          {{#if checkbox}}
+            <input type="hidden" name="{{item-id}}-item-type" value="checkbox">
+          {{/if}}
+          {{#if select}}
+            <input type="hidden" name="{{item-id}}-item-type" value="select">
+          {{/if}}
+
+          <div class="form-check mb-2 mr-sm-2 mb-sm-0">
+
+            {{!-- only output if checkbox data exists --}}
+            {{#if checkbox}}
+              <label class="form-check-label">
+                <input class="form-check-input" id="check-{{item-id}}" name="{{item-id}}" type="checkbox" value="1" {{#if this.checked}}checked{{/if}}>{{item-display-name}}
+              </label>
+            {{/if}}
+
+            {{!-- only output if select data exists --}}
+            {{#if select}}
+              <label class="mr-sm-2" for="select-{{item-id}}">
+                {{item-display-name}}
+              </label>
+              <select class="custom-select mb-2 mr-sm-2 mb-sm-0" id="select-{{item-id}}" name="{{item-id}}">
+                {{#each select}}
+                  <option value="{{this.value}}" {{#if this.selected}}selected{{/if}}>{{this.text}}</option>
+                {{/each}}
+              </select>
+            {{/if}}
+
+          </div>
+
+          <!-- button to facilitate ajax submission of item edit -->
+          <button class="shift-edit-submit btn btn-primary mr-2">
+            <i class="fa fa-check" aria-hidden="true"></i>
+          </button>
+
+          <!-- button to facilitate cancel of item edit -->
+          <button class="shift-edit-cancel btn btn-danger">
+            <i class="fa fa-times" aria-hidden="true"></i>
+          </button>
+        </form>
+      </span>
+    </li>
+  {{/each}}
+</ul>

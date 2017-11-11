@@ -178,9 +178,15 @@ if (!isset($_SESSION['authenticated'])) {
 
           //Set click event listeners to call up modal after ajax query is returned
           $('.shift-cell a').click(function(){
-            var i = $(this).parent().data('shiftId'); //get the shift id
-
+            let i = $(this).parent().data('shiftId'); //get the shift id
             showShiftDetail(i);
+          });
+
+          $(`td.staff`).each(function(index){
+            let id = $(this).data('staffId');
+            let name = $(this).find('pre').text();
+            let link = name.link('staff-detail.php?staff-id='+$(this).data('staffId'));
+            $(this).find('pre').html(link);
           });
         }
       });
