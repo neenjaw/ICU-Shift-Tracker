@@ -47,7 +47,7 @@ if (!isset($_SESSION['authenticated'])) {
           <span class="sr-only">Loading...</span>
         <!-- END GENERATED TABLE -->
       </div>
-      <div class="col-md-2">
+      <div id="right-col" class="col-md-2">
         <!-- <div class="card"> -->
         <div id="sidebar" class="card sticky-top affix" style="width: 170px;">
           <div class="card-body">
