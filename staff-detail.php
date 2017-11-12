@@ -75,6 +75,16 @@ if (!isset($_SESSION['user'])) {
       var staffId = url.searchParams.get("staff-id");
       console.log(staffId);
 
+      /*
+
+      What do I want this page to actually get?
+      -data:
+        -time in each pod
+        -shifts worked
+        -data based on all the categories
+
+       */
+
     });
   </script>
 
