@@ -454,6 +454,19 @@ class crud
     return "{$row['last_name']}, {$row['first_name']} ({$row['category']})";
   }
 
+  public function getStaffDetails($id, $days) {
+    $details = (object) array();
+
+    $sql = "SELECT
+              *
+            FROM
+              {$this->tbl_staff}
+            WHERE
+              id=:id";
+
+    return $details;
+  }
+
   public function getAllRoleObj() {
     $role_array = array();
 
