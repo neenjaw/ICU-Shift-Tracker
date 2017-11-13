@@ -474,7 +474,7 @@ class crud
 
       $editRow=$stmt->fetch(PDO::FETCH_ASSOC);
 
-      $details->name = "{$editrow['first_name']} {$editrow['last_name']}";
+      $details->name = "{$editRow['first_name']} {$editRow['last_name']}";
       $details->category = "";
 
     } catch (Exception $e) {
@@ -504,8 +504,8 @@ class crud
         $counters['total_shifts']++;
 
         $shift = (object) array();
-        $shift->id = $editrow['id'];
-        $shift->date = $editrow['shift_date'];
+        $shift->id = $editRow['id'];
+        $shift->date = $editRow['shift_date'];
 
         array_push($details->shifts, $shift);
 
