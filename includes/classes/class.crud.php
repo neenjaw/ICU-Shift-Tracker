@@ -455,10 +455,17 @@ class crud
   }
 
   public function getStaffDetails($id, $days=50) {
-    $ref = $this->getShiftColumnRefArray();
+    $assignment_ref = $this->getAllAssignments();
+    $role_ref = $this->getAllRoles();
+    $column_ref = $this->getShiftColumnRefArray('mod');
+
     $details = (object) array();
     $details->shifts = array();
-    $counters = array();
+    $details->{'shift-count'} = 0;
+
+    $mod_count = array();
+    $role_count = array();
+    $assign_count = array();
 
     $sql_staff = "SELECT
                     *
@@ -497,11 +504,9 @@ class crud
       $stmt->bindparam(":id", $id);
       $stmt->execute();
 
-
-      $counters['total_shifts'] = 0;
       while($editRow=$stmt->fetch(PDO::FETCH_ASSOC)) {
 
-        $counters['total_shifts']++;
+        $details->{'shift-count'} ++;
 
         $shift = (object) array();
         $shift->id = $editRow['id'];
@@ -509,20 +514,53 @@ class crud
 
         array_push($details->shifts, $shift);
 
-        foreach ($ref as $key => $value) {
-          if(!isset($counters[$key])) {
-            $counters[$key] = ['mod' => $value, 'count' => 0];
+        foreach ($role_ref as $key => $value) {
+          if ($editRow['role_id'] == $key) {
+            if(!isset($role_count[$key])) {
+              $role_count[$key] = ['role' => $value, 'count' => 0];
+            }
+
+            $role_count[$key]['count']++;
+          }
+        }
+
+        foreach ($assignment_ref as $key => $value) {
+          if ($editRow['assignment_id'] == $key) {
+            if(!isset($assign_count[$key])) {
+              $assign_count[$key] = ['assignment' => $value, 'count' => 0];
+            }
+
+            $assign_count[$key]['count']++;
+          }
+        }
+
+        foreach ($column_ref as $key => $value) {
+          if(!isset($mod_count[$key])) {
+            $mod_count[$key] = ['mod' => $value, 'count' => 0];
           }
 
           if ($editRow[$key] == 1) {
-            $counters[$key]['count']++;
+            $mod_count[$key]['count']++;
           }
         }
 
       }
-      $counters['nonvent'] = ['mod' => 'Non-vented', 'count' => ($counters['total_shifts'] - $counters['bool_vented']['count'])];
+      $mod_count['nonvent'] = ['mod' => 'Non-vented', 'count' => ($details->{'shift-count'} - $mod_count['bool_vented']['count'])];
 
-      $details->counts = $counters;
+      $details->{'mod-counts'} = array();
+      foreach ($mod_count as $key => $value) {
+        array_push($details->{'mod-counts'}, (object) array_merge(['id' => $key], $value));
+      }
+
+      $details->{'role-counts'} = array();
+      foreach ($role_count as $key => $value) {
+        array_push($details->{'role-counts'}, (object) array_merge(['id' => $key], $value));
+      }
+
+      $details->{'assign-counts'} = array();
+      foreach ($assign_count as $key => $value) {
+        array_push($details->{'assign-counts'}, (object) array_merge(['id' => $key], $value));
+      }
 
     } catch (Exception $e) {
       throw new Exception("Problem getting shift records:\n{$e->getMessage()}");
@@ -815,11 +853,18 @@ class crud
     return $shift;
   }
 
-  private function getShiftColumnRefArray() {
+  private function getShiftColumnRefArray($item_group = "") {
+    $flag = false;
     $sql = "SELECT * FROM {$this->tbl_shift_entry_ref}";
+
+    if ($item_group != "") {
+      $sql .= " WHERE item_group=:grp";
+      $flag = true;
+    }
 
     try {
       $stmt = $this->db->prepare($sql);
+      if ($flag) $stmt->bindparam(":grp", $item_group);
       $stmt->execute();
 
       $ref = array();
