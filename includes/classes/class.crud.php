@@ -454,15 +454,79 @@ class crud
     return "{$row['last_name']}, {$row['first_name']} ({$row['category']})";
   }
 
-  public function getStaffDetails($id, $days) {
+  public function getStaffDetails($id, $days=50) {
+    $ref = $this->getShiftColumnRefArray();
     $details = (object) array();
+    $details->shifts = array();
+    $counters = array();
 
-    $sql = "SELECT
-              *
-            FROM
-              {$this->tbl_staff}
-            WHERE
-              id=:id";
+    $sql_staff = "SELECT
+                    *
+                  FROM
+                    {$this->tbl_staff}
+                  WHERE
+                    id=:id";
+
+    try {
+      $stmt = $this->db->prepare($sql_staff);
+      $stmt->bindparam(":id", $id);
+      $stmt->execute();
+
+      $editRow=$stmt->fetch(PDO::FETCH_ASSOC);
+
+      $details->name = "{$editrow['first_name']} {$editrow['last_name']}";
+      $details->category = "";
+
+    } catch (Exception $e) {
+      throw new Exception("Problem getting staff record:\n{$e->getMessage()}");
+    }
+
+    $sql_shift = "SELECT
+                    *
+                  FROM
+                    {$this->tbl_shift_entry}
+                  WHERE
+                    staff_id=:id
+                  ORDER BY
+                    shift_date DESC
+                  LIMIT
+                    {$days}";
+
+    try {
+      $stmt = $this->db->prepare($sql_shift);
+      $stmt->bindparam(":id", $id);
+      $stmt->execute();
+
+
+      $counters['total_shifts'] = 0;
+      while($editRow=$stmt->fetch(PDO::FETCH_ASSOC)) {
+
+        $counters['total_shifts']++;
+
+        $shift = (object) array();
+        $shift->id = $editrow['id'];
+        $shift->date = $editrow['shift_date'];
+
+        array_push($details->shifts, $shift);
+
+        foreach ($ref as $key => $value) {
+          if(!isset($counters[$key])) {
+            $counters[$key] = ['mod' => $value, 'count' => 0];
+          }
+
+          if ($editRow[$key] == 1) {
+            $counters[$key]['count']++;
+          }
+        }
+
+      }
+      $counters['nonvent'] = ['mod' => 'Non-vented', 'count' => ($counters['total_shifts'] - $counters['bool_vented']['count'])];
+
+      $details->counts = $counters;
+
+    } catch (Exception $e) {
+      throw new Exception("Problem getting shift records:\n{$e->getMessage()}");
+    }
 
     return $details;
   }
