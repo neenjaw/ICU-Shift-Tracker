@@ -6,12 +6,17 @@ if (!isset($_SESSION['authenticated'])) {
   die("Unauthorized.");
 }
 
-if (isset($_GET['staff-id']) && isset($_GET['num-of-days'])) {
+if (isset($_GET['staff-id'])) {
 
-  $id = intval(trim($_GET['staff-id']));
-  $days = intval(trim($_GET['num-of-days']));
+  $id = $_GET['staff-id'];
 
-  echo json_encode($crud->getStaffDetails($id, $days), JSON_PRETTY_PRINT);
+  if (isset($_GET['num-of-days'])) {
+    $days = intval(trim($_GET['num-of-days']));
+    echo json_encode($crud->getStaffDetails($id, $days), JSON_PRETTY_PRINT);
+  } else {
+    echo json_encode($crud->getStaffDetails($id), JSON_PRETTY_PRINT);
+  }
+
 
 } else {
   echo "Problem.";

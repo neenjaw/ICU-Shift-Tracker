@@ -454,39 +454,24 @@ class crud
     return "{$row['last_name']}, {$row['first_name']} ({$row['category']})";
   }
 
+  //TODO adapt this for array id input as well
   public function getStaffDetails($id, $days=50) {
+    //get the reference arrays
     $assignment_ref = $this->getAllAssignments();
     $role_ref = $this->getAllRoles();
+    $category_ref = $this->getAllCategories();
     $column_ref = $this->getShiftColumnRefArray('mod');
 
-    $details = (object) array();
-    $details->shifts = array();
-    $details->{'shift-count'} = 0;
+    //determine if one id was supplied or an array of id's
+    $multiple_id = is_array($id);
 
-    $mod_count = array();
-    $role_count = array();
-    $assign_count = array();
-
+    //define the sql queries for the detail
     $sql_staff = "SELECT
                     *
                   FROM
                     {$this->tbl_staff}
                   WHERE
                     id=:id";
-
-    try {
-      $stmt = $this->db->prepare($sql_staff);
-      $stmt->bindparam(":id", $id);
-      $stmt->execute();
-
-      $editRow=$stmt->fetch(PDO::FETCH_ASSOC);
-
-      $details->name = "{$editRow['first_name']} {$editRow['last_name']}";
-      $details->category = "";
-
-    } catch (Exception $e) {
-      throw new Exception("Problem getting staff record:\n{$e->getMessage()}");
-    }
 
     $sql_shift = "SELECT
                     *
@@ -499,74 +484,121 @@ class crud
                   LIMIT
                     {$days}";
 
-    try {
-      $stmt = $this->db->prepare($sql_shift);
-      $stmt->bindparam(":id", $id);
-      $stmt->execute();
-
-      while($editRow=$stmt->fetch(PDO::FETCH_ASSOC)) {
-
-        $details->{'shift-count'} ++;
-
-        $shift = (object) array();
-        $shift->id = $editRow['id'];
-        $shift->date = $editRow['shift_date'];
-
-        array_push($details->shifts, $shift);
-
-        foreach ($role_ref as $key => $value) {
-          if ($editRow['role_id'] == $key) {
-            if(!isset($role_count[$key])) {
-              $role_count[$key] = ['role' => $value, 'count' => 0];
-            }
-
-            $role_count[$key]['count']++;
-          }
-        }
-
-        foreach ($assignment_ref as $key => $value) {
-          if ($editRow['assignment_id'] == $key) {
-            if(!isset($assign_count[$key])) {
-              $assign_count[$key] = ['assignment' => $value, 'count' => 0];
-            }
-
-            $assign_count[$key]['count']++;
-          }
-        }
-
-        foreach ($column_ref as $key => $value) {
-          if(!isset($mod_count[$key])) {
-            $mod_count[$key] = ['mod' => $value, 'count' => 0];
-          }
-
-          if ($editRow[$key] == 1) {
-            $mod_count[$key]['count']++;
-          }
-        }
-
-      }
-      $mod_count['nonvent'] = ['mod' => 'Non-vented', 'count' => ($details->{'shift-count'} - $mod_count['bool_vented']['count'])];
-
-      $details->{'mod-counts'} = array();
-      foreach ($mod_count as $key => $value) {
-        array_push($details->{'mod-counts'}, (object) array_merge(['id' => $key], $value));
-      }
-
-      $details->{'role-counts'} = array();
-      foreach ($role_count as $key => $value) {
-        array_push($details->{'role-counts'}, (object) array_merge(['id' => $key], $value));
-      }
-
-      $details->{'assign-counts'} = array();
-      foreach ($assign_count as $key => $value) {
-        array_push($details->{'assign-counts'}, (object) array_merge(['id' => $key], $value));
-      }
-
-    } catch (Exception $e) {
-      throw new Exception("Problem getting shift records:\n{$e->getMessage()}");
+    //determine the condition to stop looping if there is an array or not
+    if($multiple_id) {
+      $max_i = count($id);
+      $details = array();
+    } else {
+      $max_i = 1;
     }
 
-    return $details;
+    //if there is an array, will loop through the array, if only 1 id supplied as sing int, then will only loop once
+    for($i = 0; $i < $max_i; $i++) {
+      //determine the staff id for the queries
+      if ($multiple_id) {
+        $staff_id = $id[$i];
+      } else {
+        $staff_id = $id;
+      }
+
+      //staff obj init
+      $staff = (object) array();
+      $staff->shift = array();
+      $staff->{'shift-count'} = 0;
+      $staff->id = $staff_id;
+
+      //init counting arrays
+      $mod_count = array();
+      $role_count = array();
+      $assign_count = array();
+
+      //get staff entry
+      try {
+
+        $stmt = $this->db->prepare($sql_staff);
+        $stmt->bindparam(":id", $staff_id);
+        $stmt->execute();
+
+        $row=$stmt->fetch(PDO::FETCH_ASSOC);
+
+        $staff->name = "{$row['first_name']} {$row['last_name']}";
+        $staff->category = $category_ref[$row['category_id']];
+
+      } catch (Exception $e) {
+        throw new Exception("Problem getting staff record:\n{$e->getMessage()}");
+      }
+
+      //get shift entries
+      try {
+        $stmt = $this->db->prepare($sql_shift);
+        $stmt->bindparam(":id", $staff_id);
+        $stmt->execute();
+
+        //for each shift found:
+        while($row=$stmt->fetch(PDO::FETCH_ASSOC)) {
+
+          $staff->{'shift-count'} ++;
+
+          $shift = (object) array();
+          $shift->id = $row['id'];
+          $shift->date = $row['shift_date'];
+          //FIXME the get letter code thing is very broken from the other function call.
+          //$shift->code = $this->getShiftLetterCode($row);
+
+          array_push($staff->shift, $shift);
+
+          if (!isset($role_count[$row['role_id']])) {
+            $role_count[$row['role_id']] = ['role' => $role_ref[$row['role_id']], 'count' => 0];
+          }
+          $role_count[$row['role_id']]['count']++;
+
+          if (!isset($assign_count[$row['assignment_id']])) {
+            $assign_count[$row['assignment_id']] = ['role' => $assignment_ref[$row['assignment_id']], 'count' => 0];
+          }
+          $assign_count[$row['assignment_id']]['count']++;
+
+          foreach ($column_ref as $key => $value) {
+            if(!isset($mod_count[$key])) {
+              $mod_count[$key] = ['mod' => $value, 'count' => 0];
+            }
+
+            if ($row[$key] == 1) {
+              $mod_count[$key]['count']++;
+            }
+          }
+
+        }
+        $mod_count['nonvent'] = ['mod' => 'Non-vented', 'count' => ($staff->{'shift-count'} - $mod_count['bool_vented']['count'])];
+
+        $staff->{'mod-count'} = array();
+        foreach ($mod_count as $key => $value) {
+          array_push($staff->{'mod-count'}, (object) array_merge(['id' => $key], $value));
+        }
+
+        $staff->{'role-count'} = array();
+        foreach ($role_count as $key => $value) {
+          array_push($staff->{'role-count'}, (object) array_merge(['id' => $key], $value));
+        }
+
+        $staff->{'assign-count'} = array();
+        foreach ($assign_count as $key => $value) {
+          array_push($staff->{'assign-count'}, (object) array_merge(['id' => $key], $value));
+        }
+
+      } catch (Exception $e) {
+        throw new Exception("Problem getting shift records:\n{$e->getMessage()}");
+      }
+
+      if ($multiple_id) {
+        array_push($details, $staff);
+      }
+    }
+
+    if ($multiple_id) {
+      return $details;
+    } else {
+      return $staff;
+    }
   }
 
   public function getAllRoleObj() {
@@ -640,7 +672,7 @@ class crud
     return $cat_array;
   }
 
-  public function getAllCateories() {
+  public function getAllCategories() {
     $cat_array = array();
 
     $stmt = $this->db->prepare("SELECT * FROM ".$this->tbl_category."");
@@ -946,38 +978,7 @@ class crud
       while ($row=$stmtShiftEntries->fetch(PDO::FETCH_ASSOC)) {
         $shift_dates_array[$row['Shift Date']] = $row['Shift Date'];
 
-        $letter_code = '-';
-
-        // C => Clinician, P => Prn Charge, O => Outreach, D => doubled, S => very sick, R => CRRT, B => Burn, A => admit, N => Non-vented, V => vented, F => undefined
-        if (strpos($row['Category'], 'UC') !== false) {
-          $letter_code = 'X';
-        } elseif (strpos($row['Category'], 'LPN') !== false) {
-          $letter_code = 'X';
-        } elseif (strpos($row['Category'], 'NA') !== false) {
-          $letter_code = 'X';
-        } elseif (strpos($row['Role'], 'Clinician') !== false) {
-          $letter_code = 'C';
-        } elseif (strpos($row['Role'], 'Charge') !== false) {
-          $letter_code = 'P';
-        } elseif (strpos($row['Role'], 'Outreach') !== false) {
-          $letter_code = 'O';
-        } elseif ($row['Double'] == 1) {
-          $letter_code = 'D';
-        } elseif ($row['Very Sick'] == 1) {
-          $letter_code = 'S';
-        } elseif ($row['CRRT'] == 1) {
-          $letter_code = 'R';
-        } elseif ($row['Burn'] == 1) {
-          $letter_code = 'B';
-        } elseif ($row['Admit'] == 1) {
-          $letter_code = 'A';
-        } elseif ($row['Vented'] == 0) {
-          $letter_code = 'N';
-        } elseif ($row['Vented'] == 1) {
-          $letter_code = 'V';
-        } else {
-          $letter_code = 'F';
-        }
+        $letter_code = $this->getShiftLetterCode($row);
 
         if (!isset($staff_array[ $row['Staff'] ]) ) {
           $staff_array[ $row['Staff'] ] = [ "id" => $row['Staff ID'], "category" => $row['Category'] ];
@@ -1014,6 +1015,43 @@ class crud
 
     //return the object
     return $obj;
+  }
+
+  private function getShiftLetterCode($shift) {
+    $letter = "-";
+
+    // C => Clinician, P => Prn Charge, O => Outreach, D => doubled, S => very sick, R => CRRT, B => Burn, A => admit, N => Non-vented, V => vented, F => undefined
+    if (strpos($shift['Category'], 'UC') !== false) {
+      $letter = 'X';
+    } elseif (strpos($shift['Category'], 'LPN') !== false) {
+      $letter = 'X';
+    } elseif (strpos($shift['Category'], 'NA') !== false) {
+      $letter = 'X';
+    } elseif (strpos($shift['Role'], 'Clinician') !== false) {
+      $letter = 'C';
+    } elseif (strpos($shift['Role'], 'Charge') !== false) {
+      $letter = 'P';
+    } elseif (strpos($shift['Role'], 'Outreach') !== false) {
+      $letter = 'O';
+    } elseif ($shift['Double'] == 1) {
+      $letter = 'D';
+    } elseif ($shift['Very Sick'] == 1) {
+      $letter = 'S';
+    } elseif ($shift['CRRT'] == 1) {
+      $letter = 'R';
+    } elseif ($shift['Burn'] == 1) {
+      $letter = 'B';
+    } elseif ($shift['Admit'] == 1) {
+      $letter = 'A';
+    } elseif ($shift['Vented'] == 0) {
+      $letter = 'N';
+    } elseif ($shift['Vented'] == 1) {
+      $letter = 'V';
+    } else {
+      $letter = 'F';
+    }
+
+    return $letter;
   }
 
   /*
