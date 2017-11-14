@@ -112,6 +112,9 @@ if (!isset($_SESSION['user'])) {
               let detail = JSON.parse(response);
 
               $(`#container`).html(staffTemplate(detail));
+              $(`#choose-another`).click(function(){
+                window.location.href = location.protocol + '//' + location.host + location.pathname;
+              });
             } catch(e) {
               alert(e); // error in the above string (in this case, yes)!
             }

@@ -766,27 +766,27 @@ class crud
     return $editRow;
   }
 
+  // Outputs a stdClass object which can be translated to the following JSON:
+  // {
+  //   name: <name>,
+  //   date: <date>,
+  //   d-or-n: <d-or-n>,
+  //   item: [
+  //     {
+  //       item-id: <i-id>,
+  //       item-display-name: <i-display-name>,
+  //       item-value: <i-value>,
+  //       item-display-value: <i-display-value>,
+  //       select : [
+  //         {value: <value>, text: <text>},
+  //         {value: <value>, text: <text>},
+  //         {value: <value>, text: <text>}
+  //       ],
+  //       checkbox: true/false
+  //     }
+  //   ]
+  // }
   public function getShiftEntryForDisplay($id) {
-    // Outputs a stdClass object which can be translated to the following JSON:
-    // {
-    //   name: <name>,
-    //   date: <date>,
-    //   d-or-n: <d-or-n>,
-    //   item: [
-    //     {
-    //       item-id: <i-id>,
-    //       item-display-name: <i-display-name>,
-    //       item-value: <i-value>,
-    //       item-display-value: <i-display-value>,
-    //       select : [
-    //         {value: <value>, text: <text>},
-    //         {value: <value>, text: <text>},
-    //         {value: <value>, text: <text>}
-    //       ],
-    //       checkbox: true/false
-    //     }
-    //   ]
-    // }
 
     //Get the shift from the db and get the reference table
     $shift_array = $this->getShiftEntry($id);
@@ -927,33 +927,14 @@ class crud
    * @param  string  $staff_category       Which staff to return? (default = 'RN')
    * @return Array[]                       returns an associative array of objects, suitable for conversion to JSON
    */
-  public function getShiftTableObject($days_to_print = 10, $offset_from_last_day = 0, $staff_category = 'RN')
+  public function getShiftTableObject($days_to_print = 10, $offset_from_last_day = 0, $staff_category = '*')
   {
 
-    $includeWhereClause = ($staff_category !== '*');
+    $whereStaffCategory = ($staff_category !== '*') ? " WHERE category = \"{$staff_category}\" " : "";
 
     //query the db to get all the shifts within the specified date range
     $sql = "SELECT
-              {$this->v_entries_complete}.id AS `ID`,
-              CONCAT(
-                {$this->v_entries_complete}.last_name,
-                \", \",
-                {$this->v_entries_complete}.first_name
-              ) AS `Staff`,
-              {$this->v_entries_complete}.category AS `Category`,
-              {$this->v_entries_complete}.staff_id AS `Staff ID`,
-              {$this->v_entries_complete}.shift_date AS `Shift Date`,
-              {$this->v_entries_complete}.role AS `Role`,
-              {$this->v_entries_complete}.assignment AS `Assignment`,
-              {$this->v_entries_complete}.bool_doubled AS `Double`,
-              {$this->v_entries_complete}.bool_vented AS `Vented`,
-              {$this->v_entries_complete}.bool_new_admit AS `Admit`,
-              {$this->v_entries_complete}.bool_very_sick AS `Very Sick`,
-              {$this->v_entries_complete}.bool_code_pager AS `Code Pager`,
-              {$this->v_entries_complete}.bool_crrt AS `CRRT`,
-              {$this->v_entries_complete}.bool_evd AS `EVD`,
-              {$this->v_entries_complete}.bool_burn AS `Burn`,
-              {$this->v_entries_complete}.bool_day_or_night AS `Day/Night`
+              *
             FROM
               {$this->v_entries_complete}
             INNER JOIN
@@ -962,7 +943,7 @@ class crud
                   DISTINCT shift_date
                 FROM
                   {$this->v_entries_w_staff_w_category}
-                ".(($includeWhereClause)?" WHERE category = \"{$staff_category}\" ":"")."
+                {$whereStaffCategory}
                 ORDER BY
                   shift_date DESC
                 LIMIT
@@ -970,8 +951,8 @@ class crud
                 OFFSET
                   {$offset_from_last_day}
               ) AS t2 ON t2.shift_date = {$this->v_entries_complete}.shift_date
-            ".(($includeWhereClause)?" WHERE category = \"{$staff_category}\" ":"")."
-            ORDER BY `Staff` ASC";
+            {$whereStaffCategory}
+            ORDER BY `last_name` ASC, `first_name` ASC";
 
     $stmtShiftEntries = $this->db->prepare($sql);
     $stmtShiftEntries->execute();
@@ -979,41 +960,57 @@ class crud
     //  Loop to:
     //    1. Create a list of all the staff
     //    2. Create a 3-dimensional array shift_array[Staff Name][Shift Date][Shift Data], not every cell will be populated
-    $shift_dates_array = array();
-    $staff_array = array();
-    $staff_shifts_array = array();
+    $shift_dates = array();
+    $staff = array();
+    $staff_shifts = array();
     if ($stmtShiftEntries->rowCount()>0) {
       while ($row=$stmtShiftEntries->fetch(PDO::FETCH_ASSOC)) {
-        $shift_dates_array[$row['Shift Date']] = $row['Shift Date'];
+        if (!isset($shift_dates[ $row['shift_date'] ])) $shift_dates[ $row['shift_date'] ] = $row['shift_date'];
 
         $letter_code = $this->getShiftLetterCode($row);
 
-        if (!isset($staff_array[ $row['Staff'] ]) ) {
-          $staff_array[ $row['Staff'] ] = [ "id" => $row['Staff ID'], "category" => $row['Category'] ];
+        $name = $row['last_name'].", ".$row['first_name'];
+
+        if (!isset($staff_array[$name]) ) {
+          $staff[$name] = [ "id" => $row['staff_id'], "category" => $row['category'] ];
         }
-        $staff_shifts_array[ $row['Staff'] ][ $row['Shift Date'] ] = array('shift_id' => $row['ID'], 'code' => $letter_code);
+        $staff_shifts[$name][ $row['shift_date'] ] = ['shift-id' => $row['id'], 'code' => $letter_code];
+
       }
     } else {
       die("No Shifts Entered");
     }
+
     //now arrange all of the dates in sequence
-    ksort($shift_dates_array);
+    // echo "PRE:";
+    // var_dump($shift_dates);
+    // echo "GET VALUES:";
+    $shift_dates = array_values($shift_dates);
+    // var_dump($shift_dates);
+    // echo "ASORT:";
+    sort($shift_dates);
+    // var_dump($shift_dates);
 
     //make a new table object
     $obj = new ShiftTable();
     //for each staff member....
-    foreach ( $staff_array as $k => $v) {
+    foreach ( $staff as $s_name => $s_data) {
       //make a new staff entry object
-      $s = new ShiftTableStaffEntry($k, $v['id'], $v['category']);
+      $s = new ShiftTableStaffEntry($s_name, $s_data['id'], $s_data['category']);
 
       //then for each date, enter shift data for that staff
-      foreach ( $shift_dates_array as $x ) {
+      for ($i = 0; $i < count($shift_dates); $i++) {
+        $entry_date = $shift_dates[$i];
+
         //if there is a shift entry for the staff, record it
-        if ( isset($staff_shifts_array[$k][$x]) ) {
-          $s->shifts[] = new ShiftTableShiftEntry($x, $staff_shifts_array[$k][$x]['shift_id'], $staff_shifts_array[$k][$x]['code']);
+        if ( isset($staff_shifts[$s_name][$entry_date]) ) {
+          $entry_id = $staff_shifts[$s_name][$shift_dates[$i]]['shift-id'];
+          $entry_code = $staff_shifts[$s_name][$shift_dates[$i]]['code'];
+
+          $s->shifts[] = new ShiftTableShiftEntry($entry_date, $entry_id, $entry_code);
           //or else put in dummy entry as placeholder
         } else {
-          $s->shifts[] = new ShiftTableShiftEntry($x, -1, '-');
+          $s->shifts[] = new ShiftTableShiftEntry($entry_date, -1, '-');
         }
       }
 
@@ -1029,31 +1026,31 @@ class crud
     $letter = "-";
 
     // C => Clinician, P => Prn Charge, O => Outreach, D => doubled, S => very sick, R => CRRT, B => Burn, A => admit, N => Non-vented, V => vented, F => undefined
-    if (strpos($shift['Category'], 'UC') !== false) {
+    if (strpos($shift['category'], 'UC') !== false) {
       $letter = 'X';
-    } elseif (strpos($shift['Category'], 'LPN') !== false) {
+    } elseif (strpos($shift['category'], 'LPN') !== false) {
       $letter = 'X';
-    } elseif (strpos($shift['Category'], 'NA') !== false) {
+    } elseif (strpos($shift['category'], 'NA') !== false) {
       $letter = 'X';
-    } elseif (strpos($shift['Role'], 'Clinician') !== false) {
+    } elseif (strpos($shift['role'], 'Clinician') !== false) {
       $letter = 'C';
-    } elseif (strpos($shift['Role'], 'Charge') !== false) {
+    } elseif (strpos($shift['role'], 'Charge') !== false) {
       $letter = 'P';
-    } elseif (strpos($shift['Role'], 'Outreach') !== false) {
+    } elseif (strpos($shift['role'], 'Outreach') !== false) {
       $letter = 'O';
-    } elseif ($shift['Double'] == 1) {
+    } elseif ($shift['bool_doubled'] == 1) {
       $letter = 'D';
-    } elseif ($shift['Very Sick'] == 1) {
+    } elseif ($shift['bool_very_sick'] == 1) {
       $letter = 'S';
-    } elseif ($shift['CRRT'] == 1) {
+    } elseif ($shift['bool_crrt'] == 1) {
       $letter = 'R';
-    } elseif ($shift['Burn'] == 1) {
+    } elseif ($shift['bool_burn'] == 1) {
       $letter = 'B';
-    } elseif ($shift['Admit'] == 1) {
+    } elseif ($shift['bool_new_admit'] == 1) {
       $letter = 'A';
-    } elseif ($shift['Vented'] == 0) {
+    } elseif ($shift['bool_vented'] == 0) {
       $letter = 'N';
-    } elseif ($shift['Vented'] == 1) {
+    } elseif ($shift['bool_vented'] == 1) {
       $letter = 'V';
     } else {
       $letter = 'F';

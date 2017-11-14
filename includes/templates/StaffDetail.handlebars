@@ -40,7 +40,7 @@ accepts the following object schema
 
 {{!-- Staff Details entries --}}
 <input id="staff-id" type="hidden" value="{{id}}">
-<h4>Shift details for {{name}}</h4>
+<h4>Shift details for {{name}} <a id="choose-another" href="javascript:void();"><small>(choose another)</small></a></h4>
 
 {{#if shift}}
   {{#if since-date}}
@@ -98,7 +98,8 @@ accepts the following object schema
         <th scope="col">D/N</th>
         <th scope="col">Role</th>
         <th scope="col">Assignment</th>
-        <th scope="col">Shift</th>
+        <th scope="col">Code</th>
+        <th scope="col">Link</th>
       </tr>
     </thead>
     <tbody>
@@ -108,7 +109,8 @@ accepts the following object schema
           <td>{{this.d-or-n}}</td>
           <td>{{this.role}}</td>
           <td>{{this.assignment}}</td>
-          <td><a href="javascript:void(0);" data-shift-id="{{this.id}}">X{{!-- this.code --}}</a></td>
+          <td>{{!-- this.code --}}</td>
+          <td><a href="javascript:void(0);" data-shift-id="{{this.id}}"><i class="fa fa-link" aria-hidden="true"></i></a></td>
         </tr>
       {{/each}}
     </tbody>

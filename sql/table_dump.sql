@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Nov 05, 2017 at 11:53 PM
+-- Generation Time: Nov 14, 2017 at 09:25 AM
 -- Server version: 10.1.20-MariaDB
 -- PHP Version: 7.0.8
 
@@ -409,14 +409,14 @@ INSERT INTO `shift_tracker_tbl_shift_entry` (`id`, `shift_date`, `staff_id`, `ro
 (308, '2017-07-04', 31, 5, 2, 0, 1, 0, 1, 0, 0, 0, 0, 0),
 (309, '2017-08-13', 2, 5, 2, 0, 0, 1, 0, 1, 0, 0, 0, 1),
 (310, '2017-08-13', 10, 5, 2, 1, 0, 0, 0, 0, 0, 0, 0, 1),
-(311, '2017-08-13', 8, 4, 4, 0, 1, 0, 0, 0, 0, 0, 0, 1),
+(311, '2017-08-13', 8, 4, 4, 0, 1, 1, 0, 0, 0, 0, 0, 1),
 (312, '2017-08-13', 24, 4, 4, 0, 1, 0, 0, 0, 0, 0, 0, 0),
 (313, '2017-08-13', 44, 2, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0),
 (314, '2017-08-09', 44, 2, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1),
 (315, '2017-08-30', 47, 7, 5, 0, 1, 0, 0, 0, 0, 0, 0, 0),
 (316, '2017-09-01', 42, 5, 2, 1, 1, 0, 1, 0, 1, 0, 1, 1),
 (317, '2017-09-14', 44, 6, 3, 0, 1, 0, 0, 0, 0, 0, 0, 0),
-(460, '2017-10-05', 45, 1, 5, 0, 1, 0, 0, 0, 0, 0, 0, 0),
+(460, '2017-10-05', 45, 2, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0),
 (461, '2017-10-05', 31, 2, 3, 0, 1, 0, 0, 0, 0, 0, 0, 0),
 (462, '2017-10-05', 8, 5, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0),
 (463, '2017-10-05', 18, 5, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0),
@@ -431,7 +431,6 @@ INSERT INTO `shift_tracker_tbl_shift_entry` (`id`, `shift_date`, `staff_id`, `ro
 (472, '2017-10-05', 44, 6, 8, 0, 1, 0, 0, 0, 0, 0, 0, 0),
 (473, '2017-10-05', 47, 7, 8, 0, 1, 0, 0, 0, 0, 0, 0, 0),
 (474, '2017-10-05', 40, 1, 8, 0, 1, 0, 0, 0, 0, 0, 0, 1),
-(475, '2017-10-05', 27, 5, 1, 0, 1, 1, 0, 0, 0, 0, 0, 1),
 (476, '2017-10-05', 26, 5, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1),
 (477, '2017-10-05', 42, 5, 1, 1, 1, 0, 0, 0, 1, 0, 1, 1),
 (478, '2017-10-05', 17, 5, 2, 0, 1, 0, 0, 0, 0, 0, 0, 1),
@@ -455,7 +454,7 @@ INSERT INTO `shift_tracker_tbl_shift_entry` (`id`, `shift_date`, `staff_id`, `ro
 (501, '2017-10-10', 4, 5, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1),
 (502, '2017-10-10', 23, 5, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1),
 (503, '2017-10-10', 13, 5, 2, 0, 1, 0, 0, 0, 0, 0, 0, 1),
-(504, '2017-10-10', 28, 5, 2, 0, 1, 0, 0, 0, 0, 0, 0, 1),
+(504, '2017-10-10', 28, 5, 2, 0, 1, 1, 0, 0, 0, 1, 0, 1),
 (505, '2017-10-10', 10, 5, 2, 0, 1, 0, 0, 0, 0, 0, 0, 1),
 (507, '2017-10-10', 25, 5, 3, 0, 1, 0, 0, 0, 0, 0, 0, 1),
 (508, '2017-10-10', 5, 5, 3, 0, 1, 0, 0, 0, 0, 0, 0, 1),
@@ -475,7 +474,6 @@ INSERT INTO `shift_tracker_tbl_shift_entry` (`id`, `shift_date`, `staff_id`, `ro
 (530, '2017-10-05', 28, 5, 3, 0, 1, 0, 0, 0, 0, 0, 0, 1),
 (531, '2017-10-05', 10, 4, 4, 0, 1, 0, 0, 0, 0, 0, 0, 1),
 (532, '2017-10-05', 32, 6, 3, 0, 1, 0, 0, 0, 0, 0, 0, 1),
-(533, '2017-10-03', 45, 1, 5, 0, 1, 0, 0, 0, 0, 0, 0, 0),
 (534, '2017-10-03', 31, 2, 3, 0, 1, 0, 0, 0, 0, 0, 0, 0),
 (535, '2017-10-03', 8, 5, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0),
 (536, '2017-10-03', 3, 5, 2, 0, 1, 0, 0, 0, 0, 0, 0, 0),
@@ -484,7 +482,7 @@ INSERT INTO `shift_tracker_tbl_shift_entry` (`id`, `shift_date`, `staff_id`, `ro
 (539, '2017-10-03', 46, 6, 5, 0, 1, 0, 0, 0, 0, 0, 0, 0),
 (540, '2017-10-03', 32, 6, 6, 0, 1, 0, 0, 0, 0, 0, 0, 0),
 (541, '2017-10-03', 47, 7, 8, 0, 1, 0, 0, 0, 0, 0, 0, 0),
-(542, '2017-10-01', 45, 1, 5, 0, 1, 0, 0, 0, 0, 0, 0, 0),
+(542, '2017-10-01', 45, 1, 8, 1, 0, 0, 0, 0, 0, 0, 0, 0),
 (543, '2017-10-01', 31, 2, 3, 0, 1, 0, 0, 0, 0, 0, 0, 0),
 (544, '2017-10-01', 8, 5, 4, 0, 1, 0, 0, 0, 0, 0, 0, 0),
 (545, '2017-10-01', 29, 5, 1, 0, 1, 1, 0, 0, 1, 0, 0, 0),
@@ -494,7 +492,7 @@ INSERT INTO `shift_tracker_tbl_shift_entry` (`id`, `shift_date`, `staff_id`, `ro
 (549, '2017-10-01', 46, 6, 8, 0, 1, 0, 0, 0, 0, 0, 0, 0),
 (550, '2017-10-01', 47, 7, 8, 0, 1, 0, 0, 0, 0, 0, 0, 0),
 (551, '2017-10-13', 45, 1, 5, 0, 1, 0, 0, 0, 0, 0, 0, 0),
-(552, '2017-10-13', 31, 2, 3, 0, 1, 0, 0, 0, 0, 0, 0, 0),
+(552, '2017-10-13', 31, 3, 3, 0, 1, 0, 0, 0, 0, 0, 0, 0),
 (553, '2017-10-13', 18, 5, 4, 0, 1, 0, 0, 0, 0, 0, 0, 0),
 (554, '2017-10-13', 8, 5, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0),
 (555, '2017-10-13', 3, 5, 1, 1, 0, 1, 1, 1, 1, 0, 1, 0),
@@ -505,7 +503,8 @@ INSERT INTO `shift_tracker_tbl_shift_entry` (`id`, `shift_date`, `staff_id`, `ro
 (560, '2017-10-13', 28, 5, 3, 1, 1, 0, 0, 0, 0, 0, 0, 0),
 (561, '2017-10-13', 20, 4, 4, 0, 1, 0, 0, 0, 0, 0, 0, 0),
 (562, '2017-10-13', 44, 6, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0),
-(563, '2017-10-13', 47, 7, 3, 0, 1, 0, 0, 0, 0, 0, 0, 0);
+(563, '2017-10-13', 47, 7, 3, 0, 1, 0, 0, 0, 0, 0, 0, 0),
+(565, '2017-11-02', 7, 5, 3, 0, 0, 1, 1, 0, 0, 0, 0, 1);
 
 -- --------------------------------------------------------
 
@@ -516,28 +515,29 @@ INSERT INTO `shift_tracker_tbl_shift_entry` (`id`, `shift_date`, `staff_id`, `ro
 CREATE TABLE `shift_tracker_tbl_shift_entry_ref` (
   `column_name` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
   `display_name` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
-  `form_type` varchar(20) COLLATE utf8_unicode_ci DEFAULT NULL
+  `form_type` varchar(20) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `item_group` varchar(15) COLLATE utf8_unicode_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Dumping data for table `shift_tracker_tbl_shift_entry_ref`
 --
 
-INSERT INTO `shift_tracker_tbl_shift_entry_ref` (`column_name`, `display_name`, `form_type`) VALUES
-('assignment_id', 'Assignment', 'select'),
-('bool_burn', 'Burn', 'checkbox'),
-('bool_code_pager', 'Code Pager', 'checkbox'),
-('bool_crrt', 'CRRT', 'checkbox'),
-('bool_day_or_night', 'D-or-N', 'checkbox'),
-('bool_doubled', 'Doubled', 'checkbox'),
-('bool_evd', 'EVD', 'checkbox'),
-('bool_new_admit', 'Admitted', 'checkbox'),
-('bool_vented', 'Vented', 'checkbox'),
-('bool_very_sick', 'Very Sick', 'checkbox'),
-('id', 'shift-id', NULL),
-('role_id', 'Role', 'select'),
-('shift_date', 'Date', NULL),
-('staff_id', 'Staff', NULL);
+INSERT INTO `shift_tracker_tbl_shift_entry_ref` (`column_name`, `display_name`, `form_type`, `item_group`) VALUES
+('assignment_id', 'Assignment', 'select', 'ref'),
+('bool_burn', 'Burn', 'checkbox', 'mod'),
+('bool_code_pager', 'Code Pager', 'checkbox', 'mod'),
+('bool_crrt', 'CRRT', 'checkbox', 'mod'),
+('bool_day_or_night', 'Day or Night', 'checkbox', 'mod'),
+('bool_doubled', 'Doubled', 'checkbox', 'mod'),
+('bool_evd', 'EVD', 'checkbox', 'mod'),
+('bool_new_admit', 'Admitted', 'checkbox', 'mod'),
+('bool_vented', 'Vented', 'checkbox', 'mod'),
+('bool_very_sick', 'Very Sick', 'checkbox', 'mod'),
+('id', 'shift-id', NULL, 'ref'),
+('role_id', 'Role', 'select', 'ref'),
+('shift_date', 'Date', NULL, 'ref'),
+('staff_id', 'Staff', NULL, 'ref');
 
 -- --------------------------------------------------------
 
@@ -688,6 +688,7 @@ CREATE TABLE `v_shift_entries_w_staff_w_category` (
 ,`bool_day_or_night` tinyint(1)
 ,`first_name` varchar(60)
 ,`last_name` varchar(60)
+,`category_id` int(11)
 ,`category` varchar(60)
 );
 
@@ -701,6 +702,7 @@ CREATE TABLE `v_shift_entries_w_staff_w_category_w_assignment_w_role` (
 `id` int(11)
 ,`shift_date` date
 ,`staff_id` int(11)
+,`category_id` int(11)
 ,`role_id` int(11)
 ,`assignment_id` int(11)
 ,`bool_doubled` tinyint(1)
@@ -726,7 +728,7 @@ CREATE TABLE `v_shift_entries_w_staff_w_category_w_assignment_w_role` (
 --
 DROP TABLE IF EXISTS `v_shift_entries_w_staff_w_category`;
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`id1876647_neenjawtestuser`@`%` SQL SECURITY DEFINER VIEW `v_shift_entries_w_staff_w_category`  AS  select `shift_tracker_tbl_shift_entry`.`id` AS `id`,`shift_tracker_tbl_shift_entry`.`shift_date` AS `shift_date`,`shift_tracker_tbl_shift_entry`.`staff_id` AS `staff_id`,`shift_tracker_tbl_shift_entry`.`role_id` AS `role_id`,`shift_tracker_tbl_shift_entry`.`assignment_id` AS `assignment_id`,`shift_tracker_tbl_shift_entry`.`bool_doubled` AS `bool_doubled`,`shift_tracker_tbl_shift_entry`.`bool_vented` AS `bool_vented`,`shift_tracker_tbl_shift_entry`.`bool_new_admit` AS `bool_new_admit`,`shift_tracker_tbl_shift_entry`.`bool_very_sick` AS `bool_very_sick`,`shift_tracker_tbl_shift_entry`.`bool_code_pager` AS `bool_code_pager`,`shift_tracker_tbl_shift_entry`.`bool_crrt` AS `bool_crrt`,`shift_tracker_tbl_shift_entry`.`bool_burn` AS `bool_burn`,`shift_tracker_tbl_shift_entry`.`bool_evd` AS `bool_evd`,`shift_tracker_tbl_shift_entry`.`bool_day_or_night` AS `bool_day_or_night`,`shift_tracker_tbl_staff`.`first_name` AS `first_name`,`shift_tracker_tbl_staff`.`last_name` AS `last_name`,`shift_tracker_tbl_staff_category`.`category` AS `category` from ((`shift_tracker_tbl_shift_entry` left join `shift_tracker_tbl_staff` on((`shift_tracker_tbl_shift_entry`.`staff_id` = `shift_tracker_tbl_staff`.`id`))) left join `shift_tracker_tbl_staff_category` on((`shift_tracker_tbl_staff`.`category_id` = `shift_tracker_tbl_staff_category`.`id`))) ;
+CREATE ALGORITHM=UNDEFINED DEFINER=`id1876647_neenjawtestuser`@`%` SQL SECURITY DEFINER VIEW `v_shift_entries_w_staff_w_category`  AS  select `shift_tracker_tbl_shift_entry`.`id` AS `id`,`shift_tracker_tbl_shift_entry`.`shift_date` AS `shift_date`,`shift_tracker_tbl_shift_entry`.`staff_id` AS `staff_id`,`shift_tracker_tbl_shift_entry`.`role_id` AS `role_id`,`shift_tracker_tbl_shift_entry`.`assignment_id` AS `assignment_id`,`shift_tracker_tbl_shift_entry`.`bool_doubled` AS `bool_doubled`,`shift_tracker_tbl_shift_entry`.`bool_vented` AS `bool_vented`,`shift_tracker_tbl_shift_entry`.`bool_new_admit` AS `bool_new_admit`,`shift_tracker_tbl_shift_entry`.`bool_very_sick` AS `bool_very_sick`,`shift_tracker_tbl_shift_entry`.`bool_code_pager` AS `bool_code_pager`,`shift_tracker_tbl_shift_entry`.`bool_crrt` AS `bool_crrt`,`shift_tracker_tbl_shift_entry`.`bool_burn` AS `bool_burn`,`shift_tracker_tbl_shift_entry`.`bool_evd` AS `bool_evd`,`shift_tracker_tbl_shift_entry`.`bool_day_or_night` AS `bool_day_or_night`,`shift_tracker_tbl_staff`.`first_name` AS `first_name`,`shift_tracker_tbl_staff`.`last_name` AS `last_name`,`shift_tracker_tbl_staff`.`category_id` AS `category_id`,`shift_tracker_tbl_staff_category`.`category` AS `category` from ((`shift_tracker_tbl_shift_entry` left join `shift_tracker_tbl_staff` on((`shift_tracker_tbl_shift_entry`.`staff_id` = `shift_tracker_tbl_staff`.`id`))) left join `shift_tracker_tbl_staff_category` on((`shift_tracker_tbl_staff`.`category_id` = `shift_tracker_tbl_staff_category`.`id`))) ;
 
 -- --------------------------------------------------------
 
@@ -735,7 +737,7 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`id1876647_neenjawtestuser`@`%` SQL SECURITY 
 --
 DROP TABLE IF EXISTS `v_shift_entries_w_staff_w_category_w_assignment_w_role`;
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`id1876647_neenjawtestuser`@`%` SQL SECURITY DEFINER VIEW `v_shift_entries_w_staff_w_category_w_assignment_w_role`  AS  select `v_shift_entries_w_staff_w_category`.`id` AS `id`,`v_shift_entries_w_staff_w_category`.`shift_date` AS `shift_date`,`v_shift_entries_w_staff_w_category`.`staff_id` AS `staff_id`,`v_shift_entries_w_staff_w_category`.`role_id` AS `role_id`,`v_shift_entries_w_staff_w_category`.`assignment_id` AS `assignment_id`,`v_shift_entries_w_staff_w_category`.`bool_doubled` AS `bool_doubled`,`v_shift_entries_w_staff_w_category`.`bool_vented` AS `bool_vented`,`v_shift_entries_w_staff_w_category`.`bool_new_admit` AS `bool_new_admit`,`v_shift_entries_w_staff_w_category`.`bool_very_sick` AS `bool_very_sick`,`v_shift_entries_w_staff_w_category`.`bool_code_pager` AS `bool_code_pager`,`v_shift_entries_w_staff_w_category`.`bool_crrt` AS `bool_crrt`,`v_shift_entries_w_staff_w_category`.`bool_burn` AS `bool_burn`,`v_shift_entries_w_staff_w_category`.`bool_evd` AS `bool_evd`,`v_shift_entries_w_staff_w_category`.`bool_day_or_night` AS `bool_day_or_night`,`v_shift_entries_w_staff_w_category`.`first_name` AS `first_name`,`v_shift_entries_w_staff_w_category`.`last_name` AS `last_name`,`v_shift_entries_w_staff_w_category`.`category` AS `category`,`shift_tracker_tbl_assignment`.`assignment` AS `assignment`,`shift_tracker_tbl_staff_role`.`role` AS `role` from ((`v_shift_entries_w_staff_w_category` left join `shift_tracker_tbl_assignment` on((`v_shift_entries_w_staff_w_category`.`assignment_id` = `shift_tracker_tbl_assignment`.`id`))) left join `shift_tracker_tbl_staff_role` on((`v_shift_entries_w_staff_w_category`.`role_id` = `shift_tracker_tbl_staff_role`.`id`))) ;
+CREATE ALGORITHM=UNDEFINED DEFINER=`id1876647_neenjawtestuser`@`%` SQL SECURITY DEFINER VIEW `v_shift_entries_w_staff_w_category_w_assignment_w_role`  AS  select `v_shift_entries_w_staff_w_category`.`id` AS `id`,`v_shift_entries_w_staff_w_category`.`shift_date` AS `shift_date`,`v_shift_entries_w_staff_w_category`.`staff_id` AS `staff_id`,`v_shift_entries_w_staff_w_category`.`category_id` AS `category_id`,`v_shift_entries_w_staff_w_category`.`role_id` AS `role_id`,`v_shift_entries_w_staff_w_category`.`assignment_id` AS `assignment_id`,`v_shift_entries_w_staff_w_category`.`bool_doubled` AS `bool_doubled`,`v_shift_entries_w_staff_w_category`.`bool_vented` AS `bool_vented`,`v_shift_entries_w_staff_w_category`.`bool_new_admit` AS `bool_new_admit`,`v_shift_entries_w_staff_w_category`.`bool_very_sick` AS `bool_very_sick`,`v_shift_entries_w_staff_w_category`.`bool_code_pager` AS `bool_code_pager`,`v_shift_entries_w_staff_w_category`.`bool_crrt` AS `bool_crrt`,`v_shift_entries_w_staff_w_category`.`bool_burn` AS `bool_burn`,`v_shift_entries_w_staff_w_category`.`bool_evd` AS `bool_evd`,`v_shift_entries_w_staff_w_category`.`bool_day_or_night` AS `bool_day_or_night`,`v_shift_entries_w_staff_w_category`.`first_name` AS `first_name`,`v_shift_entries_w_staff_w_category`.`last_name` AS `last_name`,`v_shift_entries_w_staff_w_category`.`category` AS `category`,`shift_tracker_tbl_assignment`.`assignment` AS `assignment`,`shift_tracker_tbl_staff_role`.`role` AS `role` from ((`v_shift_entries_w_staff_w_category` left join `shift_tracker_tbl_assignment` on((`v_shift_entries_w_staff_w_category`.`assignment_id` = `shift_tracker_tbl_assignment`.`id`))) left join `shift_tracker_tbl_staff_role` on((`v_shift_entries_w_staff_w_category`.`role_id` = `shift_tracker_tbl_staff_role`.`id`))) ;
 
 --
 -- Indexes for dumped tables
@@ -830,7 +832,7 @@ ALTER TABLE `shift_tracker_tbl_assignment`
 -- AUTO_INCREMENT for table `shift_tracker_tbl_shift_entry`
 --
 ALTER TABLE `shift_tracker_tbl_shift_entry`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=565;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=566;
 --
 -- AUTO_INCREMENT for table `shift_tracker_tbl_staff`
 --
