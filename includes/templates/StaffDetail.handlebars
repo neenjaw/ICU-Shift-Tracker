@@ -39,15 +39,11 @@ accepts the following object schema
 --}}
 
 {{!-- Staff Details entries --}}
-<input id="shift-details-shift-id" type="hidden" value="{{shift-id}}">
-<div class="card-block">
-  <h4 class="card-title">{{staff-name}}</h4>
-</div>
-
-<hr>
+<input id="staff-id" type="hidden" value="{{id}}">
+<h4>Shift details for {{name}}</h4>
 
 <label for="assign-count">Showing assignment data for the last {{shift-count}} shifts:</label>
-<ul id="assign-count" class="list-group list-group-flush mt-2">
+<ul id="assign-count" class="list-group">
   {{#each assign-count}}
     <li class="list-group-item">
       {{this.assignment}}: <span id="assign-{{this.id}}">{{this.count}}</span>
@@ -55,10 +51,8 @@ accepts the following object schema
   {{/each}}
 </ul>
 
-<hr>
-
 <label for="role-count">Showing role data for the last {{shift-count}} shifts:</label>
-<ul id="role-count" class="list-group list-group-flush mt-2">
+<ul id="role-count" class="list-group">
   {{#each role-count}}
     <li class="list-group-item">
       {{this.role}}: <span id="assign-{{this.id}}">{{this.count}}</span>
@@ -66,18 +60,14 @@ accepts the following object schema
   {{/each}}
 </ul>
 
-<hr>
-
 <label for="mod-count">Showing workload data for the last {{shift-count}} shifts:</label>
-<ul id="mod-count" class="list-group list-group-flush mt-2">
+<ul id="mod-count" class="list-group">
   {{#each mod-count}}
     <li class="list-group-item">
       {{this.mod}}: <span id="assign-{{this.id}}">{{this.count}}</span>
     </li>
   {{/each}}
 </ul>
-
-<hr>
 
 <label for="table-shifts">Showing {{shift-count}} shifts:</label>
 <table id="table-shifts">

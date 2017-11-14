@@ -553,7 +553,7 @@ class crud
           $role_count[$row['role_id']]['count']++;
 
           if (!isset($assign_count[$row['assignment_id']])) {
-            $assign_count[$row['assignment_id']] = ['role' => $assignment_ref[$row['assignment_id']], 'count' => 0];
+            $assign_count[$row['assignment_id']] = ['assignment' => $assignment_ref[$row['assignment_id']], 'count' => 0];
           }
           $assign_count[$row['assignment_id']]['count']++;
 

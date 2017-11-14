@@ -73,19 +73,43 @@ if (!isset($_SESSION['user'])) {
       var url_string = window.location.href;
       var url = new URL(url_string);
       var staffId = url.searchParams.get("staff-id");
-      console.log(staffId);
+      if (debug) console.log(staffId);
 
-      /*
-
-      What do I want this page to actually get?
-      -data:
-        -time in each pod
-        -shifts worked
-        -data based on all the categories
-
-       */
+      getStaffDetail(staffId);
 
     });
+
+    function getStaffDetail(id, days = null) {
+      let data = `staff-id=${id}`;
+
+      if (days !== null) {
+        data += `&num-of-days=${days}`;
+      }
+
+      $.ajax({
+        type: 'GET',
+        url: 'ajax/ajax_get_staff_details.php',
+        data: data,
+        beforeSend: function () {
+          if (debug) console.log(`Staff detail to be retrieved:`);
+          if (debug) console.log(data);
+        },
+        success: function (response) {
+          if (debug) console.log(`Staff detail response:`);
+          if (debug) console.log(response);
+
+          if(response) {
+            try {
+              let detail = JSON.parse(response);
+
+              $(`#container`).html(staffTemplate(detail));
+            } catch(e) {
+              alert(e); // error in the above string (in this case, yes)!
+            }
+          }
+        }
+      });
+    }
   </script>
 
   <!-- Footer include -->
