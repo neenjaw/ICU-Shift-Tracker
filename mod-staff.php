@@ -253,7 +253,7 @@ if (!isset($_SESSION['user'])) {
   function submitModStaff(data) {
     $.ajax({
       type: 'POST',
-      url: 'ajax/ajax_mod_staff.php',
+      url: 'ajax/ajax_put_staff.php',
       data: data,
       beforeSend: function () {
         if (debug) console.log("Change submitted:");

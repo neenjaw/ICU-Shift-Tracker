@@ -185,7 +185,7 @@ $(function () {
     var data = $("#login-form").serialize();
     $.ajax({
       type: 'POST',
-      url: 'ajax/ajax_login_process.php',
+      url: 'ajax/ajax_get_login.php',
       data: data + '&btn-login=1',
       beforeSend: function () {
         $("#btn-login").html('<span class="fa fa-transfer"></span> &nbsp; Sending ...');

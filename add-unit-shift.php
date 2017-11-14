@@ -1249,7 +1249,7 @@ $form_select_assignment = $crud->getAllAssignments();
     }
 
     $.ajax({
-  	   url: 'ajax/ajax_add_multi_shift_process.php',
+  	   url: 'ajax/ajax_post_multiple_shift.php',
   	   type: 'post',
   	   data: {"shiftData" : JSON.stringify(submissionData)},
        beforeSend: function () {

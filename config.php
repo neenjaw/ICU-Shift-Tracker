@@ -424,7 +424,7 @@ if (!isset($_SESSION['user'])) {
 
       $.ajax({
         type: 'POST',
-        url: 'ajax/ajax_mod_staff.php',
+        url: 'ajax/ajax_put_staff.php',
         data: data,
         beforeSend: function () {
           if (debug) console.log("Delete staff submitted:");
@@ -453,7 +453,7 @@ if (!isset($_SESSION['user'])) {
   function submitConfig(data) {
     $.ajax({
       type: 'POST',
-      url: 'ajax/ajax_config.php',
+      url: 'ajax/ajax_post_config.php',
       data: `cmd-submit=1&${data}`,
       beforeSend: function () {
         if (debug) console.log("Change submitted:");
