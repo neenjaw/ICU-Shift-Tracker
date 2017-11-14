@@ -542,6 +542,14 @@ class crud
           $shift = (object) array();
           $shift->id = $row['id'];
           $shift->date = $row['shift_date'];
+          $shift->role = $role_ref[$row['role_id']];
+          $shift->assignment = $assignment_ref[$row['assignment_id']];
+          if ($row['bool_day_or_night'] == 0) {
+            $shift->{'d-or-n'} = 'D';
+          } else {
+            $shift->{'d-or-n'} = 'N';
+          }
+
           //FIXME the get letter code thing is very broken from the other function call.
           //$shift->code = $this->getShiftLetterCode($row);
 
