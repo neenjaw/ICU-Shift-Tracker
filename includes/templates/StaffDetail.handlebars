@@ -1,5 +1,41 @@
 {{!--
 
+accepts the following object schema
+
+ {
+    "shift": [
+        {
+            "id": "558",
+            "date": "2017-10-13"
+        }
+    ],
+    "shift-count": 15,
+    "id": 1,
+    "name": "Shanae Feher",
+    "category": "",
+    "mod-count": [
+        {
+            "id": "bool_burn",
+            "mod": "Burn",
+            "count": 1
+        }
+    ],
+    "role-count": [
+        {
+            "id": 5,
+            "role": "Bedside",
+            "count": 13
+        }
+    ],
+    "assign-count": [
+        {
+            "id": 2,
+            "assignment": "B",
+            "count": 9
+        }
+    ]
+}
+
 --}}
 
 {{!-- Staff Details entries --}}
@@ -7,14 +43,44 @@
 <div class="card-block">
   <h4 class="card-title">{{staff-name}}</h4>
 </div>
-<ul class="list-group list-group-flush mt-2">
-  {{#each item}}
+
+<hr>
+
+<label for="assign-count">Showing assignment data for the last {{shift-count}} shifts:</label>
+<ul id="assign-count" class="list-group list-group-flush mt-2">
+  {{#each assign-count}}
     <li class="list-group-item">
-      {{item-name}}: <span id="show-{{item-id}}">{{item-value}}</span>
+      {{this.assignment}}: <span id="assign-{{this.id}}">{{this.count}}</span>
     </li>
   {{/each}}
 </ul>
-<table>
+
+<hr>
+
+<label for="role-count">Showing role data for the last {{shift-count}} shifts:</label>
+<ul id="role-count" class="list-group list-group-flush mt-2">
+  {{#each role-count}}
+    <li class="list-group-item">
+      {{this.role}}: <span id="assign-{{this.id}}">{{this.count}}</span>
+    </li>
+  {{/each}}
+</ul>
+
+<hr>
+
+<label for="mod-count">Showing workload data for the last {{shift-count}} shifts:</label>
+<ul id="mod-count" class="list-group list-group-flush mt-2">
+  {{#each mod-count}}
+    <li class="list-group-item">
+      {{this.mod}}: <span id="assign-{{this.id}}">{{this.count}}</span>
+    </li>
+  {{/each}}
+</ul>
+
+<hr>
+
+<label for="table-shifts">Showing {{shift-count}} shifts:</label>
+<table id="table-shifts">
   <thead>
     <tr>
       <th>Date</th><th>Shift</th>
@@ -23,42 +89,8 @@
   <tbody>
     {{#each shift}}
       <tr>
-        <td>{{this.date}}</td><td><a href="javascript:void(0);" data-shift-id="{{id}}">{{this.code}}</a></td>
+        <td>{{this.date}}</td><td><a href="javascript:void(0);" data-shift-id="{{this.id}}">X{{!-- this.code --}}</a></td>
       </tr>
     {{/each}}
   </tbody>
 </table>
-
-
-<!-- {
-    "shifts": [
-        {
-            "id": "558",
-            "date": "2017-10-13"
-        }
-    ],
-    "shift-count": 15,
-    "name": "Shanae Feher",
-    "category": "",
-    "mod-counts": [
-        {
-            "id": "bool_burn",
-            "mod": "Burn",
-            "count": 1
-        }
-    ],
-    "role-counts": [
-        {
-            "id": 5,
-            "role": "Bedside",
-            "count": 13
-        }
-    ],
-    "assign-counts": [
-        {
-            "id": 2,
-            "assignment": "B",
-            "count": 9
-        }
-    ]
-} -->
