@@ -88,11 +88,19 @@ if (!isset($_SESSION['user'])) {
 
     });
 
-    function getStaffDetail(id, days = null) {
+    function getStaffDetail(id, param = null) {
+      param = param || {};
+      param['since-date'] = param['since-date'] || null;
+      param['num-of-shifts'] = param['num-of-shifts'] || null;
+
       let data = `staff-id=${id}`;
 
-      if (days !== null) {
-        data += `&num-of-days=${days}`;
+      if (param['since-date'] !== null) {
+        data += `&since-date=${param['since-date']}`;
+      }
+
+      if (param['num-of-shifts'] !== null) {
+        data += `&num-of-days=${param['num-of-shifts']}`;
       }
 
       $.ajax({

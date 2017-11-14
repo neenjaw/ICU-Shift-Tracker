@@ -454,8 +454,26 @@ class crud
     return "{$row['last_name']}, {$row['first_name']} ({$row['category']})";
   }
 
-  //TODO adapt this for array id input as well
-  public function getStaffDetails($id, $days=50) {
+  /**
+   * [getStaffDetails description]
+   * @param  [type]  $id   [description]
+   * @param  integer $days [description]
+   * @return [type]        [description]
+   */
+  public function getStaffDetails($id, $param = null) {
+    if ($param === null) $param = (object) array();
+    if (!isset($param->days)) $param->days = 50;
+
+    if (isset($param->{'since-date'})) {
+      $since_date = "shift_date >= :sd AND";
+      $day_limit = "";
+      $since_date_flag = true;
+    } else {
+      $since_date = "";
+      $day_limit = "LIMIT :days";
+      $since_date_flag = false;
+    }
+
     //get the reference arrays
     $assignment_ref = $this->getAllAssignments();
     $role_ref = $this->getAllRoles();
@@ -465,24 +483,22 @@ class crud
     //determine if one id was supplied or an array of id's
     $multiple_id = is_array($id);
 
-    //define the sql queries for the detail
-    $sql_staff = "SELECT
-                    *
-                  FROM
-                    {$this->tbl_staff}
-                  WHERE
-                    id=:id";
-
-    $sql_shift = "SELECT
-                    *
+    $sql_shift_w_staff = "SELECT
+                    {$this->tbl_shift_entry}.*,
+                    {$this->tbl_staff}.first_name,
+                    {$this->tbl_staff}.last_name,
+                    {$this->tbl_staff}.category_id
                   FROM
                     {$this->tbl_shift_entry}
+                  LEFT JOIN
+                    {$this->tbl_staff}
+                  ON
+                    {$this->tbl_shift_entry}.staff_id = {$this->tbl_staff}.id
                   WHERE
-                    staff_id=:id
+                    {$since_date} staff_id=:id
                   ORDER BY
                     shift_date DESC
-                  LIMIT
-                    {$days}";
+                  {$day_limit}";
 
     //determine the condition to stop looping if there is an array or not
     if($multiple_id) {
@@ -512,30 +528,35 @@ class crud
       $role_count = array();
       $assign_count = array();
 
-      //get staff entry
-      try {
-
-        $stmt = $this->db->prepare($sql_staff);
-        $stmt->bindparam(":id", $staff_id);
-        $stmt->execute();
-
-        $row=$stmt->fetch(PDO::FETCH_ASSOC); //FIXME -- DOES NOT CATCH NON-EXISTENT USERS
-
-        $staff->name = "{$row['first_name']} {$row['last_name']}";
-        $staff->category = $category_ref[$row['category_id']];
-
-      } catch (Exception $e) {
-        throw new Exception("Problem getting staff record:\n{$e->getMessage()}");
-      }
-
       //get shift entries
       try {
-        $stmt = $this->db->prepare($sql_shift);
-        $stmt->bindparam(":id", $staff_id);
+        // $stmt = $this->db->prepare($sql_shift);
+        $stmt = $this->db->prepare($sql_shift_w_staff);
+        $stmt->bindparam(":id", $staff_id, PDO::PARAM_INT);
+
+        if ($since_date_flag) {
+          $stmt->bindparam(":sd", $param->{'since-date'}, PDO::PARAM_STR);
+        } else {
+          $stmt->bindparam(":days", $param->{'days'}, PDO::PARAM_INT);
+        }
+
         $stmt->execute();
+
+        $first_iteration = true;
 
         //for each shift found:
         while($row=$stmt->fetch(PDO::FETCH_ASSOC)) {
+
+          //get the staff person's info on first iteration
+          if ($first_iteration) {
+            if ($since_date_flag) {
+              $staff->{'since-date'} = $param->{'since-date'};
+            }
+
+            $staff->name = "{$row['first_name']} {$row['last_name']}";
+            $staff->category = $category_ref[$row['category_id']];
+            $first_iteration = false;
+          }
 
           $staff->{'shift-count'} ++;
 
@@ -549,9 +570,7 @@ class crud
           } else {
             $shift->{'d-or-n'} = 'N';
           }
-
-          //FIXME the get letter code thing is very broken from the other function call.
-          //$shift->code = $this->getShiftLetterCode($row);
+          $shift->code = $this->getShiftLetterCode($row, $category_ref, $role_ref);
 
           array_push($staff->shift, $shift);
 
@@ -929,7 +948,6 @@ class crud
    */
   public function getShiftTableObject($days_to_print = 10, $offset_from_last_day = 0, $staff_category = '*')
   {
-
     $whereStaffCategory = ($staff_category !== '*') ? " WHERE category = \"{$staff_category}\" " : "";
 
     //query the db to get all the shifts within the specified date range
@@ -963,6 +981,7 @@ class crud
     $shift_dates = array();
     $staff = array();
     $staff_shifts = array();
+
     if ($stmtShiftEntries->rowCount()>0) {
       while ($row=$stmtShiftEntries->fetch(PDO::FETCH_ASSOC)) {
         if (!isset($shift_dates[ $row['shift_date'] ])) $shift_dates[ $row['shift_date'] ] = $row['shift_date'];
@@ -982,14 +1001,8 @@ class crud
     }
 
     //now arrange all of the dates in sequence
-    // echo "PRE:";
-    // var_dump($shift_dates);
-    // echo "GET VALUES:";
     $shift_dates = array_values($shift_dates);
-    // var_dump($shift_dates);
-    // echo "ASORT:";
     sort($shift_dates);
-    // var_dump($shift_dates);
 
     //make a new table object
     $obj = new ShiftTable();
@@ -1008,7 +1021,7 @@ class crud
           $entry_code = $staff_shifts[$s_name][$shift_dates[$i]]['code'];
 
           $s->shifts[] = new ShiftTableShiftEntry($entry_date, $entry_id, $entry_code);
-          //or else put in dummy entry as placeholder
+        //or else put in dummy entry as placeholder
         } else {
           $s->shifts[] = new ShiftTableShiftEntry($entry_date, -1, '-');
         }
@@ -1022,21 +1035,36 @@ class crud
     return $obj;
   }
 
-  private function getShiftLetterCode($shift) {
+  /**
+   * [getShiftLetterCode description]
+   * @param  [type] $shift        [description]
+   * @param  [type] $category_ref [description]
+   * @param  [type] $role_ref     [description]
+   * @return [type]               [description]
+   */
+  private function getShiftLetterCode($shift, $category_ref = null, $role_ref = null) {
+    if ($category_ref === null) {
+      $category_ref = $this->getAllCategories();
+    }
+
+    if ($role_ref === null) {
+      $role_ref = $this->getAllRoles();
+    }
+
     $letter = "-";
 
     // C => Clinician, P => Prn Charge, O => Outreach, D => doubled, S => very sick, R => CRRT, B => Burn, A => admit, N => Non-vented, V => vented, F => undefined
-    if (strpos($shift['category'], 'UC') !== false) {
+    if (strpos($category_ref[$shift['category_id']], 'UC') !== false) {
       $letter = 'X';
-    } elseif (strpos($shift['category'], 'LPN') !== false) {
+    } elseif (strpos($category_ref[$shift['category_id']], 'LPN') !== false) {
       $letter = 'X';
-    } elseif (strpos($shift['category'], 'NA') !== false) {
+    } elseif (strpos($category_ref[$shift['category_id']], 'NA') !== false) {
       $letter = 'X';
-    } elseif (strpos($shift['role'], 'Clinician') !== false) {
+    } elseif (strpos($role_ref[$shift['role_id']], 'Clinician') !== false) {
       $letter = 'C';
-    } elseif (strpos($shift['role'], 'Charge') !== false) {
+    } elseif (strpos($role_ref[$shift['role_id']], 'Charge') !== false) {
       $letter = 'P';
-    } elseif (strpos($shift['role'], 'Outreach') !== false) {
+    } elseif (strpos($role_ref[$shift['role_id']], 'Outreach') !== false) {
       $letter = 'O';
     } elseif ($shift['bool_doubled'] == 1) {
       $letter = 'D';

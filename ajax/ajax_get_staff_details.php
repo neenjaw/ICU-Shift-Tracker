@@ -9,14 +9,13 @@ if (!isset($_SESSION['authenticated'])) {
 if (isset($_GET['staff-id'])) {
 
   $id = $_GET['staff-id'];
+  $param = (object) array();
 
-  if (isset($_GET['num-of-days'])) {
-    $days = intval(trim($_GET['num-of-days']));
-    echo json_encode($crud->getStaffDetails($id, $days), JSON_PRETTY_PRINT);
-  } else {
-    echo json_encode($crud->getStaffDetails($id), JSON_PRETTY_PRINT);
-  }
 
+  if (isset($_GET['num-of-days'])) $param->{'days'} = intval(trim($_GET['num-of-days']));
+  if (isset($_GET['since-date'])) $param->{'since-date'} = trim($_GET['since-date']);
+
+  echo json_encode($crud->getStaffDetails($id, $param), JSON_PRETTY_PRINT);
 
 } else {
   echo "Problem.";
