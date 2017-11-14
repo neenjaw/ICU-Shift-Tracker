@@ -21,12 +21,13 @@ $a_active = ' active';
 				</div>
 			</li>
 			<li class="nav-item dropdown">
-				<?= makeNavLink($page_name, 'add-staff.php,mod-staff.php', '<i class="fa fa-user" aria-hidden="true"></i>
+				<?= makeNavLink($page_name, 'add-staff.php,mod-staff.php,staff-detail.php', '<i class="fa fa-user" aria-hidden="true"></i>
 ', 'nav-link dropdown-toggle', 'data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"'); ?>
 				<div class="dropdown-menu">
 					<h6 class="dropdown-header">Staff</h6>
-					<?= makeNavLink($page_name, 'add-staff.php', 'Add new', 'dropdown-item'); ?>
+					<?= makeNavLink($page_name, 'staff-detail.php', 'View Detail', 'dropdown-item'); ?>
 					<div class="dropdown-divider"></div>
+					<?= makeNavLink($page_name, 'add-staff.php', 'Add new', 'dropdown-item'); ?>
 					<?= makeNavLink($page_name, 'mod-staff.php', 'Modify', 'dropdown-item'); ?>
 				</div>
 			</li>

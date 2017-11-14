@@ -519,7 +519,7 @@ class crud
         $stmt->bindparam(":id", $staff_id);
         $stmt->execute();
 
-        $row=$stmt->fetch(PDO::FETCH_ASSOC);
+        $row=$stmt->fetch(PDO::FETCH_ASSOC); //FIXME -- DOES NOT CATCH NON-EXISTENT USERS
 
         $staff->name = "{$row['first_name']} {$row['last_name']}";
         $staff->category = $category_ref[$row['category_id']];

@@ -115,7 +115,7 @@ if (!isset($_SESSION['authenticated'])) {
   <!-- END Script include -->
 
   <script id="shift-entry-template" type="text/x-handlebars-template">
-    <?php include 'includes/templates/ShiftEntryComplete.handlebars'; ?>
+    <?php include 'includes/templates/ShiftEntryEditable.handlebars'; ?>
   </script>
 
   <script src="assets/build-shift-table.js"></script>

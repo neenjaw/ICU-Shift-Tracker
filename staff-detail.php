@@ -35,7 +35,7 @@ if (!isset($_SESSION['user'])) {
       </div>
     </div>
     <div class="row justify-content-center">
-      <div class="col">
+      <div class="col mt-2">
         <h2>Staff Detail</h2>
         <hr>
       </div>
@@ -56,7 +56,11 @@ if (!isset($_SESSION['user'])) {
   </script>
 
   <script id="shift-entry-template" type="text/x-handlebars-template">
-    <?php include 'includes/templates/ShiftEntryComplete.handlebars'; ?>
+    <?php include 'includes/templates/ShiftEntryEditable.handlebars'; ?>
+  </script>
+
+  <script id="staff-select-template" type="text/x-handlebars-template">
+    <?php include 'includes/templates/StaffSelect.handlebars'; ?>
   </script>
 
   <script>
@@ -69,13 +73,18 @@ if (!isset($_SESSION['user'])) {
 
       staffTemplate = Handlebars.compile($("#staff-detail-template").html());
       shiftTemplate = Handlebars.compile($("#shift-entry-template").html());
+      selectTemplate = Handlebars.compile($("#staff-select-template").html());
 
       var url_string = window.location.href;
       var url = new URL(url_string);
       var staffId = url.searchParams.get("staff-id");
       if (debug) console.log(staffId);
 
-      getStaffDetail(staffId);
+      if (staffId !== null) {
+        getStaffDetail(staffId);
+      } else {
+        getStaffSelect();
+      }
 
     });
 
@@ -103,6 +112,33 @@ if (!isset($_SESSION['user'])) {
               let detail = JSON.parse(response);
 
               $(`#container`).html(staffTemplate(detail));
+            } catch(e) {
+              alert(e); // error in the above string (in this case, yes)!
+            }
+          }
+        }
+      });
+    }
+
+    function getStaffSelect() {
+      let data = '';
+
+      $.ajax({
+        type: 'GET',
+        url: 'ajax/ajax_get_staff.php',
+        data: data,
+        beforeSend: function () {
+          if (debug) console.log(`All staff to be retrieved.`);
+        },
+        success: function (response) {
+          if (debug) console.log(`Staff retrieved:`);
+          if (debug) console.log(response);
+
+          if(response) {
+            try {
+              let detail = JSON.parse(response);
+
+              $(`#container`).html(selectTemplate({staff: detail}));
             } catch(e) {
               alert(e); // error in the above string (in this case, yes)!
             }

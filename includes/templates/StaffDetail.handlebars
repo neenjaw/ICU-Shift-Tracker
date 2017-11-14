@@ -42,53 +42,75 @@ accepts the following object schema
 <input id="staff-id" type="hidden" value="{{id}}">
 <h4>Shift details for {{name}}</h4>
 
-<label for="assign-count">Showing assignment data for the last {{shift-count}} shifts:</label>
-<ul id="assign-count" class="list-group">
-  {{#each assign-count}}
-    <li class="list-group-item">
-      {{this.assignment}} : <span id="assign-{{this.id}}">{{this.count}}</span>
-    </li>
-  {{/each}}
-</ul>
+{{#if shift}}
+  {{#if since-date}}
+    <p>Showing the data since {{since-date}}</p>
+  {{/if}}
+  {{#unless since-date}}
+    <p>Showing the data for the last {{shift-count}} shifts.</p>
+  {{/unless}}
+{{else}}
+  <div class="bs-callout bs-callout-info">
+    <h4>Note:</h4>
+    <p>Staff member does not have any recorded shifts.</p>
+  </div>
+{{/if}}
 
-<label for="role-count">Showing role data for the last {{shift-count}} shifts:</label>
-<ul id="role-count" class="list-group">
-  {{#each role-count}}
-    <li class="list-group-item">
-      {{this.role}} : <span id="assign-{{this.id}}">{{this.count}}</span>
-    </li>
-  {{/each}}
-</ul>
-
-<label for="mod-count">Showing workload data for the last {{shift-count}} shifts:</label>
-<ul id="mod-count" class="list-group">
-  {{#each mod-count}}
-    <li class="list-group-item">
-      {{this.mod}} : <span id="assign-{{this.id}}">{{this.count}}</span>
-    </li>
-  {{/each}}
-</ul>
-
-<label for="table-shifts">Showing {{shift-count}} shifts:</label>
-<table id="table-shifts" class="table">
-  <thead>
-    <tr>
-      <th scope="col">Date</th>
-      <th scope="col">D/N</th>
-      <th scope="col">Role</th>
-      <th scope="col">Assignment</th>
-      <th scope="col">Shift</th>
-    </tr>
-  </thead>
-  <tbody>
-    {{#each shift}}
-      <tr>
-        <th scope="row">{{this.date}}</th>
-        <td>{{this.d-or-n}}</td>
-        <td>{{this.role}}</td>
-        <td>{{this.assignment}}</td>
-        <td><a href="javascript:void(0);" data-shift-id="{{this.id}}">X{{!-- this.code --}}</a></td>
-      </tr>
+{{#if assign-count}}
+  <label for="assign-count">Assignment data ({{shift-count}} shifts): </label>
+  <ul id="assign-count" class="list-group mb-2">
+    {{#each assign-count}}
+      <li class="list-group-item">
+        {{this.assignment}} : <span id="assign-{{this.id}}">{{this.count}}</span>
+      </li>
     {{/each}}
-  </tbody>
-</table>
+  </ul>
+{{/if}}
+
+{{#if role-count}}
+  <label for="role-count">Role data ({{shift-count}} shifts):</label>
+  <ul id="role-count" class="list-group mb-2">
+    {{#each role-count}}
+      <li class="list-group-item">
+        {{this.role}} : <span id="role-{{this.id}}">{{this.count}}</span>
+      </li>
+    {{/each}}
+  </ul>
+{{/if}}
+
+{{#if mod-count}}
+  <label for="mod-count">Workload data ({{shift-count}} shifts):</label>
+  <ul id="mod-count" class="list-group mb-2">
+    {{#each mod-count}}
+      <li class="list-group-item">
+        {{this.mod}} : <span id="mod-{{this.id}}">{{this.count}}</span>
+      </li>
+    {{/each}}
+  </ul>
+{{/if}}
+
+{{#if shift}}
+  <label for="table-shifts">Shift List (Most recent {{shift-count}} shifts):</label>
+  <table id="table-shifts" class="table">
+    <thead>
+      <tr>
+        <th scope="col">Date</th>
+        <th scope="col">D/N</th>
+        <th scope="col">Role</th>
+        <th scope="col">Assignment</th>
+        <th scope="col">Shift</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each shift}}
+        <tr>
+          <th scope="row">{{this.date}}</th>
+          <td>{{this.d-or-n}}</td>
+          <td>{{this.role}}</td>
+          <td>{{this.assignment}}</td>
+          <td><a href="javascript:void(0);" data-shift-id="{{this.id}}">X{{!-- this.code --}}</a></td>
+        </tr>
+      {{/each}}
+    </tbody>
+  </table>
+{{/if}}
