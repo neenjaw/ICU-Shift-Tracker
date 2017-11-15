@@ -332,7 +332,8 @@ class crud
     return $staff_array;
   }
 
-  public function getStaffFilteredByDate($date) {
+  public function getStaffFilteredByDate() {
+
     $staff_array = array();
 
     $sql = "SELECT
@@ -375,6 +376,49 @@ class crud
     }
 
     return $staff_array;
+  }
+
+  public function getStaffGroupedByCategory() {
+
+    $staff = (object) array();
+    $staff->group = array();
+
+    $category = array();
+
+    $sql = "SELECT
+              {$this->tbl_staff}.id,
+              {$this->tbl_staff}.last_name,
+              {$this->tbl_staff}.first_name,
+              {$this->tbl_category}.category
+            FROM
+              {$this->tbl_staff}
+            LEFT JOIN
+          	  {$this->tbl_category}
+            ON
+              {$this->tbl_category}.id = {$this->tbl_staff}.category_id
+            ORDER BY
+            	{$this->tbl_staff}.last_name, {$this->tbl_staff}.first_name";
+
+    $stmt = $this->db->prepare($sql);
+    $stmt->execute();
+
+    if ($stmt->rowCount()>0) {
+      while ( $editRow = $stmt->fetch(PDO::FETCH_ASSOC) ) {
+        $s = new Staff("{$editRow['last_name']}, {$editRow['first_name']}", intval($editRow['id']), $editRow['category']);
+
+        if(!isset($category[$editRow['category']])) {
+          $category[$editRow['category']] = array();
+        }
+
+        array_push($category[$editRow['category']], $s);
+      }
+    }
+
+    foreach ($category as $category_name => $staff_array) {
+      array_push($staff->group, (object) ['name' => $category_name, 'staff' => $staff_array]);
+    }
+
+    return $staff;
   }
 
   public function getStaff($category = null) {

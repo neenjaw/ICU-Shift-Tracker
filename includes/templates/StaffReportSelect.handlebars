@@ -1,0 +1,25 @@
+<!-- Multi STAFF SELECT -->
+<form id="multi-select-staff-form">
+  {{#each group}}
+    {{#unless @first}}
+      <hr>
+    {{/unless}}
+    <h4>Select {{this.name}} staff</h4>
+    {{#each staff}}
+      <div class="form-group m-0">
+        <label class="custom-control custom-checkbox m-0">
+          <input id="multi-select-staff-{{this.id}}"
+                 type="checkbox"
+                 name="multi-staff-select-{{../name}}[]"
+                 value="{{this.id}}"
+                 class="custom-control-input">
+          <span class="custom-control-indicator"></span>
+          <span class="custom-control-description">{{this.name}}</span>
+        </label>
+      </div>
+    {{/each}}
+  {{/each}}
+  <div class="form-group mt-2">
+    <button type="submit" class="btn btn-primary btn-lg btn-block" id="btn-submit">Select</button>
+  </div>
+</form>

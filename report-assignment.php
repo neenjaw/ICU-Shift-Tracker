@@ -51,21 +51,21 @@ if (!isset($_SESSION['user'])) {
   <?php include 'includes/script-include.php'; ?>
   <!-- END Script include -->
 
-  <script id="staff-multi-select-template" type="text/x-handlebars-template">
-    <?php include 'includes/templates/StaffMultiSelect.handlebars'; ?>
+  <script id="staff-report-select-template" type="text/x-handlebars-template">
+    <?php include 'includes/templates/StaffReportSelect.handlebars'; ?>
   </script>
 
-  <script src="assets/website-lib.js"></script>
+  <script src="assets/website-lib.js?<?= date('l jS \of F Y h:i:s A'); ?>"></script>
 
   <script>
     var debug = true;
-    var multiSelectTemplate = null;
+    var reportSelectTemplate = null;
 
     //When document is ready
     $(function () {
-      multiSelectTemplate = Handlebars.compile($("#staff-multi-select-template").html());
+      reportSelectTemplate = Handlebars.compile($("#staff-report-select-template").html());
 
-      getStaffSelect($(`#container`), multiSelectTemplate);
+      getStaffSelect($(`#container`), reportSelectTemplate, 'group-by-category="true"');
 
       //TODO bind parsely to form submission
       //TODO get staff details of staff array

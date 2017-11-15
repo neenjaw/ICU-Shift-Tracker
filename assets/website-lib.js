@@ -2,15 +2,15 @@
  * populate the staff select
  */
 
-function getStaffSelect($target, selectTemplate) {
-  let data = '';
+function getStaffSelect($target, selectTemplate, data = '', responseTransform = null) {
+  url = 'ajax/ajax_get_staff.php';
 
   $.ajax({
     type: 'GET',
-    url: 'ajax/ajax_get_staff.php',
+    url: url,
     data: data,
     beforeSend: function () {
-      if (debug) console.log(`All staff to be retrieved.`);
+      if (debug) console.log(`URL Queried to get staff: ${url}?${data}`);
     },
     success: function (response) {
       if (debug) console.log(`Staff retrieved:`);
@@ -18,11 +18,42 @@ function getStaffSelect($target, selectTemplate) {
 
       if(response) {
         try {
-          let detail = JSON.parse(response);
+          response = JSON.parse(response);
 
-          $($target).html(selectTemplate({staff: detail}));
+          if (responseTransform != null) {
+            response = responseTransform(response);
+          }
+
+          //
+          // detail.sort(function(a, b) {
+          //   let lnameA = a.last_name.toUpperCase(); // ignore upper and lowercase
+          //   let lnameB = b.last_name.toUpperCase(); // ignore upper and lowercase
+          //
+          //   if (lnameA < lnameB) {
+          //     return -1;
+          //   }
+          //   if (lnameA > lnameB) {
+          //     return 1;
+          //   }
+          //   if (lnameA == lnameB) {
+          //     let fnameA = a.first_name.toUpperCase(); // ignore upper and lowercase
+          //     let fnameB = b.first_name.toUpperCase(); // ignore upper and lowercase
+          //
+          //     if (fnameA < fnameB) {
+          //       return -1;
+          //     }
+          //     if (fnameA > fnameB) {
+          //       return 1;
+          //     }
+          //   }
+          //
+          //   //names must be equal
+          //   return 0;
+          // });
+
+          $($target).html(selectTemplate(response));
         } catch(e) {
-          alert(e); // error in the above string (in this case, yes)!
+          alert(e); // error in the above string being parsed!
         }
       }
     }
