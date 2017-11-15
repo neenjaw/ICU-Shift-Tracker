@@ -1,0 +1,18 @@
+{{!-- TODO MAKE THIS INTO A MULTISELECT --}}
+
+<!-- STAFF SELECT -->
+<form id="select-staff-form">
+  <div class="form-group">
+    <label class="control-label requiredField" for="select">Select a Staff for the shift:<span class="asteriskField">*</span></label>
+    <select class="select form-control" id="select-staff" name="staff-id" required>
+      <!--<option value="staff_id">Last, Name - RN</option>-->
+      <option value="" disabled selected hidden>Please Choose...</option>
+      {{#each staff}}
+        <option value="{{this.id}}">{{this.last_name}}, {{this.first_name}}</option>
+      {{/each}}
+    </select>
+  </div>
+  <div class="form-group">
+    <button type="submit" class="btn btn-primary" id="btn-submit">Select</button>
+  </div>
+</form>

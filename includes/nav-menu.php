@@ -36,7 +36,7 @@ $a_active = ' active';
 ', 'nav-link dropdown-toggle', 'data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"'); ?>
 				<div class="dropdown-menu">
 					<h6 class="dropdown-header">Reports</h6>
-					<?= makeNavLink($page_name, 'pod-report.php', 'Pod Assignment', 'dropdown-item disabled'); ?>
+					<?= makeNavLink($page_name, 'report-assignment.php', 'Assignment', 'dropdown-item'); ?>
 					<?= makeNavLink($page_name, 'double-report.php', 'Doubles', 'dropdown-item disabled'); ?>
 				</div>
 			</li>

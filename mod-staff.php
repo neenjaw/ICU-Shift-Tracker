@@ -176,8 +176,6 @@ if (!isset($_SESSION['user'])) {
 
   <script>
 
-  //TODO LIST -- Need to handle the response from the mod-staff ajax
-
   var debug = true;
 
   var optionTemplate;
