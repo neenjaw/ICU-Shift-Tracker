@@ -12,7 +12,7 @@ if (isset($_GET['staff-id'])) {
   $param = (object) array();
 
 
-  if (isset($_GET['num-of-days'])) $param->{'days'} = intval(trim($_GET['num-of-days']));
+  if (isset($_GET['num-of-shifts'])) $param->{'days'} = intval(trim($_GET['num-of-shifts']));
   if (isset($_GET['since-date'])) $param->{'since-date'} = trim($_GET['since-date']);
 
   echo json_encode($crud->getStaffDetails($id, $param), JSON_PRETTY_PRINT);

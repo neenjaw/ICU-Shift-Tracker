@@ -97,7 +97,6 @@ if (!isset($_SESSION['authenticated'])) {
         </div>
 
         <div class="modal-footer clearfix">
-          <input type="hidden" id="shift-modified" value="no">
           <button id='modal-delete-shift-btn' class="btn btn-danger">Delete</button>
           <button id='modal-close-btn' class="btn btn-primary" data-dismiss="modal">Close</button>
         </div>
@@ -121,8 +120,6 @@ if (!isset($_SESSION['authenticated'])) {
   <script src="assets/build-shift-table.js"></script>
 
   <script>
-    //TODO - create shift edit option
-
     var debug = true;
     var shiftTemplate = null;
     var daysToPrint = 15;

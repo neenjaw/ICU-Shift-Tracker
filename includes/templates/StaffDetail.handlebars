@@ -40,14 +40,16 @@ accepts the following object schema
 
 {{!-- Staff Details entries --}}
 <input id="staff-id" type="hidden" value="{{id}}">
-<h4>Shift details for {{name}} <a id="choose-another" href="javascript:void();"><small>(choose another)</small></a></h4>
+<h4>Shift details for {{name}}</h4>
+<p><a id="choose-another" href="javascript:void(0)"><small>(choose another staff to view)</small></a></p>
 
 {{#if shift}}
   {{#if since-date}}
-    <p>Showing the data since {{since-date}}</p>
+    <p>Showing the data since {{since-date}}.</p>
   {{/if}}
   {{#unless since-date}}
     <p>Showing the data for the last {{shift-count}} shifts.</p>
+    <p><a id="show-all" href="javascript:void(0)"><small>(show all staff person's shifts)</small></a></p>
   {{/unless}}
 {{else}}
   <div class="bs-callout bs-callout-info">
@@ -91,7 +93,7 @@ accepts the following object schema
 
 {{#if shift}}
   <label for="table-shifts">Shift List (Most recent {{shift-count}} shifts):</label>
-  <table id="table-shifts" class="table">
+  <table id="table-shifts" class="table table-responsive">
     <thead>
       <tr>
         <th scope="col">Date</th>
@@ -110,7 +112,7 @@ accepts the following object schema
           <td>{{this.role}}</td>
           <td>{{this.assignment}}</td>
           <td>{{this.code}}</td>
-          <td><a href="javascript:void(0);" data-shift-id="{{this.id}}"><i class="fa fa-link" aria-hidden="true"></i></a></td>
+          <td><a class="shift-link" href="javascript:void(0);" data-shift-id="{{this.id}}"><i class="fa fa-link" aria-hidden="true"></i></a></td>
         </tr>
       {{/each}}
     </tbody>

@@ -483,6 +483,13 @@ class crud
     //determine if one id was supplied or an array of id's
     $multiple_id = is_array($id);
 
+    $sql_min_date = "SELECT
+                       MIN(shift_date) AS first_shift
+                     FROM
+                       {$this->tbl_shift_entry}
+                     WHERE
+                       staff_id=:id";
+
     $sql_shift_w_staff = "SELECT
                     {$this->tbl_shift_entry}.*,
                     {$this->tbl_staff}.first_name,
@@ -523,6 +530,23 @@ class crud
       $staff->{'shift-count'} = 0;
       $staff->id = $staff_id;
 
+      try {
+        $stmt = $this->db->prepare($sql_min_date);
+        $stmt->bindparam(":id", $staff_id, PDO::PARAM_INT);
+        $stmt->execute();
+
+        if ($stmt->rowCount() < 1) {
+          throw new Exception("No record found to find the earlist date.");
+        }
+
+        $row=$stmt->fetch(PDO::FETCH_ASSOC);
+        $staff->{'first-shift'} = $row['first_shift'];
+
+      } catch (Exception $e) {
+        throw new Exception("Problem getting staff's first shift date:\n{$e->getMessage()}");
+      }
+
+
       //init counting arrays
       $mod_count = array();
       $role_count = array();
@@ -541,6 +565,10 @@ class crud
         }
 
         $stmt->execute();
+
+        if ($stmt->rowCount() < 1) {
+          throw new Exception("No shifts found.");
+        }
 
         $first_iteration = true;
 
