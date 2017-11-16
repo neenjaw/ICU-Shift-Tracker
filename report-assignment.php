@@ -72,6 +72,13 @@ if (!isset($_SESSION['user'])) {
           $($(`#container`)).html(reportSelectTemplate(response));
 
           //TODO bind parsely to form submission
+          $('form')
+          .parsley()
+          .on('form:submit', function () {
+            submitReportStaff();
+            return false; //return false to prevent HTML form submission
+          });
+
         } catch(e) {
           alert(e); // error in the above string being parsed!
         }
@@ -81,6 +88,10 @@ if (!isset($_SESSION['user'])) {
     var staffSelectParam = {
       onSuccess: onStaffSuccess,
       data: [{'group-by-category':'true'}]
+    }
+
+    function submitReportStaff() {
+      return null;
     }
 
     //When document is ready
