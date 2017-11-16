@@ -2,61 +2,24 @@
  * populate the staff select
  */
 
-function getStaffSelect($target, selectTemplate, data = '', responseTransform = null) {
-  url = 'ajax/ajax_get_staff.php';
+function getStaffSelect(params) {
+  params = params || {};
+  params.type = params.type || 'GET';
+  params.url  = params.url  || 'ajax/ajax_get_staff.php';
+  params.data = params.data || [];
+
+  params.doBefore = params.doBefore || function () {};
+
+  params.onSuccess = params.onSuccess || function (response) {};
+
+  if (debug) console.log(params);
 
   $.ajax({
-    type: 'GET',
-    url: url,
-    data: data,
-    beforeSend: function () {
-      if (debug) console.log(`URL Queried to get staff: ${url}?${data}`);
-    },
-    success: function (response) {
-      if (debug) console.log(`Staff retrieved:`);
-      if (debug) console.log(response);
-
-      if(response) {
-        try {
-          response = JSON.parse(response);
-
-          if (responseTransform != null) {
-            response = responseTransform(response);
-          }
-
-          //
-          // detail.sort(function(a, b) {
-          //   let lnameA = a.last_name.toUpperCase(); // ignore upper and lowercase
-          //   let lnameB = b.last_name.toUpperCase(); // ignore upper and lowercase
-          //
-          //   if (lnameA < lnameB) {
-          //     return -1;
-          //   }
-          //   if (lnameA > lnameB) {
-          //     return 1;
-          //   }
-          //   if (lnameA == lnameB) {
-          //     let fnameA = a.first_name.toUpperCase(); // ignore upper and lowercase
-          //     let fnameB = b.first_name.toUpperCase(); // ignore upper and lowercase
-          //
-          //     if (fnameA < fnameB) {
-          //       return -1;
-          //     }
-          //     if (fnameA > fnameB) {
-          //       return 1;
-          //     }
-          //   }
-          //
-          //   //names must be equal
-          //   return 0;
-          // });
-
-          $($target).html(selectTemplate(response));
-        } catch(e) {
-          alert(e); // error in the above string being parsed!
-        }
-      }
-    }
+    type: params.type,
+    url: params.url,
+    data: params.data.map(function(x) { return Object.keys(x)[0]+'='+Object.values(x)[0]}).join('&'),
+    beforeSend: params.doBefore,
+    success: params.onSuccess
   });
 }
 

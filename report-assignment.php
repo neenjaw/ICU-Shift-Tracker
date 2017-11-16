@@ -61,13 +61,33 @@ if (!isset($_SESSION['user'])) {
     var debug = true;
     var reportSelectTemplate = null;
 
+    const onStaffSuccess = function (response) {
+      if (debug) console.log(`Staff retrieved:`);
+      if (debug) console.log(response);
+
+      if(response) {
+        try {
+          response = JSON.parse(response);
+
+          $($(`#container`)).html(reportSelectTemplate(response));
+
+          //TODO bind parsely to form submission
+        } catch(e) {
+          alert(e); // error in the above string being parsed!
+        }
+      }
+    }
+
+    var staffSelectParam = {
+      onSuccess: onStaffSuccess,
+      data: [{'group-by-category':'true'}]
+    }
+
     //When document is ready
     $(function () {
       reportSelectTemplate = Handlebars.compile($("#staff-report-select-template").html());
 
-      getStaffSelect($(`#container`), reportSelectTemplate, 'group-by-category="true"');
-
-      //TODO bind parsely to form submission
+      getStaffSelect(staffSelectParam);
       //TODO get staff details of staff array
       //TODO generate a report for all this
       //TODO create template to display report
