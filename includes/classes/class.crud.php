@@ -332,7 +332,7 @@ class crud
     return $staff_array;
   }
 
-  public function getStaffFilteredByDate() {
+  public function getStaffFilteredByDate($date) {
 
     $staff_array = array();
 

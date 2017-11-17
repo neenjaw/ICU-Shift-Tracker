@@ -1301,13 +1301,14 @@ $form_select_assignment = $crud->getAllAssignments();
 
        },
   	   success: function(data) {
-         if (debug) { console.log("AJAX returned."); }
+         if (debug) console.log("AJAX returned.");
+         if (debug) console.log(data);
 
          if (data !== 'Not ok.') {
            lastDate = date;
            staffList = JSON.parse(data);
 
-           if (debug) { console.log(staffList); }
+           if (debug) console.log(staffList);
 
            populateStaffSelect(staffList);
          }
