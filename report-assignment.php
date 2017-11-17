@@ -98,6 +98,20 @@ if (!isset($_SESSION['user'])) {
     $(function () {
       reportSelectTemplate = Handlebars.compile($("#staff-report-select-template").html());
 
+      // add the percentOfTotal helper
+      Handlebars.registerHelper("percentOfTotal", function(number, total) {
+        let percent = number / total * 100;
+        percent = percent.toString();
+
+        let i = percent.indexOf('.');
+
+        if (i>0) {
+          return percent.substr(0, (percent.indexOf('.')+1))+"%";
+        } else {
+          return percent+"%";
+        }
+      });
+
       getStaffSelect(staffSelectParam);
       //TODO get staff details of staff array
       //TODO generate a report for all this

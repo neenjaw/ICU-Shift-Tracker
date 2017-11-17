@@ -317,7 +317,9 @@ class crud
     $stmt = $this->db->prepare("SELECT
         *
       FROM
-        {$this->tbl_staff}");
+        {$this->tbl_staff}
+      ORDER BY
+        last_name ASC, first_name ASC");
 
     $stmt->execute();
 

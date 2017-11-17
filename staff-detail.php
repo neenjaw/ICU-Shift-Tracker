@@ -103,6 +103,20 @@ if (!isset($_SESSION['user'])) {
       shiftTemplate = Handlebars.compile($("#shift-entry-template").html());
       selectTemplate = Handlebars.compile($("#staff-select-template").html());
 
+      // add the percentOfTotal helper
+      Handlebars.registerHelper("percentOfTotal", function(number, total) {
+        let percent = number / total * 100;
+        percent = percent.toString();
+
+        let i = percent.indexOf('.');
+
+        if (i>0) {
+          return percent.substr(0, (percent.indexOf('.')+1))+"%";
+        } else {
+          return percent+"%";
+        }
+      });
+
       var url_string = window.location.href;
       var url = new URL(url_string);
       var staffId = url.searchParams.get("staff-id");
