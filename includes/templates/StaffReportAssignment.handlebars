@@ -1,0 +1,55 @@
+{{!--
+
+TODO finish this:
+
+table:
+
+name | last role | last pod | number of a | number of b | number of b | number of doubles
+-----------------------------------------------------------------------------------------
+Ann  | Bedside   | A        | 2           | 0           | 5           | 2
+
+
+--}}
+
+
+<!-- Report Display -->
+<table class="table">
+  <thead>
+    <tr>
+      <th>
+        Name
+      </th>
+      <th>
+        Last Role
+      </th>
+      <th>
+        Last Pod
+      </th>
+      <th>
+        # shifts in A
+      </th>
+      <th>
+        # shifts in B
+      </th>
+      <th>
+        # shifts in C
+      </th>
+      <th>
+        # of shifts doubled
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each staff}}
+      <tr>
+        <td>{{this.name}}</td>
+        <td>{{this.last-role}}</td>
+        <td>{{this.last-pod}}</td>
+        <td>{{this.pod-a-count}}</td>
+        <td>{{this.pod-b-count}}</td>
+        <td>{{this.pod-c-count}}</td>
+        <td>{{this.double-count}}</td>
+      </tr>
+    {{/each}}
+  </tbody>
+</table>
