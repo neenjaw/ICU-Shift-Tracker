@@ -55,6 +55,10 @@ if (!isset($_SESSION['user'])) {
     <?php include 'includes/templates/StaffReportSelect.handlebars'; ?>
   </script>
 
+  <script id="staff-report-assignment-template" type="text/x-handlebars-template">
+    <?php // include 'includes/templates/StaffReportAssignment.handlebars'; ?>
+  </script>
+
   <script src="assets/website-lib.js?<?= date('l jS \of F Y h:i:s A'); ?>"></script>
 
   <script>
