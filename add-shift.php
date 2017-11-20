@@ -230,6 +230,7 @@ foreach ($form_select_assignment as $k => $v) {?>
           endDate: "0d"
       });
       <?php endif; ?>
+      
       //Activate the Select2 script for the staff select to search easily
       $("#select-staff").select2();
 
@@ -243,6 +244,7 @@ foreach ($form_select_assignment as $k => $v) {?>
             break;
           default: //else hide them
             $("#chebox-group").collapse('hide');
+            $("input[name='nonvent']").prop("checked", true);
         }
 
       });
