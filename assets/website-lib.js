@@ -1,27 +1,36 @@
 /*
- * populate the staff select
+ * ajax get function
  */
 
-function getStaffSelect(params) {
-  params = params || {};
-  params.type = params.type || 'GET';
-  params.url  = params.url  || 'ajax/ajax_get_staff.php';
-  params.data = params.data || [];
+ function getData(params) {
+   params = params || {};
+   params.type = params.type || 'GET';
+   params.url  = params.url  || '';
+   params.data = params.data || [];
 
-  params.doBefore = params.doBefore || function () {};
+   params.doBefore = params.doBefore || function () {};
 
-  params.onSuccess = params.onSuccess || function (response) {};
+   params.onSuccess = params.onSuccess || function (response) {};
 
-  if (debug) console.log(params);
+   if (debug) console.log(params);
 
-  $.ajax({
-    type: params.type,
-    url: params.url,
-    data: params.data.map(function(x) { return Object.keys(x)[0]+'='+Object.values(x)[0]}).join('&'),
-    beforeSend: params.doBefore,
-    success: params.onSuccess
-  });
-}
+   if (params.url == '') {
+     if (debug) console.log('Abort GET, no url supplied.');
+   }
+
+   let mappedData = params.data.map(function(x) { return Object.keys(x)[0]+'='+Object.values(x)[0]}).join('&');
+
+   if (debug) console.log(`Mapped Data:`);
+   if (debug) console.log(mappedData);
+
+   $.ajax({
+     type: params.type,
+     url: params.url,
+     data: mappedData,
+     beforeSend: params.doBefore,
+     success: params.onSuccess
+   });
+ }
 
 /*
  * SHOW THE ALERT

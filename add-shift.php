@@ -230,7 +230,7 @@ foreach ($form_select_assignment as $k => $v) {?>
           endDate: "0d"
       });
       <?php endif; ?>
-      
+
       //Activate the Select2 script for the staff select to search easily
       $("#select-staff").select2();
 
@@ -241,6 +241,7 @@ foreach ($form_select_assignment as $k => $v) {?>
         switch(selectVal) {
           case "5": //If the bedside role is selected, then show the checkboxes
             $("#chebox-group").collapse('show');
+            $("input[name='nonvent']").prop("checked", false);
             break;
           default: //else hide them
             $("#chebox-group").collapse('hide');

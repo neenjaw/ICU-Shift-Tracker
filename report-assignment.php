@@ -64,6 +64,7 @@ if (!isset($_SESSION['user'])) {
   <script>
     var debug = true;
     var reportSelectTemplate = null;
+    var reportDisplayTemplate = null;
 
     const onStaffSuccess = function (response) {
       if (debug) console.log(`Staff retrieved:`);
@@ -73,7 +74,7 @@ if (!isset($_SESSION['user'])) {
         try {
           response = JSON.parse(response);
 
-          $($(`#container`)).html(reportSelectTemplate(response));
+          $(`#container`).html(reportSelectTemplate(response));
 
           //TODO bind parsely to form submission
           $('form')
@@ -84,23 +85,61 @@ if (!isset($_SESSION['user'])) {
           });
 
         } catch(e) {
-          alert(e); // error in the above string being parsed!
+          alert(`Select Error: ${e}`); // error in the above string being parsed!
         }
       }
-    }
+    };
+
+    const onReportSuccess = function (response) {
+      if (debug) console.log(`Report data retrieved:`);
+      if (debug) console.log(response);
+
+      if(response) {
+        try {
+          response = JSON.parse(response);
+
+          // $(`#container`).empty().html(reportDisplayTemplate(response));
+
+        } catch(e) {
+          alert(`Report Error: ${e}`); // error in the above string being parsed!
+        }
+      } else {
+        if (debug) console.log('Report failure.');
+      }
+    };
 
     var staffSelectParam = {
-      onSuccess: onStaffSuccess,
-      data: [{'group-by-category':'true'}]
-    }
+      url: 'ajax/ajax_get_staff.php',
+      data: [{'group-by-category':'true'}],
+      onSuccess: onStaffSuccess
+    };
+
+    var staffReportParam = {
+      url: 'ajax/ajax_get_report.php',
+      onSuccess: onReportSuccess
+    };
 
     function submitReportStaff() {
-      return null;
+      let x = $('form').serializeArray();
+
+      if (debug) console.log(`Staff to be reported on:`);
+      if (debug) console.log(x);
+
+      x = x.map( function(e){ return { [e.name]:e.value }; } );
+
+      if (debug) console.log(`Mapped serializeArray data:`);
+      if (debug) console.log(x);
+
+      staffReportParam.data = x;
+
+      getData(staffReportParam);
+      return true;
     }
 
     //When document is ready
     $(function () {
       reportSelectTemplate = Handlebars.compile($("#staff-report-select-template").html());
+      reportDisplayTemplate = Handlebars.compile($("#staff-report-assignment-template").html());
 
       // add the percentOfTotal helper
       Handlebars.registerHelper("percentOfTotal", function(number, total) {
@@ -116,7 +155,7 @@ if (!isset($_SESSION['user'])) {
         }
       });
 
-      getStaffSelect(staffSelectParam);
+      getData(staffSelectParam);
       //TODO get staff details of staff array
       //TODO generate a report for all this
       //TODO create template to display report
