@@ -97,8 +97,52 @@ if (!isset($_SESSION['user'])) {
       if(response) {
         try {
           response = JSON.parse(response);
+          if (debug) console.log(`parsed:`);
+          if (debug) console.log(response);
 
-          // $(`#container`).empty().html(reportDisplayTemplate(response));
+          let byGroup = [];
+          $.each(response, function(index, value){
+            byGroup[value.category] = byGroup[value.category] || [];
+
+            let assignmentArray = value['assign-count'];
+            let aCount = 0;
+            let bCount = 0;
+            let cCount = 0;
+            $.each(assignmentArray, function(i, v){
+              if (v.assignment === "A") {
+                aCount = v.count;
+              } else if (v.assignemtn === "B") {
+                bCount = v.count;
+              } else if (v.assignemtn === "C") {
+                cCount = v.count;
+              }
+            });
+
+            let modArray = value['mod-count'];
+            let dCount = 0;
+            $.each(modArray, function(i, v){
+              if (v.mod === "Doubled") {
+                dCount = v.count;
+              }
+            });
+
+            byGroup[value.category].push({
+              id: value.id,
+              name: value.name,
+              lastWorked: value.shift[0].date,
+              lastRole: value.shift[0].role,
+              lastPod: value.shift[0].assignment,
+              aPodCount: aCount,
+              bPodCount: bCount,
+              cPodCount: cCount,
+              doubleCount: dCount
+            });
+          });
+
+          if (debug) console.log('byGroup');
+          if (debug) console.log(byGroup);
+
+          $(`#container`).empty().html(reportDisplayTemplate({group: byGroup}));
 
         } catch(e) {
           alert(`Report Error: ${e}`); // error in the above string being parsed!
@@ -115,7 +159,7 @@ if (!isset($_SESSION['user'])) {
     };
 
     var staffReportParam = {
-      url: 'ajax/ajax_get_report.php',
+      url: 'ajax/ajax_get_staff_details.php',
       onSuccess: onReportSuccess
     };
 
@@ -133,7 +177,9 @@ if (!isset($_SESSION['user'])) {
       staffReportParam.data = x;
 
       getData(staffReportParam);
-      return true;
+      //TODO get staff details of staff array
+      //TODO generate a report for all this
+      //TODO create template to display report
     }
 
     //When document is ready
@@ -156,9 +202,6 @@ if (!isset($_SESSION['user'])) {
       });
 
       getData(staffSelectParam);
-      //TODO get staff details of staff array
-      //TODO generate a report for all this
-      //TODO create template to display report
     });
 
   </script>

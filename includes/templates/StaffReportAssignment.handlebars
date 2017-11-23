@@ -13,43 +13,38 @@ Ann  | Bedside   | A        | 2           | 0           | 5           | 2
 
 
 <!-- Report Display -->
-<table class="table">
-  <thead>
-    <tr>
-      <th>
-        Name
-      </th>
-      <th>
-        Last Role
-      </th>
-      <th>
-        Last Pod
-      </th>
-      <th>
-        # shifts in A
-      </th>
-      <th>
-        # shifts in B
-      </th>
-      <th>
-        # shifts in C
-      </th>
-      <th>
-        # of shifts doubled
-      </th>
-    </tr>
-  </thead>
-  <tbody>
-    {{#each staff}}
+{{if group}}
+  <table class="table">
+    <thead>
       <tr>
-        <td>{{this.name}}</td>
-        <td>{{this.last-role}}</td>
-        <td>{{this.last-pod}}</td>
-        <td>{{this.pod-a-count}}</td>
-        <td>{{this.pod-b-count}}</td>
-        <td>{{this.pod-c-count}}</td>
-        <td>{{this.double-count}}</td>
+        <th>Name</th>
+        <th>Last Shift</th>
+        <th>Last Role</th>
+        <th>Last Pod</th>
+        <th># shifts in A</th>
+        <th># shifts in B</th>
+        <th># shifts in C</th>
+        <th># of shifts doubled</th>
       </tr>
-    {{/each}}
-  </tbody>
-</table>
+    </thead>
+    <tbody>
+      {{#each group}}
+        <tr><td colspan="8">{{@key}}</td></tr>
+        {{#each staff}}
+          <tr>
+            <td data-staff-id="{{this.id}}">{{this.name}}</td>
+            <td>{{this.lastWorked}}</td>
+            <td>{{this.lastRole}}</td>
+            <td>{{this.lastPod}}</td>
+            <td>{{this.aPodCount}}</td>
+            <td>{{this.bPodCount}}</td>
+            <td>{{this.cPodCount}}</td>
+            <td>{{this.doubleCount}}</td>
+          </tr>
+        {{/each}}
+      {{/each}}
+    </tbody>
+  </table>
+{{else}}
+  <p>No data to display</p>
+{{/if}}
