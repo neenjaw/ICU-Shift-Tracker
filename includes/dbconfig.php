@@ -17,10 +17,12 @@ function get_numeric($val) {
   return 0;
 }
 
-$DB_host = 'localhost';
-$DB_user = 'id1876647_neenjawtestuser';
-$DB_pass = 'testedninja4neenjaw';
-$DB_name = 'id1876647_neenjawtest';
+$db_config = parse_ini_file('./dbconfig.ini'); 
+
+$DB_host = $db_config['host'];
+$DB_user = $db_config['username'];
+$DB_pass = $db_config['password'];
+$DB_name = $db_config['dbname'];
 
 $DB_tbl_users = 'shift_login_tbl_users';
 $DB_tbl_auth_states = 'shift_login_tbl_user_auth';
