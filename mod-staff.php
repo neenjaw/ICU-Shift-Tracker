@@ -251,7 +251,7 @@ if (!isset($_SESSION['user'])) {
   function submitModStaff(data) {
     $.ajax({
       type: 'POST',
-      url: 'ajax/ajax_put_staff.php',
+      url: 'resource/put_staff.php',
       data: data,
       beforeSend: function () {
         if (debug) console.log("Change submitted:");
@@ -296,7 +296,7 @@ if (!isset($_SESSION['user'])) {
 
     $.ajax({
       type: 'POST',
-      url: 'ajax/ajax_get_staff.php',
+      url: 'resource/get_staff.php',
       data: data,
       beforeSend: function () {
         if (debug) console.log("Uid submitted:");
@@ -340,7 +340,7 @@ if (!isset($_SESSION['user'])) {
   function getAllStaff(pTemplate, defaultList) {
     $.ajax({
       type: 'POST',
-      url: 'ajax/ajax_get_staff.php',
+      url: 'resource/get_staff.php',
       data: '',
       beforeSend: function () {
         setSelectToLoading($('#staff-uid'), pTemplate, {entry: defaultList});
@@ -367,7 +367,7 @@ if (!isset($_SESSION['user'])) {
 
     $.ajax({
       type: 'POST',
-      url: 'ajax/ajax_get_staff.php',
+      url: 'resource/get_staff.php',
       data: data,
       beforeSend: function () {
         if (debug) console.log("AJAX called, data sent:");

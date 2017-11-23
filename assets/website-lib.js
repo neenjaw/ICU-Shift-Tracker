@@ -65,7 +65,7 @@ function showAlert(message = '', alertClass = 'alert-success', alertTimeout = 50
 
    $.ajax({
      type: 'POST',
-     url: 'ajax/ajax_get_shift_details.php',
+     url: 'resource/get_shift_details.php',
      data: 'shift_id='+id+'',
      beforeSend: function () {
        $('#shift-detail-text').html('');
@@ -105,7 +105,7 @@ function deleteShiftEntry(id = null, onSuccess) {
   if (confirm("Are you sure you want to delete this shift?")) {
     $.ajax({
       type: 'POST',
-      url: 'ajax/ajax_delete_shift.php',
+      url: 'resource/delete_shift.php',
       data: 'shift_id='+id+'',
       beforeSend: function () {
         if (debug) console.log(`Attempting to delete '${id}'.`);
@@ -148,7 +148,7 @@ function shiftDetailEditSubmit($elem) {
     // submit the form
     $.ajax({
       type: 'POST',
-      url: 'ajax/ajax_put_shift_update.php',
+      url: 'resource/put_shift_update.php',
       data: data,
       beforeSend: function () {
         if (debug) console.log(`Update to be submitted:`);

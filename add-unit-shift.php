@@ -1249,7 +1249,7 @@ $form_select_assignment = $crud->getAllAssignments();
     }
 
     $.ajax({
-  	   url: 'ajax/ajax_post_multiple_shift.php',
+  	   url: 'resource/post_multiple_shift.php',
   	   type: 'post',
   	   data: {"shiftData" : JSON.stringify(submissionData)},
        beforeSend: function () {
@@ -1294,7 +1294,7 @@ $form_select_assignment = $crud->getAllAssignments();
     if (date === lastDate) { return false; }
 
     $.ajax({
-  	   url: 'ajax/ajax_get_staff.php',
+  	   url: 'resource/get_staff.php',
   	   type: 'post',
   	   data: `date=${date}`,
        beforeSend: function () {

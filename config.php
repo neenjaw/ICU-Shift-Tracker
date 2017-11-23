@@ -424,7 +424,7 @@ if (!isset($_SESSION['user'])) {
 
       $.ajax({
         type: 'POST',
-        url: 'ajax/ajax_put_staff.php',
+        url: 'resource/put_staff.php',
         data: data,
         beforeSend: function () {
           if (debug) console.log("Delete staff submitted:");
@@ -453,7 +453,7 @@ if (!isset($_SESSION['user'])) {
   function submitConfig(data) {
     $.ajax({
       type: 'POST',
-      url: 'ajax/ajax_post_config.php',
+      url: 'resource/post_config.php',
       data: `cmd-submit=1&${data}`,
       beforeSend: function () {
         if (debug) console.log("Change submitted:");
@@ -475,7 +475,7 @@ if (!isset($_SESSION['user'])) {
   function getAuthStates(pTemplate, defaultList) {
     $.ajax({
       type: 'GET',
-      url: 'ajax/ajax_get_auth_states.php',
+      url: 'resource/get_auth_states.php',
       data: '',
       beforeSend: function () {
         setSelectToLoading($('#cmd-addusr-auth-id'), pTemplate, {entry: defaultList});
@@ -500,7 +500,7 @@ if (!isset($_SESSION['user'])) {
   function getUsers(pTemplate, defaultList) {
     $.ajax({
       type: 'GET',
-      url: 'ajax/ajax_get_users.php',
+      url: 'resource/get_users.php',
       data: '',
       beforeSend: function () {
         setSelectToLoading($('#cmd-delusr-uid'), pTemplate, {entry: defaultList});
@@ -525,7 +525,7 @@ if (!isset($_SESSION['user'])) {
   function getAllStaff(pTemplate, defaultList) {
     $.ajax({
       type: 'POST',
-      url: 'ajax/ajax_get_staff.php',
+      url: 'resource/get_staff.php',
       data: '',
       beforeSend: function () {
         setSelectToLoading($('#cmd-delstaff-uid'), pTemplate, {entry: defaultList});

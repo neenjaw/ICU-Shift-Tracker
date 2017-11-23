@@ -144,7 +144,7 @@ if (!isset($_SESSION['user'])) {
 
       $.ajax({
         type: 'POST',
-        url: 'ajax/ajax_post_staff.php',
+        url: 'resource/post_staff.php',
         data: data + '&btn-submit-new-staff=1',
         beforeSend: function () {
           $('#btn-submit-new-staff').html('<span class="fa fa-transfer"></span> &nbsp; adding ...');

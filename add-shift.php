@@ -267,7 +267,7 @@ foreach ($form_select_assignment as $k => $v) {?>
 
         $.ajax({
           type: 'POST',
-          url: 'ajax/ajax_post_single_shift.php',
+          url: 'resource/post_single_shift.php',
           data: data,
           beforeSend: function () {
             $('#shift-submit').html('<span class="fa fa-exchange"></span> &nbsp; Attempting ...');

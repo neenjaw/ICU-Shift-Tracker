@@ -160,7 +160,7 @@ if (!isset($_SESSION['user'])) {
 
       $.ajax({
         type: 'GET',
-        url: 'ajax/ajax_get_staff_details.php',
+        url: 'resource/get_staff_details.php',
         data: data,
         beforeSend: function () {
           if (debug) console.log(`Staff detail to be retrieved:`);
@@ -202,7 +202,7 @@ if (!isset($_SESSION['user'])) {
 
       $.ajax({
         type: 'GET',
-        url: 'ajax/ajax_get_staff.php',
+        url: 'resource/get_staff.php',
         data: data,
         beforeSend: function () {
           if (debug) console.log(`All staff to be retrieved.`);
@@ -231,7 +231,7 @@ if (!isset($_SESSION['user'])) {
 
       $.ajax({
         type: 'POST',
-        url: 'ajax/ajax_get_shift_details.php',
+        url: 'resource/get_shift_details.php',
         data: 'shift_id='+id+'',
         beforeSend: function () {
           $('#shift-detail-text').html('');
@@ -271,7 +271,7 @@ if (!isset($_SESSION['user'])) {
       if (confirm("Are you sure you want to delete this shift?")) {
         $.ajax({
           type: 'POST',
-          url: 'ajax/ajax_delete_shift.php',
+          url: 'resource/delete_shift.php',
           data: 'shift_id='+id+'',
           beforeSend: function () {
             if (debug) console.log(`Attempting to delete '${id}'.`);
@@ -330,7 +330,7 @@ if (!isset($_SESSION['user'])) {
         // submit the form
         $.ajax({
           type: 'POST',
-          url: 'ajax/ajax_put_shift_update.php',
+          url: 'resource/put_shift_update.php',
           data: data,
           beforeSend: function () {
             if (debug) console.log(`Update to be submitted:`);

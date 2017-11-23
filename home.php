@@ -163,7 +163,7 @@ if (!isset($_SESSION['authenticated'])) {
     function getShiftTable(days, offset, category) {
       $.ajax({
         type: 'POST',
-        url: 'ajax/ajax_get_shift_table.php',
+        url: 'resource/get_shift_table.php',
         data: 'days='+days+'&offset='+offset+'&category='+category,
         beforeSend: function () {
         },
@@ -196,7 +196,7 @@ if (!isset($_SESSION['authenticated'])) {
 
       $.ajax({
         type: 'POST',
-        url: 'ajax/ajax_get_shift_details.php',
+        url: 'resource/get_shift_details.php',
         data: 'shift_id='+id+'',
         beforeSend: function () {
           $('#shift-detail-text').html();
@@ -236,7 +236,7 @@ if (!isset($_SESSION['authenticated'])) {
       if (confirm("Are you sure you want to delete this shift?")) {
         $.ajax({
           type: 'POST',
-          url: 'ajax/ajax_delete_shift.php',
+          url: 'resource/delete_shift.php',
           data: 'shift_id='+id+'',
           beforeSend: function () {
             // nada
@@ -297,7 +297,7 @@ if (!isset($_SESSION['authenticated'])) {
         // submit the form
         $.ajax({
           type: 'POST',
-          url: 'ajax/ajax_put_shift_update.php',
+          url: 'resource/put_shift_update.php',
           data: data,
           beforeSend: function () {
             if (debug) console.log(`Update to be submitted:`);

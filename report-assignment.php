@@ -153,13 +153,13 @@ if (!isset($_SESSION['user'])) {
     };
 
     var staffSelectParam = {
-      url: 'ajax/ajax_get_staff.php',
+      url: 'resource/get_staff.php',
       data: [{'group-by-category':'true'}],
       onSuccess: onStaffSuccess
     };
 
     var staffReportParam = {
-      url: 'ajax/ajax_get_staff_details.php',
+      url: 'resource/get_staff_details.php',
       onSuccess: onReportSuccess
     };
 
