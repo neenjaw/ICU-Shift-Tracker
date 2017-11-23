@@ -17,7 +17,7 @@ function get_numeric($val) {
   return 0;
 }
 
-$db_config = parse_ini_file('./dbconfig.ini'); 
+$db_config = parse_ini_file('dbconfig.ini'); 
 
 $DB_host = $db_config['host'];
 $DB_user = $db_config['username'];
