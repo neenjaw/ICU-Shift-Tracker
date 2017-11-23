@@ -40,8 +40,8 @@ catch(PDOException $e)
 }
 
 if (isset($_SESSION['authenticated'])) {
-    include_once 'classes/class.crud.php';
+    include_once 'classes/class.shift-crud.php';
 
-    $crud = new crud($DB_con);
+    $crud = new ShiftCrud($DB_con);
 }
 ?>
