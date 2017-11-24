@@ -117,7 +117,7 @@ if (!isset($_SESSION['authenticated'])) {
     <?php include 'includes/templates/ShiftEntryEditable.handlebars'; ?>
   </script>
 
-  <script src="assets/build-shift-table.js"></script>
+  <script src="includes/lib/build-shift-table.js"></script>
 
   <script>
     var debug = true;

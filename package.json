@@ -23,6 +23,9 @@
     "url": "https://github.com/neenjaw/icu-shift-tracker/issues"
   },
   "homepage": "https://github.com/neenjaw/icu-shift-tracker#readme",
-  "dependencies": {
+  "dependencies": {},
+  "devDependencies": {
+    "eslint": "^4.11.0",
+    "eslint-config-google": "^0.9.1"
   }
 }

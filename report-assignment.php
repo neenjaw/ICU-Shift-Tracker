@@ -59,7 +59,7 @@ if (!isset($_SESSION['user'])) {
     <?php // include 'includes/templates/StaffReportAssignment.handlebars'; ?>
   </script>
 
-  <script src="assets/website-lib.js?<?= date('l jS \of F Y h:i:s A'); ?>"></script>
+  <script src="includes/lib/website-lib.js?<?= date('l jS \of F Y h:i:s A'); ?>"></script>
 
   <script>
     var debug = true;
