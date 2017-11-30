@@ -628,6 +628,8 @@ class ShiftCrud
             }
 
             $staff->name = "{$row['first_name']} {$row['last_name']}";
+            $staff->fname = "{$row['first_name']}";
+            $staff->lname = "{$row['last_name']}";
             $staff->category = $category_ref[$row['category_id']];
             $first_iteration = false;
           }

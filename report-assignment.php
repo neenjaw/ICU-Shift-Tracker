@@ -56,7 +56,7 @@ if (!isset($_SESSION['user'])) {
   </script>
 
   <script id="staff-report-assignment-template" type="text/x-handlebars-template">
-    <?php // include 'includes/templates/StaffReportAssignment.handlebars'; ?>
+    <?php include 'includes/templates/StaffReportAssignment.handlebars'; ?>
   </script>
 
   <script src="includes/lib/website-lib.js?<?= date('l jS \of F Y h:i:s A'); ?>"></script>
@@ -101,8 +101,13 @@ if (!isset($_SESSION['user'])) {
           if (debug) console.log(response);
 
           let byGroup = [];
+          let names = [];
           $.each(response, function(index, value){
             byGroup[value.category] = byGroup[value.category] || [];
+
+            if ( byGroup[value.category].length === 0 ) {
+              names.push(value.category);
+            }
 
             let assignmentArray = value['assign-count'];
             let aCount = 0;
@@ -111,9 +116,9 @@ if (!isset($_SESSION['user'])) {
             $.each(assignmentArray, function(i, v){
               if (v.assignment === "A") {
                 aCount = v.count;
-              } else if (v.assignemtn === "B") {
+              } else if (v.assignment === "B") {
                 bCount = v.count;
-              } else if (v.assignemtn === "C") {
+              } else if (v.assignment === "C") {
                 cCount = v.count;
               }
             });
@@ -128,7 +133,7 @@ if (!isset($_SESSION['user'])) {
 
             byGroup[value.category].push({
               id: value.id,
-              name: value.name,
+              name: `${value.lname}, ${value.fname}`,
               lastWorked: value.shift[0].date,
               lastRole: value.shift[0].role,
               lastPod: value.shift[0].assignment,
@@ -142,7 +147,16 @@ if (!isset($_SESSION['user'])) {
           if (debug) console.log('byGroup');
           if (debug) console.log(byGroup);
 
-          $(`#container`).empty().html(reportDisplayTemplate({group: byGroup}));
+          let groups = [];
+          for (let key in byGroup) {
+            if (byGroup.hasOwnProperty(key))
+              groups.push({ name: key, staff: byGroup[key] });
+          }
+
+          let o = { groups:groups };
+          if (debug) console.log(o);
+
+          $(`#container`).empty().html(reportDisplayTemplate(o));
 
         } catch(e) {
           alert(`Report Error: ${e}`); // error in the above string being parsed!
@@ -169,7 +183,7 @@ if (!isset($_SESSION['user'])) {
       if (debug) console.log(`Staff to be reported on:`);
       if (debug) console.log(x);
 
-      x = x.map( function(e){ return { [e.name]:e.value }; } );
+      x = x.map( function(e){ return { 'staff-id[]':e.value }; } );
 
       if (debug) console.log(`Mapped serializeArray data:`);
       if (debug) console.log(x);
@@ -199,6 +213,10 @@ if (!isset($_SESSION['user'])) {
         } else {
           return percent+"%";
         }
+      });
+
+      Handlebars.registerHelper("log", function(something) {
+        console.log(something);
       });
 
       getData(staffSelectParam);

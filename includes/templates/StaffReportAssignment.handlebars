@@ -10,29 +10,27 @@ Ann  | Bedside   | A        | 2           | 0           | 5           | 2
 
 
 --}}
-
-
 <!-- Report Display -->
-{{if group}}
-  <table class="table">
-    <thead>
+{{#if groups.length}}
+  <table class="table table-sm">
+    <thead class="thead-dark">
       <tr>
-        <th>Name</th>
-        <th>Last Shift</th>
-        <th>Last Role</th>
-        <th>Last Pod</th>
-        <th># shifts in A</th>
-        <th># shifts in B</th>
-        <th># shifts in C</th>
-        <th># of shifts doubled</th>
+        <th scope="col">Name</th>
+        <th scope="col">Last Shift</th>
+        <th scope="col">Last Role</th>
+        <th scope="col">Last Pod</th>
+        <th scope="col"># shifts in A</th>
+        <th scope="col"># shifts in B</th>
+        <th scope="col"># shifts in C</th>
+        <th scope="col"># doubled</th>
       </tr>
     </thead>
     <tbody>
-      {{#each group}}
-        <tr><td colspan="8">{{@key}}</td></tr>
+      {{#each groups}} 
+        <tr class="table-secondary"><td colspan="8">{{name}}</td></tr>
         {{#each staff}}
           <tr>
-            <td data-staff-id="{{this.id}}">{{this.name}}</td>
+            <td data-staff-id="{{this.id}}" scope="row">{{this.name}}</td>
             <td>{{this.lastWorked}}</td>
             <td>{{this.lastRole}}</td>
             <td>{{this.lastPod}}</td>
