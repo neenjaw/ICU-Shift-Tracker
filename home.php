@@ -129,7 +129,7 @@ if (!isset($_SESSION['authenticated'])) {
     var options = {
       tableId : 'shift-table',
       tableClasses : 'table table-striped table-responsive table-hover table-sm',
-      theadClasses : 'thead-inverse',
+      theadClasses : 'thead-dark',
       rheadClasses : 'staff',
       monthClasses : 'month',
       dateClasses : 'date',
