@@ -520,6 +520,16 @@ class ShiftCrud
       $since_date_flag = false;
     }
 
+    if (!isset($param->{'exclude-roles-from-assignment-count'})) {
+      $exclude_roles = array(); 
+    } else {
+      $exclude_roles = $param->{'exclude-roles-from-assignment-count'};
+    }
+    
+    if (!is_array($exclude_roles)) {
+      $exclude_roles = array();
+    }
+
     //get the reference arrays
     $assignment_ref = $this->getAllAssignments();
     $role_ref = $this->getAllRoles();
@@ -627,6 +637,7 @@ class ShiftCrud
               $staff->{'since-date'} = $param->{'since-date'};
             }
 
+            //create the staff object
             $staff->name = "{$row['first_name']} {$row['last_name']}";
             $staff->fname = "{$row['first_name']}";
             $staff->lname = "{$row['last_name']}";
@@ -636,6 +647,7 @@ class ShiftCrud
 
           $staff->{'shift-count'} ++;
 
+          //create a shift object
           $shift = (object) array();
           $shift->id = $row['id'];
           $shift->date = $row['shift_date'];
@@ -650,16 +662,23 @@ class ShiftCrud
 
           array_push($staff->shift, $shift);
 
+          //count the role
           if (!isset($role_count[$row['role_id']])) {
             $role_count[$row['role_id']] = ['role' => $role_ref[$row['role_id']], 'count' => 0];
           }
           $role_count[$row['role_id']]['count']++;
 
-          if (!isset($assign_count[$row['assignment_id']])) {
-            $assign_count[$row['assignment_id']] = ['assignment' => $assignment_ref[$row['assignment_id']], 'count' => 0];
-          }
-          $assign_count[$row['assignment_id']]['count']++;
+          //if the role matches a role in the $exclude_roles array, do not count the assignment or the Modifier
+          if (!in_array($role_ref[$row['role_id']],$exclude_roles)) {
 
+            //count the assignment
+            if (!isset($assign_count[$row['assignment_id']])) {
+              $assign_count[$row['assignment_id']] = ['assignment' => $assignment_ref[$row['assignment_id']], 'count' => 0];
+            }
+            $assign_count[$row['assignment_id']]['count']++;
+          }
+
+          //for each modifier, count the modifier
           foreach ($column_ref as $key => $value) {
             if(!isset($mod_count[$key])) {
               $mod_count[$key] = ['mod' => $value, 'count' => 0];
@@ -673,6 +692,7 @@ class ShiftCrud
         }
         $mod_count['nonvent'] = ['mod' => 'Non-vented', 'count' => ($staff->{'shift-count'} - $mod_count['bool_vented']['count'])];
 
+        //add the counts to the staff object
         $staff->{'mod-count'} = array();
         foreach ($mod_count as $key => $value) {
           array_push($staff->{'mod-count'}, (object) array_merge(['id' => $key], $value));
@@ -692,15 +712,16 @@ class ShiftCrud
         throw new Exception("Problem getting shift records:\n{$e->getMessage()}");
       }
 
+      //if multiple staff to be retrieved, add the staff object to the $details array
       if ($multiple_id) {
         array_push($details, $staff);
       }
     }
 
     if ($multiple_id) {
-      return $details;
+      return $details; //if multiple staff
     } else {
-      return $staff;
+      return $staff; //if single staff
     }
   }
 

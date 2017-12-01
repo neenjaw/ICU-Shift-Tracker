@@ -10,7 +10,7 @@ if (isset($_GET['staff-id'])) {
 
   $id = $_GET['staff-id'];
   $param = (object) array();
-
+  $param->{'exclude-roles-from-assignment-count'} = array('Clinician', 'Charge', 'Outreach', 'Float', 'Clinician Prn');
 
   if (isset($_GET['num-of-shifts'])) $param->{'days'} = intval(trim($_GET['num-of-shifts']));
   if (isset($_GET['since-date'])) $param->{'since-date'} = trim($_GET['since-date']);
