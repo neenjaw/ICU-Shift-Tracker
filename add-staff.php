@@ -77,7 +77,7 @@ if (!isset($_SESSION['user'])) {
                   <?php
                   //Build Option List
                   //use the CRUD object to access the database and build an option list of the categories
-                  $form_select_categories = $crud->getAllCateories();
+                  $form_select_categories = $crud->getAllCategories();
                   foreach ($form_select_categories as $k => $v) {?>
                     <option value="<?php echo ($k); ?>"><?php echo ($v); ?></option>
                   <?php }
