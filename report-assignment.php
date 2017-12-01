@@ -101,25 +101,21 @@ if (!isset($_SESSION['user'])) {
           if (debug) console.log(response);
 
           let byGroup = [];
-          let names = [];
           $.each(response, function(index, value){
             byGroup[value.category] = byGroup[value.category] || [];
-
-            if ( byGroup[value.category].length === 0 ) {
-              names.push(value.category);
-            }
 
             let assignmentArray = value['assign-count'];
             let aCount = 0;
             let bCount = 0;
             let cCount = 0;
+
             $.each(assignmentArray, function(i, v){
-              if (v.assignment === "A") {
-                aCount = v.count;
-              } else if (v.assignment === "B") {
-                bCount = v.count;
-              } else if (v.assignment === "C") {
-                cCount = v.count;
+              if (v.assignment.indexOf("A") >= 0) {
+                aCount += v.count;
+              } else if (v.assignment.indexOf("B") >= 0) {
+                bCount += v.count;
+              } else if (v.assignment.indexOf("C") >= 0) {
+                cCount += v.count;
               }
             });
 
@@ -159,7 +155,7 @@ if (!isset($_SESSION['user'])) {
           $(`#container`).empty().html(reportDisplayTemplate(o));
 
         } catch(e) {
-          alert(`Report Error: ${e}`); // error in the above string being parsed!
+          if (debug) console.log(`Report Error: ${e}`); // error in the above string being parsed!
         }
       } else {
         if (debug) console.log('Report failure.');
