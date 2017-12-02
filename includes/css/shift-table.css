@@ -1,0 +1,101 @@
+.st-container {
+  display: flex;
+  flex-direction: row;
+}
+
+/*
+ * STYLE THE LEFT COLUMN
+ */
+
+.st-left-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.st-rowhead-cell {
+  width: 100%;
+  height: 50px;
+
+  line-height: 50px;
+  text-align: center;
+
+  border-style: solid;
+  border-width: 1px 0px 0px 0px;
+  
+  white-space: nowrap;
+}
+
+.st-left-col .st-rowhead-cell:last-child {
+  border-bottom-width: 1px;
+}
+
+.st-rowhead-cell span {
+  display: inline-block;
+  vertical-align: middle;
+  line-height: normal;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+/*
+ * STYLE THE RIGHT COLUMN
+ */
+
+.st-right-col {
+  display: flex;
+  flex-direction: column;
+
+  overflow-x: scroll;
+}
+
+/* format the date cells */
+.st-header-cell {
+  background-color: #000;
+  color: #fff;
+  border-color: #000;
+}
+
+/* format the date cells's text */
+.st-cell.st-header-cell span {
+  vertical-align: bottom;
+  padding-bottom: 5px;
+}
+
+.st-divider-cell {
+  background-color: #bbb;
+}
+
+/* make it so the cells flex right in each row */
+.st-row {
+  display: flex;
+  flex-direction: row;
+}
+
+/* put the border on the top of the cells */
+.st-cell {
+  width: 50px;
+  min-width: 50px;
+  height: 50px;
+  line-height: 50px;
+
+  text-align: center;
+  
+  border-style: solid;
+  border-width: 1px 0px 0px 0px;
+}
+
+/* Put the border on the bottom of the last row's cells */
+.st-right-col .st-row:last-child .st-cell {
+  border-bottom-width: 1px;
+}
+
+.st-row .st-cell:first-child {
+  padding-left: 0px;
+}
+
+/* make it so the letter floats in the middle of the cell */
+.st-cell span {
+  display: inline-block;
+  vertical-align: middle;
+  line-height: normal;
+}

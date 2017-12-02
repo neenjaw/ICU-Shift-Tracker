@@ -1,0 +1,52 @@
+<div class="st-container">
+  <div class="st-left-col">
+    <div class="st-rowhead-cell st-header-cell">
+      <span>Date</span>
+    </div>
+    {{#each group}}
+      <div class="st-rowhead-cell st-divider-cell">
+          <span>{{this.name}}</span>
+      </div>
+      {{#each staff}}
+        <div class="st-rowhead-cell">
+            <span><a href="javascript:void(0);" data-staff-id="{{this.id}}">{{this.lname}}, {{this.fname}}</a></span>
+        </div>
+      {{/each}} {{!-- end staff --}}
+    {{/each}} {{!-- end group --}}
+  </div>
+
+  <div class="st-right-col">
+    <div class="st-row">
+      {{#each date}}
+        <div class="st-cell st-header-cell">
+          <span>{{printDate this.month this.date}}</span> {{!-- TODO: define helper function for this --}}
+          {{!-- <span>{{this.month}}<br>{{this.date}}</span> --}}
+        </div>
+      {{/each}} {{!-- end date --}}
+    </div>
+
+    {{#each group}}
+      {{#each staff}}
+
+        {{#if @first}}
+          <div class="st-row">
+            {{#each shift}}
+              <div class="st-cell st-divider-cell">
+                <span>&nbsp;</span>
+              </div>
+            {{/each}} {{!-- end shift --}}
+          </div>
+        {{/if}} {{!-- end if @first --}}
+
+        <div class="st-row">
+          {{#each shift}}
+            <div class="st-cell">
+              <span><a href="javascript:void(0);" data-shift-id="{{this.id}}">{{this.letter}}</a></span>
+            </div>
+          {{/each}} {{!-- end shift --}}
+        </div>
+
+      {{/each}} {{!-- end staff --}}
+    {{/each}} {{!-- end group --}}
+  </div>
+</div>
