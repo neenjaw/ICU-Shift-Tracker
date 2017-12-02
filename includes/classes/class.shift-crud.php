@@ -1373,6 +1373,110 @@ class ShiftCrud
 
     return createResult(false);
   }
+
+  public function getShiftTableObjectTest($days_to_print = 10, $offset_from_last_day = 0, $staff_category = '*')
+  {
+    $whereStaffCategory = ($staff_category !== '*') ? " WHERE category = \"{$staff_category}\" " : "";
+
+    //query the db to get all the shifts within the specified date range
+    $sql = "SELECT
+              *
+            FROM
+              {$this->v_entries_complete}
+            INNER JOIN
+              (
+                SELECT
+                  DISTINCT shift_date
+                FROM
+                  {$this->v_entries_w_staff_w_category}
+                {$whereStaffCategory}
+                ORDER BY
+                  shift_date DESC
+                LIMIT
+                  {$days_to_print}
+                OFFSET
+                  {$offset_from_last_day}
+              ) AS t2 ON t2.shift_date = {$this->v_entries_complete}.shift_date
+            {$whereStaffCategory}
+            ORDER BY `last_name` ASC, `first_name` ASC, {$this->v_entries_complete}.`shift_date` DESC";
+
+    $stmtShiftEntries = $this->db->prepare($sql);
+    $stmtShiftEntries->execute();
+
+    //  Loop to:
+    //    1. Create a list of all the staff
+    //    2. Create a 3-dimensional array shift_array[Staff Name][Shift Date][Shift Data], not every cell will be populated
+    $shift_dates = array();
+    $staff_array = array();
+    $staff_shifts = array();
+
+    if ($stmtShiftEntries->rowCount()>0) {
+      while ($row=$stmtShiftEntries->fetch(PDO::FETCH_ASSOC)) {
+        $shift_dates[ $row['shift_date'] ] = $row['shift_date'];
+
+        $letter_code = $this->getShiftLetterCode($row);
+
+        $name = "{$row['last_name']}, {$row['first_name']}";
+
+        if ( !isset($staff_array[$name]) ) {
+          $staff_array[$name] = (object) [ 
+            "id" => $row['staff_id'], 
+            "category" => $row['category'], 
+            "fname" => $row['first_name'],
+            "lname" => $row['last_name'],
+            "fullname" => $name,
+            "shifts" => array()
+          ];
+
+          $staff_shifts[$name] = array();
+        }
+        
+        $staff_shifts[$name][$row['shift_date']] = (object) ["date" => $row['shift_date'], 'id' => $row['id'], 'letter' => $letter_code];
+      }
+    } else {
+      return (object) ["error" => true, "message" => "No shifts exist in the database for this query"];
+    }
+
+    //now arrange all of the dates in sequence
+    $shift_dates = array_values($shift_dates);
+    sort($shift_dates);
+
+    $obj = (object) array();
+    $obj->dates = $shift_dates;
+    $obj->groups = array();
+
+    $groups = array();
+
+    //for each staff member....
+    foreach ( $staff_array as $staff_name => $staff) {
+
+      //then for each date, enter shift data for that staff
+      for ($i = 0; $i < count($shift_dates); $i++) {
+        $entry_date = $shift_dates[$i];
+
+        //if there is a shift entry for the staff, record it
+        if ( isset($staff_shifts[$staff_name][$entry_date]) ) {
+          array_push($staff->shifts, $staff_shifts[$staff_name][$entry_date]);
+        } else {
+          //or else put in dummy entry as placeholder
+          array_push($staff->shifts, (object) ["date" => $entry_date, "id" => -1, "letter" => '-']);
+        }
+      }
+
+      if (!isset($groups[$staff->category])) {
+        $groups[$staff->category] = (object) ["name" => $staff->category, "staff" => array()];
+      }
+
+      //add the staff to the group
+      array_push($groups[$staff->category]->staff, $staff);
+    }
+
+    //add the groups to the $obj
+    $obj->groups = array_values($groups);
+
+    //return the object
+    return $obj;
+  }
 }
 
 class ShiftTableShiftEntry
@@ -1424,5 +1528,7 @@ class Staff
     $this->category = $category;
   }
 }
+
+
 
 ?>

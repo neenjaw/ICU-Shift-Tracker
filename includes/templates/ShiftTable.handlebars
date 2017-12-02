@@ -1,15 +1,51 @@
+{{!--
+
+obj = {
+  date: ["yyyy-mm-dd", "yyyy-mm-dd", ...],
+  group: [
+    {
+      name: "RN",
+      staff: [
+        {
+          lname: "Brown",
+          fname: "Murphy",
+          id: 6,
+          shifts: [
+            { date: "yyyy-mm-dd", letter: "C", id: 450 },
+            { date: "yyyy-mm-dd", letter: "X", id: 451 }
+          ]
+        },
+        {
+          lname: "Hanks",
+          fname: "Tom",
+          id: 8,
+          shifts: [
+            { date: "yyyy-mm-dd", letter: "N", id: 452 },
+            { date: "yyyy-mm-dd", letter: "V", id: 453 }
+          ]
+        }
+      ]
+    },
+    {
+      //another group here
+    }
+  ]
+}
+
+--}}
+
 <div class="st-container">
   <div class="st-left-col">
     <div class="st-rowhead-cell st-header-cell">
       <span>Date</span>
     </div>
-    {{#each group}}
+    {{#each groups}}
       <div class="st-rowhead-cell st-divider-cell">
           <span>{{this.name}}</span>
       </div>
       {{#each staff}}
         <div class="st-rowhead-cell">
-            <span><a href="javascript:void(0);" data-staff-id="{{this.id}}">{{this.lname}}, {{this.fname}}</a></span>
+            <span><a href="staff-detail.php?staff-id={{this.id}}" data-staff-id="{{this.id}}">{{this.fullname}}</a></span>
         </div>
       {{/each}} {{!-- end staff --}}
     {{/each}} {{!-- end group --}}
@@ -17,20 +53,19 @@
 
   <div class="st-right-col">
     <div class="st-row">
-      {{#each date}}
+      {{#each dates}}
         <div class="st-cell st-header-cell">
-          <span>{{printDate this.month this.date}}</span> {{!-- TODO: define helper function for this --}}
-          {{!-- <span>{{this.month}}<br>{{this.date}}</span> --}}
+          <span>{{printDate this}}</span>
         </div>
       {{/each}} {{!-- end date --}}
     </div>
 
-    {{#each group}}
+    {{#each groups}}
       {{#each staff}}
 
         {{#if @first}}
           <div class="st-row">
-            {{#each shift}}
+            {{#each ../../dates}}
               <div class="st-cell st-divider-cell">
                 <span>&nbsp;</span>
               </div>
@@ -39,7 +74,7 @@
         {{/if}} {{!-- end if @first --}}
 
         <div class="st-row">
-          {{#each shift}}
+          {{#each shifts}}
             <div class="st-cell">
               <span><a href="javascript:void(0);" data-shift-id="{{this.id}}">{{this.letter}}</a></span>
             </div>

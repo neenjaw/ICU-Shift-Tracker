@@ -13,6 +13,7 @@ if (!isset($_SESSION['authenticated'])) {
   <!-- Header include -->
   <?php include 'includes/head.php';?>
   <!-- END Header include -->
+  <link href="includes/css/shift-table.css?<?= date('l jS \of F Y h:i:s A'); ?>" rel="stylesheet">
 
 </head>
 <body>
@@ -117,11 +118,16 @@ if (!isset($_SESSION['authenticated'])) {
     <?php include 'includes/templates/ShiftEntryEditable.handlebars'; ?>
   </script>
 
+  <script id="shift-table-template" type="text/x-handlebars-template">
+    <?php include 'includes/templates/ShiftTable.handlebars'; ?>
+  </script>
+
   <script src="includes/lib/build-shift-table.js"></script>
 
   <script>
     var debug = true;
     var shiftTemplate = null;
+    var shiftTableTemplate = null;
     var daysToPrint = 15;
     var daysOffset = 0;
     var categoryToFetch = "*";
@@ -157,6 +163,20 @@ if (!isset($_SESSION['authenticated'])) {
 
       //compile the shift template with Handlebars
       shiftTemplate = Handlebars.compile($("#shift-entry-template").html());
+      shiftTableTemplate = Handlebars.compile($("#shift-table-template").html());
+
+      // add the percentOfTotal helper
+      Handlebars.registerHelper("printDate", function(dateString) {
+        if (debug) console.log(`Date string: '${dateString}'`);
+        
+        let date = new Date(dateString);
+        let month = date.toLocaleString('en-us', { month: "short", timeZone: 'UTC' });
+        let day = date.getUTCDate();
+
+        if (debug) console.log(`Month: '${month}', Day: '${day}'`);
+
+        return new Handlebars.SafeString(`${month}<br>${day}`);
+      });
 
     });
 
@@ -185,6 +205,36 @@ if (!isset($_SESSION['authenticated'])) {
             let link = name.link('staff-detail.php?staff-id='+$(this).data('staffId'));
             $(this).find('pre').html(link);
           });
+        }
+      });
+    }    
+    
+    function testNewShiftTable() {
+      getShiftTable2(daysToPrint, daysOffset, categoryToFetch);
+    }
+
+    function getShiftTable(days, offset, category) {
+      $.ajax({
+        type: 'POST',
+        url: 'resource/get_shift_table.php',
+        data: 'days='+days+'&offset='+offset+'&category='+category+'&test=yes',
+        beforeSend: function () {
+        },
+        success: function (response) {
+          try {
+            let shiftTableData = JSON.parse(response);
+            if (debug) console.log("AJAX returned, staff list:");
+            if (debug) console.log(shiftTableData);
+            $('#shift-table-div').html(shiftTableTemplate(shiftTableData));
+
+            // //Set click event listeners to call up modal after ajax query is returned
+            $('a[data-shift-id]').click(function(){
+              let i = $(this).data('shiftId'); //get the shift id
+              showShiftDetail(i);
+            });
+          } catch(e) {
+            if (debug) console.log(`Retrieval Error: ${e}`); // error in the above string being parsed!
+          }
         }
       });
     }
