@@ -184,39 +184,6 @@ if (!isset($_SESSION['authenticated'])) {
       $.ajax({
         type: 'POST',
         url: 'resource/get_shift_table.php',
-        data: 'days='+days+'&offset='+offset+'&category='+category,
-        beforeSend: function () {
-        },
-        success: function (response) {
-          staffList = JSON.parse(response);
-          if (debug) console.log("AJAX returned, staff list:");
-          if (debug) console.log(staffList);
-          $('#shift-table-div').html(buildShiftTable(staffList.staff,options));
-
-          //Set click event listeners to call up modal after ajax query is returned
-          $('.shift-cell a').click(function(){
-            let i = $(this).parent().data('shiftId'); //get the shift id
-            showShiftDetail(i);
-          });
-
-          $(`td.staff`).each(function(index){
-            let id = $(this).data('staffId');
-            let name = $(this).find('pre').text();
-            let link = name.link('staff-detail.php?staff-id='+$(this).data('staffId'));
-            $(this).find('pre').html(link);
-          });
-        }
-      });
-    }    
-    
-    function testNewShiftTable() {
-      getShiftTable2(daysToPrint, daysOffset, categoryToFetch);
-    }
-
-    function getShiftTable(days, offset, category) {
-      $.ajax({
-        type: 'POST',
-        url: 'resource/get_shift_table.php',
         data: 'days='+days+'&offset='+offset+'&category='+category+'&test=yes',
         beforeSend: function () {
         },
