@@ -49,7 +49,7 @@ try {
         }
       }
 
-      if ($crud->createMultipleShiftEntries($data)) {
+      if ($crud->createMultipleShiftEntries($data, $_SESSION['user']->login)) {
         echo "ok";
       } else {
         echo "not ok";

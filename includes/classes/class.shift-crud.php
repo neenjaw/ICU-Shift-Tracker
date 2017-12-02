@@ -47,14 +47,15 @@ class ShiftCrud
   * CREATE FUNCTIONS
   * STAFF, ROLE, CATEGORY, SHIFT
   */
-  public function createStaff($f_name, $l_name, $id_category, $is_active)
+  public function createStaff($f_name, $l_name, $id_category, $is_active, $added_by)
   {
     try {
-      $stmt = $this->db->prepare("INSERT INTO ".$this->tbl_staff." (`id`, `first_name` , `last_name`, `category_id`, `bool_is_active`) VALUES(NULL, :fname, :lname, :cat, :act)");
+      $stmt = $this->db->prepare("INSERT INTO {$this->tbl_staff} (`id`, `first_name` , `last_name`, `category_id`, `bool_is_active`, `added_timestamp`, `added_by`) VALUES(NULL, :fname, :lname, :cat, :act, NULL, :ab)");
       $stmt->bindparam(":fname", $f_name);
       $stmt->bindparam(":lname", $l_name);
       $stmt->bindparam(":cat", $id_category);
       $stmt->bindparam(":act", $is_active);
+      $stmt->bindparam(":ab", $added_by);
       $stmt->execute();
       return true;
     } catch (PDOException $e) {
@@ -102,16 +103,16 @@ class ShiftCrud
     }
   }
 
-  public function createMultipleShiftEntries($data) {
+  public function createMultipleShiftEntries($data, $added_by) {
     try {
       $this->db->beginTransaction();
 
       $sql = "INSERT INTO {$this->tbl_shift_entry}
                 (shift_date, staff_id, role_id, assignment_id, bool_doubled, bool_vented,
                  bool_new_admit, bool_very_sick, bool_code_pager, bool_crrt, bool_evd, bool_burn,
-                 bool_day_or_night)
+                 bool_day_or_night, added_timestamp, added_by)
               VALUES
-                (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NULL, ?)";
 
       $stmt = $this->db->prepare($sql);
 
@@ -129,6 +130,7 @@ class ShiftCrud
         $stmt->bindparam(11, $entry->evd);
         $stmt->bindparam(12, $entry->burn);
         $stmt->bindparam(13, $entry->dayornight);
+        $stmt->bindparam(14, $added_by);
         $stmt->execute();
       }
 
@@ -155,10 +157,10 @@ class ShiftCrud
     }
   }
 
-  public function createShiftEntry($shift_date, $staff_id, $role_id, $assignment_id, $bool_day_or_night, $bool_doubled = false, $bool_vented = false, $bool_new_admit = false, $bool_very_sick = false, $bool_code_pager = false, $bool_crrt = false, $bool_evd = false, $bool_burn = false)
+  public function createShiftEntry($shift_date, $staff_id, $role_id, $assignment_id, $bool_day_or_night, $bool_doubled = false, $bool_vented = false, $bool_new_admit = false, $bool_very_sick = false, $bool_code_pager = false, $bool_crrt = false, $bool_evd = false, $bool_burn = false, $added_by)
   {
     try {
-      $stmt = $this->db->prepare("INSERT INTO ".$this->tbl_shift_entry." (shift_date, staff_id, role_id, assignment_id, bool_doubled, bool_vented, bool_new_admit, bool_very_sick, bool_code_pager, bool_crrt, bool_evd, bool_burn, bool_day_or_night) VALUES(:date, :sid, :rid, :aid, :bd, :bv, :bna, :bvs, :bcp, :brt, :bev, :bbu, :bdon)");
+      $stmt = $this->db->prepare("INSERT INTO {$this->tbl_shift_entry} (shift_date, staff_id, role_id, assignment_id, bool_doubled, bool_vented, bool_new_admit, bool_very_sick, bool_code_pager, bool_crrt, bool_evd, bool_burn, bool_day_or_night, added_timestamp, added_by) VALUES(:date, :sid, :rid, :aid, :bd, :bv, :bna, :bvs, :bcp, :brt, :bev, :bbu, :bdon, NULL, :ab)");
 
       //:date, :sid, :rid, :aid, :bd, :bv, :bna, :bvs, :bcp, :bdon
       $stmt->bindparam(":date", $shift_date);
@@ -193,6 +195,8 @@ class ShiftCrud
       $bool_day_or_night = $this->booleanToInt($bool_day_or_night);
       $stmt->bindparam(":bdon", $bool_day_or_night);
 
+      $stmt->bindparam(":ab", $added_by);
+
       $stmt->execute();
       return true;
     } catch (PDOException $e) {
@@ -207,32 +211,6 @@ class ShiftCrud
       return 1;
     } else {
       return 0;
-    }
-  }
-
-  public function createNaShiftEntry($shift_date, $staff_id, $assignment_id, $bool_day_or_night)
-  {
-    try {
-      $role_id = $this->db->query("SELECT id FROM ".$this->tbl_role." WHERE role='NA'");
-
-      $this->createShiftEntry($shift_date, $staff_id, $role_id, $assignment_id, $bool_day_or_night);
-      return true;
-    } catch (PDOException $e) {
-      echo $e->getMessage();
-      return false;
-    }
-  }
-
-  public function createUcShiftEntry($shift_date, $staff_id, $assignment_id, $bool_day_or_night)
-  {
-    try {
-      $role_id = $this->db->query("SELECT id FROM ".$this->tbl_role." WHERE role='UC'");
-
-      $this->createShiftEntry($shift_date, $staff_id, $role_id, $assignment_id, $bool_day_or_night);
-      return true;
-    } catch (PDOException $e) {
-      echo $e->getMessage();
-      return false;
     }
   }
 
@@ -866,7 +844,7 @@ class ShiftCrud
   }
 
   public function getShiftEntryObj($id) {
-    $stmt = $this->db->prepare("SELECT * FROM " . $this->tbl_shift_entry . " WHERE id=:id");
+    $stmt = $this->db->prepare("SELECT `id`, `shift_date`, `staff_id`, `role_id`, `assignment_id`, `bool_doubled`, `bool_vented`, `bool_new_admit`, `bool_very_sick`, `bool_code_pager`, `bool_crrt`, `bool_burn`, `bool_evd`, `bool_day_or_night`, FROM {$this->tbl_shift_entry} WHERE id=:id");
     $stmt->bindparam(":id", $id);
     $stmt->execute();
     $editRow=$stmt->fetch(PDO::FETCH_ASSOC);
@@ -875,7 +853,7 @@ class ShiftCrud
   }
 
   public function getShiftEntry($id) {
-    $stmt = $this->db->prepare("SELECT * FROM " . $this->tbl_shift_entry . " WHERE id=:id");
+    $stmt = $this->db->prepare("SELECT `id`, `shift_date`, `staff_id`, `role_id`, `assignment_id`, `bool_doubled`, `bool_vented`, `bool_new_admit`, `bool_very_sick`, `bool_code_pager`, `bool_crrt`, `bool_burn`, `bool_evd`, `bool_day_or_night` FROM {$this->tbl_shift_entry} WHERE id=:id");
     $stmt->bindparam(":id", $id);
     $stmt->execute();
     $editRow=$stmt->fetch(PDO::FETCH_ASSOC);

@@ -26,7 +26,7 @@ try {
         $ck_evd = (isset($_POST["evd"])) ? true : false;
         $ck_burn = (isset($_POST["burn"])) ? true : false;
 
-        if ($crud->createShiftEntry($shift_date, $staff_id, $role, $assignment, $d_or_n, $ck_doubled, $ck_v, $ck_admit, $ck_vsick, $ck_codepgr, $ck_crrt, $ck_evd, $ck_burn)) {
+        if ($crud->createShiftEntry($shift_date, $staff_id, $role, $assignment, $d_or_n, $ck_doubled, $ck_v, $ck_admit, $ck_vsick, $ck_codepgr, $ck_crrt, $ck_evd, $ck_burn, $_SESSION['user']->login)) {
             echo "ok";
         } else {
             throw new Exception("Could not add new shift entry, check details."); // wrong details

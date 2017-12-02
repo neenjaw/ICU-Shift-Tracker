@@ -42,7 +42,7 @@ try {
     $args = (object) array();
     if (isset($_POST['state'])) $args->state = trim($_POST['state']);
 
-    $result = addUser($DB_con, $DB_table, $adm_usr, $usr, $new_pw, $rpt_pw, $args);
+    $result = addUser($DB_con, $DB_table, $adm_usr, $usr, $new_pw, $rpt_pw, $_SESSION['user']->login, $args);
 
   } elseif (isset($_POST['cmd-modusr'])) {
 
@@ -203,7 +203,7 @@ function isAdmin($DB, $DB_table, $adm_usr) {
  * @param  Array    $args       Optional, stdClass object with flags for the creation of the user
  * @return Result             Result object to relay success state, message
  */
-function addUser($DB, $DB_table, $adm_usr, $new_usr, $pw, $rpt_pw, $args = null) {
+function addUser($DB, $DB_table, $adm_usr, $new_usr, $pw, $rpt_pw, $added_by, $args = null) {
   if ($args === null) {
     $args = (object) array();
   }
@@ -236,10 +236,11 @@ function addUser($DB, $DB_table, $adm_usr, $new_usr, $pw, $rpt_pw, $args = null)
   try {
     $hashed_pw = password_hash($pw, PASSWORD_DEFAULT);
 
-    $stmt = $DB->prepare("INSERT INTO {$DB_table->users} (login,	password,	auth_id) VALUES (?,?,?)");
+    $stmt = $DB->prepare("INSERT INTO {$DB_table->users} (login,	password,	auth_id, added_timestamp, added_by) VALUES (?, ?, ?, NULL, ?)");
     $stmt->bindparam(1, $new_usr);
     $stmt->bindparam(2, $hashed_pw);
     $stmt->bindparam(3, $args->state);
+    $stmt->bindparam(4, $added_by);
     $stmt->execute();
 
     if ( $stmt->rowCount() <= 0 ) {
