@@ -102,43 +102,59 @@ if (!isset($_SESSION['user'])) {
           if (debug) console.log(response);
 
           let byGroup = [];
+          let errors = [];
           $.each(response, function(index, value){
             byGroup[value.category] = byGroup[value.category] || [];
 
-            let assignmentArray = value['assign-count'];
-            let aCount = 0;
-            let bCount = 0;
-            let cCount = 0;
-
-            $.each(assignmentArray, function(i, v){
-              if (v.assignment.indexOf("A") >= 0) {
-                aCount += v.count;
-              } else if (v.assignment.indexOf("B") >= 0) {
-                bCount += v.count;
-              } else if (v.assignment.indexOf("C") >= 0) {
-                cCount += v.count;
-              }
-            });
-
-            let modArray = value['mod-count'];
-            let dCount = 0;
-            $.each(modArray, function(i, v){
-              if (v.mod === "Doubled") {
-                dCount = v.count;
-              }
-            });
-
-            byGroup[value.category].push({
+            let entry = {
               id: value.id,
               name: `${value.lname}, ${value.fname}`,
-              lastWorked: value.shift[0].date,
-              lastRole: value.shift[0].role,
-              lastPod: value.shift[0].assignment,
-              aPodCount: aCount,
-              bPodCount: bCount,
-              cPodCount: cCount,
-              doubleCount: dCount
-            });
+              lastWorked:   "N/A",
+              lastWorked:   "N/A",
+              lastRole:     "N/A",
+              lastPod:      "N/A",
+              aPodCount:    0,
+              bPodCount:    0,
+              cPodCount:    0,
+              doubleCount:  0,
+            };
+
+            if (value['shift-count'] !== 0) {
+              let assignmentArray = value['assign-count'];
+              let aCount = 0;
+              let bCount = 0;
+              let cCount = 0;
+
+              $.each(assignmentArray, function(i, v){
+                if (v.assignment.indexOf("A") >= 0) {
+                  aCount += v.count;
+                } else if (v.assignment.indexOf("B") >= 0) {
+                  bCount += v.count;
+                } else if (v.assignment.indexOf("C") >= 0) {
+                  cCount += v.count;
+                }
+              });
+
+              let modArray = value['mod-count'];
+              let dCount = 0;
+
+              $.each(modArray, function(i, v){
+                if (v.mod === "Doubled") {
+                  dCount = v.count;
+                }
+              });
+
+              entry.lastWorked = value.shift[0].date;
+              entry.lastWorked = value.shift[0].date;
+              entry.lastRole = value.shift[0].role;
+              entry.lastPod = value.shift[0].assignment;
+              entry.aPodCount = aCount;
+              entry.bPodCount = bCount;
+              entry.cPodCount = cCount;
+              entry.doubleCount = dCount;
+            }
+
+            byGroup[value.category].push(entry);
           });
 
           if (debug) console.log('byGroup');
