@@ -195,10 +195,9 @@ if (!isset($_SESSION['authenticated'])) {
             $('#shift-table-div').html(shiftTableTemplate(shiftTableData));
 
             // //Set click event listeners to call up modal after ajax query is returned
-            $('a[data-shift-id]').click(function(){
-              let i = $(this).data('shiftId'); //get the shift id
-              showShiftDetail(i);
-            });
+            $('a[data-shift-id]')
+              .filter(function(i,e){ return e.innerHTML !== '-' })
+              .click(function(){ showShiftDetail($(this).data('shiftId')) });
           } catch(e) {
             if (debug) console.log(`Retrieval Error: ${e}`); // error in the above string being parsed!
           }

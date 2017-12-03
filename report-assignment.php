@@ -13,6 +13,7 @@ if (!isset($_SESSION['user'])) {
   <!-- Header include -->
   <?php include 'includes/head.php';?>
   <!-- END Header include -->
+  <link href="includes/css/report-assignment.css?<?= date('l jS \of F Y h:i:s A'); ?>" rel="stylesheet">
 
 </head>
 <body>

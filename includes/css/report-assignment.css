@@ -1,0 +1,20 @@
+@media only screen and (max-width: 415px) {
+	#report-assignment-table thead tr th:nth-child(2) {
+		display: none;
+	}
+	#report-assignment-table thead tr th:nth-child(3) {
+		display: none;
+	}
+	#report-assignment-table thead tr th:nth-child(4) {
+		display: none;
+	}
+	#report-assignment-table tbody tr td:nth-child(2) {
+		display: none;
+	}
+	#report-assignment-table tbody tr td:nth-child(3) {
+		display: none;
+	}
+	#report-assignment-table tbody tr td:nth-child(4) {
+		display: none;
+	}
+}

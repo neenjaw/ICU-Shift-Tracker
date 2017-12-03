@@ -46,7 +46,7 @@
   flex-direction: column;
 
   overflow-x: scroll;
-  overflow-y: visible;
+  overflow-y: hidden;
 }
 
 /* format the date cells */
