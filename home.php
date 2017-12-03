@@ -184,7 +184,7 @@ if (!isset($_SESSION['authenticated'])) {
       $.ajax({
         type: 'POST',
         url: 'resource/get_shift_table.php',
-        data: 'days='+days+'&offset='+offset+'&category='+category+'&test=yes',
+        data: 'days='+days+'&offset='+offset+'&category='+category,
         beforeSend: function () {
         },
         success: function (response) {

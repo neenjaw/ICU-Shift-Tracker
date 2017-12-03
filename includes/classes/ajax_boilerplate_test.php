@@ -6,7 +6,8 @@ require_once '../dbconfig.php';
 try {
   if (true) {
 
-    echo json_encode($crud->getShiftTableObjectTest(), JSON_PRETTY_PRINT);
+    // echo json_encode($crud->getShiftTableObjectTest(), JSON_PRETTY_PRINT);
+    echo json_encode($crud->getStaffDetailsNew($_GET['id']), JSON_PRETTY_PRINT);
 
   } else {
     throw new Exception('Wrong arguments.');

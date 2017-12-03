@@ -524,6 +524,8 @@ class ShiftCrud
                      WHERE
                        staff_id=:id";
 
+    
+
     $sql_shift_w_staff = "SELECT
                     {$this->tbl_shift_entry}.*,
                     {$this->tbl_staff}.first_name,
@@ -1045,7 +1047,7 @@ class ShiftCrud
                   {$offset_from_last_day}
               ) AS t2 ON t2.shift_date = {$this->v_entries_complete}.shift_date
             {$whereStaffCategory}
-            ORDER BY `last_name` ASC, `first_name` ASC";
+            ORDER BY `last_name` ASC, `first_name` ASC, {$this->v_entries_complete}.`shift_date` DESC";
 
     $stmtShiftEntries = $this->db->prepare($sql);
     $stmtShiftEntries->execute();
@@ -1054,57 +1056,72 @@ class ShiftCrud
     //    1. Create a list of all the staff
     //    2. Create a 3-dimensional array shift_array[Staff Name][Shift Date][Shift Data], not every cell will be populated
     $shift_dates = array();
-    $staff = array();
+    $staff_array = array();
     $staff_shifts = array();
 
     if ($stmtShiftEntries->rowCount()>0) {
       while ($row=$stmtShiftEntries->fetch(PDO::FETCH_ASSOC)) {
-        if (!isset($shift_dates[ $row['shift_date'] ])) $shift_dates[ $row['shift_date'] ] = $row['shift_date'];
+        $shift_dates[ $row['shift_date'] ] = $row['shift_date'];
 
         $letter_code = $this->getShiftLetterCode($row);
 
-        $name = $row['last_name'].", ".$row['first_name'];
+        $name = "{$row['last_name']}, {$row['first_name']}";
 
-        if (!isset($staff_array[$name]) ) {
-          $staff[$name] = [ "id" => $row['staff_id'], "category" => $row['category'] ];
+        if ( !isset($staff_array[$name]) ) {
+          $staff_array[$name] = (object) [ 
+            "id" => $row['staff_id'], 
+            "category" => $row['category'], 
+            "fname" => $row['first_name'],
+            "lname" => $row['last_name'],
+            "fullname" => $name,
+            "shifts" => array()
+          ];
+
+          $staff_shifts[$name] = array();
         }
-        $staff_shifts[$name][ $row['shift_date'] ] = ['shift-id' => $row['id'], 'code' => $letter_code];
-
+        
+        $staff_shifts[$name][$row['shift_date']] = (object) ["date" => $row['shift_date'], 'id' => $row['id'], 'letter' => $letter_code];
       }
     } else {
-      die("No Shifts Entered");
+      return (object) ["error" => true, "message" => "No shifts exist in the database for this query"];
     }
 
     //now arrange all of the dates in sequence
     $shift_dates = array_values($shift_dates);
     sort($shift_dates);
 
-    //make a new table object
-    $obj = new ShiftTable();
+    $obj = (object) array();
+    $obj->dates = $shift_dates;
+    $obj->groups = array();
+
+    $groups = array();
+
     //for each staff member....
-    foreach ( $staff as $s_name => $s_data) {
-      //make a new staff entry object
-      $s = new ShiftTableStaffEntry($s_name, $s_data['id'], $s_data['category']);
+    foreach ( $staff_array as $staff_name => $staff) {
 
       //then for each date, enter shift data for that staff
       for ($i = 0; $i < count($shift_dates); $i++) {
         $entry_date = $shift_dates[$i];
 
         //if there is a shift entry for the staff, record it
-        if ( isset($staff_shifts[$s_name][$entry_date]) ) {
-          $entry_id = $staff_shifts[$s_name][$shift_dates[$i]]['shift-id'];
-          $entry_code = $staff_shifts[$s_name][$shift_dates[$i]]['code'];
-
-          $s->shifts[] = new ShiftTableShiftEntry($entry_date, $entry_id, $entry_code);
-        //or else put in dummy entry as placeholder
+        if ( isset($staff_shifts[$staff_name][$entry_date]) ) {
+          array_push($staff->shifts, $staff_shifts[$staff_name][$entry_date]);
         } else {
-          $s->shifts[] = new ShiftTableShiftEntry($entry_date, -1, '-');
+          //or else put in dummy entry as placeholder
+          array_push($staff->shifts, (object) ["date" => $entry_date, "id" => -1, "letter" => '-']);
         }
       }
 
-      //add the staff to the table object
-      $obj->staff[] = $s;
+      if (!isset($groups[$staff->category])) {
+        $groups[$staff->category] = (object) ["name" => $staff->category, "staff" => array()];
+      }
+
+      //add the staff to the group
+      array_push($groups[$staff->category]->staff, $staff);
     }
+
+    //add the groups to the $obj
+    $obj->groups = array_values($groups);
 
     //return the object
     return $obj;
@@ -1374,145 +1391,241 @@ class ShiftCrud
     return createResult(false);
   }
 
-  public function getShiftTableObjectTest($days_to_print = 10, $offset_from_last_day = 0, $staff_category = '*')
-  {
-    $whereStaffCategory = ($staff_category !== '*') ? " WHERE category = \"{$staff_category}\" " : "";
 
-    //query the db to get all the shifts within the specified date range
-    $sql = "SELECT
-              *
-            FROM
-              {$this->v_entries_complete}
-            INNER JOIN
-              (
-                SELECT
-                  DISTINCT shift_date
-                FROM
-                  {$this->v_entries_w_staff_w_category}
-                {$whereStaffCategory}
-                ORDER BY
-                  shift_date DESC
-                LIMIT
-                  {$days_to_print}
-                OFFSET
-                  {$offset_from_last_day}
-              ) AS t2 ON t2.shift_date = {$this->v_entries_complete}.shift_date
-            {$whereStaffCategory}
-            ORDER BY `last_name` ASC, `first_name` ASC, {$this->v_entries_complete}.`shift_date` DESC";
 
-    $stmtShiftEntries = $this->db->prepare($sql);
-    $stmtShiftEntries->execute();
+   public function getStaffDetailsNew($id, $param = null) {
+    if ($param === null) $param = (object) array();
+    if (!isset($param->days)) $param->days = 50;
 
-    //  Loop to:
-    //    1. Create a list of all the staff
-    //    2. Create a 3-dimensional array shift_array[Staff Name][Shift Date][Shift Data], not every cell will be populated
-    $shift_dates = array();
-    $staff_array = array();
-    $staff_shifts = array();
-
-    if ($stmtShiftEntries->rowCount()>0) {
-      while ($row=$stmtShiftEntries->fetch(PDO::FETCH_ASSOC)) {
-        $shift_dates[ $row['shift_date'] ] = $row['shift_date'];
-
-        $letter_code = $this->getShiftLetterCode($row);
-
-        $name = "{$row['last_name']}, {$row['first_name']}";
-
-        if ( !isset($staff_array[$name]) ) {
-          $staff_array[$name] = (object) [ 
-            "id" => $row['staff_id'], 
-            "category" => $row['category'], 
-            "fname" => $row['first_name'],
-            "lname" => $row['last_name'],
-            "fullname" => $name,
-            "shifts" => array()
-          ];
-
-          $staff_shifts[$name] = array();
-        }
-        
-        $staff_shifts[$name][$row['shift_date']] = (object) ["date" => $row['shift_date'], 'id' => $row['id'], 'letter' => $letter_code];
-      }
+    if (isset($param->{'since-date'})) {
+      $since_date = "shift_date >= :sd";
+      $day_limit = "";
+      $since_date_flag = true;
     } else {
-      return (object) ["error" => true, "message" => "No shifts exist in the database for this query"];
+      $since_date = "";
+      $day_limit = "LIMIT :days";
+      $since_date_flag = false;
     }
 
-    //now arrange all of the dates in sequence
-    $shift_dates = array_values($shift_dates);
-    sort($shift_dates);
+    if (!isset($param->{'exclude-roles-from-assignment-count'})) {
+      $exclude_roles = array(); 
+    } else {
+      $exclude_roles = $param->{'exclude-roles-from-assignment-count'};
+    }
+    
+    if (!is_array($exclude_roles)) {
+      $exclude_roles = array();
+    }
 
-    $obj = (object) array();
-    $obj->dates = $shift_dates;
-    $obj->groups = array();
+    //get the reference arrays
+    $assignment_ref = $this->getAllAssignments();
+    $role_ref = $this->getAllRoles();
+    $category_ref = $this->getAllCategories();
+    $column_ref = $this->getShiftColumnRefArray('mod');
 
-    $groups = array();
+    //determine if one id was supplied or an array of id's
+    $multiple_id = is_array($id);
 
-    //for each staff member....
-    foreach ( $staff_array as $staff_name => $staff) {
+    $sql_staff = "SELECT
+                    {$this->tbl_staff}.first_name,
+                    {$this->tbl_staff}.last_name,
+                    {$this->tbl_staff}.category_id
+                  FROM
+                    {$this->tbl_staff}
+                  WHERE
+                    id=:id";
 
-      //then for each date, enter shift data for that staff
-      for ($i = 0; $i < count($shift_dates); $i++) {
-        $entry_date = $shift_dates[$i];
+    $sql_min_date = "SELECT
+                       MIN(shift_date) AS first_shift
+                     FROM
+                       {$this->tbl_shift_entry}
+                     WHERE
+                       staff_id=:id";
 
-        //if there is a shift entry for the staff, record it
-        if ( isset($staff_shifts[$staff_name][$entry_date]) ) {
-          array_push($staff->shifts, $staff_shifts[$staff_name][$entry_date]);
-        } else {
-          //or else put in dummy entry as placeholder
-          array_push($staff->shifts, (object) ["date" => $entry_date, "id" => -1, "letter" => '-']);
+    $sql_shift = "SELECT
+                    {$this->tbl_shift_entry}.*
+                  FROM
+                    {$this->tbl_shift_entry}
+                  WHERE
+                    staff_id=:si
+                  ORDER BY
+                    shift_date DESC
+                  {$day_limit}";
+
+    //determine the condition to stop looping if there is an array or not
+    if($multiple_id) {
+      $max_i = count($id);
+      $details = array();
+    } else {
+      $max_i = 1;
+    }
+
+    //if there is an array, will loop through the array, if only 1 id supplied as single int, then will only loop once
+    for($i = 0; $i < $max_i; $i++) {
+      //determine the staff id for the queries
+      if ($multiple_id) {
+        $staff_id = $id[$i];
+      } else {
+        $staff_id = $id;
+      }
+
+      //staff obj init
+      $staff = (object) array();
+
+      $staff->id = $staff_id;
+      $staff->shift = array();
+      $staff->{'shift-count'} = 0;
+
+      try {
+        $stmt = $this->db->prepare($sql_staff);
+        $stmt->bindparam(":id", $staff_id, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $row=$stmt->fetch(PDO::FETCH_ASSOC);
+
+        //get the staff person's info on first iteration
+        if ($since_date_flag) {
+          $staff->{'since-date'} = $param->{'since-date'};
+        }
+
+        //create the staff object
+        $staff->{'name'} = "{$row['first_name']} {$row['last_name']}";
+        $staff->{'fname'} = "{$row['first_name']}";
+        $staff->{'lname'} = "{$row['last_name']}";
+        $staff->{'category-id'} = $row['category_id'];
+        $staff->{'category'} = $category_ref[$row['category_id']];
+
+      } catch (Exception $e) {
+        throw new Exception("Problem retrieving staff entry (id attempted: {$staff_id}).");
+      }
+
+      try {
+
+        $stmt = $this->db->prepare($sql_min_date);
+        $stmt->bindparam(":id", $staff_id, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $row=$stmt->fetch(PDO::FETCH_ASSOC);
+        $staff->{'first-shift'} = $row['first_shift'];
+
+      } catch (Exception $e) {
+        throw new Exception("Problem getting staff's first shift date:\n{$e->getMessage()}");
+      }
+
+      //if the first-shift is NULL, then there are no shifts to analyze
+      if ($staff->{'first-shift'} === NULL) {
+
+        unset($staff->{'first-shift'});
+        unset($staff->shift);
+
+      } else {
+
+        //init counting arrays
+        $mod_count = array();
+        $role_count = array();
+        $assign_count = array();
+
+        //get shift entries
+        try {
+          // $stmt = $this->db->prepare($sql_shift);
+          $stmt = $this->db->prepare($sql_shift);
+          $stmt->bindparam(":si", $staff_id, PDO::PARAM_INT);
+
+          if ($since_date_flag) {
+            $stmt->bindparam(":sd", $param->{'since-date'}, PDO::PARAM_STR);
+          } else {
+            $stmt->bindparam(":days", $param->{'days'}, PDO::PARAM_INT);
+          }
+
+          $stmt->execute();
+
+          if ($stmt->rowCount() < 1) {
+            throw new Exception("No shifts found.");
+          }
+
+          //for each shift found:
+          while($row=$stmt->fetch(PDO::FETCH_ASSOC)) {
+            $row['category_id'] = $staff->{'category-id'};
+            $staff->{'shift-count'} ++;
+
+            //create a shift object
+            $shift = (object) array();
+            $shift->id = $row['id'];
+            $shift->date = $row['shift_date'];
+            $shift->role = $role_ref[$row['role_id']];
+            $shift->assignment = $assignment_ref[$row['assignment_id']];
+            if ($row['bool_day_or_night'] == 0) {
+              $shift->{'d-or-n'} = 'D';
+            } else {
+              $shift->{'d-or-n'} = 'N';
+            }
+            $shift->code = $this->getShiftLetterCode($row, $category_ref, $role_ref);
+
+            array_push($staff->shift, $shift);
+
+            //count the role
+            if (!isset($role_count[$row['role_id']])) {
+              $role_count[$row['role_id']] = ['role' => $role_ref[$row['role_id']], 'count' => 0];
+            }
+            $role_count[$row['role_id']]['count']++;
+
+            //if the role matches a role in the $exclude_roles array, do not count the assignment or the Modifier
+            if (!in_array($role_ref[$row['role_id']],$exclude_roles)) {
+
+              //count the assignment
+              if (!isset($assign_count[$row['assignment_id']])) {
+                $assign_count[$row['assignment_id']] = ['assignment' => $assignment_ref[$row['assignment_id']], 'count' => 0];
+              }
+              $assign_count[$row['assignment_id']]['count']++;
+            }
+
+            //for each modifier, count the modifier
+            foreach ($column_ref as $key => $value) {
+              if(!isset($mod_count[$key])) {
+                $mod_count[$key] = ['mod' => $value, 'count' => 0];
+              }
+
+              if ($row[$key] == 1) {
+                $mod_count[$key]['count']++;
+              }
+            }
+
+          } //end while
+
+          $mod_count['nonvent'] = ['mod' => 'Non-vented', 'count' => ($staff->{'shift-count'} - $mod_count['bool_vented']['count'])];
+
+          //add the counts to the staff object
+          $staff->{'mod-count'} = array();
+          foreach ($mod_count as $key => $value) {
+            array_push($staff->{'mod-count'}, (object) array_merge(['id' => $key], $value));
+          }
+
+          $staff->{'role-count'} = array();
+          foreach ($role_count as $key => $value) {
+            array_push($staff->{'role-count'}, (object) array_merge(['id' => $key], $value));
+          }
+
+          $staff->{'assign-count'} = array();
+          foreach ($assign_count as $key => $value) {
+            array_push($staff->{'assign-count'}, (object) array_merge(['id' => $key], $value));
+          }
+
+        } catch (Exception $e) {
+          throw new Exception("Problem getting shift records:\n{$e->getMessage()}");
         }
       }
 
-      if (!isset($groups[$staff->category])) {
-        $groups[$staff->category] = (object) ["name" => $staff->category, "staff" => array()];
+      //if multiple staff to be retrieved, add the staff object to the $details array
+      if ($multiple_id) {
+        array_push($details, $staff);
       }
+    } //end staff for loop
 
-      //add the staff to the group
-      array_push($groups[$staff->category]->staff, $staff);
+    if ($multiple_id) {
+      return $details; //if multiple staff
+    } else {
+      return $staff; //if single staff
     }
-
-    //add the groups to the $obj
-    $obj->groups = array_values($groups);
-
-    //return the object
-    return $obj;
-  }
-}
-
-class ShiftTableShiftEntry
-{
-  public $date;
-  public $id;
-  public $code;
-
-  function __construct($date, $id, $letter_code) {
-    $this->date = $date;
-    $this->id = $id;
-    $this->code = $letter_code;
-  }
-}
-
-class ShiftTableStaffEntry
-{
-  public $name;
-  public $id;
-  public $category;
-  public $shifts;
-
-  function __construct($name, $id, $category) {
-    $this->name = $name;
-    $this->id = $id;
-    $this->category = $category;
-    $this->shifts = array();
-  }
-}
-
-class ShiftTable
-{
-  public $staff;
-
-  function __construct() {
-    $this->staff = array();
   }
 }
 
