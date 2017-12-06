@@ -190,6 +190,26 @@ if (!isset($_SESSION['authenticated'])) {
         success: function (response) {
           try {
             let shiftTableData = JSON.parse(response);
+
+            let g = shiftTableData.groups;
+            shiftTableData.groups = [];
+
+            for (let i = 0; i < g.length; i++) {
+              if (g[i].name == "RN") {
+                shiftTableData.groups[0] = g[i];
+
+              } else if (g[i].name == "LPN") {
+                shiftTableData.groups[1] = g[i];
+
+              } else if (g[i].name == "NA") {
+                shiftTableData.groups[2] = g[i];
+
+              } else if (g[i].name == "UC") {
+                shiftTableData.groups[3] = g[i];
+
+              }
+            }
+
             if (debug) console.log("AJAX returned, staff list:");
             if (debug) console.log(shiftTableData);
             $('#shift-table-div').html(shiftTableTemplate(shiftTableData));
