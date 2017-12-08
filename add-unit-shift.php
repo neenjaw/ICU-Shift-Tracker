@@ -4,13 +4,6 @@ include 'includes/pre-head.php';
 if (!isset($_SESSION['user'])) {
   header("Location: index.php");
 }
-
-//use the CRUD object to access the database and to build option lists of the staff categories
-$form_select_rn = $crud->getRnStaff();
-$form_select_na = $crud->getNaStaff();
-$form_select_uc = $crud->getUcStaff();
-$form_select_assignment = $crud->getAllAssignments();
-
 ?>
 
 <!DOCTYPE html>
@@ -62,10 +55,11 @@ $form_select_assignment = $crud->getAllAssignments();
             <button type="submit" id="btn-submit" class="btn btn-secondary">Submit</button>
           </div>
 
+          <!-- SHIFT SELECT -->
           <div id="section-date-select" class="form-section form-inline mt-4 mb-4">
-
-            <!-- DATE SELECT -->
             <div class="form-group">
+              
+              <!-- DATE SELECT -->
               <label class="control-label requiredField mr-1" for="date">Date: </label>
               <div class="input-group mt-1">
                 <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
@@ -78,6 +72,7 @@ $form_select_assignment = $crud->getAllAssignments();
                        <?= (($detect->isMobile()) ? ('max="'.date('Y-m-d').'" ') : ''); ?>
                        required>
               </div>
+              <!-- END DATE SELECT -->
 
               <!-- DAY / NIGHT SELECT -->
               <div class="btn-group requiredField ml-sm-1 mt-1" data-toggle="buttons">
@@ -90,12 +85,15 @@ $form_select_assignment = $crud->getAllAssignments();
                   Night
                 </label>
               </div>
+              <!-- END DAY / NIGHT SELECT -->
+              
             </div>
-
           </div>
+          <!-- END SHIFT SELECT -->
 
           <!-- Select Clinician/Charge -->
           <div id="section-nc-cn-select" class="form-section mt-4 mb-4">
+            
             <!-- RN Clinician SELECT -->
             <div class="form-group">
               <label class="control-label requiredField" for="nc-select">
@@ -107,8 +105,8 @@ $form_select_assignment = $crud->getAllAssignments();
                 <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
                 <span class="sr-only">Loading...</span>
               </div>
-
             </div>
+            <!-- END RN Clinician SELECT -->
 
             <!-- RN CHARGE SELECT -->
             <div id="cn-select-group" class="form-group">
@@ -121,10 +119,11 @@ $form_select_assignment = $crud->getAllAssignments();
                 <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
                 <span class="sr-only">Loading...</span>
               </div>
-
             </div>
+            <!-- END RN CHARGE SELECT -->
 
           </div>
+          <!-- END Select Clinician/Charge -->
 
 
           <div id="section-nc-cn-pod-select" class="form-section mt-4 mb-4">
@@ -479,25 +478,13 @@ $form_select_assignment = $crud->getAllAssignments();
     </div>
 
     <div class="row justify-content-center">
-      <div class="col-8">
-        <!-- Progess bar -->
-        <div class="progress">
-          <div id="step-progress" class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-        </div>
-
-        <!-- <p id="step-x-of-y" class="text-center"></p> -->
+      <!-- Progess bar -->
+      <div class="col-8 progress">
+        <div id="step-progress" class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
       </div>
     </div>
 
   </div>
-
-  <!-- Spacer for the bottom -->
-  <div class="container">
-    <br />
-    <br />
-    <br />
-  </div>
-  <!-- Spacer for the bottom -->
 
   <!-- Bootstrap Modal -->
   <div id="submission-modal" class="modal fade" tabindex="-1" role="dialog">
@@ -517,17 +504,16 @@ $form_select_assignment = $crud->getAllAssignments();
     </div>
   </div>
 
-
   <!-- Prefooter Include -->
   <?php include 'includes/script-include.php'; ?>
   <!-- END Prefooter Include -->
 
   <!-- Handlebars templates -->
   <script id="hbt-shift-modifier-checkbox" type="text/x-handlebars-template">
-  <?php include 'includes/templates/UnitShiftShiftModCheckbox.handlebars'; ?>
+    <?php include 'includes/templates/UnitShiftShiftModCheckbox.handlebars'; ?>
   </script>
   <script id="hbt-staff-pod-select" type="text/x-handlebars-template">
-  <?php include 'includes/templates/StaffPodSelect.handlebars'; ?>
+    <?php include 'includes/templates/StaffPodSelect.handlebars'; ?>
   </script>
   <!-- END Handlebars templates -->
 
