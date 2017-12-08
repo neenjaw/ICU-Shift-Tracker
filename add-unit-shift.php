@@ -478,25 +478,13 @@ if (!isset($_SESSION['user'])) {
     </div>
 
     <div class="row justify-content-center">
-      <div class="col-8">
-        <!-- Progess bar -->
-        <div class="progress">
-          <div id="step-progress" class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-        </div>
-
-        <!-- <p id="step-x-of-y" class="text-center"></p> -->
+      <!-- Progess bar -->
+      <div class="col-8 progress">
+        <div id="step-progress" class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
       </div>
     </div>
 
   </div>
-
-  <!-- Spacer for the bottom -->
-  <div class="container">
-    <br />
-    <br />
-    <br />
-  </div>
-  <!-- Spacer for the bottom -->
 
   <!-- Bootstrap Modal -->
   <div id="submission-modal" class="modal fade" tabindex="-1" role="dialog">
@@ -516,17 +504,16 @@ if (!isset($_SESSION['user'])) {
     </div>
   </div>
 
-
   <!-- Prefooter Include -->
   <?php include 'includes/script-include.php'; ?>
   <!-- END Prefooter Include -->
 
   <!-- Handlebars templates -->
   <script id="hbt-shift-modifier-checkbox" type="text/x-handlebars-template">
-  <?php include 'includes/templates/UnitShiftShiftModCheckbox.handlebars'; ?>
+    <?php include 'includes/templates/UnitShiftShiftModCheckbox.handlebars'; ?>
   </script>
   <script id="hbt-staff-pod-select" type="text/x-handlebars-template">
-  <?php include 'includes/templates/StaffPodSelect.handlebars'; ?>
+    <?php include 'includes/templates/StaffPodSelect.handlebars'; ?>
   </script>
   <!-- END Handlebars templates -->
 
