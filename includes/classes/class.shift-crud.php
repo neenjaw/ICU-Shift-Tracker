@@ -489,7 +489,7 @@ class ShiftCrud
     if (!isset($param->days)) $param->days = 50;
 
     if (isset($param->{'since-date'})) {
-      $since_date = "shift_date >= :sd";
+      $since_date = "shift_date >= :sd AND ";
       $day_limit = "";
       $since_date_flag = true;
     } else {
@@ -538,7 +538,7 @@ class ShiftCrud
                   FROM
                     {$this->tbl_shift_entry}
                   WHERE
-                    staff_id=:si
+                    {$since_date}staff_id=:si
                   ORDER BY
                     shift_date DESC
                   {$day_limit}";

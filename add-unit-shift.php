@@ -889,6 +889,8 @@ $form_select_assignment = $crud->getAllAssignments();
   }
 
   function getStaffFromCheckboxes(names) {
+    names = names || [];
+
     let jquerySelector = '';
 
     //iterate through the array of checkbox names to check for selected staff, building the query selector string
@@ -901,8 +903,16 @@ $form_select_assignment = $crud->getAllAssignments();
     //find the selected staff, map the results into an array of object literals
     return $(jquerySelector).map(function () {
                               return {id: $(this).val(), name: $(this).data("staffName")};
-                              })
-                            .get();
+                            })
+                            .get()
+                            .sort(function(a, b){
+                              if (a.name < b.name) {
+                                return -1;
+                              } else if (a.name > b.name) {
+                                return 1;
+                              }
+                              return 0;
+                            });
   }
 
   /**

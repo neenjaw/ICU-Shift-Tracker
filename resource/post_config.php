@@ -292,8 +292,8 @@ function modUser($DB, $DB_table, $adm_usr, $usr_id, $args = null) {
 
   //get the user's original entry, verifying that it exists
   try {
-    $stmt = $DB->prepare("SELECT * FROM {$DB_table->users} WHERE login=:log");
-    $stmt->bindparam(":log", $usr_id);
+    $stmt = $DB->prepare("SELECT * FROM {$DB_table->users} WHERE id=:id");
+    $stmt->bindparam(":id", $usr_id);
     $stmt->execute();
 
     $row_before_update = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -326,6 +326,8 @@ function modUser($DB, $DB_table, $adm_usr, $usr_id, $args = null) {
     }
   }
 
+  // echo "\$args->flags->state:\n"; var_dump($args->flags->state); echo "\n";
+
   try {
     $stmt = $DB->prepare("UPDATE {$DB_table->users} SET auth_id=:ai WHERE id=:uid");
     $stmt->bindparam(":uid", $usr_id);
@@ -355,8 +357,8 @@ function changePassword($DB, $DB_table, $usr, $pw) {
   try{
     $hashed_pw = password_hash($pw, PASSWORD_DEFAULT);
 
-    $stmt = $DB->prepare("UPDATE {$DB_table->users} SET password=:pw WHERE login=:log");
-    $stmt->bindparam(":log", $usr);
+    $stmt = $DB->prepare("UPDATE {$DB_table->users} SET password=:pw WHERE id=:id");
+    $stmt->bindparam(":id", $usr);
     $stmt->bindparam(":pw", $hashed_pw);
     $stmt->execute();
 

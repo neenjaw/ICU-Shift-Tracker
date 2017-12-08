@@ -37,7 +37,6 @@ $a_active = ' active';
 				<div class="dropdown-menu">
 					<h6 class="dropdown-header">Reports</h6>
 					<?= makeNavLink($page_name, 'report-assignment.php', 'Assignment', 'dropdown-item'); ?>
-					<?= makeNavLink($page_name, 'double-report.php', 'Doubles', 'dropdown-item disabled'); ?>
 				</div>
 			</li>
 			<li class="nav-item dropdown">

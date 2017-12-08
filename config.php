@@ -354,6 +354,12 @@ if (!isset($_SESSION['user'])) {
       }
     });
 
+    $(`#cmd-modusr-uid`).change(function(){
+      let uid = $(this).val();
+
+      getModUserAuth(uid);
+    });
+
     optionTemplate = Handlebars.compile($("#select-option-template").html());
 
     getAuthStates(optionTemplate, optionLoading);
@@ -450,6 +456,36 @@ if (!isset($_SESSION['user'])) {
   });
   //ON DOCUMENT READY END
 
+  function getModUserAuth(uid) {
+    $.ajax({
+      type: 'GET',
+      url: 'resource/get_users.php',
+      data: 'user='+uid,
+      beforeSend: function () {
+        if (debug) console.log("Auth level to be retrieved for uid: '"+uid+"'.");
+      },
+      success: function (response) {
+        if (response) {
+          try {
+            response = JSON.parse(response);
+            if (debug) console.log(`parsed:`);
+            if (debug) console.log(response);
+
+            if (response.hasOwnProperty('error')) {
+              throw new Error(response.error);
+            }
+
+            $(`#cmd-modusr-auth-id`).val(response.auth);
+          } catch(e) {
+            if (debug) console.log(`Report Error: ${e}`); // error in the above string being parsed!
+          }
+        } else {
+          if (debug) console.log(`Auth level retrieval failure.`);            
+        }
+      }
+    });
+  }
+
   function submitConfig(data) {
     $.ajax({
       type: 'POST',
@@ -467,6 +503,11 @@ if (!isset($_SESSION['user'])) {
           alertPop(response);
           getUsers(optionTemplate, optionLoading);
           $(`#cmd-delusr-form, #cmd-modusr-form, #cmd-addusr-form, #cmd-changepw-form`).trigger('reset');
+          $(`#cmd-modusr-new-pw`).prop('disabled', true);
+          $(`#cmd-modusr-rpt-pw`).prop('disabled', true);
+          $(`#cmd-modusr-new-pw`).prop(`required`, false);
+          $(`#cmd-modusr-rpt-pw`).prop(`required`, false);
+          $(`#cmd-modusr-auth-id`).prop('disabled', true);
         }
       }
     });
@@ -518,6 +559,8 @@ if (!isset($_SESSION['user'])) {
 
         fillSelect($('#cmd-modusr-uid'), pTemplate, {entry: mappedUsers});
         fillSelect($('#cmd-delusr-uid'), pTemplate, {entry: mappedUsers});
+
+        getModUserAuth($('#cmd-modusr-uid').val())
       }
     });
   }
