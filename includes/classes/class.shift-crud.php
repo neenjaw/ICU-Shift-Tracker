@@ -358,26 +358,66 @@ class ShiftCrud
     return $staff_array;
   }
 
-  public function getStaffGroupedByCategory() {
+  public function getStaffGroupedByCategory($param = null) {
+    if (isset($param->date)) {
+      $pattern = '/^[1-2][0-9]{3}-[0-1][0-9]-[0-3][0-9]$/';
+      if (preg_match($pattern, $param->date) === 0) {
+        unset($param->date);
+      }
+    }
 
     $staff = (object) array();
     $staff->group = array();
 
     $category = array();
 
-    $sql = "SELECT
-              {$this->tbl_staff}.id,
-              {$this->tbl_staff}.last_name,
-              {$this->tbl_staff}.first_name,
-              {$this->tbl_category}.category
-            FROM
-              {$this->tbl_staff}
-            LEFT JOIN
-          	  {$this->tbl_category}
-            ON
-              {$this->tbl_category}.id = {$this->tbl_staff}.category_id
-            ORDER BY
-            	{$this->tbl_staff}.last_name, {$this->tbl_staff}.first_name";
+    if (isset($param->date)) {
+      //if date specified, get all staff that do not have a shift that
+      //day already entered
+      $sql = "SELECT
+                {$this->tbl_staff}.id,
+                {$this->tbl_staff}.last_name,
+                {$this->tbl_staff}.first_name,
+                {$this->tbl_category}.category
+              FROM
+                {$this->tbl_staff}
+              LEFT JOIN
+                (
+                SELECT
+                  staff_id
+                FROM
+                  {$this->tbl_shift_entry}
+                WHERE
+                  shift_date = '{$date}'
+              ) AS t2
+              ON
+                t2.staff_id = {$this->tbl_staff}.id
+              LEFT JOIN
+                {$this->tbl_category}
+              ON
+                {$this->tbl_category}.id = {$this->tbl_staff}.category_id
+              WHERE
+                t2.staff_id IS NULL
+              ORDER BY
+                {$this->tbl_staff}.last_name, {$this->tbl_staff}.first_name";
+
+    } else {
+      //if no date specified, get all the staff
+      $sql = "SELECT
+                {$this->tbl_staff}.id,
+                {$this->tbl_staff}.last_name,
+                {$this->tbl_staff}.first_name,
+                {$this->tbl_category}.category
+              FROM
+                {$this->tbl_staff}
+              LEFT JOIN
+            	  {$this->tbl_category}
+              ON
+                {$this->tbl_category}.id = {$this->tbl_staff}.category_id
+              ORDER BY
+              	{$this->tbl_staff}.last_name, {$this->tbl_staff}.first_name";
+
+    }
 
     $stmt = $this->db->prepare($sql);
     $stmt->execute();
@@ -499,11 +539,11 @@ class ShiftCrud
     }
 
     if (!isset($param->{'exclude-roles-from-assignment-count'})) {
-      $exclude_roles = array(); 
+      $exclude_roles = array();
     } else {
       $exclude_roles = $param->{'exclude-roles-from-assignment-count'};
     }
-    
+
     if (!is_array($exclude_roles)) {
       $exclude_roles = array();
     }
@@ -1082,9 +1122,9 @@ class ShiftCrud
         $name = "{$row['last_name']}, {$row['first_name']}";
 
         if ( !isset($staff_array[$name]) ) {
-          $staff_array[$name] = (object) [ 
-            "id" => $row['staff_id'], 
-            "category" => $row['category'], 
+          $staff_array[$name] = (object) [
+            "id" => $row['staff_id'],
+            "category" => $row['category'],
             "fname" => $row['first_name'],
             "lname" => $row['last_name'],
             "fullname" => $name,
@@ -1093,7 +1133,7 @@ class ShiftCrud
 
           $staff_shifts[$name] = array();
         }
-        
+
         $staff_shifts[$name][$row['shift_date']] = (object) ["date" => $row['shift_date'], 'id' => $row['id'], 'letter' => $letter_code];
       }
     } else {

@@ -660,6 +660,9 @@ if (!isset($_SESSION['user'])) {
   <script id="add-unit-shift-radio-template" type="text/x-handlebars-template">
     <?php include 'includes/templates/AddUnitShiftRadio.handlebars'; ?>
   </script>
+  <script id="add-unit-shift-pod-select-template" type="text/x-handlebars-template">
+    <?php include 'includes/templates/AddUnitShiftPodSelect.handlebars'; ?>
+  </script>
   <script id="add-unit-shift-checkbox-template" type="text/x-handlebars-template">
     <?php include 'includes/templates/AddUnitShiftCheckbox.handlebars'; ?>
   </script>
@@ -672,6 +675,8 @@ if (!isset($_SESSION['user'])) {
   var $sections = null;
   var oldIndex = null;
 
+  var roleRefArray = null;
+
   var dateLast = null;
   var dateChangeTimer; //variable to prevent ajax request for staff to not update too often
   var dateChangeTimerInterval = 1500;
@@ -679,7 +684,8 @@ if (!isset($_SESSION['user'])) {
   var template = {
     select:"add-unit-shift-select-template",
     radio:"add-unit-shift-radio-template",
-    checkbox:"add-unit-shift-checkbox-template"
+    checkbox:"add-unit-shift-checkbox-template",
+    podselect:"add-unit-shift-pod-select-template"
   };
 
   $(function() {
@@ -804,13 +810,13 @@ if (!isset($_SESSION['user'])) {
         let staffFrom = $(this).data('populateStaffFrom');
         if (staffFrom) {
           if (debug) console.log(`> Show staff from these sections: '${staffFrom}'`);
-          //hide all, then show the desired staff
+          //TODO: hide all, then show the desired staff
         }
 
         let excludeList = $(this).data('populateStaffExcludeFrom');
         if (excludeList) {
           if (debug) console.log(`> Exclude these sections from the staff list: '${excludeList}'`);
-          //do hiding calls here
+          //TODO: do hiding calls here
         }
 
       });
@@ -962,8 +968,7 @@ if (!isset($_SESSION['user'])) {
              data = JSON.parse(data);
              if (debug) console.log(data);
 
-             //split the returned object -->
-             //call the populate fields routines.
+             populateForm(data);
 
            } catch (e) {
              if (debug) console.log("> Data error: "+e);
@@ -974,6 +979,73 @@ if (!isset($_SESSION['user'])) {
          }
        }
     });
+  }
+
+  function populateForm(data) {
+    let rn = {}, na = {}, uc = {}, assignment = null, role = null;
+
+    //merge staff arrays
+    function mergeArrays(a, b) {
+      let s = [];
+
+      //while items remain
+      while (a.length || b.length) {
+
+        if (a.length === 0) { //if a is empty, push b
+          s.push(b[0]);
+          b.shift();
+
+        } else if ( b.length === 0 ) { // if b is empty, push a
+          s.push(a[0]);
+          a.shift();
+
+        } else if (a[0].name > b[0].name){ //if a.name > b.name, push b
+          s.push(b[0]);
+          b.shift();
+
+        } else { // else push a
+          s.push(a[0]);
+          a.shift();
+        }
+      }
+
+      return s;
+    }
+
+    //get the lists of staff from the data object
+    for (let i = 0; i < data.staff.length; i++) {
+      if (data.staff[i].name == "RN") {
+        rn = data.staff[i];
+      } else if (data.staff[i].name == "UC") {
+        uc = data.staff[i];
+      } else if (data.staff[i].name == "LPN") {
+        if (jQuery.isEmptyObject(na)) {
+          na = data.staff[i];
+          na.name = "NA";
+        } else {
+          na.staff = mergeArrays(na.staff, data.staff[i].staff);
+        }
+      } else if (data.staff[i].name == "NA") {
+        if (jQuery.isEmptyObject(na)) {
+          na = data.staff[i];
+        } else {
+          na.staff = mergeArrays(na.staff, data.staff[i].staff);
+        }
+      }
+    }
+
+    //get the assignment and roles from the data
+    assignemnt = assignment || data.assignment;
+    role = role || data.role;
+
+    //create the role reference array
+    if (role !== null) {
+      roleRefArray = [];
+      for (let i = 0; i < role.length; i++) {
+        roleRefArray[role[i].role] = role[i].id;
+      }
+    }
+
   }
 
   function setParsleyJsGroup(section, index) {

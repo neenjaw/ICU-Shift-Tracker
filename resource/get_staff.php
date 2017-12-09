@@ -24,7 +24,18 @@ if (isset($_POST['date'])) {
 
 } elseif (isset($_GET['date'])) {
 
-  echo json_encode($crud->getStaffFilteredByDate(trim($_GET['date'])));
+  $data = (object) array();
+
+  $staff = $crud->getStaffGroupedByCategory(trim($_GET['date']));
+  $data->staff = $staff->group;
+
+  $assignment = $crud->getAllAssignmentObj();
+  $data->assignment = $assignment;
+
+  $role = $crud->getAllRoleObj();
+  $data->role = $role;
+
+  echo json_encode($data);
 
 } else {
 

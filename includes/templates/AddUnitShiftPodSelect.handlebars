@@ -1,0 +1,18 @@
+<div class="form-group">
+  <label for="{{prefix}}-{{type}}-table">Choose the assignment for staff:</label>
+  <table id="{{prefix}}-{{type}}-table" class="table">
+  {{#each staff}}
+    <tr>
+      <td>{{this.name}}</td>
+      <td>
+        <select name="{{../prefix}}-{{../type}}-{{../id}}" class="custom-select" required>
+          <option value="" disabled selected>Select a pod...</option>
+          {{#each ../pod}}
+            <option id="" value="{{this.id}}">{{this.name}}</option>
+          {{/each}}
+        </select>
+      </td>
+    </div>
+  {{/each}}
+  </table>
+</div>
