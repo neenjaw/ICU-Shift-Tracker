@@ -22,6 +22,10 @@ if (isset($_POST['date'])) {
 
   echo json_encode($crud->getStaffGroupedByCategory(), JSON_PRETTY_PRINT);
 
+} elseif (isset($_GET['date'])) {
+
+  echo json_encode($crud->getStaffFilteredByDate(trim($_GET['date'])));
+
 } else {
 
   echo json_encode($crud->getAllStaffObj());

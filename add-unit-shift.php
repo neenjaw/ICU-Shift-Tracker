@@ -56,9 +56,9 @@ if (!isset($_SESSION['user'])) {
           </div>
 
           <!-- SHIFT SELECT -->
-          <div id="section-date-select" class="form-section form-inline mt-4 mb-4">
+          <div id="section-date" class="form-section form-inline mt-4 mb-4">
             <div class="form-group">
-              
+
               <!-- DATE SELECT -->
               <label class="control-label requiredField mr-1" for="date">Date: </label>
               <div class="input-group mt-1">
@@ -86,38 +86,54 @@ if (!isset($_SESSION['user'])) {
                 </label>
               </div>
               <!-- END DAY / NIGHT SELECT -->
-              
+
             </div>
           </div>
           <!-- END SHIFT SELECT -->
 
           <!-- Select Clinician/Charge -->
-          <div id="section-nc-cn-select" class="form-section mt-4 mb-4">
-            
+          <div id="section-nc-cn" class="form-section mt-4 mb-4">
+
             <!-- RN Clinician SELECT -->
-            <div class="form-group">
-              <label class="control-label requiredField" for="nc-select">
+            <div id="nc-subsection" class="form-group">
+              <label class="control-label requiredField" for="nc">
                 Who is the Clinician for the shift?<span class="asteriskField">*</span>
               </label>
-              <div id="nc-select-errors"></div>
-              <div id="nc-select" class="staff-select-group p-0 m-0" data-populate-with-staff-group="RN" data-populate-type="radio" data-populate-prefix="nc" data-populate-required="true">
+              <div id="nc-errors"></div>
+              <div id="nc"
+                class="aus-form-group p-0 m-0"
+                data-populate-group="staff"
+                data-populate-staff-list="RN"
+                data-populate-type="radio"
+                data-populate-prefix="nc"
+                data-populate-required="true">
+
                 <!-- dynamic staff select built here -->
                 <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
                 <span class="sr-only">Loading...</span>
+
               </div>
             </div>
             <!-- END RN Clinician SELECT -->
 
             <!-- RN CHARGE SELECT -->
-            <div id="cn-select-group" class="form-group">
-              <label class="control-label requiredField" for="cn-select">
+            <div id="cn-subsection" class="form-group">
+              <label class="control-label requiredField" for="cn">
                 Who is the Charge for the shift?<span class="asteriskField">*</span>
               </label>
-              <div id="cn-select-errors"></div>
-              <div id="cn-select" class="staff-select-group p-0 m-0" data-populate-with-staff-group="RN" data-populate-type="radio" data-populate-prefix="cn" data-populate-required="true">
+              <div id="cn-errors"></div>
+              <div id="cn"
+                class="aus-form-group p-0 m-0"
+                data-populate-group="staff"
+                data-populate-staff-list="RN"
+                data-populate-type="radio"
+                data-populate-prefix="cn"
+                data-populate-required="true">
+
                 <!-- dynamic staff select built here -->
                 <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
                 <span class="sr-only">Loading...</span>
+
               </div>
             </div>
             <!-- END RN CHARGE SELECT -->
@@ -125,42 +141,27 @@ if (!isset($_SESSION['user'])) {
           </div>
           <!-- END Select Clinician/Charge -->
 
+          <!-- assign pods to the clinician/charge -->
+          <div id="section-nc-cn-pod" class="form-section mt-4 mb-4">
 
-          <div id="section-nc-cn-pod-select" class="form-section mt-4 mb-4">
-            <!-- assign pods to the clinician/charge -->
-
+            <!-- Assign Clinician Pod -->
             <div class="form-group">
               <label class="control-label requiredField" for="select">
                 Which pod was the Nurse Clinician in?<span class="asteriskField">*</span>
               </label>
-              <div id="nc-pod-select-errors"></div>
-              <div id="nc-pod-select" class="staff-select-group p-0 m-0">
-                <?php
-                //Build Pod Select List
-                $i = true;
-                foreach ($form_select_assignment as $k => $v):
-                  if ( (strpos($v, "B") === false) || (strlen($v) == 1) ) {
-                    continue;
-                  }
-                ?>
-                  <div class="inner-item list-group-item-action">
-                    <label class="custom-control custom-radio m-1">
-                      <input id="nc-pod-<?= $k ?>"
-                             name="nc-pod-select"
-                             type="radio"
-                             value="<?= $k ?>"
-                             <?= ($i === true)? ' required data-parsley-errors-container="#nc-pod-select-errors"':'' ?>
-                             data-pod-name="<?= $v ?>"
-                             class="custom-control-input">
-                      <span class="custom-control-indicator"></span>
-                      <span class="custom-control-description"><?= $v ?></span>
-                    </label>
-                  </div>
-                <?php
-                $i = false;
-                endforeach;
-                //END Build Pod Select List
-                ?>
+              <div id="nc-pod-errors"></div>
+              <div id="nc-pod"
+                class="aus-form-group p-0 m-0"
+                data-populate-group="pod"
+                data-populate-pod-show="A/B,B/C"
+                data-populate-type="radio"
+                data-populate-prefix="nc-pod"
+                data-populate-required="true">
+
+                <!-- dynamic pod select built here -->
+                <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+                <span class="sr-only">Loading...</span>
+
               </div>
 
             </div>
@@ -169,58 +170,44 @@ if (!isset($_SESSION['user'])) {
               <label class="control-label requiredField" for="cn-pod">
                 Which pod was the Charge Nurse in?<span class="asteriskField">*</span>
               </label>
-              <div id="cn-pod-select-errors"></div>
-              <div id="cn-pod-select" class="staff-select-group p-0 m-0">
-                <?php
-                //Build Pod Select List
-                $i = true;
-                foreach ($form_select_assignment as $k => $v):
-                  if ( (strlen($v) > 1) || ($v === "B") ) {
-                    continue;
-                  }
-                ?>
-                  <div class="inner-item list-group-item-action">
-                    <label class="custom-control custom-radio m-1">
-                      <input id="cn-pod-<?= $k ?>"
-                             name="cn-pod-select"
-                             type="radio"
-                             value="<?= $k ?>"
-                             <?= ($i === true)? ' required data-parsley-errors-container="#cn-pod-select-errors"':'' ?>
-                             data-pod-name="<?= $v ?>"
-                             class="custom-control-input">
-                      <span class="custom-control-indicator"></span>
-                      <span class="custom-control-description"><?= $v ?></span>
-                    </label>
-                  </div>
-                <?php
-                $i = false;
-                endforeach;
-                //END Build Pod Select List
-                ?>
+              <div id="cn-pod-errors"></div>
+              <div id="cn-pod"
+                class="aus-form-group p-0 m-0"
+                data-populate-group="pod"
+                data-populate-pod-show="A,C"
+                data-populate-type="radio"
+                data-populate-prefix="cn-pod"
+                data-populate-required="true">
+
+                <!-- dynamic pod select built here -->
+                <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+                <span class="sr-only">Loading...</span>
+
               </div>
 
             </div>
           </div>
-
+          <!-- END assign pods to the clinician/charge -->
 
 
           <!-- Floating nurse -->
-          <div id="section-float-rn-select" class="form-section mt-4 mb-4">
-            <div class="form-group">
+          <div id="section-float-rn" class="form-section mt-4 mb-4">
+
+            <div id="float-rn-check-subsection" class="form-group">
               <label class="control-label" for="float-rn-check">
                 Was there a float nurse?
               </label>
               <div id="float-rn-check-errors"></div>
-              <div id="float-rn-check" class="staff-select-group p-0 m-0">
+              <div id="float-rn-check" class="staff-group p-0 m-0">
                 <div class="inner-item list-group-item-action">
                   <label class="custom-control custom-radio m-1">
                     <input id="float-rn-check-yes"
-                    name="float-rn-check"
-                    type="radio"
-                    value="Yes"
-                    required
-                    data-parsley-errors-container="#float-rn-check-errors"
-                    class="custom-control-input">
+                      name="float-rn-check"
+                      type="radio"
+                      value="Yes"
+                      required
+                      data-parsley-errors-container="#float-rn-check-errors"
+                      class="custom-control-input">
                     <span class="custom-control-indicator"></span>
                     <span class="custom-control-description">Yes</span>
                   </label>
@@ -228,11 +215,11 @@ if (!isset($_SESSION['user'])) {
                 <div class="inner-item list-group-item-action">
                   <label class="custom-control custom-radio m-1">
                     <input id="float-rn-check-no"
-                    name="float-rn-check"
-                    type="radio"
-                    value="No"
-                    checked
-                    class="custom-control-input">
+                      name="float-rn-check"
+                      type="radio"
+                      value="No"
+                      checked
+                      class="custom-control-input">
                     <span class="custom-control-indicator"></span>
                     <span class="custom-control-description">No</span>
                   </label>
@@ -240,29 +227,45 @@ if (!isset($_SESSION['user'])) {
               </div>
             </div>
 
-            <div id="float-rn-select-group" class="form-group">
-              <label class="control-label" for="float-rn-select">
+            <div id="float-rn-subsection" class="form-group">
+              <label class="control-label" for="float-rn">
                 Who floated?
               </label>
-              <div id="float-rn-select-errors"></div>
-              <div id="float-rn-select" class="staff-select-group p-0 m-0" data-populate-with-staff-group="RN" data-populate-type="checkbox" data-populate-prefix="float-rn" data-populate-required="false">
-                <!-- dynamic staff select built here -->
+              <div id="float-rn-errors"></div>
+              <div id="float-rn"
+                class="aus-form-group p-0 m-0"
+                data-populate-group="staff"
+                data-populate-staff-list="RN"
+                data-populate-type="radio"
+                data-populate-prefix="float-rn"
+                data-populate-required="false">
+
+                <!-- dynamic pod select built here -->
                 <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
                 <span class="sr-only">Loading...</span>
+
               </div>
             </div>
           </div>
 
-          <div id="section-apod-rn-select" class="form-section mt-4 mb-4">
+          <div id="section-apod-rn" class="form-section mt-4 mb-4">
             <!-- Select Bedside Nurses for A -->
 
             <div class="form-group">
               <label class="control-label requiredField" for="select">
                 Select the nurses for Pod A<span class="asteriskField">*</span>
               </label>
-              <div id="apod-rn-select-errors"></div>
-              <div id="apod-rn-select" class="staff-select-group p-0 m-0" data-populate-with-staff-group="RN" data-populate-type="checkbox" data-populate-prefix="apod-rn" data-populate-required="true">
-                <!-- dynamic staff select built here -->
+              <div id="apod-rn-errors"></div>
+              <div id="apod-rn"
+                class="aus-form-group p-0 m-0"
+                data-populate-group="staff"
+                data-populate-staff-list="RN"
+                data-populate-staff-exclude-from="cn,nc"
+                data-populate-type="checkbox"
+                data-populate-prefix="apod-rn"
+                data-populate-required="true">
+
+                <!-- dynamic pod select built here -->
                 <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
                 <span class="sr-only">Loading...</span>
               </div>
@@ -270,16 +273,24 @@ if (!isset($_SESSION['user'])) {
             </div>
           </div>
 
-          <div id="section-bpod-rn-select" class="form-section mt-4 mb-4">
+          <div id="section-bpod-rn" class="form-section mt-4 mb-4">
             <!-- Select Bedside Nurses for B -->
 
             <div class="form-group">
               <label class="control-label requiredField" for="select">
                 Select the nurses for Pod B<span class="asteriskField">*</span>
               </label>
-              <div id="bpod-rn-select-errors"></div>
-              <div id="bpod-rn-select" class="staff-select-group p-0 m-0" data-populate-with-staff-group="RN" data-populate-type="checkbox" data-populate-prefix="bpod-rn" data-populate-required="true">
-                <!-- dynamic staff select built here -->
+              <div id="bpod-rn-errors"></div>
+              <div id="bpod-rn"
+                class="aus-form-group p-0 m-0"
+                data-populate-group="staff"
+                data-populate-staff-list="RN"
+                data-populate-staff-exclude-from="cn,nc,apod-rn"
+                data-populate-type="checkbox"
+                data-populate-prefix="bpod-rn"
+                data-populate-required="true">
+
+                <!-- dynamic pod select built here -->
                 <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
                 <span class="sr-only">Loading...</span>
               </div>
@@ -287,15 +298,23 @@ if (!isset($_SESSION['user'])) {
             </div>
           </div>
 
-          <div id="section-cpod-rn-select" class="form-section mt-4 mb-4">
+          <div id="section-cpod-rn" class="form-section mt-4 mb-4">
             <!-- Select Bedside Nurses for C -->
             <div class="form-group">
               <label class="control-label requiredField" for="select">
                 Select the nurses for Pod C<span class="asteriskField">*</span>
               </label>
-              <div id="cpod-rn-select-errors"></div>
-              <div id="cpod-rn-select" class="staff-select-group p-0 m-0" data-populate-with-staff-group="RN" data-populate-type="checkbox" data-populate-prefix="cpod-rn" data-populate-required="true">
-                <!-- dynamic staff select built here -->
+              <div id="cpod-rn-errors"></div>
+              <div id="cpod-rn"
+                class="aus-form-group p-0 m-0"
+                data-populate-group="staff"
+                data-populate-staff-list="RN"
+                data-populate-staff-exclude-from="cn,nc,apod-rn,bpod-rn"
+                data-populate-type="checkbox"
+                data-populate-prefix="cpod-rn"
+                data-populate-required="true">
+
+                <!-- dynamic pod select built here -->
                 <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
                 <span class="sr-only">Loading...</span>
               </div>
@@ -304,114 +323,189 @@ if (!isset($_SESSION['user'])) {
           </div>
 
           <!-- Who had non-vent -->
-          <div id="section-non-vent-mod-select" class="form-section mt-4 mb-4">
+          <div id="section-non-vent-mod" class="form-section mt-4 mb-4">
             <div class="form-group">
               <label class="control-label" for="div">
                 Which nurses had only non-ventilated patients?
               </label>
-              <div id="non-vent-mod-select" class="staff-select-group p-0 m-0">
-                <!-- Add handlebars template here -->
+              <div id="non-vent-mod"
+                class="aus-form-group p-0 m-0"
+                data-populate-group="staff"
+                data-populate-staff-from="apod-rn,bpod-rn,cpod-rn"
+                data-populate-type="checkbox"
+                data-populate-prefix="non-vent-mod"
+                data-populate-required="false">
+
+                <!-- dynamic pod select built here -->
+                <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+                <span class="sr-only">Loading...</span>
               </div>
             </div>
           </div>
 
           <!-- Who had double -->
-          <div id="section-double-mod-select" class="form-section mt-4 mb-4">
+          <div id="section-double-mod" class="form-section mt-4 mb-4">
             <div class="form-group">
               <label class="control-label" for="div">
                 Which nurses were doubled?
               </label>
-              <div id="double-mod-select" class="staff-select-group p-0 m-0">
-                <!-- Add handlebars template here -->
+              <div id="double-mod"
+                class="aus-form-group p-0 m-0"
+                data-populate-group="staff"
+                data-populate-staff-from="apod-rn,bpod-rn,cpod-rn"
+                data-populate-type="checkbox"
+                data-populate-prefix="double-mod"
+                data-populate-required="false">
+
+                <!-- dynamic pod select built here -->
+                <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+                <span class="sr-only">Loading...</span>
               </div>
             </div>
           </div>
 
           <!-- Who admitted -->
-          <div id="section-admit-mod-select" class="form-section mt-4 mb-4">
+          <div id="section-admit-mod" class="form-section mt-4 mb-4">
             <div class="form-group">
               <label class="control-label" for="div">
                 Which nurses admitted patients?
               </label>
-              <div id="admit-mod-select" class="staff-select-group p-0 m-0">
-                <!-- Add handlebars template here -->
+              <div id="admit-mod"
+                class="aus-form-group p-0 m-0"
+                data-populate-group="staff"
+                data-populate-staff-from="apod-rn,bpod-rn,cpod-rn"
+                data-populate-type="checkbox"
+                data-populate-prefix="admit-mod"
+                data-populate-required="false">
+
+                <!-- dynamic pod select built here -->
+                <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+                <span class="sr-only">Loading...</span>
               </div>
             </div>
           </div>
 
           <!-- Who had very sick -->
-          <div id="section-very-sick-mod-select" class="form-section mt-4 mb-4">
+          <div id="section-very-sick-mod" class="form-section mt-4 mb-4">
             <div class="form-group">
               <label class="control-label" for="div">
                 Which nurses had a very sick patient <small>(3 gtt's or more)</small>?
               </label>
-              <div id="very-sick-mod-select" class="staff-select-group p-0 m-0">
-                <!-- Add handlebars template here -->
+              <div id="very-sick-mod"
+                class="aus-form-group p-0 m-0"
+                data-populate-group="staff"
+                data-populate-staff-from="apod-rn,bpod-rn,cpod-rn"
+                data-populate-type="checkbox"
+                data-populate-prefix="very-sick-mod"
+                data-populate-required="false">
+
+                <!-- dynamic pod select built here -->
+                <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+                <span class="sr-only">Loading...</span>
               </div>
             </div>
           </div>
 
           <!-- Who had code pager -->
-          <div id="section-code-pager-mod-select" class="form-section mt-4 mb-4">
+          <div id="section-code-pager-mod" class="form-section mt-4 mb-4">
             <div class="form-group">
               <label class="control-label" for="div">
                 Which nurses had the code pager?
               </label>
-              <div id="code-pager-mod-select" class="staff-select-group p-0 m-0">
-                <!-- Add handlebars template here -->
+              <div id="code-pager-mod"
+                class="aus-form-group p-0 m-0"
+                data-populate-group="staff"
+                data-populate-staff-from="apod-rn,bpod-rn,cpod-rn"
+                data-populate-type="checkbox"
+                data-populate-prefix="code-pager-mod"
+                data-populate-required="false">
+
+                <!-- dynamic pod select built here -->
+                <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+                <span class="sr-only">Loading...</span>
               </div>
             </div>
           </div>
 
           <!-- Who had crrt -->
-          <div id="section-crrt-mod-select" class="form-section mt-4 mb-4">
+          <div id="section-crrt-mod" class="form-section mt-4 mb-4">
             <div class="form-group">
               <label class="control-label" for="div">
                 Which nurses had crrt?
               </label>
-              <div id="crrt-mod-select" class="staff-select-group p-0 m-0">
-                <!-- Add handlebars template here -->
+              <div id="crrt-mod"
+                class="aus-form-group p-0 m-0"
+                data-populate-group="staff"
+                data-populate-staff-from="apod-rn,bpod-rn,cpod-rn"
+                data-populate-type="checkbox"
+                data-populate-prefix="crrt-mod"
+                data-populate-required="false">
+
+                <!-- dynamic pod select built here -->
+                <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+                <span class="sr-only">Loading...</span>
               </div>
             </div>
           </div>
 
           <!-- Who had evd -->
-          <div id="section-evd-mod-select" class="form-section mt-4 mb-4">
+          <div id="section-evd-mod" class="form-section mt-4 mb-4">
             <div class="form-group">
               <label class="control-label" for="div">
                 Which nurses had an EVD?
               </label>
-              <div id="evd-mod-select" class="staff-select-group p-0 m-0">
-                <!-- Add handlebars template here -->
+              <div id="evd-mod"
+                class="aus-form-group p-0 m-0"
+                data-populate-group="staff"
+                data-populate-staff-from="apod-rn,bpod-rn,cpod-rn"
+                data-populate-type="checkbox"
+                data-populate-prefix="evd-mod"
+                data-populate-required="false">
+
+                <!-- dynamic pod select built here -->
+                <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+                <span class="sr-only">Loading...</span>
               </div>
             </div>
           </div>
 
           <!-- Who who had burn -->
-          <div id="section-burn-mod-select" class="form-section mt-4 mb-4">
+          <div id="section-burn-mod" class="form-section mt-4 mb-4">
             <div class="form-group">
               <label class="control-label" for="div">
                 Which nurses had a burn patient?
               </label>
-              <div id="burn-mod-select" class="staff-select-group p-0 m-0">
-                <!-- Add handlebars template here -->
+              <div id="burn-mod"
+                class="aus-form-group p-0 m-0"
+                data-populate-group="staff"
+                data-populate-staff-from="apod-rn,bpod-rn,cpod-rn"
+                data-populate-type="checkbox"
+                data-populate-prefix="burn-mod"
+                data-populate-required="false">
+
+                <!-- dynamic pod select built here -->
+                <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+                <span class="sr-only">Loading...</span>
               </div>
             </div>
           </div>
 
-          <div id="section-na-select" class="form-section mt-4 mb-4">
+          <div id="section-na" class="form-section mt-4 mb-4">
             <!-- Select NA's -->
             <div class="form-group">
               <label class="control-label requiredField" for="select">
                 Select the NA's<span class="asteriskField">*</span>
               </label>
-              <div id="na-select-errors"></div>
-              <div id="na-select" class="staff-select-group p-0 m-0"
-                data-populate-with-staff-group="NA,LPN"
+              <div id="na-errors"></div>
+              <div id="na"
+                class="aus-form-group p-0 m-0"
+                data-populate-group="staff"
+                data-populate-staff-list="LPN,NA"
                 data-populate-type="checkbox"
                 data-populate-prefix="na"
                 data-populate-required="false">
-                <!-- dynamic staff select built here -->
+
+                <!-- dynamic pod select built here -->
                 <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
                 <span class="sr-only">Loading...</span>
               </div>
@@ -420,23 +514,47 @@ if (!isset($_SESSION['user'])) {
           </div>
 
           <!-- assign pods to the na's -->
-          <div id="section-na-pod-select" class="form-section mt-4 mb-4 skip-section">
-            <!-- dynamic pod select template generated here -->
+          <div id="section-na-pod" class="form-section mt-4 mb-4 skip-section">
+
+            <!-- Select NA's Pod-->
+            <div class="form-group">
+              <label class="control-label requiredField" for="select">
+                Select the NA's Assignment<span class="asteriskField">*</span>
+              </label>
+              <div id="na-pod-errors"></div>
+              <div id="na-pod"
+                class="aus-form-group p-0 m-0"
+                data-populate-group="pod"
+                data-populate-pod-exclude="Float"
+                data-populate-staff-from="na"
+                data-populate-type="select"
+                data-populate-prefix="na-pod"
+                data-populate-required="false">
+
+                <!-- dynamic pod select built here -->
+                <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+                <span class="sr-only">Loading...</span>
+              </div>
+            </div>
+
           </div>
 
-          <div id="section-uc-select" class="form-section mt-4 mb-4">
+          <div id="section-uc" class="form-section mt-4 mb-4">
             <!-- Select UC's -->
             <div class="form-group">
               <label class="control-label requiredField" for="select">
                 Select the UC's<span class="asteriskField">*</span>
               </label>
-              <div id="uc-select-errors"></div>
-              <div id="uc-select" class="staff-select-group p-0 m-0"
-                data-populate-with-staff-group="UC"
+              <div id="uc-errors"></div>
+              <div id="uc"
+                class="aus-form-group p-0 m-0"
+                data-populate-group="staff"
+                data-populate-staff-list="UC"
                 data-populate-type="checkbox"
                 data-populate-prefix="uc"
                 data-populate-required="false">
-                <!-- dynamic staff select built here -->
+
+                <!-- dynamic pod select built here -->
                 <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
                 <span class="sr-only">Loading...</span>
               </div>
@@ -444,23 +562,48 @@ if (!isset($_SESSION['user'])) {
           </div>
 
           <!-- assign pods to the uc's -->
-          <div id="section-uc-pod-select" class="form-section mt-4 mb-4 skip-section">
-            <!-- dynamic pod select template generated here -->
+          <div id="section-uc-pod" class="form-section mt-4 mb-4 skip-section">
+
+            <!-- Select UC's Pod-->
+            <div class="form-group">
+              <label class="control-label requiredField" for="select">
+                Select the UC's Assignment<span class="asteriskField">*</span>
+              </label>
+              <div id="uc-pod-errors"></div>
+              <div id="uc-pod"
+                class="aus-form-group p-0 m-0"
+                data-populate-group="pod"
+                data-populate-pod-exclude="Float"
+                data-populate-staff-from="uc"
+                data-populate-type="select"
+                data-populate-prefix="uc-pod"
+                data-populate-required="false">
+
+                <!-- dynamic pod select built here -->
+                <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+                <span class="sr-only">Loading...</span>
+              </div>
+            </div>
+
           </div>
 
           <!-- Select Outreach RN -->
-          <div id="section-outreach-rn-select" class="form-section mt-4 mb-4">
+          <div id="section-outreach-rn" class="form-section mt-4 mb-4">
             <div class="form-group">
               <label class="control-label requiredField" for="outrach-rn">
                 Who was on outreach?<span class="asteriskField">*</span>
               </label>
-              <div id="outreach-rn-select-errors"></div>
-              <div id="outreach-rn-select" class="staff-select-group p-0 m-0"
-                data-populate-with-staff-group="RN"
+              <div id="outreach-rn-errors"></div>
+              <div id="outreach-rn"
+                class="aus-form-group p-0 m-0"
+                data-populate-group="staff"
+                data-populate-staff-list="RN"
+                data-populate-staff-exclude-from="cn,nc,apod-rn,bpod-rn,cpod-rn"
                 data-populate-type="radio"
                 data-populate-prefix="outreach-rn"
                 data-populate-required="true">
-                <!-- dynamic staff select built here -->
+
+                <!-- dynamic pod select built here -->
                 <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
                 <span class="sr-only">Loading...</span>
               </div>
@@ -479,8 +622,10 @@ if (!isset($_SESSION['user'])) {
 
     <div class="row justify-content-center">
       <!-- Progess bar -->
-      <div class="col-8 progress">
-        <div id="step-progress" class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+      <div class="col-8">
+        <div class="progress">
+          <div id="step-progress" class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+        </div>
       </div>
     </div>
 
@@ -509,11 +654,14 @@ if (!isset($_SESSION['user'])) {
   <!-- END Prefooter Include -->
 
   <!-- Handlebars templates -->
-  <script id="hbt-shift-modifier-checkbox" type="text/x-handlebars-template">
-    <?php include 'includes/templates/UnitShiftShiftModCheckbox.handlebars'; ?>
+  <script id="add-unit-shift-select-template" type="text/x-handlebars-template">
+    <?php include 'includes/templates/AddUnitShiftSelect.handlebars'; ?>
   </script>
-  <script id="hbt-staff-pod-select" type="text/x-handlebars-template">
-    <?php include 'includes/templates/StaffPodSelect.handlebars'; ?>
+  <script id="add-unit-shift-radio-template" type="text/x-handlebars-template">
+    <?php include 'includes/templates/AddUnitShiftRadio.handlebars'; ?>
+  </script>
+  <script id="add-unit-shift-checkbox-template" type="text/x-handlebars-template">
+    <?php include 'includes/templates/AddUnitShiftCheckbox.handlebars'; ?>
   </script>
   <!-- END Handlebars templates -->
 
@@ -521,24 +669,19 @@ if (!isset($_SESSION['user'])) {
   <script>
   //Global scope variables
   var debug = true; // debug flag
-
-  var shiftModifierCheckboxTemplate = null;
-  var staffPodSelectTemplate = null;
-
-  var lastDate = null;
-  var $disabledPrn = null;
-
-  var staffList = {}; //Object of all the staff not previously selected for the date to be added
-  var bedsideRnStaffList = [];
-  var assignmentList = JSON.parse('<?= json_encode($crud->getAllAssignmentObj()) ?>');
-  var roleList = JSON.parse('<?= json_encode($crud->getAllRoleObj()) ?>');
-
   var $sections = null;
+  var oldIndex = null;
 
+  var dateLast = null;
   var dateChangeTimer; //variable to prevent ajax request for staff to not update too often
   var dateChangeTimerInterval = 1500;
 
-  //TODO Bind to the window, so that if user tries to back out while form is dirty, then prompts to ask
+  var template = {
+    select:"add-unit-shift-select-template",
+    radio:"add-unit-shift-radio-template",
+    checkbox:"add-unit-shift-checkbox-template"
+  };
+
   $(function() {
 
     <?php if (!$detect->isMobile()): ?>
@@ -549,6 +692,11 @@ if (!isset($_SESSION['user'])) {
       endDate: "0d"
     });
     <?php endif; ?>
+
+    for (let key in template) {
+      console.log(key, template[key]);
+      template[key] = Handlebars.compile($(`#${template[key]}`).html());
+    }
 
     /**
      * Event listener for change of date to populate the staff list
@@ -563,127 +711,18 @@ if (!isset($_SESSION['user'])) {
       //make a new timer
       dateChangeTimer = setTimeout( function(){
         if (debug) console.log("Change timeout elapsed, calling function.");
-        getStaffFilteredByDate(d);
+        getStaff(d);
       }, dateChangeTimerInterval);
     })
 
     //get the initial list of staff based on default date
-    getStaffFilteredByDate($('#date').val());
+    getStaff($('#date').val());
 
     /********************************************************
      * FORM PAGINATION - CREDIT TO Parsely.js DOCUMENTATION *
      ********************************************************/
-    $sections = $('.form-section'); // list all all the form-section elements
-
-    /**
-     * navigateTo - shows/hides the appropriate form section based on the index
-     * @var integer index Numeric index of the element in the $sections array of DOM elements
-     */
-    var oldIndex = -1; //reference to be able to know if traverseing forward or backward
-    function navigateTo(index) {
-      // Mark the current section with the class 'current'
-      var $temp = $sections.removeClass('current')
-                           .eq(index);
-
-      updateFormSection($temp);
-
-      //check if section should be skipped
-      while ( $temp.hasClass('skip-section') ) { //loop until section found which shouldnt be skipped
-        if ( oldIndex > index ) { //if moving backwards
-          $temp = $sections.eq(--index); //look back one more section
-        } else if ( oldIndex < index ) { //if moving forwards
-          $temp = $sections.eq(++index); //look ahead one more section
-        }
-        updateFormSection($temp);
-      }
-
-      $temp.addClass('current');
-
-      // Show only the navigation buttons that make sense for the current section:
-      $('.form-navigation .previous').attr("disabled", !(index > 0))
-                                     .toggleClass("btn-primary", (index > 0))
-                                     .toggleClass("btn-secondary", !(index > 0));
-
-      var atTheEnd = index >= $sections.length - 1;
-
-      $('.form-navigation .next').attr("disabled", (atTheEnd))
-                                 .toggleClass("btn-primary", (!atTheEnd))
-                                 .toggleClass("btn-secondary", (atTheEnd));
-
-      $('.form-navigation [type=submit]').attr("disabled", (!atTheEnd))
-                                         .toggleClass("btn-primary", (atTheEnd))
-                                         .toggleClass("btn-secondary", (!atTheEnd));
-
-      //update progress bar
-      var progress = (index + 1)/$sections.length*100;
-      $('#step-progress').attr('aria-valuenow', progress).css("width",(progress+"%"));
-      //$('#step-x-of-y').html(`Step ${index + 1} of ${$sections.length}`);
-
-      //update reference index
-      oldIndex = index;
-    }
-
-    /**
-     * Control logic to update each form based on the previous sections of the form completed.
-     * @param  DOMelement $section reference to the div which has the 'sec'
-     * @return [type]          [description]
-     */
-    function updateFormSection($section) {
-      let sectionId = $section.prop('id'); //get the current section's name
-
-      if (debug) console.log(`Updating form section: '${sectionId}'`);
-
-      //each block allows it to update itself based on previously completed form sections
-      if ( sectionId == 'section-nc-cn-select' ) {
-        //getStaffFilteredByDate($('#date').val());
-      } else if ( sectionId == 'section-float-rn-select' ) {
-        hideAlreadyPicked('#float-rn-select', ['nc-select', 'cn-select']);
-
-      } else if ( sectionId == 'section-apod-rn-select' ) {
-        hideAlreadyPicked('#apod-rn-select', ['nc-select', 'cn-select', 'float-rn-select']);
-
-      } else if ( sectionId == 'section-bpod-rn-select' ) {
-        hideAlreadyPicked('#bpod-rn-select', ['nc-select', 'cn-select', 'float-rn-select', 'apod-rn-select']);
-
-      } else if ( sectionId == 'section-cpod-rn-select' ) {
-        hideAlreadyPicked('#cpod-rn-select', ['nc-select', 'cn-select', 'float-rn-select', 'apod-rn-select', 'bpod-rn-select']);
-
-      } else if ( sectionId == 'section-outreach-rn-select' ) {
-        hideAlreadyPicked('#outreach-rn-select', ['nc-select', 'cn-select', 'float-rn-select', 'apod-rn-select', 'bpod-rn-select', 'cpod-rn-select']);
-
-      } else if ( sectionId == 'section-non-vent-mod-select' ) {
-        bedsideRnStaffList = getStaffFromCheckboxes(['apod-rn-select', 'bpod-rn-select', 'cpod-rn-select']);
-        popStaffShiftModifierList('#non-vent-mod-select', 'non-vent-mod-select', bedsideRnStaffList);
-
-      } else if ( sectionId == 'section-double-mod-select' ) {
-        popStaffShiftModifierList('#double-mod-select', 'double-mod-select', bedsideRnStaffList);
-
-      } else if ( sectionId == 'section-admit-mod-select' ) {
-        popStaffShiftModifierList('#admit-mod-select', 'admit-mod-select', bedsideRnStaffList);
-
-      } else if ( sectionId == 'section-very-sick-mod-select' ) {
-        popStaffShiftModifierList('#very-sick-mod-select', 'very-sick-mod-select', bedsideRnStaffList);
-
-      } else if ( sectionId == 'section-code-pager-mod-select' ) {
-        popStaffShiftModifierList('#code-pager-mod-select', 'code-pager-mod-select', bedsideRnStaffList);
-
-      } else if ( sectionId == 'section-crrt-mod-select' ) {
-        popStaffShiftModifierList('#crrt-mod-select', 'crrt-mod-select', bedsideRnStaffList);
-
-      } else if ( sectionId == 'section-evd-mod-select' ) {
-        popStaffShiftModifierList('#evd-mod-select', 'evd-mod-select', bedsideRnStaffList);
-
-      } else if ( sectionId == 'section-burn-mod-select' ) {
-        popStaffShiftModifierList('#burn-mod-select', 'burn-mod-select', bedsideRnStaffList);
-
-      } else if ( sectionId == 'section-na-pod-select' ) {
-        popPodSelectList('#section-na-pod-select', 'na-pod-select', getStaffFromCheckboxes(['na-select']), assignmentList);
-        setParsleyJsGroup('#section-na-pod-select', $('#section-na-pod-select').data('blockIndex'));
-      } else if ( sectionId == 'section-uc-pod-select' ) {
-        popPodSelectList('#section-uc-pod-select', 'uc-pod-select', getStaffFromCheckboxes(['uc-select']), assignmentList);
-        setParsleyJsGroup('#section-uc-pod-select', $('#section-uc-pod-select').data('blockIndex'));
-      }
-    }
+    $sections = $('.form-section'); // array of all the form-section elements
+    oldIndex = -1; //reference to be able to know if traverseing forward or backward
 
     // Return the current index by looking at which section has the class 'current'
     function curIndex() {
@@ -704,6 +743,79 @@ if (!isset($_SESSION['user'])) {
       });
     });
 
+    //navigates to the current form section
+    function navigateTo(index) {
+      // remove the current class from the previously current section
+      let $temp = $sections.removeClass('current')
+                           .eq(index);
+
+      //check if any data should be updated in the form based on changes made
+      updateFormSection($temp);
+
+      //check if section should be skipped
+      while ( $temp.hasClass('skip-section') ) { //loop until section found which shouldnt be skipped
+        if ( oldIndex > index ) { //if moving backwards
+          $temp = $sections.eq(--index); //look back one more section
+        } else if ( oldIndex < index ) { //if moving forwards
+          $temp = $sections.eq(++index); //look ahead one more section
+        }
+        updateFormSection($temp);
+      }
+
+      //add the current class to the now current section
+      $temp.addClass('current');
+
+      // Show only the navigation buttons that make sense for the current section:
+      $('.form-navigation .previous').attr("disabled", !(index > 0))
+                                     .toggleClass("btn-primary", (index > 0))
+                                     .toggleClass("btn-secondary", !(index > 0));
+
+      let atTheEnd = index >= $sections.length - 1;
+
+      $('.form-navigation .next').attr("disabled", (atTheEnd))
+                                 .toggleClass("btn-primary", (!atTheEnd))
+                                 .toggleClass("btn-secondary", (atTheEnd));
+
+      $('.form-navigation [type=submit]').attr("disabled", (!atTheEnd))
+                                         .toggleClass("btn-primary", (atTheEnd))
+                                         .toggleClass("btn-secondary", (!atTheEnd));
+
+      //update progress bar
+      let progress = (index + 1)/$sections.length*100;
+      $('#step-progress').attr('aria-valuenow', progress).css("width",(progress+"%"));
+      //$('#step-x-of-y').html(`Step ${index + 1} of ${$sections.length}`);
+
+      //update reference index
+      oldIndex = index;
+    }
+
+    /**
+     * Control logic to update each form based on the previous sections of the form completed.
+     * @param  DOMelement $section reference to the div which has the 'sec'
+     * @return [type]          [description]
+     */
+    function updateFormSection($section) {
+      let sectionId = $section.prop('id'); //get the current section's name
+      if (debug) console.log(`Updating form section: '${sectionId}'`);
+
+      let $fgroups = $($section).find('.aus-form-group');
+      $fgroups.each(function(index, element){
+
+        let staffFrom = $(this).data('populateStaffFrom');
+        if (staffFrom) {
+          if (debug) console.log(`> Show staff from these sections: '${staffFrom}'`);
+          //hide all, then show the desired staff
+        }
+
+        let excludeList = $(this).data('populateStaffExcludeFrom');
+        if (excludeList) {
+          if (debug) console.log(`> Exclude these sections from the staff list: '${excludeList}'`);
+          //do hiding calls here
+        }
+
+      });
+    }
+
     // Prepare sections by setting the `data-parsley-group` attribute to 'block-0', 'block-1', etc.
     $sections.each(function(index, section) {
       $(this).data('blockIndex', index);
@@ -721,682 +833,691 @@ if (!isset($_SESSION['user'])) {
      * END -- FORM PAGINATION / VALIDATION *
      ***************************************/
 
-    //call the function to set listeners on the div's that contain the checkboxes to make more accessible
-    setClickAreaListeners("div.staff-select-group");
-    //hide the option for the nc to select pod 'A/B/C' when the day shift button is preselected (default state)
-    hideFormInnerItem($(`#nc-pod-8`));
+    // //call the function to set listeners on the div's that contain the checkboxes to make more accessible
+    // setClickAreaListeners("div.staff-group");
+    // //hide the option for the nc to select pod 'A/B/C' when the day shift button is preselected (default state)
+    // hideFormInnerItem($(`#nc-pod-8`));
 
-    /**
-     * listener to change behavior of form if float nurse is to be selected
-     * @var [type]
-     */
-    $(`#float-rn-check-yes`).closest('div').click(function() {
-      $(`#float-rn-select-group`).toggle(true); //show float nurse select
-      $(`input[name='float-rn-select']`).first().prop("required", true); // add the required property to the float-rn-select select
-    });
+    // /**
+    //  * listener to change behavior of form if float nurse is to be selected
+    //  * @var [type]
+    //  */
+    // $(`#float-rn-check-yes`).closest('div').click(function() {
+    //   $(`#float-rn-subsection`).toggle(true); //show float nurse select
+    //   $(`input[name='float-rn']`).first().prop("required", true); // add the required property to the float-rn select
+    // });
 
-    /**
-     * listener to change behavior of form if no float nurse is to be added
-     * @var [type]
-     */
-    $(`#float-rn-check-no`).closest('div').click(function() {
-      $(`#float-rn-select-group`).toggle(false); //show float nurse select
-      $(`input[name='float-rn-select']`).first().prop("required", false); // add the required property to the float-rn-select select
+    // /**
+    //  * listener to change behavior of form if no float nurse is to be added
+    //  * @var [type]
+    //  */
+    // $(`#float-rn-check-no`).closest('div').click(function() {
+    //   $(`#float-rn-subsection`).toggle(false); //show float nurse select
+    //   $(`input[name='float-rn']`).first().prop("required", false); // add the required property to the float-rn select
 
-      let $frnElem = $(`input[type='checkbox'][name='float-rn-select']:checked`); //unselect any selected float-rn-select value
-      if ($frnElem !== null) { $frnElem.prop("checked", false); }
-    });
+    //   let $frnElem = $(`input[type='checkbox'][name='float-rn']:checked`); //unselect any selected float-rn value
+    //   if ($frnElem !== null) { $frnElem.prop("checked", false); }
+    // });
 
 
-    /**
-     * listener to change behavior of form if day shift is selected for input
-     * @var [type]
-     */
-    $(`#day-or-night-day`).closest('label').click(function() {
-      $(`#cn-select-group`).toggle(true); // show charge nurse select
-      $(`#section-nc-cn-pod-select`).toggleClass('skip-section', false); // show section for pod selection for nc/cn
+    // /**
+    //  * listener to change behavior of form if day shift is selected for input
+    //  * @var [type]
+    //  */
+    // $(`#day-or-night-day`).closest('label').click(function() {
+    //   $(`#cn-group`).toggle(true); // show charge nurse select
+    //   $(`#section-nc-cn-pod`).toggleClass('skip-section', false); // show section for pod selection for nc/cn
 
-      $(`input[name='cn-select']`).first().prop("required", true); // add the required property to the first cn-select
-      $(`#cn-pod-select input`).first().prop("required", true); // add the required property to the first cn-pod-select
+    //   $(`input[name='cn']`).first().prop("required", true); // add the required property to the first cn
+    //   $(`#cn-pod input`).first().prop("required", true); // add the required property to the first cn-pod
 
-      hideFormInnerItem($(`#nc-pod-8`));
-    });
+    //   hideFormInnerItem($(`#nc-pod-8`));
+    // });
 
-    /**
-     * listener to change behavior of form if night shift is selected for input
-     * @var [type]
-     */
-    $(`#day-or-night-night`).closest('label').click(function() {
-      $(`#cn-select-group`).toggle(false); // hide charge nurse select
+  //   /**
+  //    * listener to change behavior of form if night shift is selected for input
+  //    * @var [type]
+  //    */
+  //   $(`#day-or-night-night`).closest('label').click(function() {
+  //     $(`#cn-group`).toggle(false); // hide charge nurse select
 
-      $(`#section-nc-cn-pod-select`).toggleClass('skip-section', true); // hide section for pod selection for nc/cn
+  //     $(`#section-nc-cn-pod`).toggleClass('skip-section', true); // hide section for pod selection for nc/cn
 
-      $(`input[name='cn-select'][required]`).prop("required", false); // remove the required property from the cn-select select
-      $(`input[name='cn-pod-select'][required]`).prop("required", false); // remove the required property from the cn-select select
+  //     $(`input[name='cn'][required]`).prop("required", false); // remove the required property from the cn select
+  //     $(`input[name='cn-pod'][required]`).prop("required", false); // remove the required property from the cn select
 
-      showFormInnerItem($(`#nc-pod-8`)); //auto-select pod A/B/C for the nc
-      $(`#nc-pod-8`).prop("checked", true);
+  //     showFormInnerItem($(`#nc-pod-8`)); //auto pod A/B/C for the nc
+  //     $(`#nc-pod-8`).prop("checked", true);
 
-      let $cnElem = $(`input[type='radio'][name='cn-select']:checked`); //unselect any selected cn-select value
-      if ($cnElem !== null) { $cnElem.prop("checked", false); }
+  //     let $cnElem = $(`input[type='radio'][name='cn']:checked`); //unselect any selected cn value
+  //     if ($cnElem !== null) { $cnElem.prop("checked", false); }
 
-      let $cnPodElem = $(`input[type='radio'][name='cn-pod-select']:checked`); //unselect any selected cn-select value
-      if ($cnPodElem !== null) { $cnPodElem.prop("checked", false); }
-    });
+  //     let $cnPodElem = $(`input[type='radio'][name='cn-pod']:checked`); //unselect any selected cn value
+  //     if ($cnPodElem !== null) { $cnPodElem.prop("checked", false); }
+  //   });
 
-    /**
-     * when the nc's assigned pod is clicked, the charge nurse's pod changes to the appropriate selection
-     * @var [type]
-     */
-    $(`#nc-pod-select div.inner-item`).click(function() {
-      let clickedPodName = $(this).find('input').data('podName').replace(/[\/B]/g, ''); //which main pod was chosen, get rid of the B-pod
+  //   /**
+  //    * when the nc's assigned pod is clicked, the charge nurse's pod changes to the appropriate selection
+  //    * @var [type]
+  //    */
+  //   $(`#nc-pod div.inner-item`).click(function() {
+  //     let clickedPodName = $(this).find('input').data('podName').replace(/[\/B]/g, ''); //which main pod was chosen, get rid of the B-pod
 
-      $(`input[type='radio'][name='cn-pod-select']`)
-        .filter(function() {
-          //find the non-matching main pod assignment -- eg: if pod A was chosen by nc, choose pod C for cn
-          return (!($(this).closest('div').hasClass('st-none'))) && ($(this).data('podName').indexOf(clickedPodName) < 0);
-        })
-        .prop("checked", true); //select it
+  //     $(`input[type='radio'][name='cn-pod']`)
+  //       .filter(function() {
+  //         //find the non-matching main pod assignment -- eg: if pod A was chosen by nc, choose pod C for cn
+  //         return (!($(this).closest('div').hasClass('st-none'))) && ($(this).data('podName').indexOf(clickedPodName) < 0);
+  //       })
+  //       .prop("checked", true); //select it
 
-      return true;
-    });
+  //     return true;
+  //   });
 
-    /**
-     * when the cn's assigned pod is clicked, the nc's pod changes to the appropriate selection
-     * @var [type]
-     */
-    $(`#cn-pod-select div.inner-item`).click(function() {
-      let clickedPodName = $(this).find('input').data('podName'); //which main pod was chosen
+  //   /**
+  //    * when the cn's assigned pod is clicked, the nc's pod changes to the appropriate selection
+  //    * @var [type]
+  //    */
+  //   $(`#cn-pod div.inner-item`).click(function() {
+  //     let clickedPodName = $(this).find('input').data('podName'); //which main pod was chosen
 
-      $(`input[type='radio'][name='nc-pod-select']`)
-        .filter(function() {
-          //find the non-matching main pod assignment -- eg: if pod A was chosen by cn, choose pod C for nc
-          return (!($(this).closest('div').hasClass('st-none'))) && ($(this).data('podName').indexOf(clickedPodName) < 0);
-        })
-        .prop("checked", true); // select it
+  //     $(`input[type='radio'][name='nc-pod']`)
+  //       .filter(function() {
+  //         //find the non-matching main pod assignment -- eg: if pod A was chosen by cn, choose pod C for nc
+  //         return (!($(this).closest('div').hasClass('st-none'))) && ($(this).data('podName').indexOf(clickedPodName) < 0);
+  //       })
+  //       .prop("checked", true); // select it
 
-      return true;
-    });
-
-    //compile the shift modifier checkbox template with Handlebars
-    shiftModifierCheckboxTemplate = Handlebars.compile($("#hbt-shift-modifier-checkbox").html());
-    staffPodSelectTemplate = Handlebars.compile($("#hbt-staff-pod-select").html());
+  //     return true;
+  //   });
 
   }); //End on document ready function
-
-  function setParsleyJsGroup(section, index) {
-    return $(section).find(':input').attr('data-parsley-group', 'block-' + index);
-  }
-
-  /**
-   * [setClickAreaListeners description]
-   * @param [type] target [description]
-   */
-  function setClickAreaListeners(target) {
-    //listener for click in the div to increase radio/checkbox active area
-    $(target).find(`div.inner-item`).each(function(){
-      $(this).click(function() {
-        let $elem = $(this).find("input[type='checkbox'], input[type='radio']"); // find checkbox associated
-        if (!$elem.prop("disabled")) {
-          $elem.prop("checked", !($elem.prop("checked"))); // toggle checked state
-        }
-
-        let parentId = $(this).parent().prop('id');
-        if (parentId == "nc-select") {
-          if ($disabledPrn !== null) {
-              enableFormInnerItem($disabledPrn);
-          }
-          let $ncChoice = $(this).find("input[type='radio']");
-
-          let $elem = $(`input[type='radio'][name='cn-select'][value='${$ncChoice.val()}']`);
-
-          if ($elem !== null) {
-            disableFormInnerItem($elem);
-            $disabledPrn = $elem;
-          }
-        } else if (parentId == "na-select") {
-          if ($(`input[name='na-select']:checked`).length) {
-            $(`#section-na-pod-select`).removeClass('skip-section');
-          } else {
-            $(`#section-na-pod-select`).addClass('skip-section');
-          }
-        } else if (parentId == "uc-select") {
-          if ($(`input[name='uc-select']:checked`).length) {
-            $(`#section-uc-pod-select`).removeClass('skip-section');
-          } else {
-            $(`#section-uc-pod-select`).addClass('skip-section');
-          }
-        }
-
-        return false; // return false to stop click propigation
-      });
-    });
-
-  }
-
-  function getStaffFromCheckboxes(names) {
-    names = names || [];
-
-    let jquerySelector = '';
-
-    //iterate through the array of checkbox names to check for selected staff, building the query selector string
-    names.forEach(function (name) {
-      jquerySelector += `input[name='${name}'][type='checkbox']:checked, `;
-    });
-    //get rid of the last comma and space (', ')
-    jquerySelector = jquerySelector.slice(0, -2);
-
-    //find the selected staff, map the results into an array of object literals
-    return $(jquerySelector).map(function () {
-                              return {id: $(this).val(), name: $(this).data("staffName")};
-                            })
-                            .get()
-                            .sort(function(a, b){
-                              if (a.name < b.name) {
-                                return -1;
-                              } else if (a.name > b.name) {
-                                return 1;
-                              }
-                              return 0;
-                            });
-  }
-
-  /**
-   * [popStaffShiftModifierList description]
-   * @return [type] [description]
-   */
-  function popStaffShiftModifierList(target, shiftModName, staffList) {
-    $(target).html(shiftModifierCheckboxTemplate({modifier: shiftModName, staff: staffList}));
-    setClickAreaListeners(`${target}`);
-  }
-
-  /**
-   * [popNaPodSelectList description]
-   * @return [type] [description]
-   */
-  function popPodSelectList(target, sectionName, staffList, podList) {
-    let x = {section: sectionName, pod: podList, staff: staffList};
-    $(target).html(staffPodSelectTemplate(x));
-  }
-
-  /**
-   * This hides staff choices in a target div element based on an array of specified divs
-   * @param  string targetId    the id of the target div
-   * @param  string[] hideBasedOn the id('s) of the divs to base the hiding on
-   * @return void
-   */
-  function hideAlreadyPicked(targetId, hideBasedOn) {
-    //reset all hidden
-    $(`${targetId} div.st-none`).each(function() {
-      showFormInnerItem($(this).find('input'));
-    });
-
-    //foreach radio/checkbox name specified
-    hideBasedOn.forEach(function(s) {
-      //select any checked staff
-      $(`input[name='${s}']:checked`).each(function() {
-        //get the staff id (set as value)
-        let val = $(this).val();
-        //hide the staff choice from the current target
-        hideFormInnerItem($(`${targetId} input[value='${val}']`));
-      });
-    });
-  }
-
-  /**
-   * Shows the inner inner-item
-   * @param  [type] $elem [description]
-   * @return [type]       [description]
-   */
-  function showFormInnerItem($elem) {
-    try {
-      $elem.closest("div").removeClass('st-none').toggle(true);
-      enableFormInnerItem($elem);
-
-      return true;
-    } catch (e) {
-      return false;
-    }
-  }
-
-  /**
-   * [hideFormInnerItem description]
-   * @param  [type] $elem [description]
-   * @return [type]       [description]
-   */
-  function hideFormInnerItem($elem) {
-    try {
-      $elem.closest("div").addClass('st-none').toggle(false);
-      disableFormInnerItem($elem);
-
-      return true;
-    } catch (e) {
-      return false;
-    }
-  }
-
-  /**
-   * [enableFormInnerItem description]
-   * @param  [type] $elem [description]
-   * @return [type]       [description]
-   */
-  function enableFormInnerItem($elem) {
-    try {
-      $elem.prop("disabled", false);
-      $elem.closest("div").toggleClass("list-group-item-action");
-      return true;
-    } catch (e) {
-      return false;
-    }
-  }
-
-  /**
-   * [disableFormInnerItem description]
-   * @param  [type] $elem [description]
-   * @return [type]       [description]
-   */
-  function disableFormInnerItem($elem) {
-    try {
-      $elem.prop("checked", false);
-      $elem.prop("disabled", true);
-      $elem.closest("div").toggleClass("list-group-item-action");
-      return true;
-    } catch (e) {
-      return false;
-    }
-  }
-
-  /**
-   * Gathers the form data, reorganizes to make appropriate for AJAX submission to backend
-   */
-  function submitUnitShiftForm() {
-    let assignmentLookup = createAssignmentLookup(assignmentList);
-    let roleLookup = createRoleLookup(roleList);
-
-    let submission = [];
-    let formData = [];
-    let serializedForm = $('#unit-shift-form').serializeArray();
-
-    if (debug) console.log("Serialized Array Form Contents:");
-    if (debug) console.log(serializedForm);
-
-    for( let i=0; i < serializedForm.length; i++ ) {
-      let formPropertyName = serializedForm[i].name;
-      formPropertyName = formPropertyName.replace(/\[\]$/, '');
-
-      formData[formPropertyName] = formData[formPropertyName] || [];
-
-      formData[formPropertyName].push(serializedForm[i].value);
-    }
-
-    //create lookup tables, catch non-existing data with '|| []'
-    let nonVentLookup = createModLookup(formData['non-vent-mod-select'] || []);
-    let doubleLookup = createModLookup(formData['double-mod-select'] || []);
-    let vSickLookup = createModLookup(formData['very-sick-mod-select'] || []);
-    let crrtLookup = createModLookup(formData['crrt-mod-select'] || []);
-    let admitLookup = createModLookup(formData['admit-mod-select'] || []);
-    let codePgLookup = createModLookup(formData['code-pager-mod-select'] || []);
-    let evdLookup = createModLookup(formData['evd-mod-select'] || []);
-    let burnLookup = createModLookup(formData['burn-mod-select'] || []);
-
-    let date = formData['date'][0];
-    let dayOrNight = formData['day-or-night'][0];
-
-    //add the clinician to the submission array
-    submission.push(createStaffEntryObj(
-      formData['nc-select'][0], formData['date'][0], roleLookup['Clinician'], formData['nc-pod-select'][0], dayOrNight
-    ));
-
-    //check if charge nurse exists, if it does, push it too.
-    if (dayOrNight === 'D') {
-      submission.push(createStaffEntryObj(
-        formData['cn-select'][0], formData['date'][0], roleLookup['Charge'], formData['cn-pod-select'][0], dayOrNight
-      ));
-    }
-
-    //float
-    if ( formData['float-rn-check'][0] === "Yes" ) {
-      for ( let i = 0; i < formData['float-rn-select'].length; i++ ) {
-        submission.push(createStaffEntryObj(
-          formData['float-rn-select'][i], formData['date'][0], roleLookup['Bedside'], assignmentLookup['Float'], dayOrNight
-        ));
-      }
-    }
-
-
-    //apod
-    for ( let i = 0; i < formData['apod-rn-select'].length; i++ ) {
-      let sid = formData['apod-rn-select'][i];
-
-      submission.push(createStaffEntryObj(
-        sid, date, roleLookup['Bedside'], assignmentLookup['A'], dayOrNight,
-          isModSelected(sid, nonVentLookup),
-          isModSelected(sid, doubleLookup),
-          isModSelected(sid, vSickLookup),
-          isModSelected(sid, crrtLookup),
-          isModSelected(sid, admitLookup),
-          isModSelected(sid, codePgLookup),
-          isModSelected(sid, evdLookup),
-          isModSelected(sid, burnLookup)
-      ));
-    }
-
-    //bpod
-    for ( let i = 0; i < formData['bpod-rn-select'].length; i++ ) {
-      let sid = formData['bpod-rn-select'][i];
-
-      submission.push(createStaffEntryObj(
-        sid, date, roleLookup['Bedside'], assignmentLookup['B'], dayOrNight,
-          isModSelected(sid, nonVentLookup),
-          isModSelected(sid, doubleLookup),
-          isModSelected(sid, vSickLookup),
-          isModSelected(sid, crrtLookup),
-          isModSelected(sid, admitLookup),
-          isModSelected(sid, codePgLookup),
-          isModSelected(sid, evdLookup),
-          isModSelected(sid, burnLookup)
-      ));
-    }
-
-    //cpod
-    for ( let i = 0; i < formData['cpod-rn-select'].length; i++ ) {
-      let sid = formData['cpod-rn-select'][i];
-
-      submission.push(createStaffEntryObj(
-        sid, date, roleLookup['Bedside'], assignmentLookup['C'], dayOrNight,
-          isModSelected(sid, nonVentLookup),
-          isModSelected(sid, doubleLookup),
-          isModSelected(sid, vSickLookup),
-          isModSelected(sid, crrtLookup),
-          isModSelected(sid, admitLookup),
-          isModSelected(sid, codePgLookup),
-          isModSelected(sid, evdLookup),
-          isModSelected(sid, burnLookup)
-      ));
-    }
-
-    //outreach
-    for ( let i = 0; i < formData['outreach-rn-select'].length; i++ ) {
-      let sid = formData['outreach-rn-select'][i];
-
-      submission.push(createStaffEntryObj(
-        sid, date, roleLookup['Outreach'], assignmentLookup['Float'], dayOrNight
-      ));
-    }
-
-    //na - there may not always be an NA specified, check
-    formData['na-select'] = formData['na-select'] || [];
-    if (formData['na-select'] !== []) {
-      for ( let i = 0; i < formData['na-select'].length; i++ ) {
-        let sid = formData['na-select'][i];
-
-        submission.push(createStaffEntryObj(
-          sid, date, roleLookup['NA'], formData[`na-pod-select-${sid}`][0], dayOrNight
-        ));
-      }
-    }
-
-    //uc - there may not always be a UC specified, check
-    formData['uc-select'] = formData['uc-select'] || [];
-    if (formData['uc-select'] !== []) {
-      for ( let i = 0; i < formData['uc-select'].length; i++ ) {
-        let sid = formData['uc-select'][i];
-
-        submission.push(createStaffEntryObj(
-          sid, date, roleLookup['UC'], formData[`uc-pod-select-${sid}`][0], dayOrNight
-        ));
-      }
-    }
-
-    if (debug) { console.log(submission); }
-
-    //data is appropriate for submission, now submit it
-    submitUnitShifts(submission);
-  }
-
-  /**
-   * Helper function to create shift entry object to be returned for submission
-   * @param  int  staffId         [description]
-   * @param  string  date         [description]
-   * @param  int  roleId          [description]
-   * @param  int  assignmentId    [description]
-   * @param  char  dayOrNight     [description]
-   * @param  boolean nonVent      [description]
-   * @param  boolean doubled      [description]
-   * @param  boolean vsick        [description]
-   * @param  boolean crrt         [description]
-   * @param  boolean admit        [description]
-   * @param  boolean codepg       [description]
-   * @param  boolean evd          [description]
-   * @param  boolean burn         [description]
-   * @return Object               [description]
-   */
-  function createStaffEntryObj(staffId, date, roleId, assignmentId, dayOrNight,
-    nonVent = false, doubled = false, vsick = false, crrt = false, admit = false, codepg = false, evd = false, burn = false) {
-
-    let staffEntry = {
-            staff : staffId,
-            date : date,
-            role : roleId,
-            assignment : assignmentId,
-            dayornight : dayOrNight,
-            nonvent : nonVent,
-            doubled : doubled,
-            vsick : vsick,
-            crrt : crrt,
-            admit : admit,
-            codepg : codepg,
-            evd : evd,
-            burn : burn
-          };
-
-    return staffEntry;
-  }
-
-  function createAssignmentLookup(assignmentObjArr) {
-    let aArray = [];
-
-    for(let i = 0; i < assignmentObjArr.length; i++) {
-      aArray[assignmentObjArr[i].assignment] = assignmentObjArr[i].id;
-    }
-
-    return aArray;
-  }
-
-  function createRoleLookup(roleObjArray) {
-    let rArray = [];
-
-    for(let i = 0; i < roleObjArray.length; i++) {
-      rArray[roleObjArray[i].role] = roleObjArray[i].id;
-    }
-
-    return rArray;
-  }
-
-  function createModLookup(modSelectArray) {
-    let mArray = [];
-
-    for ( let i = 0; i < modSelectArray.length; i++ ) {
-      mArray[modSelectArray[i]] = true;
-    }
-
-    return mArray;
-  }
-
-  function isModSelected(staffId, modLookup) {
-    let b = false;
-
-    if ( (typeof(modLookup) != 'undefined') && (typeof(modLookup[staffId]) != 'undefined') ) { b = true; }
-
-    return b;
-  }
-
-  /**
-   * Submit the form data to backend
-   * @param  Array[Object] submissionData   An Array of ShiftEntry Objects, ready for submission to backend
-   */
-  function submitUnitShifts(submissionData) {
-    submissionData = submissionData || []; // catch null/undefined arguments
-
-    //catch bad parameter data, return to exit function
-    if ( submissionData === [] ) {
-      if (debug) { console.log("Warning: no data passed to submit via ajax handler"); }
-      return;
-    }
-
-    $.ajax({
-  	   url: 'resource/post_multiple_shift.php',
-  	   type: 'post',
-  	   data: {"shiftData" : JSON.stringify(submissionData)},
-       beforeSend: function () {
-         if (debug) { console.log("AJAX sent."); }
-         $('#submission-modal-body').html(`<i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
-                                           <span class="sr-only">Loading...</span>`);
-         $('#submission-modal').modal('show');	//show the modal
-       },
-  	   success: function(data) {
-         if (debug) { console.log("AJAX returned."); }
-
-         if (data === "ok") {
-
-           if (debug) { console.log("Data submission ok."); }
-    	     $('#submission-modal-body').html("<h3>Success!</h3><p>click close to reset the form.</p>");
-           $('#modal-close').on('click', function(){
-             location.reload();
-           });
-
-         } else {
-
-           if (debug) { console.log("Data submission not ok."); }
-           $('#submission-modal-body').html(`<h3>There was a problem!</h3>
-                                             <p>${data}</p>
-                                             <p>Click close, find the problem, resubmit.</p>`);
-
-         }
-
-         if (debug) { console.log(data); }
-  	   }
-  	});
-  }
 
   /**
    * based on the date selected, get a list of staff not already entered for that day
    * @param  string date a date in the 'yyyy-mm-dd' format
    */
-  function getStaffFilteredByDate(date) {
+  function getStaff(date) {
+    if (debug) console.log('getStaff() called.');
+
     date = date || null;
 
-    if (date === null) { return null; }
-    if (date === lastDate) { return false; }
+    if (date === null) return false;
+    if (date === dateLast) return false;
 
     $.ajax({
-  	   url: 'resource/get_staff.php',
-  	   type: 'post',
-  	   data: `date=${date}`,
+       url: 'resource/get_staff.php',
+       type: 'GET',
+       data: `date=${date}`,
        beforeSend: function () {
-
+         if (debug) console.log ("getStaff() beforeSend:");
        },
-  	   success: function(data) {
-         if (debug) console.log("AJAX returned.");
-         if (debug) console.log(data);
+       success: function(data) {
+         if (debug) console.log("getStaff() success:");
 
-         if (data !== 'Not ok.') {
-           lastDate = date;
-           staffList = JSON.parse(data);
+         if (data) {
+           if (debug) console.log("> Data returned:");
 
-           if (debug) console.log(staffList);
+           try {
 
-           populateStaffSelect(staffList);
+             data = JSON.parse(data);
+             if (debug) console.log(data);
+
+             //split the returned object -->
+             //call the populate fields routines.
+
+           } catch (e) {
+             if (debug) console.log("> Data error: "+e);
+           }
+
+         } else {
+           if (debug) console.log("> Get Failed:");
          }
-  	   }
-  	});
-  }
-
-  /**
-   * for each staff selection, read data attribute parameters, then create the form group
-   * @param  Object list An object containing staff
-   * @return [type]      [description]
-   */
-  function populateStaffSelect(list) {
-    $('div[data-populate-with-staff-group]').each(function(index, element) {
-      //get the data parameters
-      let group = $( this ).data('populateWithStaffGroup').split(',');
-      let type = $( this ).data('populateType');
-      let prefix = $( this ).data('populatePrefix');
-      let required = $( this ).data('populateRequired');
-
-      //if there is no group specified for the select, cannot proceed.
-      if (group.length == 0) throw `'data-populate-with-staff-group' attribute requires at least 1 group to be specified`;
-
-      //build the new select list
-      $( this ).empty(); // get rid of any old contents
-      for (let i = 0; i < group.length; i++) {
-        if (group[i] in list) { //for group in the select parameters list, and if that matches a group in the staff list
-          createCustomSelect($( this ), type, required, prefix, list[group[i]]);
-        }
-      }
-
-      //if there are staff to be selected, add in the listeners to make the select more usable and validate properly
-      if ( $(this).children().length ) {
-        setParsleyJsGroup($(this), $( this ).closest('div.form-section').data('blockIndex'));
-        setClickAreaListeners($(this));
-      //else let the users know why they can't select
-      } else {
-        $(this).html("<p>There are no staff to select from for this date.</p>");
-      }
+       }
     });
   }
 
-  /**
-   * Helper function to create the select form group with jquery
-   * @param  DOMelement $container    Which DOM element should the group be appended to
-   * @param  string type              radio or checkbox
-   * @param  boolean required         is the select form group a required entry
-   * @param  string prefix            how should it be named for consistent convention
-   * @param  [Object] staff           an array of staff objects
-   */
-  function createCustomSelect($container, type, required, prefix, staff) {
-    let first = true; //boolean flag for first iteration
-    for (let i = 0; i < staff.length; i++) {
-      //create wrapper div, set classes, append to fragment
-      let $div = $('<div></div>').addClass(`inner-item list-group-item-action`);
-      $container.append($div);
-
-      //create child label, wrapper for input, span contents
-      let $label = $('<label></label>').addClass(`custom-control custom-${type} m-1`);
-      $div.append($label);
-
-      //create input with properties, on first iteration add extra properties as specified
-      let $input = $('<input></input>')
-                    .prop("id", `${prefix}-${staff[i].id}`)
-                    .prop("name", `${prefix}-select`)
-                    .prop("type", `${type}`)
-                    .prop("value", `${staff[i].id}`)
-                    .attr("data-staff-name", `${staff[i].name} (${staff[i].category})`)
-                    .addClass('custom-control-input');
-      //only add required and parsley data parameter to first element
-      if (first) {
-        $input.prop("required", required);
-        $input.attr("data-parsley-errors-container", `#${prefix}-select-errors`);
-      }
-      $label.append($input);
-
-      //create control indicator span
-      $label.append($('<span></span>')
-                      .addClass('custom-control-indicator'));
-
-      //create description span
-      $label.append($('<span></span>')
-                      .addClass('custom-control-description')
-                      .text(`${staff[i].name} (${staff[i].category})`));
-
-      //set first iteration boolean flag to false
-      first = false;
-    }
-
-    //return the DOM fragement
-    return $container;
+  function setParsleyJsGroup(section, index) {
+    return $(section).find(':input').attr('data-parsley-group', 'block-' + index);
   }
+
+  // /**
+  //  * [setClickAreaListeners description]
+  //  * @param [type] target [description]
+  //  */
+  // function setClickAreaListeners(target) {
+  //   //listener for click in the div to increase radio/checkbox active area
+  //   $(target).find(`div.inner-item`).each(function(){
+  //     $(this).click(function() {
+  //       let $elem = $(this).find("input[type='checkbox'], input[type='radio']"); // find checkbox associated
+  //       if (!$elem.prop("disabled")) {
+  //         $elem.prop("checked", !($elem.prop("checked"))); // toggle checked state
+  //       }
+  //
+  //       let parentId = $(this).parent().prop('id');
+  //       if (parentId == "nc") {
+  //         if ($disabledPrn !== null) {
+  //             enableFormInnerItem($disabledPrn);
+  //         }
+  //         let $ncChoice = $(this).find("input[type='radio']");
+  //
+  //         let $elem = $(`input[type='radio'][name='cn'][value='${$ncChoice.val()}']`);
+  //
+  //         if ($elem !== null) {
+  //           disableFormInnerItem($elem);
+  //           $disabledPrn = $elem;
+  //         }
+  //       } else if (parentId == "na") {
+  //         if ($(`input[name='na']:checked`).length) {
+  //           $(`#section-na-pod`).removeClass('skip-section');
+  //         } else {
+  //           $(`#section-na-pod`).addClass('skip-section');
+  //         }
+  //       } else if (parentId == "uc") {
+  //         if ($(`input[name='uc']:checked`).length) {
+  //           $(`#section-uc-pod`).removeClass('skip-section');
+  //         } else {
+  //           $(`#section-uc-pod`).addClass('skip-section');
+  //         }
+  //       }
+  //
+  //       return false; // return false to stop click propigation
+  //     });
+  //   });
+  //
+  // }
+  //
+  // function getStaffFromCheckboxes(names) {
+  //   names = names || [];
+  //
+  //   let jquerySelector = '';
+  //
+  //   //iterate through the array of checkbox names to check for selected staff, building the query selector string
+  //   names.forEach(function (name) {
+  //     jquerySelector += `input[name='${name}'][type='checkbox']:checked, `;
+  //   });
+  //   //get rid of the last comma and space (', ')
+  //   jquerySelector = jquerySelector.slice(0, -2);
+  //
+  //   //find the selected staff, map the results into an array of object literals
+  //   return $(jquerySelector).map(function () {
+  //                             return {id: $(this).val(), name: $(this).data("staffName")};
+  //                           })
+  //                           .get()
+  //                           .sort(function(a, b){
+  //                             if (a.name < b.name) {
+  //                               return -1;
+  //                             } else if (a.name > b.name) {
+  //                               return 1;
+  //                             }
+  //                             return 0;
+  //                           });
+  // }
+  //
+  // /**
+  //  * [popStaffShiftModifierList description]
+  //  * @return [type] [description]
+  //  */
+  // function popStaffShiftModifierList(target, shiftModName, staffList) {
+  //   $(target).html(shiftModifierCheckboxTemplate({modifier: shiftModName, staff: staffList}));
+  //   setClickAreaListeners(`${target}`);
+  // }
+  //
+  // /**
+  //  * [popNaPodSelectList description]
+  //  * @return [type] [description]
+  //  */
+  // function popPodSelectList(target, sectionName, staffList, podList) {
+  //   let x = {section: sectionName, pod: podList, staff: staffList};
+  //   $(target).html(staffPodSelectTemplate(x));
+  // }
+  //
+  // /**
+  //  * This hides staff choices in a target div element based on an array of specified divs
+  //  * @param  string targetId    the id of the target div
+  //  * @param  string[] hideBasedOn the id('s) of the divs to base the hiding on
+  //  * @return void
+  //  */
+  // function hideAlreadyPicked(targetId, hideBasedOn) {
+  //   //reset all hidden
+  //   $(`${targetId} div.st-none`).each(function() {
+  //     showFormInnerItem($(this).find('input'));
+  //   });
+  //
+  //   //foreach radio/checkbox name specified
+  //   hideBasedOn.forEach(function(s) {
+  //     //select any checked staff
+  //     $(`input[name='${s}']:checked`).each(function() {
+  //       //get the staff id (set as value)
+  //       let val = $(this).val();
+  //       //hide the staff choice from the current target
+  //       hideFormInnerItem($(`${targetId} input[value='${val}']`));
+  //     });
+  //   });
+  // }
+  //
+  // /**
+  //  * Shows the inner inner-item
+  //  * @param  [type] $elem [description]
+  //  * @return [type]       [description]
+  //  */
+  // function showFormInnerItem($elem) {
+  //   try {
+  //     $elem.closest("div").removeClass('st-none').toggle(true);
+  //     enableFormInnerItem($elem);
+  //
+  //     return true;
+  //   } catch (e) {
+  //     return false;
+  //   }
+  // }
+  //
+  // /**
+  //  * [hideFormInnerItem description]
+  //  * @param  [type] $elem [description]
+  //  * @return [type]       [description]
+  //  */
+  // function hideFormInnerItem($elem) {
+  //   try {
+  //     $elem.closest("div").addClass('st-none').toggle(false);
+  //     disableFormInnerItem($elem);
+  //
+  //     return true;
+  //   } catch (e) {
+  //     return false;
+  //   }
+  // }
+  //
+  // /**
+  //  * [enableFormInnerItem description]
+  //  * @param  [type] $elem [description]
+  //  * @return [type]       [description]
+  //  */
+  // function enableFormInnerItem($elem) {
+  //   try {
+  //     $elem.prop("disabled", false);
+  //     $elem.closest("div").toggleClass("list-group-item-action");
+  //     return true;
+  //   } catch (e) {
+  //     return false;
+  //   }
+  // }
+  //
+  // /**
+  //  * [disableFormInnerItem description]
+  //  * @param  [type] $elem [description]
+  //  * @return [type]       [description]
+  //  */
+  // function disableFormInnerItem($elem) {
+  //   try {
+  //     $elem.prop("checked", false);
+  //     $elem.prop("disabled", true);
+  //     $elem.closest("div").toggleClass("list-group-item-action");
+  //     return true;
+  //   } catch (e) {
+  //     return false;
+  //   }
+  // }
+  //
+  // /**
+  //  * Gathers the form data, reorganizes to make appropriate for AJAX submission to backend
+  //  */
+  // function submitUnitShiftForm() {
+  //   let assignmentLookup = createAssignmentLookup(assignmentList);
+  //   let roleLookup = createRoleLookup(roleList);
+  //
+  //   let submission = [];
+  //   let formData = [];
+  //   let serializedForm = $('#unit-shift-form').serializeArray();
+  //
+  //   if (debug) console.log("Serialized Array Form Contents:");
+  //   if (debug) console.log(serializedForm);
+  //
+  //   for( let i=0; i < serializedForm.length; i++ ) {
+  //     let formPropertyName = serializedForm[i].name;
+  //     formPropertyName = formPropertyName.replace(/\[\]$/, '');
+  //
+  //     formData[formPropertyName] = formData[formPropertyName] || [];
+  //
+  //     formData[formPropertyName].push(serializedForm[i].value);
+  //   }
+  //
+  //   //create lookup tables, catch non-existing data with '|| []'
+  //   let nonVentLookup = createModLookup(formData['non-vent-mod'] || []);
+  //   let doubleLookup = createModLookup(formData['double-mod'] || []);
+  //   let vSickLookup = createModLookup(formData['very-sick-mod'] || []);
+  //   let crrtLookup = createModLookup(formData['crrt-mod'] || []);
+  //   let admitLookup = createModLookup(formData['admit-mod'] || []);
+  //   let codePgLookup = createModLookup(formData['code-pager-mod'] || []);
+  //   let evdLookup = createModLookup(formData['evd-mod'] || []);
+  //   let burnLookup = createModLookup(formData['burn-mod'] || []);
+  //
+  //   let date = formData['date'][0];
+  //   let dayOrNight = formData['day-or-night'][0];
+  //
+  //   //add the clinician to the submission array
+  //   submission.push(createStaffEntryObj(
+  //     formData['nc'][0], formData['date'][0], roleLookup['Clinician'], formData['nc-pod'][0], dayOrNight
+  //   ));
+  //
+  //   //check if charge nurse exists, if it does, push it too.
+  //   if (dayOrNight === 'D') {
+  //     submission.push(createStaffEntryObj(
+  //       formData['cn'][0], formData['date'][0], roleLookup['Charge'], formData['cn-pod'][0], dayOrNight
+  //     ));
+  //   }
+  //
+  //   //float
+  //   if ( formData['float-rn-check'][0] === "Yes" ) {
+  //     for ( let i = 0; i < formData['float-rn'].length; i++ ) {
+  //       submission.push(createStaffEntryObj(
+  //         formData['float-rn'][i], formData['date'][0], roleLookup['Bedside'], assignmentLookup['Float'], dayOrNight
+  //       ));
+  //     }
+  //   }
+  //
+  //
+  //   //apod
+  //   for ( let i = 0; i < formData['apod-rn'].length; i++ ) {
+  //     let sid = formData['apod-rn'][i];
+  //
+  //     submission.push(createStaffEntryObj(
+  //       sid, date, roleLookup['Bedside'], assignmentLookup['A'], dayOrNight,
+  //         isModSelected(sid, nonVentLookup),
+  //         isModSelected(sid, doubleLookup),
+  //         isModSelected(sid, vSickLookup),
+  //         isModSelected(sid, crrtLookup),
+  //         isModSelected(sid, admitLookup),
+  //         isModSelected(sid, codePgLookup),
+  //         isModSelected(sid, evdLookup),
+  //         isModSelected(sid, burnLookup)
+  //     ));
+  //   }
+  //
+  //   //bpod
+  //   for ( let i = 0; i < formData['bpod-rn'].length; i++ ) {
+  //     let sid = formData['bpod-rn'][i];
+  //
+  //     submission.push(createStaffEntryObj(
+  //       sid, date, roleLookup['Bedside'], assignmentLookup['B'], dayOrNight,
+  //         isModSelected(sid, nonVentLookup),
+  //         isModSelected(sid, doubleLookup),
+  //         isModSelected(sid, vSickLookup),
+  //         isModSelected(sid, crrtLookup),
+  //         isModSelected(sid, admitLookup),
+  //         isModSelected(sid, codePgLookup),
+  //         isModSelected(sid, evdLookup),
+  //         isModSelected(sid, burnLookup)
+  //     ));
+  //   }
+  //
+  //   //cpod
+  //   for ( let i = 0; i < formData['cpod-rn'].length; i++ ) {
+  //     let sid = formData['cpod-rn'][i];
+  //
+  //     submission.push(createStaffEntryObj(
+  //       sid, date, roleLookup['Bedside'], assignmentLookup['C'], dayOrNight,
+  //         isModSelected(sid, nonVentLookup),
+  //         isModSelected(sid, doubleLookup),
+  //         isModSelected(sid, vSickLookup),
+  //         isModSelected(sid, crrtLookup),
+  //         isModSelected(sid, admitLookup),
+  //         isModSelected(sid, codePgLookup),
+  //         isModSelected(sid, evdLookup),
+  //         isModSelected(sid, burnLookup)
+  //     ));
+  //   }
+  //
+  //   //outreach
+  //   for ( let i = 0; i < formData['outreach-rn'].length; i++ ) {
+  //     let sid = formData['outreach-rn'][i];
+  //
+  //     submission.push(createStaffEntryObj(
+  //       sid, date, roleLookup['Outreach'], assignmentLookup['Float'], dayOrNight
+  //     ));
+  //   }
+  //
+  //   //na - there may not always be an NA specified, check
+  //   formData['na'] = formData['na'] || [];
+  //   if (formData['na'] !== []) {
+  //     for ( let i = 0; i < formData['na'].length; i++ ) {
+  //       let sid = formData['na'][i];
+  //
+  //       submission.push(createStaffEntryObj(
+  //         sid, date, roleLookup['NA'], formData[`na-pod-${sid}`][0], dayOrNight
+  //       ));
+  //     }
+  //   }
+  //
+  //   //uc - there may not always be a UC specified, check
+  //   formData['uc'] = formData['uc'] || [];
+  //   if (formData['uc'] !== []) {
+  //     for ( let i = 0; i < formData['uc'].length; i++ ) {
+  //       let sid = formData['uc'][i];
+  //
+  //       submission.push(createStaffEntryObj(
+  //         sid, date, roleLookup['UC'], formData[`uc-pod-${sid}`][0], dayOrNight
+  //       ));
+  //     }
+  //   }
+  //
+  //   if (debug) { console.log(submission); }
+  //
+  //   //data is appropriate for submission, now submit it
+  //   submitUnitShifts(submission);
+  // }
+  //
+  // /**
+  //  * Helper function to create shift entry object to be returned for submission
+  //  * @param  int  staffId         [description]
+  //  * @param  string  date         [description]
+  //  * @param  int  roleId          [description]
+  //  * @param  int  assignmentId    [description]
+  //  * @param  char  dayOrNight     [description]
+  //  * @param  boolean nonVent      [description]
+  //  * @param  boolean doubled      [description]
+  //  * @param  boolean vsick        [description]
+  //  * @param  boolean crrt         [description]
+  //  * @param  boolean admit        [description]
+  //  * @param  boolean codepg       [description]
+  //  * @param  boolean evd          [description]
+  //  * @param  boolean burn         [description]
+  //  * @return Object               [description]
+  //  */
+  // function createStaffEntryObj(staffId, date, roleId, assignmentId, dayOrNight,
+  //   nonVent = false, doubled = false, vsick = false, crrt = false, admit = false, codepg = false, evd = false, burn = false) {
+  //
+  //   let staffEntry = {
+  //           staff : staffId,
+  //           date : date,
+  //           role : roleId,
+  //           assignment : assignmentId,
+  //           dayornight : dayOrNight,
+  //           nonvent : nonVent,
+  //           doubled : doubled,
+  //           vsick : vsick,
+  //           crrt : crrt,
+  //           admit : admit,
+  //           codepg : codepg,
+  //           evd : evd,
+  //           burn : burn
+  //         };
+  //
+  //   return staffEntry;
+  // }
+  //
+  // function createAssignmentLookup(assignmentObjArr) {
+  //   let aArray = [];
+  //
+  //   for(let i = 0; i < assignmentObjArr.length; i++) {
+  //     aArray[assignmentObjArr[i].assignment] = assignmentObjArr[i].id;
+  //   }
+  //
+  //   return aArray;
+  // }
+  //
+  // function createRoleLookup(roleObjArray) {
+  //   let rArray = [];
+  //
+  //   for(let i = 0; i < roleObjArray.length; i++) {
+  //     rArray[roleObjArray[i].role] = roleObjArray[i].id;
+  //   }
+  //
+  //   return rArray;
+  // }
+  //
+  // function createModLookup(modSelectArray) {
+  //   let mArray = [];
+  //
+  //   for ( let i = 0; i < modSelectArray.length; i++ ) {
+  //     mArray[modSelectArray[i]] = true;
+  //   }
+  //
+  //   return mArray;
+  // }
+  //
+  // function isModSelected(staffId, modLookup) {
+  //   let b = false;
+  //
+  //   if ( (typeof(modLookup) != 'undefined') && (typeof(modLookup[staffId]) != 'undefined') ) { b = true; }
+  //
+  //   return b;
+  // }
+  //
+  // /**
+  //  * Submit the form data to backend
+  //  * @param  Array[Object] submissionData   An Array of ShiftEntry Objects, ready for submission to backend
+  //  */
+  // function submitUnitShifts(submissionData) {
+  //   submissionData = submissionData || []; // catch null/undefined arguments
+  //
+  //   //catch bad parameter data, return to exit function
+  //   if ( submissionData === [] ) {
+  //     if (debug) { console.log("Warning: no data passed to submit via ajax handler"); }
+  //     return;
+  //   }
+  //
+  //   $.ajax({
+  // 	   url: 'resource/post_multiple_shift.php',
+  // 	   type: 'post',
+  // 	   data: {"shiftData" : JSON.stringify(submissionData)},
+  //      beforeSend: function () {
+  //        if (debug) { console.log("AJAX sent."); }
+  //        $('#submission-modal-body').html(`<i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+  //                                          <span class="sr-only">Loading...</span>`);
+  //        $('#submission-modal').modal('show');	//show the modal
+  //      },
+  // 	   success: function(data) {
+  //        if (debug) { console.log("AJAX returned."); }
+  //
+  //        if (data === "ok") {
+  //
+  //          if (debug) { console.log("Data submission ok."); }
+  //   	     $('#submission-modal-body').html("<h3>Success!</h3><p>click close to reset the form.</p>");
+  //          $('#modal-close').on('click', function(){
+  //            location.reload();
+  //          });
+  //
+  //        } else {
+  //
+  //          if (debug) { console.log("Data submission not ok."); }
+  //          $('#submission-modal-body').html(`<h3>There was a problem!</h3>
+  //                                            <p>${data}</p>
+  //                                            <p>Click close, find the problem, resubmit.</p>`);
+  //
+  //        }
+  //
+  //        if (debug) { console.log(data); }
+  // 	   }
+  // 	});
+  // }
+  //
+  //
+  //
+  // /**
+  //  * for each staff selection, read data attribute parameters, then create the form group
+  //  * @param  Object list An object containing staff
+  //  * @return [type]      [description]
+  //  */
+  // function populateStaffSelect(list) {
+  //   $('div[data-populate-with-staff-group]').each(function(index, element) {
+  //     //get the data parameters
+  //     let group = $( this ).data('populateWithStaffGroup').split(',');
+  //     let type = $( this ).data('populateType');
+  //     let prefix = $( this ).data('populatePrefix');
+  //     let required = $( this ).data('populateRequired');
+  //
+  //     //if there is no group specified for the select, cannot proceed.
+  //     if (group.length == 0) throw `'data-populate-with-staff-group' attribute requires at least 1 group to be specified`;
+  //
+  //     //build the new select list
+  //     $( this ).empty(); // get rid of any old contents
+  //     for (let i = 0; i < group.length; i++) {
+  //       if (group[i] in list) { //for group in the select parameters list, and if that matches a group in the staff list
+  //         createCustomSelect($( this ), type, required, prefix, list[group[i]]);
+  //       }
+  //     }
+  //
+  //     //if there are staff to be selected, add in the listeners to make the select more usable and validate properly
+  //     if ( $(this).children().length ) {
+  //       setParsleyJsGroup($(this), $( this ).closest('div.form-section').data('blockIndex'));
+  //       setClickAreaListeners($(this));
+  //     //else let the users know why they can't select
+  //     } else {
+  //       $(this).html("<p>There are no staff to select from for this date.</p>");
+  //     }
+  //   });
+  // }
+  //
+  // /**
+  //  * Helper function to create the select form group with jquery
+  //  * @param  DOMelement $container    Which DOM element should the group be appended to
+  //  * @param  string type              radio or checkbox
+  //  * @param  boolean required         is the select form group a required entry
+  //  * @param  string prefix            how should it be named for consistent convention
+  //  * @param  [Object] staff           an array of staff objects
+  //  */
+  // function createCustomSelect($container, type, required, prefix, staff) {
+  //   let first = true; //boolean flag for first iteration
+  //   for (let i = 0; i < staff.length; i++) {
+  //     //create wrapper div, set classes, append to fragment
+  //     let $div = $('<div></div>').addClass(`inner-item list-group-item-action`);
+  //     $container.append($div);
+  //
+  //     //create child label, wrapper for input, span contents
+  //     let $label = $('<label></label>').addClass(`custom-control custom-${type} m-1`);
+  //     $div.append($label);
+  //
+  //     //create input with properties, on first iteration add extra properties as specified
+  //     let $input = $('<input></input>')
+  //                   .prop("id", `${prefix}-${staff[i].id}`)
+  //                   .prop("name", `${prefix}`)
+  //                   .prop("type", `${type}`)
+  //                   .prop("value", `${staff[i].id}`)
+  //                   .attr("data-staff-name", `${staff[i].name} (${staff[i].category})`)
+  //                   .addClass('custom-control-input');
+  //     //only add required and parsley data parameter to first element
+  //     if (first) {
+  //       $input.prop("required", required);
+  //       $input.attr("data-parsley-errors-container", `#${prefix}-errors`);
+  //     }
+  //     $label.append($input);
+  //
+  //     //create control indicator span
+  //     $label.append($('<span></span>')
+  //                     .addClass('custom-control-indicator'));
+  //
+  //     //create description span
+  //     $label.append($('<span></span>')
+  //                     .addClass('custom-control-description')
+  //                     .text(`${staff[i].name} (${staff[i].category})`));
+  //
+  //     //set first iteration boolean flag to false
+  //     first = false;
+  //   }
+  //
+  //   //return the DOM fragement
+  //   return $container;
+  // }
 
   </script>
   <!-- END Aux Scripts -->
