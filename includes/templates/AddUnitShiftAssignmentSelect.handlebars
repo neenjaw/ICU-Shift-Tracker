@@ -5,10 +5,10 @@
     <tr>
       <td>{{this.name}}</td>
       <td>
-        <select name="{{../prefix}}-{{../type}}-{{../id}}" class="custom-select" required>
+        <select name="{{../prefix}}-{{../type}}" class="custom-select" {{#if required}}required{{/if}}>
           <option value="" disabled selected>Select a pod...</option>
-          {{#each ../pod}}
-            <option id="" value="{{this.id}}">{{this.name}}</option>
+          {{#each ../assignment}}
+            <option id="" value="{{this.id}}">{{this.assignment}}</option>
           {{/each}}
         </select>
       </td>

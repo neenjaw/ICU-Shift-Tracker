@@ -260,7 +260,7 @@ if (!isset($_SESSION['user'])) {
                 class="aus-form-group p-0 m-0"
                 data-populate-group="staff"
                 data-populate-staff-list="RN"
-                data-populate-staff-exclude-from="cn,nc"
+                data-populate-staff-excluding="cn,nc"
                 data-populate-type="checkbox"
                 data-populate-prefix="apod-rn"
                 data-populate-required="true">
@@ -285,7 +285,7 @@ if (!isset($_SESSION['user'])) {
                 class="aus-form-group p-0 m-0"
                 data-populate-group="staff"
                 data-populate-staff-list="RN"
-                data-populate-staff-exclude-from="cn,nc,apod-rn"
+                data-populate-staff-excluding="cn,nc,apod-rn"
                 data-populate-type="checkbox"
                 data-populate-prefix="bpod-rn"
                 data-populate-required="true">
@@ -309,7 +309,7 @@ if (!isset($_SESSION['user'])) {
                 class="aus-form-group p-0 m-0"
                 data-populate-group="staff"
                 data-populate-staff-list="RN"
-                data-populate-staff-exclude-from="cn,nc,apod-rn,bpod-rn"
+                data-populate-staff-excluding="cn,nc,apod-rn,bpod-rn"
                 data-populate-type="checkbox"
                 data-populate-prefix="cpod-rn"
                 data-populate-required="true">
@@ -331,7 +331,8 @@ if (!isset($_SESSION['user'])) {
               <div id="non-vent-mod"
                 class="aus-form-group p-0 m-0"
                 data-populate-group="staff"
-                data-populate-staff-from="apod-rn,bpod-rn,cpod-rn"
+                data-populate-staff-list="RN"
+                data-populate-staff-matching="apod-rn,bpod-rn,cpod-rn"
                 data-populate-type="checkbox"
                 data-populate-prefix="non-vent-mod"
                 data-populate-required="false">
@@ -352,7 +353,8 @@ if (!isset($_SESSION['user'])) {
               <div id="double-mod"
                 class="aus-form-group p-0 m-0"
                 data-populate-group="staff"
-                data-populate-staff-from="apod-rn,bpod-rn,cpod-rn"
+                data-populate-staff-list="RN"
+                data-populate-staff-matching="apod-rn,bpod-rn,cpod-rn"
                 data-populate-type="checkbox"
                 data-populate-prefix="double-mod"
                 data-populate-required="false">
@@ -373,7 +375,8 @@ if (!isset($_SESSION['user'])) {
               <div id="admit-mod"
                 class="aus-form-group p-0 m-0"
                 data-populate-group="staff"
-                data-populate-staff-from="apod-rn,bpod-rn,cpod-rn"
+                data-populate-staff-list="RN"
+                data-populate-staff-matching="apod-rn,bpod-rn,cpod-rn"
                 data-populate-type="checkbox"
                 data-populate-prefix="admit-mod"
                 data-populate-required="false">
@@ -394,7 +397,8 @@ if (!isset($_SESSION['user'])) {
               <div id="very-sick-mod"
                 class="aus-form-group p-0 m-0"
                 data-populate-group="staff"
-                data-populate-staff-from="apod-rn,bpod-rn,cpod-rn"
+                data-populate-staff-list="RN"
+                data-populate-staff-matching="apod-rn,bpod-rn,cpod-rn"
                 data-populate-type="checkbox"
                 data-populate-prefix="very-sick-mod"
                 data-populate-required="false">
@@ -415,7 +419,8 @@ if (!isset($_SESSION['user'])) {
               <div id="code-pager-mod"
                 class="aus-form-group p-0 m-0"
                 data-populate-group="staff"
-                data-populate-staff-from="apod-rn,bpod-rn,cpod-rn"
+                data-populate-staff-list="RN"
+                data-populate-staff-matching="apod-rn,bpod-rn,cpod-rn"
                 data-populate-type="checkbox"
                 data-populate-prefix="code-pager-mod"
                 data-populate-required="false">
@@ -436,7 +441,8 @@ if (!isset($_SESSION['user'])) {
               <div id="crrt-mod"
                 class="aus-form-group p-0 m-0"
                 data-populate-group="staff"
-                data-populate-staff-from="apod-rn,bpod-rn,cpod-rn"
+                data-populate-staff-list="RN"
+                data-populate-staff-matching="apod-rn,bpod-rn,cpod-rn"
                 data-populate-type="checkbox"
                 data-populate-prefix="crrt-mod"
                 data-populate-required="false">
@@ -457,7 +463,8 @@ if (!isset($_SESSION['user'])) {
               <div id="evd-mod"
                 class="aus-form-group p-0 m-0"
                 data-populate-group="staff"
-                data-populate-staff-from="apod-rn,bpod-rn,cpod-rn"
+                data-populate-staff-list="RN"
+                data-populate-staff-matching="apod-rn,bpod-rn,cpod-rn"
                 data-populate-type="checkbox"
                 data-populate-prefix="evd-mod"
                 data-populate-required="false">
@@ -478,7 +485,8 @@ if (!isset($_SESSION['user'])) {
               <div id="burn-mod"
                 class="aus-form-group p-0 m-0"
                 data-populate-group="staff"
-                data-populate-staff-from="apod-rn,bpod-rn,cpod-rn"
+                data-populate-staff-list="RN"
+                data-populate-staff-matching="apod-rn,bpod-rn,cpod-rn"
                 data-populate-type="checkbox"
                 data-populate-prefix="burn-mod"
                 data-populate-required="false">
@@ -524,10 +532,11 @@ if (!isset($_SESSION['user'])) {
               <div id="na-pod-errors"></div>
               <div id="na-pod"
                 class="aus-form-group p-0 m-0"
-                data-populate-group="pod"
-                data-populate-pod-exclude="Float"
-                data-populate-staff-from="na"
-                data-populate-type="select"
+                data-populate-group="staff"
+                data-populate-staff-list="LPN,NA"
+                data-populate-assignment-excluding="Float"
+                data-populate-staff-matching="na"
+                data-populate-type="podselect"
                 data-populate-prefix="na-pod"
                 data-populate-required="false">
 
@@ -572,10 +581,11 @@ if (!isset($_SESSION['user'])) {
               <div id="uc-pod-errors"></div>
               <div id="uc-pod"
                 class="aus-form-group p-0 m-0"
-                data-populate-group="pod"
-                data-populate-pod-exclude="Float"
-                data-populate-staff-from="uc"
-                data-populate-type="select"
+                data-populate-group="staff"
+                data-populate-staff-list="UC"
+                data-populate-assignment-excluding="Float"
+                data-populate-staff-matching="uc"
+                data-populate-type="podselect"
                 data-populate-prefix="uc-pod"
                 data-populate-required="false">
 
@@ -598,7 +608,7 @@ if (!isset($_SESSION['user'])) {
                 class="aus-form-group p-0 m-0"
                 data-populate-group="staff"
                 data-populate-staff-list="RN"
-                data-populate-staff-exclude-from="cn,nc,apod-rn,bpod-rn,cpod-rn"
+                data-populate-staff-excluding="cn,nc,apod-rn,bpod-rn,cpod-rn"
                 data-populate-type="radio"
                 data-populate-prefix="outreach-rn"
                 data-populate-required="true">
@@ -660,8 +670,8 @@ if (!isset($_SESSION['user'])) {
   <script id="add-unit-shift-radio-template" type="text/x-handlebars-template">
     <?php include 'includes/templates/AddUnitShiftRadio.handlebars'; ?>
   </script>
-  <script id="add-unit-shift-pod-select-template" type="text/x-handlebars-template">
-    <?php include 'includes/templates/AddUnitShiftPodSelect.handlebars'; ?>
+  <script id="add-unit-shift-assignmentselect-template" type="text/x-handlebars-template">
+    <?php include 'includes/templates/AddUnitShiftAssignmentSelect.handlebars'; ?>
   </script>
   <script id="add-unit-shift-checkbox-template" type="text/x-handlebars-template">
     <?php include 'includes/templates/AddUnitShiftCheckbox.handlebars'; ?>
@@ -681,11 +691,32 @@ if (!isset($_SESSION['user'])) {
   var dateChangeTimer; //variable to prevent ajax request for staff to not update too often
   var dateChangeTimerInterval = 1500;
 
-  var template = {
-    select:"add-unit-shift-select-template",
-    radio:"add-unit-shift-radio-template",
-    checkbox:"add-unit-shift-checkbox-template",
-    podselect:"add-unit-shift-pod-select-template"
+  var populate = {
+    item: [
+      "#nc", "#cn", "#nc-pod", "#cn-pod", "#float-rn", "#apod-rn", "#bpod-rn",
+      "#cpod-rn", "#non-vent-mod", "#double-mod", "#admit-mod", "#very-sick-mod",
+      "#crrt-mod", "#evd-mod", "#burn-mod", "#na", "#na-pod", "#uc", "#uc-pod",
+      "#outreach-rn"
+    ],
+    template: {
+      select : {
+        container: "#add-unit-shift-select-template",
+        template: null
+      },
+      radio : {
+        container: "#add-unit-shift-radio-template",
+        template: null
+      },
+      checkbox : {
+        container: "#add-unit-shift-checkbox-template",
+        template: null
+      },
+      podselect : {
+        container: "#add-unit-shift-assignmentselect-template",
+        template: null
+      }
+    },
+    list: null
   };
 
   $(function() {
@@ -699,9 +730,8 @@ if (!isset($_SESSION['user'])) {
     });
     <?php endif; ?>
 
-    for (let key in template) {
-      console.log(key, template[key]);
-      template[key] = Handlebars.compile($(`#${template[key]}`).html());
+    for (let key in populate.template) {
+      populate.template[key].template = Handlebars.compile($(populate.template[key].container).html());
     }
 
     /**
@@ -940,9 +970,79 @@ if (!isset($_SESSION['user'])) {
 
   /**
    * based on the date selected, get a list of staff not already entered for that day
+   * then add the data to the populate global var, call the populate form
+   *
    * @param  string date a date in the 'yyyy-mm-dd' format
    */
   function getStaff(date) {
+
+    //
+    // HELPER FUNCTIONS
+    //
+    function getLists(data) {
+      let rn = {}, na = {}, uc = {}, assignment = null, role = null;
+
+      //merge staff arrays
+      function mergeArrays(a, b) {
+        let s = [];
+
+        //while items remain
+        while (a.length || b.length) {
+
+          if (a.length === 0) { //if a is empty, push b
+            s.push(b[0]);
+            b.shift();
+
+          } else if ( b.length === 0 ) { // if b is empty, push a
+            s.push(a[0]);
+            a.shift();
+
+          } else if (a[0].name > b[0].name){ //if a.name > b.name, push b
+            s.push(b[0]);
+            b.shift();
+
+          } else { // else push a
+            s.push(a[0]);
+            a.shift();
+          }
+        }
+
+        return s;
+      }
+
+      //get the lists of staff from the data object
+      for (let i = 0; i < data.staff.length; i++) {
+        if (data.staff[i].name == "RN") {
+          rn = data.staff[i];
+        } else if (data.staff[i].name == "UC") {
+          uc = data.staff[i];
+        } else if (data.staff[i].name == "LPN") {
+          if (jQuery.isEmptyObject(na)) {
+            na = data.staff[i];
+            na.name = "NA";
+          } else {
+            na.staff = mergeArrays(na.staff, data.staff[i].staff);
+          }
+        } else if (data.staff[i].name == "NA") {
+          if (jQuery.isEmptyObject(na)) {
+            na = data.staff[i];
+          } else {
+            na.staff = mergeArrays(na.staff, data.staff[i].staff);
+          }
+        }
+      }
+
+      //get the assignment and roles from the data
+      assignment = assignment || data.assignment;
+      role = role || data.role;
+
+      return x = { rn:rn, na:na, uc:uc, assignment:assignment, role:role }
+
+    }
+    //
+    // END HELPER FUNCTION
+    //
+
     if (debug) console.log('getStaff() called.');
 
     date = date || null;
@@ -968,7 +1068,8 @@ if (!isset($_SESSION['user'])) {
              data = JSON.parse(data);
              if (debug) console.log(data);
 
-             populateForm(data);
+             populate.list = getLists(data);
+             populatePage(populate);
 
            } catch (e) {
              if (debug) console.log("> Data error: "+e);
@@ -981,71 +1082,50 @@ if (!isset($_SESSION['user'])) {
     });
   }
 
-  function populateForm(data) {
-    let rn = {}, na = {}, uc = {}, assignment = null, role = null;
+  /**
+   * [populatePage description]
+   * @param  [type] data [description]
+   * @return [type]      [description]
+   */
+  function populatePage(data) {
 
-    //merge staff arrays
-    function mergeArrays(a, b) {
-      let s = [];
+    //
+    //
+    //
+    function getPopulateParam($elem) {
+      let o = {};
 
-      //while items remain
-      while (a.length || b.length) {
+      o.prefix = $elem.attr('data-populate-prefix') || "null";
+      o.type = $elem.attr('data-populate-type') || "null";
+      o.group = $elem.attr('data-populate-group') || "null";
+      o.staffList = $elem.attr('data-populate-staff-list') || "null";
+      o.staffMatching = $elem.attr('data-populate-staff-matching') || "null";
+      o.staffExcluding = $elem.attr('data-populate-staff-excluding') || "null";
+      o.assignmentExcluding = $elem.attr('data-populate-assignment') || "null",
+      o.required = $elem.attr('data-populate-required') || "null";
 
-        if (a.length === 0) { //if a is empty, push b
-          s.push(b[0]);
-          b.shift();
-
-        } else if ( b.length === 0 ) { // if b is empty, push a
-          s.push(a[0]);
-          a.shift();
-
-        } else if (a[0].name > b[0].name){ //if a.name > b.name, push b
-          s.push(b[0]);
-          b.shift();
-
-        } else { // else push a
-          s.push(a[0]);
-          a.shift();
-        }
-      }
-
-      return s;
+      return o;
     }
+    //
+    //
+    //
 
-    //get the lists of staff from the data object
-    for (let i = 0; i < data.staff.length; i++) {
-      if (data.staff[i].name == "RN") {
-        rn = data.staff[i];
-      } else if (data.staff[i].name == "UC") {
-        uc = data.staff[i];
-      } else if (data.staff[i].name == "LPN") {
-        if (jQuery.isEmptyObject(na)) {
-          na = data.staff[i];
-          na.name = "NA";
-        } else {
-          na.staff = mergeArrays(na.staff, data.staff[i].staff);
-        }
-      } else if (data.staff[i].name == "NA") {
-        if (jQuery.isEmptyObject(na)) {
-          na = data.staff[i];
-        } else {
-          na.staff = mergeArrays(na.staff, data.staff[i].staff);
-        }
-      }
+    //loop through the items
+    for (let i = 0; i < data.item.length; i++) {
+      let curItem = data.item[i];
+
+      let $curElem = $(curItem);
+      if (debug) console.log($curElem);
     }
+    //  get the local params to the item
+    //  prep data for template
+    //  call template
+    //  fill container
+    //  add listeners
+    //
+    //add parsley groups
 
-    //get the assignment and roles from the data
-    assignemnt = assignment || data.assignment;
-    role = role || data.role;
-
-    //create the role reference array
-    if (role !== null) {
-      roleRefArray = [];
-      for (let i = 0; i < role.length; i++) {
-        roleRefArray[role[i].role] = role[i].id;
-      }
-    }
-
+    return true;
   }
 
   function setParsleyJsGroup(section, index) {
