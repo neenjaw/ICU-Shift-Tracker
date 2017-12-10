@@ -87,19 +87,19 @@ body {
   display: none;
 }
 
-.form-section.current {
+/*.form-section.current {
   display: inherit;
-}
+}*/
 
-#nc-select, #cn-select {
+#nc, #cn {
   max-height: 150px;
 }
 
-#float-rn-select, #apod-rn-select, #bpod-rn-select, #cpod-rn-select, #outreach-rn-select, #na-select, #uc-select {
+#float-rn, #apod-rn, #bpod-rn, #cpod-rn, #outreach-rn, #na, #uc {
   max-height: 300px;
 }
 
-#float-rn-select-group {
+#float-rn {
 	display: none;
 }
 

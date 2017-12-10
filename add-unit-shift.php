@@ -94,7 +94,7 @@ if (!isset($_SESSION['user'])) {
           <!-- Select Clinician/Charge -->
           <div id="section-nc-cn" class="form-section mt-4 mb-4">
 
-            <!-- RN Clinician SELECT -->
+            <!-- rn Clinician SELECT -->
             <div id="nc-subsection" class="form-group">
               <label class="control-label requiredField" for="nc">
                 Who is the Clinician for the shift?<span class="asteriskField">*</span>
@@ -103,7 +103,7 @@ if (!isset($_SESSION['user'])) {
               <div id="nc"
                 class="aus-form-group p-0 m-0"
                 data-populate-group="staff"
-                data-populate-staff-list="RN"
+                data-populate-staff-list="rn"
                 data-populate-type="radio"
                 data-populate-prefix="nc"
                 data-populate-required="true">
@@ -114,9 +114,9 @@ if (!isset($_SESSION['user'])) {
 
               </div>
             </div>
-            <!-- END RN Clinician SELECT -->
+            <!-- END rn Clinician SELECT -->
 
-            <!-- RN CHARGE SELECT -->
+            <!-- rn CHARGE SELECT -->
             <div id="cn-subsection" class="form-group">
               <label class="control-label requiredField" for="cn">
                 Who is the Charge for the shift?<span class="asteriskField">*</span>
@@ -125,7 +125,7 @@ if (!isset($_SESSION['user'])) {
               <div id="cn"
                 class="aus-form-group p-0 m-0"
                 data-populate-group="staff"
-                data-populate-staff-list="RN"
+                data-populate-staff-list="rn"
                 data-populate-type="radio"
                 data-populate-prefix="cn"
                 data-populate-required="true">
@@ -136,7 +136,7 @@ if (!isset($_SESSION['user'])) {
 
               </div>
             </div>
-            <!-- END RN CHARGE SELECT -->
+            <!-- END rn CHARGE SELECT -->
 
           </div>
           <!-- END Select Clinician/Charge -->
@@ -153,8 +153,10 @@ if (!isset($_SESSION['user'])) {
               <div id="nc-pod"
                 class="aus-form-group p-0 m-0"
                 data-populate-group="pod"
+                data-populate-staff-list="rn"
+                data-populate-staff-matching="nc"
                 data-populate-pod-show="A/B,B/C"
-                data-populate-type="radio"
+                data-populate-type="assignmentselect"
                 data-populate-prefix="nc-pod"
                 data-populate-required="true">
 
@@ -174,8 +176,10 @@ if (!isset($_SESSION['user'])) {
               <div id="cn-pod"
                 class="aus-form-group p-0 m-0"
                 data-populate-group="pod"
+                data-populate-staff-list="rn"
+                data-populate-staff-matching="cn"
                 data-populate-pod-show="A,C"
-                data-populate-type="radio"
+                data-populate-type="assignmentselect"
                 data-populate-prefix="cn-pod"
                 data-populate-required="true">
 
@@ -235,7 +239,7 @@ if (!isset($_SESSION['user'])) {
               <div id="float-rn"
                 class="aus-form-group p-0 m-0"
                 data-populate-group="staff"
-                data-populate-staff-list="RN"
+                data-populate-staff-list="rn"
                 data-populate-type="radio"
                 data-populate-prefix="float-rn"
                 data-populate-required="false">
@@ -259,7 +263,7 @@ if (!isset($_SESSION['user'])) {
               <div id="apod-rn"
                 class="aus-form-group p-0 m-0"
                 data-populate-group="staff"
-                data-populate-staff-list="RN"
+                data-populate-staff-list="rn"
                 data-populate-staff-excluding="cn,nc"
                 data-populate-type="checkbox"
                 data-populate-prefix="apod-rn"
@@ -284,7 +288,7 @@ if (!isset($_SESSION['user'])) {
               <div id="bpod-rn"
                 class="aus-form-group p-0 m-0"
                 data-populate-group="staff"
-                data-populate-staff-list="RN"
+                data-populate-staff-list="rn"
                 data-populate-staff-excluding="cn,nc,apod-rn"
                 data-populate-type="checkbox"
                 data-populate-prefix="bpod-rn"
@@ -308,7 +312,7 @@ if (!isset($_SESSION['user'])) {
               <div id="cpod-rn"
                 class="aus-form-group p-0 m-0"
                 data-populate-group="staff"
-                data-populate-staff-list="RN"
+                data-populate-staff-list="rn"
                 data-populate-staff-excluding="cn,nc,apod-rn,bpod-rn"
                 data-populate-type="checkbox"
                 data-populate-prefix="cpod-rn"
@@ -331,7 +335,7 @@ if (!isset($_SESSION['user'])) {
               <div id="non-vent-mod"
                 class="aus-form-group p-0 m-0"
                 data-populate-group="staff"
-                data-populate-staff-list="RN"
+                data-populate-staff-list="rn"
                 data-populate-staff-matching="apod-rn,bpod-rn,cpod-rn"
                 data-populate-type="checkbox"
                 data-populate-prefix="non-vent-mod"
@@ -353,7 +357,7 @@ if (!isset($_SESSION['user'])) {
               <div id="double-mod"
                 class="aus-form-group p-0 m-0"
                 data-populate-group="staff"
-                data-populate-staff-list="RN"
+                data-populate-staff-list="rn"
                 data-populate-staff-matching="apod-rn,bpod-rn,cpod-rn"
                 data-populate-type="checkbox"
                 data-populate-prefix="double-mod"
@@ -375,7 +379,7 @@ if (!isset($_SESSION['user'])) {
               <div id="admit-mod"
                 class="aus-form-group p-0 m-0"
                 data-populate-group="staff"
-                data-populate-staff-list="RN"
+                data-populate-staff-list="rn"
                 data-populate-staff-matching="apod-rn,bpod-rn,cpod-rn"
                 data-populate-type="checkbox"
                 data-populate-prefix="admit-mod"
@@ -397,7 +401,7 @@ if (!isset($_SESSION['user'])) {
               <div id="very-sick-mod"
                 class="aus-form-group p-0 m-0"
                 data-populate-group="staff"
-                data-populate-staff-list="RN"
+                data-populate-staff-list="rn"
                 data-populate-staff-matching="apod-rn,bpod-rn,cpod-rn"
                 data-populate-type="checkbox"
                 data-populate-prefix="very-sick-mod"
@@ -419,7 +423,7 @@ if (!isset($_SESSION['user'])) {
               <div id="code-pager-mod"
                 class="aus-form-group p-0 m-0"
                 data-populate-group="staff"
-                data-populate-staff-list="RN"
+                data-populate-staff-list="rn"
                 data-populate-staff-matching="apod-rn,bpod-rn,cpod-rn"
                 data-populate-type="checkbox"
                 data-populate-prefix="code-pager-mod"
@@ -441,7 +445,7 @@ if (!isset($_SESSION['user'])) {
               <div id="crrt-mod"
                 class="aus-form-group p-0 m-0"
                 data-populate-group="staff"
-                data-populate-staff-list="RN"
+                data-populate-staff-list="rn"
                 data-populate-staff-matching="apod-rn,bpod-rn,cpod-rn"
                 data-populate-type="checkbox"
                 data-populate-prefix="crrt-mod"
@@ -463,7 +467,7 @@ if (!isset($_SESSION['user'])) {
               <div id="evd-mod"
                 class="aus-form-group p-0 m-0"
                 data-populate-group="staff"
-                data-populate-staff-list="RN"
+                data-populate-staff-list="rn"
                 data-populate-staff-matching="apod-rn,bpod-rn,cpod-rn"
                 data-populate-type="checkbox"
                 data-populate-prefix="evd-mod"
@@ -485,7 +489,7 @@ if (!isset($_SESSION['user'])) {
               <div id="burn-mod"
                 class="aus-form-group p-0 m-0"
                 data-populate-group="staff"
-                data-populate-staff-list="RN"
+                data-populate-staff-list="rn"
                 data-populate-staff-matching="apod-rn,bpod-rn,cpod-rn"
                 data-populate-type="checkbox"
                 data-populate-prefix="burn-mod"
@@ -533,7 +537,7 @@ if (!isset($_SESSION['user'])) {
               <div id="na-pod"
                 class="aus-form-group p-0 m-0"
                 data-populate-group="staff"
-                data-populate-staff-list="LPN,NA"
+                data-populate-staff-list="na"
                 data-populate-assignment-excluding="Float"
                 data-populate-staff-matching="na"
                 data-populate-type="podselect"
@@ -597,7 +601,7 @@ if (!isset($_SESSION['user'])) {
 
           </div>
 
-          <!-- Select Outreach RN -->
+          <!-- Select Outreach rn -->
           <div id="section-outreach-rn" class="form-section mt-4 mb-4">
             <div class="form-group">
               <label class="control-label requiredField" for="outrach-rn">
@@ -607,7 +611,7 @@ if (!isset($_SESSION['user'])) {
               <div id="outreach-rn"
                 class="aus-form-group p-0 m-0"
                 data-populate-group="staff"
-                data-populate-staff-list="RN"
+                data-populate-staff-list="rn"
                 data-populate-staff-excluding="cn,nc,apod-rn,bpod-rn,cpod-rn"
                 data-populate-type="radio"
                 data-populate-prefix="outreach-rn"
@@ -682,7 +686,12 @@ if (!isset($_SESSION['user'])) {
   <script>
   //Global scope variables
   var debug = true; // debug flag
+
   var $sections = null;
+  var $btnNext = null;
+  var $btnPrev = null;
+  var $btnSubmit = null;
+
   var oldIndex = null;
 
   var roleRefArray = null;
@@ -711,7 +720,7 @@ if (!isset($_SESSION['user'])) {
         container: "#add-unit-shift-checkbox-template",
         template: null
       },
-      podselect : {
+      assignmentselect : {
         container: "#add-unit-shift-assignmentselect-template",
         template: null
       }
@@ -758,11 +767,15 @@ if (!isset($_SESSION['user'])) {
      * FORM PAGINATION - CREDIT TO Parsely.js DOCUMENTATION *
      ********************************************************/
     $sections = $('.form-section'); // array of all the form-section elements
+    $btnNext = $('.form-navigation .next');
+    $btnPrev = $('.form-navigation .previous');
+    $btnSubmit = $('.form-navigation [type=submit]');
+
     oldIndex = -1; //reference to be able to know if traverseing forward or backward
 
     // Return the current index by looking at which section has the class 'current'
     function curIndex() {
-      return $sections.index($sections.filter('.current'));
+      return oldIndex;
     }
 
     // Previous button is easy, just go back
@@ -782,8 +795,11 @@ if (!isset($_SESSION['user'])) {
     //navigates to the current form section
     function navigateTo(index) {
       // remove the current class from the previously current section
-      let $temp = $sections.removeClass('current')
-                           .eq(index);
+      if (oldIndex !== -1) {
+        $sections.eq(oldIndex).removeClass('current');
+        $sections.eq(oldIndex).hide("fast")
+      }
+      let $temp = $sections.eq(index);
 
       //check if any data should be updated in the form based on changes made
       updateFormSection($temp);
@@ -800,21 +816,22 @@ if (!isset($_SESSION['user'])) {
 
       //add the current class to the now current section
       $temp.addClass('current');
+      $temp.show("slow");
 
       // Show only the navigation buttons that make sense for the current section:
-      $('.form-navigation .previous').attr("disabled", !(index > 0))
-                                     .toggleClass("btn-primary", (index > 0))
-                                     .toggleClass("btn-secondary", !(index > 0));
+      $btnPrev.attr("disabled", !(index > 0))
+        .toggleClass("btn-primary", (index > 0))
+        .toggleClass("btn-secondary", !(index > 0));
 
       let atTheEnd = index >= $sections.length - 1;
 
-      $('.form-navigation .next').attr("disabled", (atTheEnd))
-                                 .toggleClass("btn-primary", (!atTheEnd))
-                                 .toggleClass("btn-secondary", (atTheEnd));
+      $btnNext.attr("disabled", (atTheEnd))
+        .toggleClass("btn-primary", (!atTheEnd))
+        .toggleClass("btn-secondary", (atTheEnd));
 
-      $('.form-navigation [type=submit]').attr("disabled", (!atTheEnd))
-                                         .toggleClass("btn-primary", (atTheEnd))
-                                         .toggleClass("btn-secondary", (!atTheEnd));
+      $btnSubmit.attr("disabled", (!atTheEnd))
+        .toggleClass("btn-primary", (atTheEnd))
+        .toggleClass("btn-secondary", (!atTheEnd));
 
       //update progress bar
       let progress = (index + 1)/$sections.length*100;
@@ -1012,18 +1029,18 @@ if (!isset($_SESSION['user'])) {
 
       //get the lists of staff from the data object
       for (let i = 0; i < data.staff.length; i++) {
-        if (data.staff[i].name == "RN") {
+        if (data.staff[i].name.toLowerCase() == "rn") {
           rn = data.staff[i];
-        } else if (data.staff[i].name == "UC") {
+        } else if (data.staff[i].name.toLowerCase() == "uc") {
           uc = data.staff[i];
-        } else if (data.staff[i].name == "LPN") {
+        } else if (data.staff[i].name.toLowerCase() == "lpn") {
           if (jQuery.isEmptyObject(na)) {
             na = data.staff[i];
             na.name = "NA";
           } else {
             na.staff = mergeArrays(na.staff, data.staff[i].staff);
           }
-        } else if (data.staff[i].name == "NA") {
+        } else if (data.staff[i].name.toLowerCase() == "na") {
           if (jQuery.isEmptyObject(na)) {
             na = data.staff[i];
           } else {
@@ -1090,24 +1107,24 @@ if (!isset($_SESSION['user'])) {
   function populatePage(data) {
 
     //
-    //
+    // HELPER FUNCTIONS
     //
     function getPopulateParam($elem) {
       let o = {};
 
-      o.prefix = $elem.attr('data-populate-prefix') || "null";
-      o.type = $elem.attr('data-populate-type') || "null";
-      o.group = $elem.attr('data-populate-group') || "null";
-      o.staffList = $elem.attr('data-populate-staff-list') || "null";
-      o.staffMatching = $elem.attr('data-populate-staff-matching') || "null";
-      o.staffExcluding = $elem.attr('data-populate-staff-excluding') || "null";
-      o.assignmentExcluding = $elem.attr('data-populate-assignment') || "null",
-      o.required = $elem.attr('data-populate-required') || "null";
+      o.prefix = $elem.attr('data-populate-prefix') || null;
+      o.type = $elem.attr('data-populate-type') || null;
+      o.group = $elem.attr('data-populate-group') || null;
+      o.staffList = $elem.attr('data-populate-staff-list') || null;
+      o.staffMatching = $elem.attr('data-populate-staff-matching') || null;
+      o.staffExcluding = $elem.attr('data-populate-staff-excluding') || null;
+      o.assignmentExcluding = $elem.attr('data-populate-assignment') || null,
+      o.required = $elem.attr('data-populate-required') || null;
 
       return o;
     }
     //
-    //
+    // END HELPER FUNCTIONS
     //
 
     //loop through the items
@@ -1115,7 +1132,19 @@ if (!isset($_SESSION['user'])) {
       let curItem = data.item[i];
 
       let $curElem = $(curItem);
-      if (debug) console.log($curElem);
+      // if (debug) console.log($curElem);
+
+      let params = getPopulateParam($curElem);
+      if (debug) console.log(params);
+
+      let template = data.template[params.type].template;
+      $curElem.html(template({
+        prefix: params.prefix,
+        type: params.type,
+        assignment: data.list.assignment,
+        staff:data.list[params.staffList].staff,
+        name:data.list[params.staffList].name
+      }));
     }
     //  get the local params to the item
     //  prep data for template

@@ -8,11 +8,11 @@
         <select name="{{../prefix}}-{{../type}}" class="custom-select" {{#if required}}required{{/if}}>
           <option value="" disabled selected>Select a pod...</option>
           {{#each ../assignment}}
-            <option id="" value="{{this.id}}">{{this.assignment}}</option>
+            <option value="{{this.id}}">{{this.assignment}}</option>
           {{/each}}
         </select>
       </td>
-    </div>
+    </tr>
   {{/each}}
   </table>
 </div>
