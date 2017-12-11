@@ -1,18 +1,15 @@
-<div class="form-group">
-  <label for="{{prefix}}-{{type}}-table">Choose the assignment for staff:</label>
-  <table id="{{prefix}}-{{type}}-table" class="table">
+<div class="container form-group">
   {{#each staff}}
-    <tr>
-      <td>{{this.name}}</td>
-      <td>
-        <select name="{{../prefix}}-{{../type}}" class="custom-select" {{#if required}}required{{/if}}>
+    <div class="row">
+      <div class="col-8">{{this.name}}</div>
+      <div class="col-4">
+        <select name="{{../prefix}}-{{../type}}-{{this.id}}" class="custom-select" {{#if ../required}}required{{/if}}>
           <option value="" disabled selected>Select a pod...</option>
           {{#each ../assignment}}
             <option value="{{this.id}}">{{this.assignment}}</option>
           {{/each}}
         </select>
-      </td>
-    </tr>
+      </div>
+    </div>
   {{/each}}
-  </table>
 </div>

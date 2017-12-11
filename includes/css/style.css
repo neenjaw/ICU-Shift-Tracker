@@ -83,7 +83,7 @@ body {
 
 .form-section {
 	padding-left: 15px;
-  border-left: 2px solid #FF851B;
+  border-left: 2px solid #0074fc;
   display: none;
 }
 
@@ -91,7 +91,7 @@ body {
   display: inherit;
 }*/
 
-#nc, #cn {
+#nc, #cn, #nc-pod, #cn-pod {
   max-height: 150px;
 }
 
@@ -99,18 +99,18 @@ body {
   max-height: 300px;
 }
 
-#float-rn {
+#float-rn-subsection {
 	display: none;
 }
 
-div.aus-form-group {
+.aus-form-group {
   overflow-y: scroll;
   border-radius: 3px;
   padding: 5px;
   border: 1px solid lightgrey;
 }
 
-div.inner-item:not(:last-child) {
+.inner-item:not(:last-child) {
   border-collapse: collapse;
   border-bottom: 1px solid lightgrey;
 }

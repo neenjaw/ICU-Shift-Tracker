@@ -2,7 +2,15 @@
   {{#each staff}}
     <div class="form-check">
       <label class="form-check-label">
-        <input name="{{../prefix}}" id="{{../prefix}}-{{../type}}-{{this.id}}" class="form-check-input" type="checkbox" value="{{this.id}}">
+        <input id="{{../prefix}}-{{../type}}-{{this.id}}"
+          class="form-check-input"
+          type="checkbox"
+          value="{{this.id}}"
+          name="{{../prefix}}"
+          {{#if @first}}
+            {{#if ../required}}required="true"{{/if}}
+            data-parsley-errors-container="#{{../prefix}}-errors"
+          {{/if}}>
         {{this.name}}
       </label>
     </div>
