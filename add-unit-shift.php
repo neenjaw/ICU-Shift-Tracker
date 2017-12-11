@@ -47,486 +47,512 @@ if (!isset($_SESSION['user'])) {
       <div id="msf-container" class="col-sm-12">
 
         <!-- Multi-step form goes here -->
-        <form id="unit-shift-form" class="unit-shift-form">
+        <!-- <form id="unit-shift-form" class="unit-shift-form"  data-parsley-validate > -->
 
           <div class="form-navigation m-1 text-center">
             <button type="button" id="btn-prev" class="previous btn btn-secondary">&lt; Previous</button>
             <button type="button" id="btn-next" class="next btn btn-secondary">Next &gt;</button>
-            <button type="submit" id="btn-submit" class="btn btn-secondary">Submit</button>
+            <button type="button" id="btn-submit" class="btn btn-secondary">Submit</button>
           </div>
 
           <!-- SHIFT SELECT -->
           <div id="section-date" class="form-section form-inline mt-4 mb-4">
-            <div class="form-group">
+            <form id="section-date-form">
+              <div class="form-group">
 
-              <!-- DATE SELECT -->
-              <label class="control-label requiredField mr-1" for="date">Date: </label>
-              <div class="input-group mt-1">
-                <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
-                <input class="form-control"
-                       id="date"
-                       name="date"
-                       placeholder="YYYY/MM/DD"
-                       value="<?= date('Y-m-d') ?>"
-                       type="<?= (($detect->isMobile()) ? 'date' : 'text'); ?>"
-                       <?= (($detect->isMobile()) ? ('max="'.date('Y-m-d').'" ') : ''); ?>
-                       required>
+                <!-- DATE SELECT -->
+                <label class="control-label requiredField mr-1" for="date">Date: </label>
+                <div class="input-group mt-1">
+                  <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
+                  <input class="form-control"
+                         id="date"
+                         name="date"
+                         placeholder="YYYY/MM/DD"
+                         value="<?= date('Y-m-d') ?>"
+                         type="<?= (($detect->isMobile()) ? 'date' : 'text'); ?>"
+                         <?= (($detect->isMobile()) ? ('max="'.date('Y-m-d').'" ') : ''); ?>
+                         required>
+                </div>
+                <!-- END DATE SELECT -->
+
+                <!-- DAY / NIGHT SELECT -->
+                <div class="btn-group requiredField ml-sm-1 mt-1" data-toggle="buttons">
+                  <label class="btn btn-outline-primary active">
+                    <input id="day-or-night-day" type="radio" name="day-or-night" value="D" autocomplete="off" checked required>
+                    Day
+                  </label>
+                  <label class="btn btn-outline-primary">
+                    <input id="day-or-night-night" type="radio" name="day-or-night" value="N" autocomplete="off">
+                    Night
+                  </label>
+                </div>
+                <!-- END DAY / NIGHT SELECT -->
+
               </div>
-              <!-- END DATE SELECT -->
-
-              <!-- DAY / NIGHT SELECT -->
-              <div class="btn-group requiredField ml-sm-1 mt-1" data-toggle="buttons">
-                <label class="btn btn-outline-primary active">
-                  <input id="day-or-night-day" type="radio" name="day-or-night" value="D" autocomplete="off" checked required>
-                  Day
-                </label>
-                <label class="btn btn-outline-primary">
-                  <input id="day-or-night-night" type="radio" name="day-or-night" value="N" autocomplete="off">
-                  Night
-                </label>
-              </div>
-              <!-- END DAY / NIGHT SELECT -->
-
-            </div>
+            </form>
           </div>
           <!-- END SHIFT SELECT -->
 
           <!-- Select Clinician/Charge -->
           <div id="section-nc-cn" class="form-section mt-4 mb-4">
+            <form id="section-nc-cn-form">
 
-            <!-- rn Clinician SELECT -->
-            <div id="nc-subsection" class="form-group">
-              <label class="control-label requiredField" for="nc">
-                Who is the Clinician for the shift?<span class="asteriskField">*</span>
-              </label>
-              <div id="nc-errors"></div>
-              <div id="nc"
-                class="aus-form-group p-0 m-0"
-                data-populate-group="staff"
-                data-populate-staff-list="rn"
-                data-populate-type="radio"
-                data-populate-prefix="nc"
-                data-populate-required="true">
+              <!-- RN Clinician SELECT -->
+              <div id="nc-subsection" class="form-group">
+                <label class="control-label requiredField" for="nc">
+                  Who is the Clinician for the shift?<span class="asteriskField">*</span>
+                </label>
+                <div id="nc-errors"></div>
+                <div id="nc"
+                  class="aus-form-group"
+                  data-populate-staff-list="rn"
+                  data-populate-type="radio"
+                  data-populate-prefix="nc"
+                  data-populate-required="true">
 
-                <!-- dynamic staff select built here -->
-                <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
-                <span class="sr-only">Loading...</span>
+                  <!-- dynamic staff select built here -->
+                  <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+                  <span class="sr-only">Loading...</span>
 
+                </div>
               </div>
-            </div>
-            <!-- END rn Clinician SELECT -->
+              <!-- END RN Clinician SELECT -->
 
-            <!-- rn CHARGE SELECT -->
-            <div id="cn-subsection" class="form-group">
-              <label class="control-label requiredField" for="cn">
-                Who is the Charge for the shift?<span class="asteriskField">*</span>
-              </label>
-              <div id="cn-errors"></div>
-              <div id="cn"
-                class="aus-form-group p-0 m-0"
-                data-populate-group="staff"
-                data-populate-staff-list="rn"
-                data-populate-type="radio"
-                data-populate-prefix="cn"
-                data-populate-required="true">
+              <!-- RN CHARGE SELECT -->
+              <div id="cn-subsection" class="form-group">
+                <label class="control-label requiredField" for="cn">
+                  Who is the Charge for the shift?<span class="asteriskField">*</span>
+                </label>
+                <div id="cn-errors"></div>
+                <div id="cn"
+                  class="aus-form-group"
+                  data-populate-staff-list="rn"
+                  data-populate-type="radio"
+                  data-populate-prefix="cn"
+                  data-populate-required="true">
 
-                <!-- dynamic staff select built here -->
-                <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
-                <span class="sr-only">Loading...</span>
+                  <!-- dynamic staff select built here -->
+                  <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+                  <span class="sr-only">Loading...</span>
 
+                </div>
               </div>
-            </div>
-            <!-- END rn CHARGE SELECT -->
+              <!-- END RN CHARGE SELECT -->
 
+            </form>
           </div>
           <!-- END Select Clinician/Charge -->
 
           <!-- assign pods to the clinician/charge -->
           <div id="section-nc-cn-pod" class="form-section mt-4 mb-4">
+            <form id="section-nc-cn-pod-form">
 
-            <!-- Assign Clinician Pod -->
-            <div class="form-group">
-              <label class="control-label requiredField" for="select">
-                Which pod was the Nurse Clinician in?<span class="asteriskField">*</span>
-              </label>
-              <div id="nc-pod-errors"></div>
-              <div id="nc-pod"
-                class="aus-form-group p-0 m-0"
-                data-populate-group="pod"
-                data-populate-staff-list="rn"
-                data-populate-staff-matching="nc"
-                data-populate-pod-show="A/B,B/C"
-                data-populate-type="assignmentselect"
-                data-populate-prefix="nc-pod"
-                data-populate-required="true">
+              <!-- Assign Clinician Pod -->
+              <div class="form-group">
+                <label class="control-label requiredField" for="select">
+                  Which pod was the Nurse Clinician in?<span class="asteriskField">*</span>
+                </label>
+                <div id="nc-pod-errors"></div>
+                <div id="nc-pod"
+                  class="aus-form-group"
+                  data-populate-staff-matching="nc"
+                  data-populate-pod-show="A/B,B/C"
+                  data-populate-type="assignmentselect"
+                  data-populate-prefix="nc-pod"
+                  data-populate-required="true">
 
-                <!-- dynamic pod select built here -->
-                <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
-                <span class="sr-only">Loading...</span>
+                  <!-- dynamic pod select built here -->
+                  <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+                  <span class="sr-only">Loading...</span>
 
-              </div>
-
-            </div>
-
-            <div class="form-group">
-              <label class="control-label requiredField" for="cn-pod">
-                Which pod was the Charge Nurse in?<span class="asteriskField">*</span>
-              </label>
-              <div id="cn-pod-errors"></div>
-              <div id="cn-pod"
-                class="aus-form-group p-0 m-0"
-                data-populate-group="pod"
-                data-populate-staff-list="rn"
-                data-populate-staff-matching="cn"
-                data-populate-pod-show="A,C"
-                data-populate-type="assignmentselect"
-                data-populate-prefix="cn-pod"
-                data-populate-required="true">
-
-                <!-- dynamic pod select built here -->
-                <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
-                <span class="sr-only">Loading...</span>
+                </div>
 
               </div>
 
-            </div>
+              <div class="form-group">
+                <label class="control-label requiredField" for="cn-pod">
+                  Which pod was the Charge Nurse in?<span class="asteriskField">*</span>
+                </label>
+                <div id="cn-pod-errors"></div>
+                <div id="cn-pod"
+                  class="aus-form-group"
+                  data-populate-staff-matching="cn"
+                  data-populate-pod-show="A,C"
+                  data-populate-type="assignmentselect"
+                  data-populate-prefix="cn-pod"
+                  data-populate-required="true">
+
+                  <!-- dynamic pod select built here -->
+                  <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+                  <span class="sr-only">Loading...</span>
+
+                </div>
+              </div>
+
+            </form>
           </div>
           <!-- END assign pods to the clinician/charge -->
 
 
           <!-- Floating nurse -->
           <div id="section-float-rn" class="form-section mt-4 mb-4">
+            <form id="section-float-rn-form">
 
-            <div id="float-rn-check-subsection" class="form-group">
-              <label class="control-label" for="float-rn-check">
-                Was there a float nurse?
-              </label>
-              <div id="float-rn-check-errors"></div>
-              <div id="float-rn-check" class="staff-group p-0 m-0">
-                <div class="inner-item list-group-item-action">
-                  <label class="custom-control custom-radio m-1">
-                    <input id="float-rn-check-yes"
-                      name="float-rn-check"
-                      type="radio"
-                      value="Yes"
-                      required
-                      data-parsley-errors-container="#float-rn-check-errors"
-                      class="custom-control-input">
-                    <span class="custom-control-indicator"></span>
-                    <span class="custom-control-description">Yes</span>
-                  </label>
-                </div>
-                <div class="inner-item list-group-item-action">
-                  <label class="custom-control custom-radio m-1">
-                    <input id="float-rn-check-no"
-                      name="float-rn-check"
-                      type="radio"
-                      value="No"
-                      checked
-                      class="custom-control-input">
-                    <span class="custom-control-indicator"></span>
-                    <span class="custom-control-description">No</span>
-                  </label>
+              <div id="float-rn-check-subsection" class="form-group">
+                <label class="control-label" for="float-rn-check">
+                  Was there a float nurse?
+                </label>
+                <div id="float-rn-check-errors"></div>
+                <div id="float-rn-check" class="staff-group">
+                  <div class="inner-item list-group-item-action">
+                    <label class="custom-control custom-radio m-1">
+                      <input id="float-rn-check-yes"
+                        name="float-rn-check"
+                        type="radio"
+                        value="Yes"
+                        required
+                        data-parsley-errors-container="#float-rn-check-errors"
+                        class="custom-control-input">
+                      <span class="custom-control-indicator"></span>
+                      <span class="custom-control-description">Yes</span>
+                    </label>
+                  </div>
+                  <div class="inner-item list-group-item-action">
+                    <label class="custom-control custom-radio m-1">
+                      <input id="float-rn-check-no"
+                        name="float-rn-check"
+                        type="radio"
+                        value="No"
+                        checked
+                        class="custom-control-input">
+                      <span class="custom-control-indicator"></span>
+                      <span class="custom-control-description">No</span>
+                    </label>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <div id="float-rn-subsection" class="form-group">
-              <label class="control-label" for="float-rn">
-                Who floated?
-              </label>
-              <div id="float-rn-errors"></div>
-              <div id="float-rn"
-                class="aus-form-group p-0 m-0"
-                data-populate-group="staff"
-                data-populate-staff-list="rn"
-                data-populate-type="radio"
-                data-populate-prefix="float-rn"
-                data-populate-required="false">
+              <div id="float-rn-subsection" class="form-group">
+                <label class="control-label" for="float-rn">
+                  Who floated?
+                </label>
+                <div id="float-rn-errors"></div>
+                <div id="float-rn"
+                  class="aus-form-group"
+                  data-populate-staff-list="rn"
+                  data-populate-type="checkbox"
+                  data-populate-prefix="float-rn"
+                  data-populate-required="false">
 
-                <!-- dynamic pod select built here -->
-                <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
-                <span class="sr-only">Loading...</span>
+                  <!-- dynamic pod select built here -->
+                  <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+                  <span class="sr-only">Loading...</span>
 
+                </div>
               </div>
-            </div>
+
+            </form>
           </div>
 
           <div id="section-apod-rn" class="form-section mt-4 mb-4">
-            <!-- Select Bedside Nurses for A -->
+            <form id="section-apod-rn-form">
 
-            <div class="form-group">
-              <label class="control-label requiredField" for="select">
-                Select the nurses for Pod A<span class="asteriskField">*</span>
-              </label>
-              <div id="apod-rn-errors"></div>
-              <div id="apod-rn"
-                class="aus-form-group p-0 m-0"
-                data-populate-group="staff"
-                data-populate-staff-list="rn"
-                data-populate-staff-excluding="cn,nc"
-                data-populate-type="checkbox"
-                data-populate-prefix="apod-rn"
-                data-populate-required="true">
+              <!-- Select Bedside Nurses for A -->
+              <div class="form-group">
+                <label class="control-label requiredField" for="select">
+                  Select the nurses for Pod A<span class="asteriskField">*</span>
+                </label>
+                <div id="apod-rn-errors"></div>
+                <div id="apod-rn"
+                  class="aus-form-group"
+                  data-populate-staff-list="rn"
+                  data-populate-staff-excluding="cn,nc"
+                  data-populate-type="checkbox"
+                  data-populate-prefix="apod-rn"
+                  data-populate-required="true">
 
-                <!-- dynamic pod select built here -->
-                <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
-                <span class="sr-only">Loading...</span>
+                  <!-- dynamic pod select built here -->
+                  <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+                  <span class="sr-only">Loading...</span>
+                </div>
               </div>
 
-            </div>
+            </form>
           </div>
 
           <div id="section-bpod-rn" class="form-section mt-4 mb-4">
-            <!-- Select Bedside Nurses for B -->
+            <form id="section-bpod-rn-form">
 
-            <div class="form-group">
-              <label class="control-label requiredField" for="select">
-                Select the nurses for Pod B<span class="asteriskField">*</span>
-              </label>
-              <div id="bpod-rn-errors"></div>
-              <div id="bpod-rn"
-                class="aus-form-group p-0 m-0"
-                data-populate-group="staff"
-                data-populate-staff-list="rn"
-                data-populate-staff-excluding="cn,nc,apod-rn"
-                data-populate-type="checkbox"
-                data-populate-prefix="bpod-rn"
-                data-populate-required="true">
+              <!-- Select Bedside Nurses for B -->
+              <div class="form-group">
+                <label class="control-label requiredField" for="select">
+                  Select the nurses for Pod B<span class="asteriskField">*</span>
+                </label>
+                <div id="bpod-rn-errors"></div>
+                <div id="bpod-rn"
+                  class="aus-form-group"
+                  data-populate-staff-list="rn"
+                  data-populate-staff-excluding="cn,nc,apod-rn"
+                  data-populate-type="checkbox"
+                  data-populate-prefix="bpod-rn"
+                  data-populate-required="true">
 
-                <!-- dynamic pod select built here -->
-                <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
-                <span class="sr-only">Loading...</span>
+                  <!-- dynamic pod select built here -->
+                  <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+                  <span class="sr-only">Loading...</span>
+                </div>
               </div>
 
-            </div>
+            </form>
           </div>
 
           <div id="section-cpod-rn" class="form-section mt-4 mb-4">
-            <!-- Select Bedside Nurses for C -->
-            <div class="form-group">
-              <label class="control-label requiredField" for="select">
-                Select the nurses for Pod C<span class="asteriskField">*</span>
-              </label>
-              <div id="cpod-rn-errors"></div>
-              <div id="cpod-rn"
-                class="aus-form-group p-0 m-0"
-                data-populate-group="staff"
-                data-populate-staff-list="rn"
-                data-populate-staff-excluding="cn,nc,apod-rn,bpod-rn"
-                data-populate-type="checkbox"
-                data-populate-prefix="cpod-rn"
-                data-populate-required="true">
+            <form id="section-cpod-rn-form">
 
-                <!-- dynamic pod select built here -->
-                <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
-                <span class="sr-only">Loading...</span>
+              <!-- Select Bedside Nurses for C -->
+              <div class="form-group">
+                <label class="control-label requiredField" for="select">
+                  Select the nurses for Pod C<span class="asteriskField">*</span>
+                </label>
+                <div id="cpod-rn-errors"></div>
+                <div id="cpod-rn"
+                  class="aus-form-group"
+                  data-populate-staff-list="rn"
+                  data-populate-staff-excluding="cn,nc,apod-rn,bpod-rn"
+                  data-populate-type="checkbox"
+                  data-populate-prefix="cpod-rn"
+                  data-populate-required="true">
+
+                  <!-- dynamic pod select built here -->
+                  <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+                  <span class="sr-only">Loading...</span>
+                </div>
               </div>
 
-            </div>
+            </form>
           </div>
 
           <!-- Who had non-vent -->
           <div id="section-non-vent-mod" class="form-section mt-4 mb-4">
-            <div class="form-group">
-              <label class="control-label" for="div">
-                Which nurses had only non-ventilated patients?
-              </label>
-              <div id="non-vent-mod"
-                class="aus-form-group p-0 m-0"
-                data-populate-group="staff"
-                data-populate-staff-list="rn"
-                data-populate-staff-matching="apod-rn,bpod-rn,cpod-rn"
-                data-populate-type="checkbox"
-                data-populate-prefix="non-vent-mod"
-                data-populate-required="false">
+            <form id="section-non-vent-mod-form">
 
-                <!-- dynamic pod select built here -->
-                <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
-                <span class="sr-only">Loading...</span>
+              <div class="form-group">
+                <label class="control-label" for="div">
+                  Which nurses had only non-ventilated patients?
+                </label>
+                <div id="non-vent-mod"
+                  class="aus-form-group"
+                  data-populate-staff-matching="apod-rn,bpod-rn,cpod-rn"
+                  data-populate-type="checkbox"
+                  data-populate-prefix="non-vent-mod"
+                  data-populate-required="false">
+
+                  <!-- dynamic pod select built here -->
+                  <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+                  <span class="sr-only">Loading...</span>
+                </div>
               </div>
-            </div>
+
+            </form>
           </div>
 
           <!-- Who had double -->
           <div id="section-double-mod" class="form-section mt-4 mb-4">
-            <div class="form-group">
-              <label class="control-label" for="div">
-                Which nurses were doubled?
-              </label>
-              <div id="double-mod"
-                class="aus-form-group p-0 m-0"
-                data-populate-group="staff"
-                data-populate-staff-list="rn"
-                data-populate-staff-matching="apod-rn,bpod-rn,cpod-rn"
-                data-populate-type="checkbox"
-                data-populate-prefix="double-mod"
-                data-populate-required="false">
+            <form id="section-double-mod-form">
 
-                <!-- dynamic pod select built here -->
-                <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
-                <span class="sr-only">Loading...</span>
+              <div class="form-group">
+                <label class="control-label" for="div">
+                  Which nurses were doubled?
+                </label>
+                <div id="double-mod"
+                  class="aus-form-group"
+                  data-populate-staff-matching="apod-rn,bpod-rn,cpod-rn"
+                  data-populate-type="checkbox"
+                  data-populate-prefix="double-mod"
+                  data-populate-required="false">
+
+                  <!-- dynamic pod select built here -->
+                  <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+                  <span class="sr-only">Loading...</span>
+                </div>
               </div>
-            </div>
+
+            </form>
           </div>
 
           <!-- Who admitted -->
           <div id="section-admit-mod" class="form-section mt-4 mb-4">
-            <div class="form-group">
-              <label class="control-label" for="div">
-                Which nurses admitted patients?
-              </label>
-              <div id="admit-mod"
-                class="aus-form-group p-0 m-0"
-                data-populate-group="staff"
-                data-populate-staff-list="rn"
-                data-populate-staff-matching="apod-rn,bpod-rn,cpod-rn"
-                data-populate-type="checkbox"
-                data-populate-prefix="admit-mod"
-                data-populate-required="false">
+            <form id="section-admit-mod-form">
 
-                <!-- dynamic pod select built here -->
-                <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
-                <span class="sr-only">Loading...</span>
+              <div class="form-group">
+                <label class="control-label" for="div">
+                  Which nurses admitted patients?
+                </label>
+                <div id="admit-mod"
+                  class="aus-form-group"
+                  data-populate-staff-matching="apod-rn,bpod-rn,cpod-rn"
+                  data-populate-type="checkbox"
+                  data-populate-prefix="admit-mod"
+                  data-populate-required="false">
+
+                  <!-- dynamic pod select built here -->
+                  <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+                  <span class="sr-only">Loading...</span>
+                </div>
               </div>
-            </div>
+
+            </form>
           </div>
 
           <!-- Who had very sick -->
           <div id="section-very-sick-mod" class="form-section mt-4 mb-4">
-            <div class="form-group">
-              <label class="control-label" for="div">
-                Which nurses had a very sick patient <small>(3 gtt's or more)</small>?
-              </label>
-              <div id="very-sick-mod"
-                class="aus-form-group p-0 m-0"
-                data-populate-group="staff"
-                data-populate-staff-list="rn"
-                data-populate-staff-matching="apod-rn,bpod-rn,cpod-rn"
-                data-populate-type="checkbox"
-                data-populate-prefix="very-sick-mod"
-                data-populate-required="false">
+            <form id="section-very-sick-mod-form">
 
-                <!-- dynamic pod select built here -->
-                <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
-                <span class="sr-only">Loading...</span>
+              <div class="form-group">
+                <label class="control-label" for="div">
+                  Which nurses had a very sick patient <small>(3 gtt's or more)</small>?
+                </label>
+                <div id="very-sick-mod"
+                  class="aus-form-group"
+                  data-populate-staff-matching="apod-rn,bpod-rn,cpod-rn"
+                  data-populate-type="checkbox"
+                  data-populate-prefix="very-sick-mod"
+                  data-populate-required="false">
+
+                  <!-- dynamic pod select built here -->
+                  <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+                  <span class="sr-only">Loading...</span>
+                </div>
               </div>
-            </div>
+
+            </form>
           </div>
 
           <!-- Who had code pager -->
           <div id="section-code-pager-mod" class="form-section mt-4 mb-4">
-            <div class="form-group">
-              <label class="control-label" for="div">
-                Which nurses had the code pager?
-              </label>
-              <div id="code-pager-mod"
-                class="aus-form-group p-0 m-0"
-                data-populate-group="staff"
-                data-populate-staff-list="rn"
-                data-populate-staff-matching="apod-rn,bpod-rn,cpod-rn"
-                data-populate-type="checkbox"
-                data-populate-prefix="code-pager-mod"
-                data-populate-required="false">
+            <form id="section-code-pager-mod-form">
 
-                <!-- dynamic pod select built here -->
-                <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
-                <span class="sr-only">Loading...</span>
+              <div class="form-group">
+                <label class="control-label" for="div">
+                  Which nurses had the code pager?
+                </label>
+                <div id="code-pager-mod"
+                  class="aus-form-group"
+                  data-populate-staff-matching="apod-rn,bpod-rn,cpod-rn"
+                  data-populate-type="checkbox"
+                  data-populate-prefix="code-pager-mod"
+                  data-populate-required="false">
+
+                  <!-- dynamic pod select built here -->
+                  <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+                  <span class="sr-only">Loading...</span>
+                </div>
               </div>
-            </div>
+
+            </form>
           </div>
 
           <!-- Who had crrt -->
           <div id="section-crrt-mod" class="form-section mt-4 mb-4">
-            <div class="form-group">
-              <label class="control-label" for="div">
-                Which nurses had crrt?
-              </label>
-              <div id="crrt-mod"
-                class="aus-form-group p-0 m-0"
-                data-populate-group="staff"
-                data-populate-staff-list="rn"
-                data-populate-staff-matching="apod-rn,bpod-rn,cpod-rn"
-                data-populate-type="checkbox"
-                data-populate-prefix="crrt-mod"
-                data-populate-required="false">
+            <form id="section-crrt-mod-form">
 
-                <!-- dynamic pod select built here -->
-                <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
-                <span class="sr-only">Loading...</span>
+              <div class="form-group">
+                <label class="control-label" for="div">
+                  Which nurses had crrt?
+                </label>
+                <div id="crrt-mod"
+                  class="aus-form-group"
+                  data-populate-staff-matching="apod-rn,bpod-rn,cpod-rn"
+                  data-populate-type="checkbox"
+                  data-populate-prefix="crrt-mod"
+                  data-populate-required="false">
+
+                  <!-- dynamic pod select built here -->
+                  <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+                  <span class="sr-only">Loading...</span>
+                </div>
               </div>
-            </div>
+
+            </form>
           </div>
 
           <!-- Who had evd -->
           <div id="section-evd-mod" class="form-section mt-4 mb-4">
-            <div class="form-group">
-              <label class="control-label" for="div">
-                Which nurses had an EVD?
-              </label>
-              <div id="evd-mod"
-                class="aus-form-group p-0 m-0"
-                data-populate-group="staff"
-                data-populate-staff-list="rn"
-                data-populate-staff-matching="apod-rn,bpod-rn,cpod-rn"
-                data-populate-type="checkbox"
-                data-populate-prefix="evd-mod"
-                data-populate-required="false">
+            <form id="section-evd-mod-form">
 
-                <!-- dynamic pod select built here -->
-                <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
-                <span class="sr-only">Loading...</span>
+              <div class="form-group">
+                <label class="control-label" for="div">
+                  Which nurses had an EVD?
+                </label>
+                <div id="evd-mod"
+                  class="aus-form-group"
+                  data-populate-staff-matching="apod-rn,bpod-rn,cpod-rn"
+                  data-populate-type="checkbox"
+                  data-populate-prefix="evd-mod"
+                  data-populate-required="false">
+
+                  <!-- dynamic pod select built here -->
+                  <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+                  <span class="sr-only">Loading...</span>
+                </div>
               </div>
-            </div>
+
+            </form>
           </div>
 
           <!-- Who who had burn -->
           <div id="section-burn-mod" class="form-section mt-4 mb-4">
-            <div class="form-group">
-              <label class="control-label" for="div">
-                Which nurses had a burn patient?
-              </label>
-              <div id="burn-mod"
-                class="aus-form-group p-0 m-0"
-                data-populate-group="staff"
-                data-populate-staff-list="rn"
-                data-populate-staff-matching="apod-rn,bpod-rn,cpod-rn"
-                data-populate-type="checkbox"
-                data-populate-prefix="burn-mod"
-                data-populate-required="false">
+            <form id="section-burn-mod-form">
 
-                <!-- dynamic pod select built here -->
-                <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
-                <span class="sr-only">Loading...</span>
+              <div class="form-group">
+                <label class="control-label" for="div">
+                  Which nurses had a burn patient?
+                </label>
+                <div id="burn-mod"
+                  class="aus-form-group"
+                  data-populate-staff-matching="apod-rn,bpod-rn,cpod-rn"
+                  data-populate-type="checkbox"
+                  data-populate-prefix="burn-mod"
+                  data-populate-required="false">
+
+                  <!-- dynamic pod select built here -->
+                  <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+                  <span class="sr-only">Loading...</span>
+                </div>
               </div>
-            </div>
+
+            </form>
           </div>
 
           <div id="section-na" class="form-section mt-4 mb-4">
-            <!-- Select NA's -->
-            <div class="form-group">
-              <label class="control-label requiredField" for="select">
-                Select the NA's<span class="asteriskField">*</span>
-              </label>
-              <div id="na-errors"></div>
-              <div id="na"
-                class="aus-form-group p-0 m-0"
-                data-populate-group="staff"
-                data-populate-staff-list="LPN,NA"
-                data-populate-type="checkbox"
-                data-populate-prefix="na"
-                data-populate-required="false">
+            <form id="section-na-form">
 
-                <!-- dynamic pod select built here -->
-                <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
-                <span class="sr-only">Loading...</span>
+            <!-- Select NA's -->
+              <div class="form-group">
+                <label class="control-label requiredField" for="select">
+                  Select the NA's<span class="asteriskField">*</span>
+                </label>
+                <div id="na-errors">
+                </div>
+                <div id="na"
+                  class="aus-form-group"
+                  data-populate-staff-list="na"
+                  data-populate-type="checkbox"
+                  data-populate-prefix="na"
+                  data-populate-required="false">
+
+                  <!-- dynamic pod select built here -->
+                  <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+                  <span class="sr-only">Loading...</span>
+                </div>
               </div>
 
-            </div>
+            </form>
           </div>
 
           <!-- assign pods to the na's -->
           <div id="section-na-pod" class="form-section mt-4 mb-4 skip-section">
+            <form id="section-na-pod-form">
 
             <!-- Select NA's Pod-->
             <div class="form-group">
@@ -535,12 +561,10 @@ if (!isset($_SESSION['user'])) {
               </label>
               <div id="na-pod-errors"></div>
               <div id="na-pod"
-                class="aus-form-group p-0 m-0"
-                data-populate-group="staff"
-                data-populate-staff-list="na"
+                class="aus-form-group"
                 data-populate-assignment-excluding="Float"
                 data-populate-staff-matching="na"
-                data-populate-type="podselect"
+                data-populate-type="assignmentselect"
                 data-populate-prefix="na-pod"
                 data-populate-required="false">
 
@@ -550,9 +574,12 @@ if (!isset($_SESSION['user'])) {
               </div>
             </div>
 
+            </form>
           </div>
 
           <div id="section-uc" class="form-section mt-4 mb-4">
+            <form id="section-uc-form">
+
             <!-- Select UC's -->
             <div class="form-group">
               <label class="control-label requiredField" for="select">
@@ -560,9 +587,8 @@ if (!isset($_SESSION['user'])) {
               </label>
               <div id="uc-errors"></div>
               <div id="uc"
-                class="aus-form-group p-0 m-0"
-                data-populate-group="staff"
-                data-populate-staff-list="UC"
+                class="aus-form-group"
+                data-populate-staff-list="uc"
                 data-populate-type="checkbox"
                 data-populate-prefix="uc"
                 data-populate-required="false">
@@ -572,10 +598,13 @@ if (!isset($_SESSION['user'])) {
                 <span class="sr-only">Loading...</span>
               </div>
             </div>
+
+            </form>
           </div>
 
           <!-- assign pods to the uc's -->
           <div id="section-uc-pod" class="form-section mt-4 mb-4 skip-section">
+            <form id="section-uc-pod-form">
 
             <!-- Select UC's Pod-->
             <div class="form-group">
@@ -584,12 +613,10 @@ if (!isset($_SESSION['user'])) {
               </label>
               <div id="uc-pod-errors"></div>
               <div id="uc-pod"
-                class="aus-form-group p-0 m-0"
-                data-populate-group="staff"
-                data-populate-staff-list="UC"
+                class="aus-form-group"
                 data-populate-assignment-excluding="Float"
                 data-populate-staff-matching="uc"
-                data-populate-type="podselect"
+                data-populate-type="assignmentselect"
                 data-populate-prefix="uc-pod"
                 data-populate-required="false">
 
@@ -599,18 +626,20 @@ if (!isset($_SESSION['user'])) {
               </div>
             </div>
 
+            </form>
           </div>
 
           <!-- Select Outreach rn -->
           <div id="section-outreach-rn" class="form-section mt-4 mb-4">
+            <form id="section-outreach-form">
+
             <div class="form-group">
               <label class="control-label requiredField" for="outrach-rn">
                 Who was on outreach?<span class="asteriskField">*</span>
               </label>
               <div id="outreach-rn-errors"></div>
               <div id="outreach-rn"
-                class="aus-form-group p-0 m-0"
-                data-populate-group="staff"
+                class="aus-form-group"
                 data-populate-staff-list="rn"
                 data-populate-staff-excluding="cn,nc,apod-rn,bpod-rn,cpod-rn"
                 data-populate-type="radio"
@@ -622,14 +651,16 @@ if (!isset($_SESSION['user'])) {
                 <span class="sr-only">Loading...</span>
               </div>
             </div>
+
+            </form>
           </div>
 
           <div class="form-navigation m-1 text-center">
             <button type="button" id="btn-prev" class="previous btn btn-secondary">&lt; Previous</button>
             <button type="button" id="btn-next" class="next btn btn-secondary">Next &gt;</button>
-            <button type="submit" id="btn-submit" class="btn btn-secondary">Submit</button>
+            <button type="button" id="btn-submit" class="btn btn-secondary">Submit</button>
           </div>
-        </form>
+        <!-- </form> -->
 
       </div>
     </div>
@@ -703,9 +734,9 @@ if (!isset($_SESSION['user'])) {
   var populate = {
     item: [
       "#nc", "#cn", "#nc-pod", "#cn-pod", "#float-rn", "#apod-rn", "#bpod-rn",
-      "#cpod-rn", "#non-vent-mod", "#double-mod", "#admit-mod", "#very-sick-mod",
-      "#crrt-mod", "#evd-mod", "#burn-mod", "#na", "#na-pod", "#uc", "#uc-pod",
-      "#outreach-rn"
+      "#cpod-rn", "#non-vent-mod", "#double-mod", "#code-pager-mod", "#admit-mod",
+      "#very-sick-mod", "#crrt-mod", "#evd-mod", "#burn-mod", "#na", "#na-pod",
+      "#uc", "#uc-pod", "#outreach-rn"
     ],
     template: {
       select : {
@@ -727,6 +758,11 @@ if (!isset($_SESSION['user'])) {
     },
     list: null
   };
+
+  var apodRn = [];
+  var bpodRn = [];
+  var cpodRn = [];
+  var bedsideUnchanged = false;
 
   $(function() {
 
@@ -785,11 +821,12 @@ if (!isset($_SESSION['user'])) {
 
     // Next button goes forward iff current block validates
     $('.form-navigation .next').click(function() {
-      $('.unit-shift-form').parsley().whenValidate({
-        group: 'block-' + curIndex()
-      }).done(function() {
+      // FIXME:
+      $sections.eq(curIndex()).find('form').parsley().whenValidate().done(function() {
         navigateTo(curIndex() + 1);
       });
+
+      // navigateTo(curIndex() + 1);
     });
 
     //navigates to the current form section
@@ -797,7 +834,7 @@ if (!isset($_SESSION['user'])) {
       // remove the current class from the previously current section
       if (oldIndex !== -1) {
         $sections.eq(oldIndex).removeClass('current');
-        $sections.eq(oldIndex).hide("fast")
+        $sections.eq(oldIndex).slideUp("fast")
       }
       let $temp = $sections.eq(index);
 
@@ -816,7 +853,7 @@ if (!isset($_SESSION['user'])) {
 
       //add the current class to the now current section
       $temp.addClass('current');
-      $temp.show("slow");
+      $temp.slideDown("slow");
 
       // Show only the navigation buttons that make sense for the current section:
       $btnPrev.attr("disabled", !(index > 0))
@@ -872,15 +909,18 @@ if (!isset($_SESSION['user'])) {
     // Prepare sections by setting the `data-parsley-group` attribute to 'block-0', 'block-1', etc.
     $sections.each(function(index, section) {
       $(this).data('blockIndex', index);
-      setParsleyJsGroup(section, index);
+
+      if (index === 0) {
+        setParsleyJsGroup($(this), index);
+      }
     });
     navigateTo(0); // Start at the beginning
 
     //catch the on-submit event, collect/format data from the form, submit via ajax
-    $('#unit-shift-form').parsley().on('form:submit', function () {
-      submitUnitShiftForm();
-      return false; //return false to prevent HTML form submission
-    });
+    // $('#unit-shift-form').parsley().on('form:submit', function () {
+    //   submitUnitShiftForm();
+    //   return false; //return false to prevent HTML form submission
+    // });
 
     /***************************************
      * END -- FORM PAGINATION / VALIDATION *
@@ -895,59 +935,56 @@ if (!isset($_SESSION['user'])) {
     //  * listener to change behavior of form if float nurse is to be selected
     //  * @var [type]
     //  */
-    // $(`#float-rn-check-yes`).closest('div').click(function() {
-    //   $(`#float-rn-subsection`).toggle(true); //show float nurse select
-    //   $(`input[name='float-rn']`).first().prop("required", true); // add the required property to the float-rn select
-    // });
+    $(`#float-rn-check-yes`).closest('div').click(function() {
+      $(`#float-rn-subsection`).slideDown('slow'); //show float nurse select
+      $(`input[name='float-rn']`).first().prop("required", true); // add the required property to the float-rn select
+    });
 
     // /**
     //  * listener to change behavior of form if no float nurse is to be added
     //  * @var [type]
     //  */
-    // $(`#float-rn-check-no`).closest('div').click(function() {
-    //   $(`#float-rn-subsection`).toggle(false); //show float nurse select
-    //   $(`input[name='float-rn']`).first().prop("required", false); // add the required property to the float-rn select
+    $(`#float-rn-check-no`).closest('div').click(function() {
+      $(`#float-rn-subsection`).slideUp('fast'); //show float nurse select
+      $(`input[name='float-rn']`).first().prop("required", false); // add the required property to the float-rn select
 
-    //   let $frnElem = $(`input[type='checkbox'][name='float-rn']:checked`); //unselect any selected float-rn value
-    //   if ($frnElem !== null) { $frnElem.prop("checked", false); }
-    // });
+      let $frnElem = $(`input[type='checkbox'][name='float-rn']:checked`); //unselect any selected float-rn value
+      if ($frnElem !== null) { $frnElem.prop("checked", false); }
+    });
 
 
-    // /**
-    //  * listener to change behavior of form if day shift is selected for input
-    //  * @var [type]
-    //  */
-    // $(`#day-or-night-day`).closest('label').click(function() {
-    //   $(`#cn-group`).toggle(true); // show charge nurse select
-    //   $(`#section-nc-cn-pod`).toggleClass('skip-section', false); // show section for pod selection for nc/cn
+    /**
+     * listener to change behavior of form if day shift is selected for input
+     * @var [type]
+     */
+    $(`#day-or-night-day`).closest('label').click(function() {
+      $(`#cn-subsection`).toggle(true); // show charge nurse select
+      $(`#section-nc-cn-pod`).toggleClass('skip-section', false); // show section for pod selection for nc/cn
 
-    //   $(`input[name='cn']`).first().prop("required", true); // add the required property to the first cn
-    //   $(`#cn-pod input`).first().prop("required", true); // add the required property to the first cn-pod
+      $(`input[name='cn']`).first().prop("required", true); // add the required property to the first cn
+      $(`#cn-pod input`).first().prop("required", true); // add the required property to the first cn-pod
+    });
 
-    //   hideFormInnerItem($(`#nc-pod-8`));
-    // });
+    /**
+     * listener to change behavior of form if night shift is selected for input
+     * @var [type]
+     */
+    $(`#day-or-night-night`).closest('label').click(function() {
+      $(`#cn-subsection`).toggle(false); // hide charge nurse select
 
-  //   /**
-  //    * listener to change behavior of form if night shift is selected for input
-  //    * @var [type]
-  //    */
-  //   $(`#day-or-night-night`).closest('label').click(function() {
-  //     $(`#cn-group`).toggle(false); // hide charge nurse select
+      $(`#section-nc-cn-pod`).toggleClass('skip-section', true); // hide section for pod selection for nc/cn
 
-  //     $(`#section-nc-cn-pod`).toggleClass('skip-section', true); // hide section for pod selection for nc/cn
+      $(`input[name='cn'][required]`).prop("required", false); // remove the required property from the cn select
+      $(`input[name='cn-pod'][required]`).prop("required", false); // remove the required property from the cn select
 
-  //     $(`input[name='cn'][required]`).prop("required", false); // remove the required property from the cn select
-  //     $(`input[name='cn-pod'][required]`).prop("required", false); // remove the required property from the cn select
+      //TODO: auto pod A/B/C for the nc
 
-  //     showFormInnerItem($(`#nc-pod-8`)); //auto pod A/B/C for the nc
-  //     $(`#nc-pod-8`).prop("checked", true);
+      let $cnElem = $(`input[type='radio'][name='cn']:checked`); //unselect any selected cn value
+      if ($cnElem !== null) $cnElem.prop("checked", false);
 
-  //     let $cnElem = $(`input[type='radio'][name='cn']:checked`); //unselect any selected cn value
-  //     if ($cnElem !== null) { $cnElem.prop("checked", false); }
-
-  //     let $cnPodElem = $(`input[type='radio'][name='cn-pod']:checked`); //unselect any selected cn value
-  //     if ($cnPodElem !== null) { $cnPodElem.prop("checked", false); }
-  //   });
+      let $cnPodElem = $(`input[type='radio'][name='cn-pod']:checked`); //unselect any selected cn value
+      if ($cnPodElem !== null) $cnPodElem.prop("checked", false);
+    });
 
   //   /**
   //    * when the nc's assigned pod is clicked, the charge nurse's pod changes to the appropriate selection
@@ -1114,12 +1151,15 @@ if (!isset($_SESSION['user'])) {
 
       o.prefix = $elem.attr('data-populate-prefix') || null;
       o.type = $elem.attr('data-populate-type') || null;
-      o.group = $elem.attr('data-populate-group') || null;
       o.staffList = $elem.attr('data-populate-staff-list') || null;
       o.staffMatching = $elem.attr('data-populate-staff-matching') || null;
       o.staffExcluding = $elem.attr('data-populate-staff-excluding') || null;
       o.assignmentExcluding = $elem.attr('data-populate-assignment') || null,
       o.required = $elem.attr('data-populate-required') || null;
+
+      if (o.required === "false") {
+        o.required = null;
+      }
 
       return o;
     }
@@ -1138,21 +1178,22 @@ if (!isset($_SESSION['user'])) {
       if (debug) console.log(params);
 
       let template = data.template[params.type].template;
-      $curElem.html(template({
-        prefix: params.prefix,
-        type: params.type,
-        assignment: data.list.assignment,
-        staff:data.list[params.staffList].staff,
-        name:data.list[params.staffList].name
-      }));
+      if (params.staffList) {
+        $curElem.html(template({
+          prefix: params.prefix,
+          type: params.type,
+          assignment: data.list.assignment,
+          staff: data.list[params.staffList].staff,
+          name: data.list[params.staffList].name,
+          required: params.required
+        }));
+
+        // set the parsley group if the template was rendered
+        // setParsleyJsGroup($curElem, $curElem.closest('div.form-section').data('blockIndex'));
+
+        //  add listeners
+      }
     }
-    //  get the local params to the item
-    //  prep data for template
-    //  call template
-    //  fill container
-    //  add listeners
-    //
-    //add parsley groups
 
     return true;
   }
