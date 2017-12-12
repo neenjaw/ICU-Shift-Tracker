@@ -156,7 +156,7 @@ if (!isset($_SESSION['user'])) {
                 <div id="nc-pod"
                   class="aus-form-group"
                   data-populate-staff-matching="nc"
-                  data-populate-pod-show="A/B,B/C"
+                  data-populate-assignment-matching="A/B,B/C"
                   data-populate-type="assignmentselect"
                   data-populate-prefix="nc-pod"
                   data-populate-required="true">
@@ -177,7 +177,7 @@ if (!isset($_SESSION['user'])) {
                 <div id="cn-pod"
                   class="aus-form-group"
                   data-populate-staff-matching="cn"
-                  data-populate-pod-show="A,C"
+                  data-populate-assignment-matching="A,C"
                   data-populate-type="assignmentselect"
                   data-populate-prefix="cn-pod"
                   data-populate-required="true">
@@ -909,10 +909,6 @@ if (!isset($_SESSION['user'])) {
     // Prepare sections by setting the `data-parsley-group` attribute to 'block-0', 'block-1', etc.
     $sections.each(function(index, section) {
       $(this).data('blockIndex', index);
-
-      if (index === 0) {
-        setParsleyJsGroup($(this), index);
-      }
     });
     navigateTo(0); // Start at the beginning
 
@@ -1154,7 +1150,8 @@ if (!isset($_SESSION['user'])) {
       o.staffList = $elem.attr('data-populate-staff-list') || null;
       o.staffMatching = $elem.attr('data-populate-staff-matching') || null;
       o.staffExcluding = $elem.attr('data-populate-staff-excluding') || null;
-      o.assignmentExcluding = $elem.attr('data-populate-assignment') || null,
+      o.assignmentMatching = $elem.attr('data-populate-assignment-matching') || null,
+      o.assignmentExcluding = $elem.attr('data-populate-assignment-excluding') || null,
       o.required = $elem.attr('data-populate-required') || null;
 
       if (o.required === "false") {
@@ -1175,6 +1172,8 @@ if (!isset($_SESSION['user'])) {
       // if (debug) console.log($curElem);
 
       let params = getPopulateParam($curElem);
+      if (params.assignmentMatching) params.assignmentMatchingArray = params.assigntmentMatching.split(",");
+      if (params.assignmentExcluding) params.assignmentExcludingArray = params.assigntmentExcluding.split(",");
       if (debug) console.log(params);
 
       let template = data.template[params.type].template;
@@ -1182,24 +1181,47 @@ if (!isset($_SESSION['user'])) {
         $curElem.html(template({
           prefix: params.prefix,
           type: params.type,
-          assignment: data.list.assignment,
+          assignment: data.list.assignment.filter(assignmentFilter),
           staff: data.list[params.staffList].staff,
           name: data.list[params.staffList].name,
           required: params.required
         }));
 
-        // set the parsley group if the template was rendered
-        // setParsleyJsGroup($curElem, $curElem.closest('div.form-section').data('blockIndex'));
-
-        //  add listeners
+        //if needed, add listeners
       }
     }
 
     return true;
   }
 
-  function setParsleyJsGroup(section, index) {
-    return $(section).find(':input').attr('data-parsley-group', 'block-' + index);
+  function assignmentFilter(elem) {
+    result = true;
+
+    if (params.assignmentMatching) {
+      result = false;
+
+      for (let j = 0; j < params.assignmentMatchingArray; j++) {
+        let match = params.assignmentMatchingArray[j];
+
+        if (elem.assignment === match) {
+          result = true;
+          break;
+        }
+      }
+    }
+
+    if (result && params.assignmentExcluding) {
+      for (let j = 0; j < params.assignmentExcludingArray; j++) {
+        let exclude = params.assignmentExcludingArray[j];
+
+        if (elem.assignment === exclude) {
+          result = false;
+          break;
+        }
+      }
+    }
+
+    return result;
   }
 
   // /**
