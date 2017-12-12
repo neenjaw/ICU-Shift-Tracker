@@ -155,6 +155,7 @@ if (!isset($_SESSION['user'])) {
                 <div id="nc-pod-errors"></div>
                 <div id="nc-pod"
                   class="aus-form-group"
+                  data-populate-staff-list="rn"
                   data-populate-staff-matching="nc"
                   data-populate-assignment-matching="A/B,B/C"
                   data-populate-type="assignmentselect"
@@ -176,6 +177,7 @@ if (!isset($_SESSION['user'])) {
                 <div id="cn-pod-errors"></div>
                 <div id="cn-pod"
                   class="aus-form-group"
+                  data-populate-staff-list="rn"
                   data-populate-staff-matching="cn"
                   data-populate-assignment-matching="A,C"
                   data-populate-type="assignmentselect"
@@ -342,6 +344,7 @@ if (!isset($_SESSION['user'])) {
                 </label>
                 <div id="non-vent-mod"
                   class="aus-form-group"
+                  data-populate-staff-list="rn"
                   data-populate-staff-matching="apod-rn,bpod-rn,cpod-rn"
                   data-populate-type="checkbox"
                   data-populate-prefix="non-vent-mod"
@@ -366,6 +369,7 @@ if (!isset($_SESSION['user'])) {
                 </label>
                 <div id="double-mod"
                   class="aus-form-group"
+                  data-populate-staff-list="rn"
                   data-populate-staff-matching="apod-rn,bpod-rn,cpod-rn"
                   data-populate-type="checkbox"
                   data-populate-prefix="double-mod"
@@ -390,6 +394,7 @@ if (!isset($_SESSION['user'])) {
                 </label>
                 <div id="admit-mod"
                   class="aus-form-group"
+                  data-populate-staff-list="rn"
                   data-populate-staff-matching="apod-rn,bpod-rn,cpod-rn"
                   data-populate-type="checkbox"
                   data-populate-prefix="admit-mod"
@@ -414,6 +419,7 @@ if (!isset($_SESSION['user'])) {
                 </label>
                 <div id="very-sick-mod"
                   class="aus-form-group"
+                  data-populate-staff-list="rn"
                   data-populate-staff-matching="apod-rn,bpod-rn,cpod-rn"
                   data-populate-type="checkbox"
                   data-populate-prefix="very-sick-mod"
@@ -438,6 +444,7 @@ if (!isset($_SESSION['user'])) {
                 </label>
                 <div id="code-pager-mod"
                   class="aus-form-group"
+                  data-populate-staff-list="rn"
                   data-populate-staff-matching="apod-rn,bpod-rn,cpod-rn"
                   data-populate-type="checkbox"
                   data-populate-prefix="code-pager-mod"
@@ -462,6 +469,7 @@ if (!isset($_SESSION['user'])) {
                 </label>
                 <div id="crrt-mod"
                   class="aus-form-group"
+                  data-populate-staff-list="rn"
                   data-populate-staff-matching="apod-rn,bpod-rn,cpod-rn"
                   data-populate-type="checkbox"
                   data-populate-prefix="crrt-mod"
@@ -486,6 +494,7 @@ if (!isset($_SESSION['user'])) {
                 </label>
                 <div id="evd-mod"
                   class="aus-form-group"
+                  data-populate-staff-list="rn"
                   data-populate-staff-matching="apod-rn,bpod-rn,cpod-rn"
                   data-populate-type="checkbox"
                   data-populate-prefix="evd-mod"
@@ -510,6 +519,7 @@ if (!isset($_SESSION['user'])) {
                 </label>
                 <div id="burn-mod"
                   class="aus-form-group"
+                  data-populate-staff-list="rn"
                   data-populate-staff-matching="apod-rn,bpod-rn,cpod-rn"
                   data-populate-type="checkbox"
                   data-populate-prefix="burn-mod"
@@ -562,8 +572,9 @@ if (!isset($_SESSION['user'])) {
               <div id="na-pod-errors"></div>
               <div id="na-pod"
                 class="aus-form-group"
-                data-populate-assignment-excluding="Float"
+                data-populate-staff-list="na"
                 data-populate-staff-matching="na"
+                data-populate-assignment-excluding="Float"
                 data-populate-type="assignmentselect"
                 data-populate-prefix="na-pod"
                 data-populate-required="false">
@@ -614,8 +625,9 @@ if (!isset($_SESSION['user'])) {
               <div id="uc-pod-errors"></div>
               <div id="uc-pod"
                 class="aus-form-group"
-                data-populate-assignment-excluding="Float"
+                data-populate-staff-list="uc"
                 data-populate-staff-matching="uc"
+                data-populate-assignment-excluding="Float"
                 data-populate-type="assignmentselect"
                 data-populate-prefix="uc-pod"
                 data-populate-required="false">
@@ -1172,8 +1184,8 @@ if (!isset($_SESSION['user'])) {
       // if (debug) console.log($curElem);
 
       let params = getPopulateParam($curElem);
-      if (params.assignmentMatching) params.assignmentMatchingArray = params.assigntmentMatching.split(",");
-      if (params.assignmentExcluding) params.assignmentExcludingArray = params.assigntmentExcluding.split(",");
+      if (params.assignmentMatching) params.assignmentMatchingArray = params.assignmentMatching.split(",");
+      if (params.assignmentExcluding) params.assignmentExcludingArray = params.assignmentExcluding.split(",");
       if (debug) console.log(params);
 
       let template = data.template[params.type].template;
@@ -1181,7 +1193,35 @@ if (!isset($_SESSION['user'])) {
         $curElem.html(template({
           prefix: params.prefix,
           type: params.type,
-          assignment: data.list.assignment.filter(assignmentFilter),
+          assignment: data.list.assignment.filter(function(elem) {
+            let result = true;
+
+            if (params.assignmentMatching) {
+              result = false;
+
+              for (let j = 0; j < params.assignmentMatchingArray.length; j++) {
+                let match = params.assignmentMatchingArray[j];
+
+                if (elem.assignment === match) {
+                  result = true;
+                  break;
+                }
+              }
+            }
+
+            if (result && params.assignmentExcluding) {
+              for (let j = 0; j < params.assignmentExcludingArray.length; j++) {
+                let exclude = params.assignmentExcludingArray[j];
+
+                if (elem.assignment === exclude) {
+                  result = false;
+                  break;
+                }
+              }
+            }
+
+            return result;
+          }),
           staff: data.list[params.staffList].staff,
           name: data.list[params.staffList].name,
           required: params.required
@@ -1192,36 +1232,6 @@ if (!isset($_SESSION['user'])) {
     }
 
     return true;
-  }
-
-  function assignmentFilter(elem) {
-    result = true;
-
-    if (params.assignmentMatching) {
-      result = false;
-
-      for (let j = 0; j < params.assignmentMatchingArray; j++) {
-        let match = params.assignmentMatchingArray[j];
-
-        if (elem.assignment === match) {
-          result = true;
-          break;
-        }
-      }
-    }
-
-    if (result && params.assignmentExcluding) {
-      for (let j = 0; j < params.assignmentExcludingArray; j++) {
-        let exclude = params.assignmentExcludingArray[j];
-
-        if (elem.assignment === exclude) {
-          result = false;
-          break;
-        }
-      }
-    }
-
-    return result;
   }
 
   // /**
