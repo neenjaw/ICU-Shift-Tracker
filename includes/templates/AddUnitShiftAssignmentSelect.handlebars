@@ -3,7 +3,8 @@
     <div class="row">
       <div class="col-8">{{this.name}}</div>
       <div class="col-4">
-        <select name="{{../prefix}}-{{../type}}-{{this.id}}"
+        <select id="{{../prefix}}-{{../type}}-{{this.id}}"
+          name="{{../prefix}}-{{../type}}-{{this.id}}"
           class="custom-select"
           data-parsley-errors-container="#{{../prefix}}-errors"
           data-parsley-required-message="You must assign the {{../prefix}} to a pod"

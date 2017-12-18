@@ -50,9 +50,9 @@ if (!isset($_SESSION['user'])) {
         <!-- <form id="unit-shift-form" class="unit-shift-form"  data-parsley-validate > -->
 
           <div class="form-navigation m-1 text-center">
-            <button type="button" id="btn-prev" class="previous btn btn-secondary">&lt; Previous</button>
-            <button type="button" id="btn-next" class="next btn btn-secondary">Next &gt;</button>
-            <button type="button" id="btn-submit" class="btn btn-secondary">Submit</button>
+            <button type="button" class="previous btn btn-secondary">&lt; Previous</button>
+            <button type="button" class="next btn btn-secondary">Next &gt;</button>
+            <button type="button" class="submit btn btn-secondary">Submit</button>
           </div>
 
           <!-- SHIFT SELECT -->
@@ -94,8 +94,8 @@ if (!isset($_SESSION['user'])) {
           <!-- END SHIFT SELECT -->
 
           <!-- Select Clinician/Charge -->
-          <div id="section-nc-cn" class="form-section mt-4 mb-4">
-            <form id="section-nc-cn-form">
+          <div id="section-nc_cn" class="form-section mt-4 mb-4">
+            <form id="section-nc_cn-form">
 
               <!-- RN Clinician SELECT -->
               <div id="nc-subsection" class="form-group">
@@ -144,22 +144,22 @@ if (!isset($_SESSION['user'])) {
           <!-- END Select Clinician/Charge -->
 
           <!-- assign pods to the clinician/charge -->
-          <div id="section-nc-cn-pod" class="form-section mt-4 mb-4">
-            <form id="section-nc-cn-pod-form">
+          <div id="section-nc_cn_pod" class="form-section mt-4 mb-4">
+            <form id="section-nc_cn_pod-form">
 
               <!-- Assign Clinician Pod -->
               <div class="form-group">
                 <label class="control-label requiredField" for="select">
                   Which pod was the Nurse Clinician in?<span class="asteriskField">*</span>
                 </label>
-                <div id="nc-pod-errors"></div>
-                <div id="nc-pod"
+                <div id="nc_pod-errors"></div>
+                <div id="nc_pod"
                   class="aus-form-group"
                   data-populate-staff-list="rn"
                   data-populate-staff-matching="nc"
                   data-populate-assignment-matching="A/B,B/C"
                   data-populate-type="assignmentselect"
-                  data-populate-prefix="nc-pod"
+                  data-populate-prefix="nc_pod"
                   data-populate-required="true">
 
                   <!-- dynamic pod select built here -->
@@ -174,14 +174,14 @@ if (!isset($_SESSION['user'])) {
                 <label class="control-label requiredField" for="cn-pod">
                   Which pod was the Charge Nurse in?<span class="asteriskField">*</span>
                 </label>
-                <div id="cn-pod-errors"></div>
-                <div id="cn-pod"
+                <div id="cn_pod-errors"></div>
+                <div id="cn_pod"
                   class="aus-form-group"
                   data-populate-staff-list="rn"
                   data-populate-staff-matching="cn"
                   data-populate-assignment-matching="A,C"
                   data-populate-type="assignmentselect"
-                  data-populate-prefix="cn-pod"
+                  data-populate-prefix="cn_pod"
                   data-populate-required="true">
 
                   <!-- dynamic pod select built here -->
@@ -198,18 +198,18 @@ if (!isset($_SESSION['user'])) {
 
           <!-- Floating nurse -->
           <div id="section-float-rn" class="form-section mt-4 mb-4">
-            <form id="section-float-rn-form">
+            <form id="section-float_rn-form">
 
-              <div id="float-rn-check-subsection" class="form-group">
+              <div id="float_rn-check-subsection" class="form-group">
                 <label class="control-label" for="float-rn-check">
                   Was there a float nurse?
                 </label>
-                <div id="float-rn-check-errors"></div>
-                <div id="float-rn-check" class="staff-group">
+                <div id="float_rn-check-errors"></div>
+                <div id="float_rn-check" class="staff-group">
                   <div class="inner-item list-group-item-action">
                     <label class="custom-control custom-radio m-1">
-                      <input id="float-rn-check-yes"
-                        name="float-rn-check"
+                      <input id="float_rn-check-yes"
+                        name="float_rn-check"
                         type="radio"
                         value="Yes"
                         required
@@ -221,8 +221,8 @@ if (!isset($_SESSION['user'])) {
                   </div>
                   <div class="inner-item list-group-item-action">
                     <label class="custom-control custom-radio m-1">
-                      <input id="float-rn-check-no"
-                        name="float-rn-check"
+                      <input id="float_rn-check-no"
+                        name="float_rn-check"
                         type="radio"
                         value="No"
                         checked
@@ -234,16 +234,17 @@ if (!isset($_SESSION['user'])) {
                 </div>
               </div>
 
-              <div id="float-rn-subsection" class="form-group">
+              <div id="float_rn-subsection" class="form-group">
                 <label class="control-label" for="float-rn">
                   Who floated?
                 </label>
-                <div id="float-rn-errors"></div>
-                <div id="float-rn"
+                <div id="float_rn-errors"></div>
+                <div id="float_rn"
                   class="aus-form-group"
                   data-populate-staff-list="rn"
+                  data-populate-staff-excluding="cn,nc"
                   data-populate-type="checkbox"
-                  data-populate-prefix="float-rn"
+                  data-populate-prefix="float_rn"
                   data-populate-required="false">
 
                   <!-- dynamic pod select built here -->
@@ -256,21 +257,21 @@ if (!isset($_SESSION['user'])) {
             </form>
           </div>
 
-          <div id="section-apod-rn" class="form-section mt-4 mb-4">
-            <form id="section-apod-rn-form">
+          <div id="section-apod_rn" class="form-section mt-4 mb-4">
+            <form id="section-apod_rn-form">
 
               <!-- Select Bedside Nurses for A -->
               <div class="form-group">
                 <label class="control-label requiredField" for="select">
                   Select the nurses for Pod A<span class="asteriskField">*</span>
                 </label>
-                <div id="apod-rn-errors"></div>
-                <div id="apod-rn"
+                <div id="apod_rn-errors"></div>
+                <div id="apod_rn"
                   class="aus-form-group"
                   data-populate-staff-list="rn"
-                  data-populate-staff-excluding="cn,nc"
+                  data-populate-staff-excluding="cn,nc,float_rn"
                   data-populate-type="checkbox"
-                  data-populate-prefix="apod-rn"
+                  data-populate-prefix="apod_rn"
                   data-populate-required="true">
 
                   <!-- dynamic pod select built here -->
@@ -282,21 +283,21 @@ if (!isset($_SESSION['user'])) {
             </form>
           </div>
 
-          <div id="section-bpod-rn" class="form-section mt-4 mb-4">
-            <form id="section-bpod-rn-form">
+          <div id="section-bpod_rn" class="form-section mt-4 mb-4">
+            <form id="section-bpod_rn-form">
 
               <!-- Select Bedside Nurses for B -->
               <div class="form-group">
                 <label class="control-label requiredField" for="select">
                   Select the nurses for Pod B<span class="asteriskField">*</span>
                 </label>
-                <div id="bpod-rn-errors"></div>
-                <div id="bpod-rn"
+                <div id="bpod_rn-errors"></div>
+                <div id="bpod_rn"
                   class="aus-form-group"
                   data-populate-staff-list="rn"
-                  data-populate-staff-excluding="cn,nc,apod-rn"
+                  data-populate-staff-excluding="cn,nc,float_rn,apod_rn"
                   data-populate-type="checkbox"
-                  data-populate-prefix="bpod-rn"
+                  data-populate-prefix="bpod_rn"
                   data-populate-required="true">
 
                   <!-- dynamic pod select built here -->
@@ -308,21 +309,21 @@ if (!isset($_SESSION['user'])) {
             </form>
           </div>
 
-          <div id="section-cpod-rn" class="form-section mt-4 mb-4">
-            <form id="section-cpod-rn-form">
+          <div id="section-cpod_rn" class="form-section mt-4 mb-4">
+            <form id="section-cpod_rn-form">
 
               <!-- Select Bedside Nurses for C -->
               <div class="form-group">
                 <label class="control-label requiredField" for="select">
                   Select the nurses for Pod C<span class="asteriskField">*</span>
                 </label>
-                <div id="cpod-rn-errors"></div>
-                <div id="cpod-rn"
+                <div id="cpod_rn-errors"></div>
+                <div id="cpod_rn"
                   class="aus-form-group"
                   data-populate-staff-list="rn"
-                  data-populate-staff-excluding="cn,nc,apod-rn,bpod-rn"
+                  data-populate-staff-excluding="cn,nc,float_rn,apod_rn,bpod_rn"
                   data-populate-type="checkbox"
-                  data-populate-prefix="cpod-rn"
+                  data-populate-prefix="cpod_rn"
                   data-populate-required="true">
 
                   <!-- dynamic pod select built here -->
@@ -335,19 +336,19 @@ if (!isset($_SESSION['user'])) {
           </div>
 
           <!-- Who had non-vent -->
-          <div id="section-non-vent-mod" class="form-section mt-4 mb-4">
-            <form id="section-non-vent-mod-form">
+          <div id="section-non_vent_mod" class="form-section mt-4 mb-4">
+            <form id="section-non_vent_mod-form">
 
               <div class="form-group">
                 <label class="control-label" for="div">
                   Which nurses had only non-ventilated patients?
                 </label>
-                <div id="non-vent-mod"
-                  class="aus-form-group"
+                <div id="non_vent_mod"
+                  class="aus_form_group"
                   data-populate-staff-list="rn"
-                  data-populate-staff-matching="apod-rn,bpod-rn,cpod-rn"
+                  data-populate-staff-matching="apod_rn,bpod_rn,cpod_rn"
                   data-populate-type="checkbox"
-                  data-populate-prefix="non-vent-mod"
+                  data-populate-prefix="non_vent_mod"
                   data-populate-required="false">
 
                   <!-- dynamic pod select built here -->
@@ -360,19 +361,19 @@ if (!isset($_SESSION['user'])) {
           </div>
 
           <!-- Who had double -->
-          <div id="section-double-mod" class="form-section mt-4 mb-4">
-            <form id="section-double-mod-form">
+          <div id="section-double_mod" class="form-section mt-4 mb-4">
+            <form id="section-double_mod-form">
 
               <div class="form-group">
                 <label class="control-label" for="div">
                   Which nurses were doubled?
                 </label>
-                <div id="double-mod"
+                <div id="double_mod"
                   class="aus-form-group"
                   data-populate-staff-list="rn"
-                  data-populate-staff-matching="apod-rn,bpod-rn,cpod-rn"
+                  data-populate-staff-matching="apod_rn,bpod_rn,cpod_rn"
                   data-populate-type="checkbox"
-                  data-populate-prefix="double-mod"
+                  data-populate-prefix="double_mod"
                   data-populate-required="false">
 
                   <!-- dynamic pod select built here -->
@@ -385,19 +386,19 @@ if (!isset($_SESSION['user'])) {
           </div>
 
           <!-- Who admitted -->
-          <div id="section-admit-mod" class="form-section mt-4 mb-4">
-            <form id="section-admit-mod-form">
+          <div id="section-admit_mod" class="form-section mt-4 mb-4">
+            <form id="section-admit_mod-form">
 
               <div class="form-group">
                 <label class="control-label" for="div">
                   Which nurses admitted patients?
                 </label>
-                <div id="admit-mod"
+                <div id="admit_mod"
                   class="aus-form-group"
                   data-populate-staff-list="rn"
-                  data-populate-staff-matching="apod-rn,bpod-rn,cpod-rn"
+                  data-populate-staff-matching="apod_rn,bpod_rn,cpod_rn"
                   data-populate-type="checkbox"
-                  data-populate-prefix="admit-mod"
+                  data-populate-prefix="admit_mod"
                   data-populate-required="false">
 
                   <!-- dynamic pod select built here -->
@@ -410,19 +411,19 @@ if (!isset($_SESSION['user'])) {
           </div>
 
           <!-- Who had very sick -->
-          <div id="section-very-sick-mod" class="form-section mt-4 mb-4">
-            <form id="section-very-sick-mod-form">
+          <div id="section-very_sick_mod" class="form-section mt-4 mb-4">
+            <form id="section-very_sick_mod-form">
 
               <div class="form-group">
                 <label class="control-label" for="div">
                   Which nurses had a very sick patient <small>(3 gtt's or more)</small>?
                 </label>
-                <div id="very-sick-mod"
+                <div id="very_sick_mod"
                   class="aus-form-group"
                   data-populate-staff-list="rn"
-                  data-populate-staff-matching="apod-rn,bpod-rn,cpod-rn"
+                  data-populate-staff-matching="apod_rn,bpod_rn,cpod_rn"
                   data-populate-type="checkbox"
-                  data-populate-prefix="very-sick-mod"
+                  data-populate-prefix="very_sick_mod"
                   data-populate-required="false">
 
                   <!-- dynamic pod select built here -->
@@ -435,19 +436,19 @@ if (!isset($_SESSION['user'])) {
           </div>
 
           <!-- Who had code pager -->
-          <div id="section-code-pager-mod" class="form-section mt-4 mb-4">
-            <form id="section-code-pager-mod-form">
+          <div id="section-code_pager_mod" class="form-section mt-4 mb-4">
+            <form id="section-code_pager_mod-form">
 
               <div class="form-group">
                 <label class="control-label" for="div">
                   Which nurses had the code pager?
                 </label>
-                <div id="code-pager-mod"
+                <div id="code_pager_mod"
                   class="aus-form-group"
                   data-populate-staff-list="rn"
-                  data-populate-staff-matching="apod-rn,bpod-rn,cpod-rn"
+                  data-populate-staff-matching="apod_rn,bpod_rn,cpod_rn"
                   data-populate-type="checkbox"
-                  data-populate-prefix="code-pager-mod"
+                  data-populate-prefix="code_pager_mod"
                   data-populate-required="false">
 
                   <!-- dynamic pod select built here -->
@@ -460,19 +461,19 @@ if (!isset($_SESSION['user'])) {
           </div>
 
           <!-- Who had crrt -->
-          <div id="section-crrt-mod" class="form-section mt-4 mb-4">
-            <form id="section-crrt-mod-form">
+          <div id="section-crrt_mod" class="form-section mt-4 mb-4">
+            <form id="section-crrt_mod-form">
 
               <div class="form-group">
                 <label class="control-label" for="div">
                   Which nurses had crrt?
                 </label>
-                <div id="crrt-mod"
+                <div id="crrt_mod"
                   class="aus-form-group"
                   data-populate-staff-list="rn"
-                  data-populate-staff-matching="apod-rn,bpod-rn,cpod-rn"
+                  data-populate-staff-matching="apod_rn,bpod_rn,cpod_rn"
                   data-populate-type="checkbox"
-                  data-populate-prefix="crrt-mod"
+                  data-populate-prefix="crrt_mod"
                   data-populate-required="false">
 
                   <!-- dynamic pod select built here -->
@@ -485,19 +486,19 @@ if (!isset($_SESSION['user'])) {
           </div>
 
           <!-- Who had evd -->
-          <div id="section-evd-mod" class="form-section mt-4 mb-4">
-            <form id="section-evd-mod-form">
+          <div id="section-evd_mod" class="form-section mt-4 mb-4">
+            <form id="section-evd_mod-form">
 
               <div class="form-group">
                 <label class="control-label" for="div">
                   Which nurses had an EVD?
                 </label>
-                <div id="evd-mod"
+                <div id="evd_mod"
                   class="aus-form-group"
                   data-populate-staff-list="rn"
-                  data-populate-staff-matching="apod-rn,bpod-rn,cpod-rn"
+                  data-populate-staff-matching="apod_rn,bpod_rn,cpod_rn"
                   data-populate-type="checkbox"
-                  data-populate-prefix="evd-mod"
+                  data-populate-prefix="evd_mod"
                   data-populate-required="false">
 
                   <!-- dynamic pod select built here -->
@@ -510,19 +511,19 @@ if (!isset($_SESSION['user'])) {
           </div>
 
           <!-- Who who had burn -->
-          <div id="section-burn-mod" class="form-section mt-4 mb-4">
-            <form id="section-burn-mod-form">
+          <div id="section-burn_mod" class="form-section mt-4 mb-4">
+            <form id="section-burn_mod-form">
 
               <div class="form-group">
                 <label class="control-label" for="div">
                   Which nurses had a burn patient?
                 </label>
-                <div id="burn-mod"
+                <div id="burn_mod"
                   class="aus-form-group"
                   data-populate-staff-list="rn"
-                  data-populate-staff-matching="apod-rn,bpod-rn,cpod-rn"
+                  data-populate-staff-matching="apod_rn,bpod_rn,cpod_rn"
                   data-populate-type="checkbox"
-                  data-populate-prefix="burn-mod"
+                  data-populate-prefix="burn_mod"
                   data-populate-required="false">
 
                   <!-- dynamic pod select built here -->
@@ -561,7 +562,7 @@ if (!isset($_SESSION['user'])) {
           </div>
 
           <!-- assign pods to the na's -->
-          <div id="section-na-pod" class="form-section mt-4 mb-4 skip-section">
+          <div id="section-na_pod" class="form-section mt-4 mb-4 skip-section">
             <form id="section-na-pod-form">
 
             <!-- Select NA's Pod-->
@@ -569,14 +570,14 @@ if (!isset($_SESSION['user'])) {
               <label class="control-label requiredField" for="select">
                 Select the NA's Assignment<span class="asteriskField">*</span>
               </label>
-              <div id="na-pod-errors"></div>
-              <div id="na-pod"
+              <div id="na_pod-errors"></div>
+              <div id="na_pod"
                 class="aus-form-group"
                 data-populate-staff-list="na"
                 data-populate-staff-matching="na"
                 data-populate-assignment-excluding="Float"
                 data-populate-type="assignmentselect"
-                data-populate-prefix="na-pod"
+                data-populate-prefix="na_pod"
                 data-populate-required="false">
 
                 <!-- dynamic pod select built here -->
@@ -614,22 +615,22 @@ if (!isset($_SESSION['user'])) {
           </div>
 
           <!-- assign pods to the uc's -->
-          <div id="section-uc-pod" class="form-section mt-4 mb-4 skip-section">
-            <form id="section-uc-pod-form">
+          <div id="section-uc_pod" class="form-section mt-4 mb-4 skip-section">
+            <form id="section-uc_pod-form">
 
             <!-- Select UC's Pod-->
             <div class="form-group">
               <label class="control-label requiredField" for="select">
                 Select the UC's Assignment<span class="asteriskField">*</span>
               </label>
-              <div id="uc-pod-errors"></div>
-              <div id="uc-pod"
+              <div id="uc_pod-errors"></div>
+              <div id="uc_pod"
                 class="aus-form-group"
                 data-populate-staff-list="uc"
                 data-populate-staff-matching="uc"
                 data-populate-assignment-excluding="Float"
                 data-populate-type="assignmentselect"
-                data-populate-prefix="uc-pod"
+                data-populate-prefix="uc_pod"
                 data-populate-required="false">
 
                 <!-- dynamic pod select built here -->
@@ -642,20 +643,20 @@ if (!isset($_SESSION['user'])) {
           </div>
 
           <!-- Select Outreach rn -->
-          <div id="section-outreach-rn" class="form-section mt-4 mb-4">
+          <div id="section-outreach_rn" class="form-section mt-4 mb-4">
             <form id="section-outreach-form">
 
             <div class="form-group">
               <label class="control-label requiredField" for="outrach-rn">
                 Who was on outreach?<span class="asteriskField">*</span>
               </label>
-              <div id="outreach-rn-errors"></div>
-              <div id="outreach-rn"
+              <div id="outreach_rn-errors"></div>
+              <div id="outreach_rn"
                 class="aus-form-group"
                 data-populate-staff-list="rn"
-                data-populate-staff-excluding="cn,nc,apod-rn,bpod-rn,cpod-rn"
+                data-populate-staff-excluding="cn,nc,float_rn,apod_rn,bpod_rn,cpod_rn"
                 data-populate-type="radio"
-                data-populate-prefix="outreach-rn"
+                data-populate-prefix="outreach_rn"
                 data-populate-required="true">
 
                 <!-- dynamic pod select built here -->
@@ -668,9 +669,9 @@ if (!isset($_SESSION['user'])) {
           </div>
 
           <div class="form-navigation m-1 text-center">
-            <button type="button" id="btn-prev" class="previous btn btn-secondary">&lt; Previous</button>
-            <button type="button" id="btn-next" class="next btn btn-secondary">Next &gt;</button>
-            <button type="button" id="btn-submit" class="btn btn-secondary">Submit</button>
+            <button type="button" class="previous btn btn-secondary">&lt; Previous</button>
+            <button type="button" class="next btn btn-secondary">Next &gt;</button>
+            <button type="button" class="submit btn btn-secondary">Submit</button>
           </div>
         <!-- </form> -->
 
@@ -745,11 +746,14 @@ if (!isset($_SESSION['user'])) {
 
   var populate = {
     item: [
-      "#nc", "#cn", "#nc-pod", "#cn-pod", "#float-rn", "#apod-rn", "#bpod-rn",
-      "#cpod-rn", "#non-vent-mod", "#double-mod", "#code-pager-mod", "#admit-mod",
-      "#very-sick-mod", "#crrt-mod", "#evd-mod", "#burn-mod", "#na", "#na-pod",
-      "#uc", "#uc-pod", "#outreach-rn"
+      "#nc", "#cn", "#nc_pod", "#cn_pod", "#float_rn", "#apod_rn", "#bpod_rn",
+      "#cpod_rn", "#non_vent_mod", "#double_mod", "#code_pager_mod", "#admit_mod",
+      "#very_sick_mod", "#crrt_mod", "#evd_mod", "#burn_mod", "#na", "#na_pod",
+      "#uc", "#uc_pod", "#outreach_rn"
     ],
+    listener: {
+      nc: [ncListener]
+    },
     template: {
       select : {
         container: "#add-unit-shift-select-template",
@@ -817,7 +821,7 @@ if (!isset($_SESSION['user'])) {
     $sections = $('.form-section'); // array of all the form-section elements
     $btnNext = $('.form-navigation .next');
     $btnPrev = $('.form-navigation .previous');
-    $btnSubmit = $('.form-navigation [type=submit]');
+    $btnSubmit = $('.form-navigation .submit');
 
     oldIndex = -1; //reference to be able to know if traverseing forward or backward
 
@@ -827,18 +831,23 @@ if (!isset($_SESSION['user'])) {
     }
 
     // Previous button is easy, just go back
-    $('.form-navigation .previous').click(function() {
+    $btnPrev.click(function() {
       navigateTo(curIndex() - 1);
     });
 
-    // Next button goes forward iff current block validates
-    $('.form-navigation .next').click(function() {
-      // FIXME:
+    // Next button goes forward if current block validates
+    $btnNext.click(function() {
       $sections.eq(curIndex()).find('form').parsley().whenValidate().done(function() {
         navigateTo(curIndex() + 1);
       });
+    });
 
-      // navigateTo(curIndex() + 1);
+    //Submit button click event, validate the form, then call the submit forms function
+    $btnSubmit.click(function () {
+      $sections.eq(curIndex()).find('form').parsley().whenValidate().done(function() {
+        alert('Submit attempted.');
+        // submitUnitShiftForm();
+      });
     });
 
     //navigates to the current form section
@@ -899,23 +908,125 @@ if (!isset($_SESSION['user'])) {
     function updateFormSection($section) {
       let sectionId = $section.prop('id'); //get the current section's name
       if (debug) console.log(`Updating form section: '${sectionId}'`);
+      if (debug) console.log($section);
 
+      // FIXME: THIS DOES NOT WORK FOR THE MOD CHECKBOXES
+      // Best guess: the .aus_form_group is on the $section elem, not on a child elem.
       let $fgroups = $($section).find('.aus-form-group');
       $fgroups.each(function(index, element){
+        let prefix = $(this).data('populatePrefix');
+        let type = $(this).data('populateType');
 
-        let staffFrom = $(this).data('populateStaffFrom');
-        if (staffFrom) {
-          if (debug) console.log(`> Show staff from these sections: '${staffFrom}'`);
-          //TODO: hide all, then show the desired staff
+        let staffMatching = $(this).data('populateStaffMatching');
+        let staffIdMatch = [];
+        let staffIdExclude = [];
+
+        if (debug && staffMatching) console.log(`> Show staff matching selections from these sections: '${staffMatching}'`);
+
+        //prep the matching id's array
+        if (staffMatching) {
+          let splitStaffMatching = staffMatching.split(',');
+
+          for (let i = 0; i < splitStaffMatching.length; i++) {
+            let $match = $(`#${splitStaffMatching[i]}`);
+
+            staffIdMatch = staffIdMatch.concat($match.find(`input:checked, option:selected`).get().map(function($e){ return $($e).val(); }));
+          } // end for
         }
 
-        let excludeList = $(this).data('populateStaffExcludeFrom');
-        if (excludeList) {
-          if (debug) console.log(`> Exclude these sections from the staff list: '${excludeList}'`);
-          //TODO: do hiding calls here
+        let staffExcluding = $(this).data('populateStaffExcluding');
+        if (debug && staffExcluding) console.log(`> Exclude staff from these sections in the staff list: '${staffExcluding}'`);
+
+        //prep the excluding id's array
+        if (staffExcluding) {
+          let splitStaffExcluding = staffExcluding.split(',');
+
+          for (let i = 0; i < splitStaffExcluding.length; i++) {
+            let $exclude = $(`#${splitStaffExcluding[i]}`);
+
+            staffIdExclude = staffIdExclude.concat($exclude.find(`input:checked, option:selected`).get().map(function($e){ return $($e).val(); }));
+          } // end for
         }
 
-      });
+        if (type === 'assignmentselect') {
+          $(this).find('select').each(function(){
+            let $parentRow = $(this).closest('div.row');
+
+            $parentRow.show();
+            $(this).attr('required', true).attr("disabled", false);
+
+            if (staffMatching) {
+              for (let i = 0; i < staffIdMatch.length; i++) {
+                if ($(this).attr('name') !== `${prefix}-${type}-${staffIdMatch[i]}`) {
+                  $parentRow.hide();
+                  $(this).attr('required', false).attr("disabled", true);
+                  $(this).find('option:selected').prop("selected", false);
+                  break;
+                }
+              } // end for
+            } // end if
+
+            if (staffExcluding) {
+              for (let i = 0; i < staffIdExclude.length; i++) {
+                if ($(this).attr('name') === `${prefix}-${type}-${staffIdExclude[i]}`) {
+                  $parentRow.hide();
+                  $(this).attr('required', false).attr("disabled", true);
+                  $(this).find('option:selected').prop("selected", false);
+                }
+              } // end for
+            } // end if
+          }); //end .each
+        } else if (type === 'radio' || type === 'checkbox') {
+          $(this).find('input').each(function(index){
+            let $parentRow = $(this).closest('div.form-check');
+
+            $parentRow.show();
+            $(this).attr('required', true).attr("disabled", false);
+
+            if (staffMatching) {
+              for (let i = 0; i < staffIdMatch.length; i++) {
+                if ($(this).val() !== staffIdMatch[i]) {
+                  $parentRow.hide();
+                  $(this).attr('required', false).attr("disabled", true).attr("checked", false);
+                }
+              } // end for
+            } // end if
+
+            if (staffExcluding) {
+              for (let i = 0; i < staffIdExclude.length; i++) {
+                if ($(this).val() === staffIdExclude[i]) {
+                  $parentRow.hide();
+                  $(this).attr('required', false).attr("disabled", true).attr("checked", false);
+                }
+              } // end for
+            } // end if
+          }); //end .each
+        } else if (type === 'select') {
+          $(this).find('option').each(function(index){
+            $(this).show();
+            $(this).attr("disabled", false);
+
+            if (staffMatching) {
+              for (let i = 0; i < staffIdMatch.length; i++) {
+                if ($(this).val() !== staffIdMatch[i]) {
+                  $(this).hide();
+                  $(this).attr("disabled", true).prop("selected", false);
+                }
+              } // end for
+            } // end if
+
+            if (staffExcluding) {
+              for (let i = 0; i < staffIdExclude.length; i++) {
+                if ($(this).val() === staffIdMatch[i]) {
+                  $(this).hide();
+                  $(this).attr("disabled", true).prop("selected", false);
+                }
+              } // end for
+            } // end if
+
+          }); //end .each
+        }
+      }); //end .each
     }
 
     // Prepare sections by setting the `data-parsley-group` attribute to 'block-0', 'block-1', etc.
@@ -924,27 +1035,16 @@ if (!isset($_SESSION['user'])) {
     });
     navigateTo(0); // Start at the beginning
 
-    //catch the on-submit event, collect/format data from the form, submit via ajax
-    // $('#unit-shift-form').parsley().on('form:submit', function () {
-    //   submitUnitShiftForm();
-    //   return false; //return false to prevent HTML form submission
-    // });
-
     /***************************************
      * END -- FORM PAGINATION / VALIDATION *
      ***************************************/
-
-    // //call the function to set listeners on the div's that contain the checkboxes to make more accessible
-    // setClickAreaListeners("div.staff-group");
-    // //hide the option for the nc to select pod 'A/B/C' when the day shift button is preselected (default state)
-    // hideFormInnerItem($(`#nc-pod-8`));
 
     // /**
     //  * listener to change behavior of form if float nurse is to be selected
     //  * @var [type]
     //  */
-    $(`#float-rn-check-yes`).closest('div').click(function() {
-      $(`#float-rn-subsection`).slideDown('slow'); //show float nurse select
+    $(`#float_rn-check-yes`).closest('div').click(function() {
+      $(`#float_rn-subsection`).slideDown('slow'); //show float nurse select
       $(`input[name='float-rn']`).first().prop("required", true); // add the required property to the float-rn select
     });
 
@@ -952,11 +1052,11 @@ if (!isset($_SESSION['user'])) {
     //  * listener to change behavior of form if no float nurse is to be added
     //  * @var [type]
     //  */
-    $(`#float-rn-check-no`).closest('div').click(function() {
-      $(`#float-rn-subsection`).slideUp('fast'); //show float nurse select
-      $(`input[name='float-rn']`).first().prop("required", false); // add the required property to the float-rn select
+    $(`#float_rn-check-no`).closest('div').click(function() {
+      $(`#float_rn-subsection`).slideUp('fast'); //show float nurse select
+      $(`input[name='float_rn']`).first().prop("required", false); // add the required property to the float-rn select
 
-      let $frnElem = $(`input[type='checkbox'][name='float-rn']:checked`); //unselect any selected float-rn value
+      let $frnElem = $(`input[type='checkbox'][name='float_rn']:checked`); //unselect any selected float-rn value
       if ($frnElem !== null) { $frnElem.prop("checked", false); }
     });
 
@@ -967,10 +1067,10 @@ if (!isset($_SESSION['user'])) {
      */
     $(`#day-or-night-day`).closest('label').click(function() {
       $(`#cn-subsection`).toggle(true); // show charge nurse select
-      $(`#section-nc-cn-pod`).toggleClass('skip-section', false); // show section for pod selection for nc/cn
+      $(`#section-nc_cn_pod`).toggleClass('skip-section', false); // show section for pod selection for nc/cn
 
       $(`input[name='cn']`).first().prop("required", true); // add the required property to the first cn
-      $(`#cn-pod input`).first().prop("required", true); // add the required property to the first cn-pod
+      $(`#cn_pod input`).first().prop("required", true); // add the required property to the first cn-pod
     });
 
     /**
@@ -980,17 +1080,17 @@ if (!isset($_SESSION['user'])) {
     $(`#day-or-night-night`).closest('label').click(function() {
       $(`#cn-subsection`).toggle(false); // hide charge nurse select
 
-      $(`#section-nc-cn-pod`).toggleClass('skip-section', true); // hide section for pod selection for nc/cn
+      $(`#section-nc_cn_pod`).toggleClass('skip-section', true); // hide section for pod selection for nc/cn
 
       $(`input[name='cn'][required]`).prop("required", false); // remove the required property from the cn select
-      $(`input[name='cn-pod'][required]`).prop("required", false); // remove the required property from the cn select
+      $(`input[name='cn_pod'][required]`).prop("required", false); // remove the required property from the cn select
 
       //TODO: auto pod A/B/C for the nc
 
       let $cnElem = $(`input[type='radio'][name='cn']:checked`); //unselect any selected cn value
       if ($cnElem !== null) $cnElem.prop("checked", false);
 
-      let $cnPodElem = $(`input[type='radio'][name='cn-pod']:checked`); //unselect any selected cn value
+      let $cnPodElem = $(`input[type='radio'][name='cn_pod']:checked`); //unselect any selected cn value
       if ($cnPodElem !== null) $cnPodElem.prop("checked", false);
     });
 
@@ -1228,6 +1328,15 @@ if (!isset($_SESSION['user'])) {
         }));
 
         //if needed, add listeners
+        let curItemListenerArray = data.listener[curItem.slice(1)];
+        if (debug) console.log(">> Listener Array");
+        if (debug) console.log(curItemListenerArray);
+
+        if (curItemListenerArray) {
+          for (let i = 0; i < curItemListenerArray.length; i++) {
+            curItemListenerArray[i]();
+          }
+        }
       }
     }
 
@@ -1772,6 +1881,21 @@ if (!isset($_SESSION['user'])) {
   //   //return the DOM fragement
   //   return $container;
   // }
+
+  function ncListener() {
+    if (debug) console.log('>> Setting nc listener.');
+
+    $(`input[name='nc']`).click(function(){
+      let clickedId = $(this).attr('id');
+      let splitId = clickedId.split('-');
+
+      $(`input[name='cn']:disabled`).parent().removeClass('aus-disabled-label');
+      $(`input[name='cn']:disabled`).attr("disabled", false);
+      $(`#cn-radio-${splitId[2]}`).attr("disabled", true);
+      $(`#cn-radio-${splitId[2]}`).prop("checked", false);
+      $(`#cn-radio-${splitId[2]}`).parent().addClass('aus-disabled-label');
+    });
+  }
 
   </script>
   <!-- END Aux Scripts -->

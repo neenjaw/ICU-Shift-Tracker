@@ -1,5 +1,5 @@
 <div class="form-group">
-  <label for="exampleFormControlSelect2">Choose staff for {{label}}</label>
+  <label for="{{prefix}}-{{type}}">Choose staff for {{label}}</label>
   <select multiple class="form-control" name="{{prefix}}" id="{{prefix}}-{{type}}" {{#if ../required}}required{{/if}}>
     {{#each staff}}
       <option id="{{../prefix}}-{{../type}}-{{this.id}}" value="{{this.id}}">{{this.name}}</option>

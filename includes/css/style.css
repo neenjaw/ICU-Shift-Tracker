@@ -91,15 +91,15 @@ body {
   display: inherit;
 }*/
 
-#nc, #cn, #nc-pod, #cn-pod {
+#nc, #cn, #nc_pod, #cn_pod {
   max-height: 150px;
 }
 
-#float-rn, #apod-rn, #bpod-rn, #cpod-rn, #outreach-rn, #na, #uc {
+#float_rn, #apod_rn, #bpod_rn, #cpod_rn, #outreach_rn, #na, #uc {
   max-height: 300px;
 }
 
-#float-rn-subsection {
+#float_rn-subsection {
 	display: none;
 }
 
@@ -108,6 +108,10 @@ body {
   border-radius: 3px;
   padding: 5px;
   border: 1px solid lightgrey;
+}
+
+.aus-disabled-label {
+	color: #d8d8d8;
 }
 
 .inner-item:not(:last-child) {
