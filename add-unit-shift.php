@@ -344,7 +344,7 @@ if (!isset($_SESSION['user'])) {
                   Which nurses had only non-ventilated patients?
                 </label>
                 <div id="non_vent_mod"
-                  class="aus_form_group"
+                  class="aus-form-group"
                   data-populate-staff-list="rn"
                   data-populate-staff-matching="apod_rn,bpod_rn,cpod_rn"
                   data-populate-type="checkbox"
@@ -752,7 +752,11 @@ if (!isset($_SESSION['user'])) {
       "#uc", "#uc_pod", "#outreach_rn"
     ],
     listener: {
-      nc: [ncListener]
+      nc: [ncListener],
+      nc_pod: [ncPodListener],
+      cn_pod: [cnPodListener],
+      na: [naListener],
+      uc: [ucListener]
     },
     template: {
       select : {
@@ -910,12 +914,11 @@ if (!isset($_SESSION['user'])) {
       if (debug) console.log(`Updating form section: '${sectionId}'`);
       if (debug) console.log($section);
 
-      // FIXME: THIS DOES NOT WORK FOR THE MOD CHECKBOXES
-      // Best guess: the .aus_form_group is on the $section elem, not on a child elem.
       let $fgroups = $($section).find('.aus-form-group');
       $fgroups.each(function(index, element){
         let prefix = $(this).data('populatePrefix');
         let type = $(this).data('populateType');
+        let required = $(this).data('populateRequired');
 
         let staffMatching = $(this).data('populateStaffMatching');
         let staffIdMatch = [];
@@ -953,25 +956,27 @@ if (!isset($_SESSION['user'])) {
             let $parentRow = $(this).closest('div.row');
 
             $parentRow.show();
-            $(this).attr('required', true).attr("disabled", false);
+            $(this).prop("disabled", false);
+            if (required) $(this).prop('required', true);
 
             if (staffMatching) {
               for (let i = 0; i < staffIdMatch.length; i++) {
-                if ($(this).attr('name') !== `${prefix}-${type}-${staffIdMatch[i]}`) {
+                if ($(this).attr('id') !== `${prefix}-${type}-${staffIdMatch[i]}`) {
                   $parentRow.hide();
-                  $(this).attr('required', false).attr("disabled", true);
+                  $(this).prop("disabled", true);
                   $(this).find('option:selected').prop("selected", false);
-                  break;
+                  if (required) $(this).prop('required', false);
                 }
               } // end for
             } // end if
 
             if (staffExcluding) {
               for (let i = 0; i < staffIdExclude.length; i++) {
-                if ($(this).attr('name') === `${prefix}-${type}-${staffIdExclude[i]}`) {
+                if ($(this).attr('id') === `${prefix}-${type}-${staffIdExclude[i]}`) {
                   $parentRow.hide();
-                  $(this).attr('required', false).attr("disabled", true);
+                  $(this).prop("disabled", true);
                   $(this).find('option:selected').prop("selected", false);
+                  if (required) $(this).prop('required', false);
                 }
               } // end for
             } // end if
@@ -980,23 +985,35 @@ if (!isset($_SESSION['user'])) {
           $(this).find('input').each(function(index){
             let $parentRow = $(this).closest('div.form-check');
 
-            $parentRow.show();
-            $(this).attr('required', true).attr("disabled", false);
-
             if (staffMatching) {
+              $parentRow.hide();
+              $(this).prop("disabled", true);
+              $(this).prop("checked", false);
+              if (required) $(this).prop('required', false);
+
               for (let i = 0; i < staffIdMatch.length; i++) {
-                if ($(this).val() !== staffIdMatch[i]) {
-                  $parentRow.hide();
-                  $(this).attr('required', false).attr("disabled", true).attr("checked", false);
+                if ($(this).val() === staffIdMatch[i]) {
+                  $parentRow.show();
+                  $(this).prop("disabled", false);
+                  if (required) $(this).prop('required', true);
+                  break;
                 }
               } // end for
-            } // end if
+            } else {
+              $parentRow.show();
+              $(this).prop("disabled", false);
+              $(this).prop("checked", false);
+              if (required) $(this).prop('required', true);
+            } // end if...else
 
             if (staffExcluding) {
               for (let i = 0; i < staffIdExclude.length; i++) {
                 if ($(this).val() === staffIdExclude[i]) {
                   $parentRow.hide();
-                  $(this).attr('required', false).attr("disabled", true).attr("checked", false);
+                  $(this).prop("disabled", true);
+                  $(this).prop("checked", false);
+                  if (required) $(this).prop('required', false);
+                  break;
                 }
               } // end for
             } // end if
@@ -1004,13 +1021,13 @@ if (!isset($_SESSION['user'])) {
         } else if (type === 'select') {
           $(this).find('option').each(function(index){
             $(this).show();
-            $(this).attr("disabled", false);
+            $(this).prop("disabled", false);
 
             if (staffMatching) {
               for (let i = 0; i < staffIdMatch.length; i++) {
                 if ($(this).val() !== staffIdMatch[i]) {
                   $(this).hide();
-                  $(this).attr("disabled", true).prop("selected", false);
+                  $(this).prop("disabled", true).prop("selected", false);
                 }
               } // end for
             } // end if
@@ -1019,7 +1036,7 @@ if (!isset($_SESSION['user'])) {
               for (let i = 0; i < staffIdExclude.length; i++) {
                 if ($(this).val() === staffIdMatch[i]) {
                   $(this).hide();
-                  $(this).attr("disabled", true).prop("selected", false);
+                  $(this).prop("disabled", true).prop("selected", false);
                 }
               } // end for
             } // end if
@@ -1093,40 +1110,6 @@ if (!isset($_SESSION['user'])) {
       let $cnPodElem = $(`input[type='radio'][name='cn_pod']:checked`); //unselect any selected cn value
       if ($cnPodElem !== null) $cnPodElem.prop("checked", false);
     });
-
-  //   /**
-  //    * when the nc's assigned pod is clicked, the charge nurse's pod changes to the appropriate selection
-  //    * @var [type]
-  //    */
-  //   $(`#nc-pod div.inner-item`).click(function() {
-  //     let clickedPodName = $(this).find('input').data('podName').replace(/[\/B]/g, ''); //which main pod was chosen, get rid of the B-pod
-
-  //     $(`input[type='radio'][name='cn-pod']`)
-  //       .filter(function() {
-  //         //find the non-matching main pod assignment -- eg: if pod A was chosen by nc, choose pod C for cn
-  //         return (!($(this).closest('div').hasClass('st-none'))) && ($(this).data('podName').indexOf(clickedPodName) < 0);
-  //       })
-  //       .prop("checked", true); //select it
-
-  //     return true;
-  //   });
-
-  //   /**
-  //    * when the cn's assigned pod is clicked, the nc's pod changes to the appropriate selection
-  //    * @var [type]
-  //    */
-  //   $(`#cn-pod div.inner-item`).click(function() {
-  //     let clickedPodName = $(this).find('input').data('podName'); //which main pod was chosen
-
-  //     $(`input[type='radio'][name='nc-pod']`)
-  //       .filter(function() {
-  //         //find the non-matching main pod assignment -- eg: if pod A was chosen by cn, choose pod C for nc
-  //         return (!($(this).closest('div').hasClass('st-none'))) && ($(this).data('podName').indexOf(clickedPodName) < 0);
-  //       })
-  //       .prop("checked", true); // select it
-
-  //     return true;
-  //   });
 
   }); //End on document ready function
 
@@ -1630,6 +1613,72 @@ if (!isset($_SESSION['user'])) {
       $(`#cn-radio-${splitId[2]}`).attr("disabled", true);
       $(`#cn-radio-${splitId[2]}`).prop("checked", false);
       $(`#cn-radio-${splitId[2]}`).parent().addClass('aus-disabled-label');
+    });
+  }
+
+  function ncPodListener() {
+    /**
+     * when the nc's assigned pod is clicked, the charge nurse's pod changes to the appropriate selection
+     * @var [type]
+     */
+
+    $(`select[name='nc_pod']`).change(function() {
+      let selectedValue = $(this).val();
+      // if (debug) console.log(`>> Selected Value: ${selectedValue}`);
+      let selectedPod = $(this).children(`option:selected`).text();
+      // if (debug) console.log(`>> Selected Pod: ${selectedPod}`);
+      let selectedMainPod = selectedPod.replace(/[\/B]/g, '');
+      // if (debug) console.log(`>> Selected Main Pod: ${selectedMainPod}`);
+
+      $(`select[name='cn_pod']:visible`).children(`option`).filter(function(){
+        return ($(this).text() !== selectedMainPod);
+      }).prop('selected', true);
+
+      return true;
+    });
+  }
+
+  function cnPodListener() {
+    /**
+     * when the cn's assigned pod is clicked, the nc's pod changes to the appropriate selection
+     * @var [type]
+     */
+
+   $(`select[name='cn_pod']`).change(function() {
+     let selectedValue = $(this).val();
+     // if (debug) console.log(`>> Selected Value: ${selectedValue}`);
+     let selectedMainPod = $(this).children(`option:selected`).text();
+     // if (debug) console.log(`>> Selected Main Pod: ${selectedPod}`);d}`);
+
+     $(`select[name='nc_pod']:visible`).children(`option`).filter(function(){
+       return (!$(this).text().includes(selectedMainPod));
+     }).prop('selected', true);
+
+     return true;
+   });
+  }
+
+  function naListener() {
+    $(`input[name='na']`).click(function(){
+      if ($(`input[name='na']:checked`).length > 0) {
+        $(`#section-na_pod`).removeClass('skip-section');
+        $(`#section-na_pod div.aus-form-group`).data('populateRequired', true);
+      } else {
+        $(`#section-na_pod`).addClass('skip-section');
+        $(`#section-na_pod div.aus-form-group`).data('populateRequired', false);
+      }
+    });
+  }
+
+  function ucListener() {
+    $(`input[name='uc']`).click(function(){
+      if ($(`input[name='uc']:checked`).length > 0) {
+        $(`#section-uc_pod`).removeClass('skip-section');
+        $(`#section-na_pod div.aus-form-group`).data('populateRequired', true);
+      } else {
+        $(`#section-uc_pod`).addClass('skip-section');
+        $(`#section-na_pod div.aus-form-group`).data('populateRequired', false);
+      }
     });
   }
 
