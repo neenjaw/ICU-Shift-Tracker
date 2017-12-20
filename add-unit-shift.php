@@ -206,29 +206,27 @@ if (!isset($_SESSION['user'])) {
                 </label>
                 <div id="float_rn-check-errors"></div>
                 <div id="float_rn-check" class="staff-group">
-                  <div class="inner-item list-group-item-action">
-                    <label class="custom-control custom-radio m-1">
+                  <div class="form-check inner-item list-group-item-action">
+                    <label class="form-check-radio m-1">
                       <input id="float_rn-check-yes"
                         name="float_rn-check"
                         type="radio"
                         value="Yes"
                         required
                         data-parsley-errors-container="#float-rn-check-errors"
-                        class="custom-control-input">
-                      <span class="custom-control-indicator"></span>
-                      <span class="custom-control-description">Yes</span>
+                        class="form-check-input">
+                      Yes
                     </label>
                   </div>
-                  <div class="inner-item list-group-item-action">
-                    <label class="custom-control custom-radio m-1">
+                  <div class="form-check inner-item list-group-item-action">
+                    <label class="form-check-radio m-1">
                       <input id="float_rn-check-no"
                         name="float_rn-check"
                         type="radio"
                         value="No"
                         checked
-                        class="custom-control-input">
-                      <span class="custom-control-indicator"></span>
-                      <span class="custom-control-description">No</span>
+                        class="form-check-input">
+                      No
                     </label>
                   </div>
                 </div>
@@ -955,19 +953,24 @@ if (!isset($_SESSION['user'])) {
           $(this).find('select').each(function(){
             let $parentRow = $(this).closest('div.row');
 
-            $parentRow.show();
-            $(this).prop("disabled", false);
-            if (required) $(this).prop('required', true);
-
             if (staffMatching) {
+              $parentRow.hide();
+              $(this).prop("disabled", true);
+              if (required) $(this).prop('required', false);
+
               for (let i = 0; i < staffIdMatch.length; i++) {
-                if ($(this).attr('id') !== `${prefix}-${type}-${staffIdMatch[i]}`) {
-                  $parentRow.hide();
-                  $(this).prop("disabled", true);
-                  $(this).find('option:selected').prop("selected", false);
-                  if (required) $(this).prop('required', false);
+                if ($(this).attr('id') === `${prefix}-${type}-${staffIdMatch[i]}`) {
+                  $parentRow.show();
+                  $(this).prop("disabled", false);
+                  $(this).find('option:selected').prop("selected", true);
+                  if (required) $(this).prop('required', true);
+                  break;
                 }
               } // end for
+            } else {
+              $parentRow.show();
+              $(this).prop("disabled", false);
+              if (required) $(this).prop('required', true);
             } // end if
 
             if (staffExcluding) {
@@ -977,6 +980,7 @@ if (!isset($_SESSION['user'])) {
                   $(this).prop("disabled", true);
                   $(this).find('option:selected').prop("selected", false);
                   if (required) $(this).prop('required', false);
+                  break;
                 }
               } // end for
             } // end if
@@ -1060,7 +1064,7 @@ if (!isset($_SESSION['user'])) {
     //  * listener to change behavior of form if float nurse is to be selected
     //  * @var [type]
     //  */
-    $(`#float_rn-check-yes`).closest('div').click(function() {
+    $(`#float_rn-check-yes`).change(function() {
       $(`#float_rn-subsection`).slideDown('slow'); //show float nurse select
       $(`input[name='float-rn']`).first().prop("required", true); // add the required property to the float-rn select
     });
@@ -1069,7 +1073,7 @@ if (!isset($_SESSION['user'])) {
     //  * listener to change behavior of form if no float nurse is to be added
     //  * @var [type]
     //  */
-    $(`#float_rn-check-no`).closest('div').click(function() {
+    $(`#float_rn-check-no`).change(function() {
       $(`#float_rn-subsection`).slideUp('fast'); //show float nurse select
       $(`input[name='float_rn']`).first().prop("required", false); // add the required property to the float-rn select
 
