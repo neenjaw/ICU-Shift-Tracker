@@ -77,7 +77,6 @@ if (!isset($_SESSION['user'])) {
 
           $(`#container`).html(reportSelectTemplate(response));
 
-          //TODO bind parsely to form submission
           $('form')
           .parsley()
           .on('form:submit', function () {
@@ -204,9 +203,6 @@ if (!isset($_SESSION['user'])) {
       staffReportParam.data = x;
 
       getData(staffReportParam);
-      //TODO get staff details of staff array
-      //TODO generate a report for all this
-      //TODO create template to display report
     }
 
     //When document is ready
