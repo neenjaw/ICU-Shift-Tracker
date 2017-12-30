@@ -206,8 +206,8 @@ if (!isset($_SESSION['user'])) {
                 </label>
                 <div id="float_rn-check-errors"></div>
                 <div id="float_rn-check" class="staff-group">
-                  <div class="form-check inner-item list-group-item-action">
-                    <label class="form-check-radio m-1">
+                  <div class="form-check inner-item list-group-item-action ml-2">
+                    <label class="form-check-radio">
                       <input id="float_rn-check-yes"
                         name="float_rn-check"
                         type="radio"
@@ -218,8 +218,8 @@ if (!isset($_SESSION['user'])) {
                       Yes
                     </label>
                   </div>
-                  <div class="form-check inner-item list-group-item-action">
-                    <label class="form-check-radio m-1">
+                  <div class="form-check inner-item list-group-item-action ml-2">
+                    <label class="form-check-radio">
                       <input id="float_rn-check-no"
                         name="float_rn-check"
                         type="radio"
@@ -1066,7 +1066,10 @@ if (!isset($_SESSION['user'])) {
     //  */
     $(`#float_rn-check-yes`).change(function() {
       $(`#float_rn-subsection`).slideDown('slow'); //show float nurse select
-      $(`input[name='float-rn']`).first().prop("required", true); // add the required property to the float-rn select
+      $(`#float_rn-subsection`)
+        .find(`input[name='float_rn']`)
+        .first()
+        .prop("required", true); // add the required property to the float-rn select
     });
 
     // /**
@@ -1075,7 +1078,10 @@ if (!isset($_SESSION['user'])) {
     //  */
     $(`#float_rn-check-no`).change(function() {
       $(`#float_rn-subsection`).slideUp('fast'); //show float nurse select
-      $(`input[name='float_rn']`).first().prop("required", false); // add the required property to the float-rn select
+      $(`#float_rn-subsection`)
+        .find(`input[name='float_rn']`)
+        .first()
+        .prop("required", false); // add the required property to the float-rn select
 
       let $frnElem = $(`input[type='checkbox'][name='float_rn']:checked`); //unselect any selected float-rn value
       if ($frnElem !== null) { $frnElem.prop("checked", false); }
