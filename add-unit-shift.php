@@ -1339,151 +1339,217 @@ if (!isset($_SESSION['user'])) {
   // /**
   //  * Gathers the form data, reorganizes to make appropriate for AJAX submission to backend
   //  */
-  // function submitUnitShiftForm() {
-  //   let assignmentLookup = createAssignmentLookup(assignmentList);
-  //   let roleLookup = createRoleLookup(roleList);
-  //
-  //   let submission = [];
-  //   let formData = [];
-  //   let serializedForm = $('#unit-shift-form').serializeArray();
-  //
-  //   if (debug) console.log("Serialized Array Form Contents:");
-  //   if (debug) console.log(serializedForm);
-  //
-  //   for( let i=0; i < serializedForm.length; i++ ) {
-  //     let formPropertyName = serializedForm[i].name;
-  //     formPropertyName = formPropertyName.replace(/\[\]$/, '');
-  //
-  //     formData[formPropertyName] = formData[formPropertyName] || [];
-  //
-  //     formData[formPropertyName].push(serializedForm[i].value);
-  //   }
-  //
-  //   //create lookup tables, catch non-existing data with '|| []'
-  //   let nonVentLookup = createModLookup(formData['non-vent-mod'] || []);
-  //   let doubleLookup = createModLookup(formData['double-mod'] || []);
-  //   let vSickLookup = createModLookup(formData['very-sick-mod'] || []);
-  //   let crrtLookup = createModLookup(formData['crrt-mod'] || []);
-  //   let admitLookup = createModLookup(formData['admit-mod'] || []);
-  //   let codePgLookup = createModLookup(formData['code-pager-mod'] || []);
-  //   let evdLookup = createModLookup(formData['evd-mod'] || []);
-  //   let burnLookup = createModLookup(formData['burn-mod'] || []);
-  //
-  //   let date = formData['date'][0];
-  //   let dayOrNight = formData['day-or-night'][0];
-  //
-  //   //add the clinician to the submission array
-  //   submission.push(createStaffEntryObj(
-  //     formData['nc'][0], formData['date'][0], roleLookup['Clinician'], formData['nc-pod'][0], dayOrNight
-  //   ));
-  //
-  //   //check if charge nurse exists, if it does, push it too.
-  //   if (dayOrNight === 'D') {
-  //     submission.push(createStaffEntryObj(
-  //       formData['cn'][0], formData['date'][0], roleLookup['Charge'], formData['cn-pod'][0], dayOrNight
-  //     ));
-  //   }
-  //
-  //   //float
-  //   if ( formData['float-rn-check'][0] === "Yes" ) {
-  //     for ( let i = 0; i < formData['float-rn'].length; i++ ) {
-  //       submission.push(createStaffEntryObj(
-  //         formData['float-rn'][i], formData['date'][0], roleLookup['Bedside'], assignmentLookup['Float'], dayOrNight
-  //       ));
-  //     }
-  //   }
-  //
-  //
-  //   //apod
-  //   for ( let i = 0; i < formData['apod-rn'].length; i++ ) {
-  //     let sid = formData['apod-rn'][i];
-  //
-  //     submission.push(createStaffEntryObj(
-  //       sid, date, roleLookup['Bedside'], assignmentLookup['A'], dayOrNight,
-  //         isModSelected(sid, nonVentLookup),
-  //         isModSelected(sid, doubleLookup),
-  //         isModSelected(sid, vSickLookup),
-  //         isModSelected(sid, crrtLookup),
-  //         isModSelected(sid, admitLookup),
-  //         isModSelected(sid, codePgLookup),
-  //         isModSelected(sid, evdLookup),
-  //         isModSelected(sid, burnLookup)
-  //     ));
-  //   }
-  //
-  //   //bpod
-  //   for ( let i = 0; i < formData['bpod-rn'].length; i++ ) {
-  //     let sid = formData['bpod-rn'][i];
-  //
-  //     submission.push(createStaffEntryObj(
-  //       sid, date, roleLookup['Bedside'], assignmentLookup['B'], dayOrNight,
-  //         isModSelected(sid, nonVentLookup),
-  //         isModSelected(sid, doubleLookup),
-  //         isModSelected(sid, vSickLookup),
-  //         isModSelected(sid, crrtLookup),
-  //         isModSelected(sid, admitLookup),
-  //         isModSelected(sid, codePgLookup),
-  //         isModSelected(sid, evdLookup),
-  //         isModSelected(sid, burnLookup)
-  //     ));
-  //   }
-  //
-  //   //cpod
-  //   for ( let i = 0; i < formData['cpod-rn'].length; i++ ) {
-  //     let sid = formData['cpod-rn'][i];
-  //
-  //     submission.push(createStaffEntryObj(
-  //       sid, date, roleLookup['Bedside'], assignmentLookup['C'], dayOrNight,
-  //         isModSelected(sid, nonVentLookup),
-  //         isModSelected(sid, doubleLookup),
-  //         isModSelected(sid, vSickLookup),
-  //         isModSelected(sid, crrtLookup),
-  //         isModSelected(sid, admitLookup),
-  //         isModSelected(sid, codePgLookup),
-  //         isModSelected(sid, evdLookup),
-  //         isModSelected(sid, burnLookup)
-  //     ));
-  //   }
-  //
-  //   //outreach
-  //   for ( let i = 0; i < formData['outreach-rn'].length; i++ ) {
-  //     let sid = formData['outreach-rn'][i];
-  //
-  //     submission.push(createStaffEntryObj(
-  //       sid, date, roleLookup['Outreach'], assignmentLookup['Float'], dayOrNight
-  //     ));
-  //   }
-  //
-  //   //na - there may not always be an NA specified, check
-  //   formData['na'] = formData['na'] || [];
-  //   if (formData['na'] !== []) {
-  //     for ( let i = 0; i < formData['na'].length; i++ ) {
-  //       let sid = formData['na'][i];
-  //
-  //       submission.push(createStaffEntryObj(
-  //         sid, date, roleLookup['NA'], formData[`na-pod-${sid}`][0], dayOrNight
-  //       ));
-  //     }
-  //   }
-  //
-  //   //uc - there may not always be a UC specified, check
-  //   formData['uc'] = formData['uc'] || [];
-  //   if (formData['uc'] !== []) {
-  //     for ( let i = 0; i < formData['uc'].length; i++ ) {
-  //       let sid = formData['uc'][i];
-  //
-  //       submission.push(createStaffEntryObj(
-  //         sid, date, roleLookup['UC'], formData[`uc-pod-${sid}`][0], dayOrNight
-  //       ));
-  //     }
-  //   }
-  //
-  //   if (debug) { console.log(submission); }
-  //
-  //   //data is appropriate for submission, now submit it
-  //   submitUnitShifts(submission);
-  // }
-  //
+  function submitUnitShiftForm() {
+
+    function createAssignmentLookup(assignmentObjArr) {
+      let aArray = [];
+
+      for(let i = 0; i < assignmentObjArr.length; i++) {
+        aArray[assignmentObjArr[i].assignment] = assignmentObjArr[i].id;
+      }
+
+      return aArray;
+    }
+
+    function createRoleLookup(roleObjArray) {
+      let rArray = [];
+
+      for(let i = 0; i < roleObjArray.length; i++) {
+        rArray[roleObjArray[i].role] = roleObjArray[i].id;
+      }
+
+      return rArray;
+    }
+
+    function arrayPush(array, values) {
+      var index = -1,
+          length = values.length,
+          offset = array.length;
+
+      while (++index < length) {
+        array[offset + index] = values[index];
+      }
+      return array;
+    }
+
+    function flatten(a) {
+      let result = [];
+
+      for(let i = 0; i < a.length; i++) {
+        arrayPush(result, a[i]);
+      }
+
+      return result;
+    }
+
+    function createModLookup(modSelectArray) {
+      let mArray = [];
+
+      for ( let i = 0; i < modSelectArray.length; i++ ) {
+        mArray[modSelectArray[i]] = true;
+      }
+
+      return mArray;
+    }
+
+    function isModSelected(staffId, modLookup) {
+      let b = false;
+
+      if ( (typeof(modLookup) != 'undefined') && (typeof(modLookup[staffId]) != 'undefined') ) { b = true; }
+
+      return b;
+    }
+
+    let assignmentLookup = createAssignmentLookup(populate.list.assignment);
+    let roleLookup = createRoleLookup(populate.list.role);
+
+    let submission = [];
+    let formData = [];
+
+    let serializedForm = $('form').get().map(function(e){
+      return $(e).serializeArray();
+    });
+
+    serializedForm = flatten(serializedForm);
+
+    if (debug) console.log("Serialized Array Form Contents:");
+    if (debug) console.log(serializedForm);
+
+    for( let i=0; i < serializedForm.length; i++ ) {
+      let formPropertyName = serializedForm[i].name;
+      formPropertyName = formPropertyName.replace(/\[\]$/, '');
+
+      formData[formPropertyName] = formData[formPropertyName] || [];
+
+      formData[formPropertyName].push(serializedForm[i].value);
+    }
+
+    //create lookup tables, catch non-existing data with '|| []'
+    let nonVentLookup = createModLookup(formData['non_vent_mod'] || []);
+    let doubleLookup = createModLookup(formData['double_mod'] || []);
+    let vSickLookup = createModLookup(formData['very_sick_mod'] || []);
+    let crrtLookup = createModLookup(formData['crrt_mod'] || []);
+    let admitLookup = createModLookup(formData['admit_mod'] || []);
+    let codePgLookup = createModLookup(formData['code_pager_mod'] || []);
+    let evdLookup = createModLookup(formData['evd_mod'] || []);
+    let burnLookup = createModLookup(formData['burn_mod'] || []);
+
+    let date = formData['date'][0];
+    let dayOrNight = formData['day-or-night'][0];
+
+    //add the clinician to the submission array
+    submission.push(createStaffEntryObj(
+      formData['nc'][0], formData['date'][0], roleLookup['Clinician'], formData['nc-pod'][0], dayOrNight
+    ));
+
+    //check if charge nurse exists, if it does, push it too.
+    if (dayOrNight === 'D') {
+      submission.push(createStaffEntryObj(
+        formData['cn'][0], formData['date'][0], roleLookup['Charge'], formData['cn-pod'][0], dayOrNight
+      ));
+    }
+
+    //float
+    if ( formData['float-rn-check'][0] === "Yes" ) {
+      for ( let i = 0; i < formData['float-rn'].length; i++ ) {
+        submission.push(createStaffEntryObj(
+          formData['float-rn'][i], formData['date'][0], roleLookup['Bedside'], assignmentLookup['Float'], dayOrNight
+        ));
+      }
+    }
+
+
+    //apod
+    for ( let i = 0; i < formData['apod-rn'].length; i++ ) {
+      let sid = formData['apod-rn'][i];
+
+      submission.push(createStaffEntryObj(
+        sid, date, roleLookup['Bedside'], assignmentLookup['A'], dayOrNight,
+          isModSelected(sid, nonVentLookup),
+          isModSelected(sid, doubleLookup),
+          isModSelected(sid, vSickLookup),
+          isModSelected(sid, crrtLookup),
+          isModSelected(sid, admitLookup),
+          isModSelected(sid, codePgLookup),
+          isModSelected(sid, evdLookup),
+          isModSelected(sid, burnLookup)
+      ));
+    }
+
+    //bpod
+    for ( let i = 0; i < formData['bpod-rn'].length; i++ ) {
+      let sid = formData['bpod-rn'][i];
+
+      submission.push(createStaffEntryObj(
+        sid, date, roleLookup['Bedside'], assignmentLookup['B'], dayOrNight,
+          isModSelected(sid, nonVentLookup),
+          isModSelected(sid, doubleLookup),
+          isModSelected(sid, vSickLookup),
+          isModSelected(sid, crrtLookup),
+          isModSelected(sid, admitLookup),
+          isModSelected(sid, codePgLookup),
+          isModSelected(sid, evdLookup),
+          isModSelected(sid, burnLookup)
+      ));
+    }
+
+    //cpod
+    for ( let i = 0; i < formData['cpod-rn'].length; i++ ) {
+      let sid = formData['cpod-rn'][i];
+
+      submission.push(createStaffEntryObj(
+        sid, date, roleLookup['Bedside'], assignmentLookup['C'], dayOrNight,
+          isModSelected(sid, nonVentLookup),
+          isModSelected(sid, doubleLookup),
+          isModSelected(sid, vSickLookup),
+          isModSelected(sid, crrtLookup),
+          isModSelected(sid, admitLookup),
+          isModSelected(sid, codePgLookup),
+          isModSelected(sid, evdLookup),
+          isModSelected(sid, burnLookup)
+      ));
+    }
+
+    //outreach
+    for ( let i = 0; i < formData['outreach-rn'].length; i++ ) {
+      let sid = formData['outreach-rn'][i];
+
+      submission.push(createStaffEntryObj(
+        sid, date, roleLookup['Outreach'], assignmentLookup['Float'], dayOrNight
+      ));
+    }
+
+    //na - there may not always be an NA specified, check
+    formData['na'] = formData['na'] || [];
+    if (formData['na'] !== []) {
+      for ( let i = 0; i < formData['na'].length; i++ ) {
+        let sid = formData['na'][i];
+
+        submission.push(createStaffEntryObj(
+          sid, date, roleLookup['NA'], formData[`na-pod-${sid}`][0], dayOrNight
+        ));
+      }
+    }
+
+    //uc - there may not always be a UC specified, check
+    formData['uc'] = formData['uc'] || [];
+    if (formData['uc'] !== []) {
+      for ( let i = 0; i < formData['uc'].length; i++ ) {
+        let sid = formData['uc'][i];
+
+        submission.push(createStaffEntryObj(
+          sid, date, roleLookup['UC'], formData[`uc-pod-${sid}`][0], dayOrNight
+        ));
+      }
+    }
+
+    if (debug) { console.log('Data to be submitted:'); }
+    if (debug) { console.log(submission); }
+
+    //data is appropriate for submission, now submit it
+    submitUnitShifts(submission);
+  }
+
   // /**
   //  * Helper function to create shift entry object to be returned for submission
   //  * @param  int  staffId         [description]
@@ -1501,115 +1567,80 @@ if (!isset($_SESSION['user'])) {
   //  * @param  boolean burn         [description]
   //  * @return Object               [description]
   //  */
-  // function createStaffEntryObj(staffId, date, roleId, assignmentId, dayOrNight,
-  //   nonVent = false, doubled = false, vsick = false, crrt = false, admit = false, codepg = false, evd = false, burn = false) {
-  //
-  //   let staffEntry = {
-  //           staff : staffId,
-  //           date : date,
-  //           role : roleId,
-  //           assignment : assignmentId,
-  //           dayornight : dayOrNight,
-  //           nonvent : nonVent,
-  //           doubled : doubled,
-  //           vsick : vsick,
-  //           crrt : crrt,
-  //           admit : admit,
-  //           codepg : codepg,
-  //           evd : evd,
-  //           burn : burn
-  //         };
-  //
-  //   return staffEntry;
-  // }
-  //
-  // function createAssignmentLookup(assignmentObjArr) {
-  //   let aArray = [];
-  //
-  //   for(let i = 0; i < assignmentObjArr.length; i++) {
-  //     aArray[assignmentObjArr[i].assignment] = assignmentObjArr[i].id;
-  //   }
-  //
-  //   return aArray;
-  // }
-  //
-  // function createRoleLookup(roleObjArray) {
-  //   let rArray = [];
-  //
-  //   for(let i = 0; i < roleObjArray.length; i++) {
-  //     rArray[roleObjArray[i].role] = roleObjArray[i].id;
-  //   }
-  //
-  //   return rArray;
-  // }
-  //
-  // function createModLookup(modSelectArray) {
-  //   let mArray = [];
-  //
-  //   for ( let i = 0; i < modSelectArray.length; i++ ) {
-  //     mArray[modSelectArray[i]] = true;
-  //   }
-  //
-  //   return mArray;
-  // }
-  //
-  // function isModSelected(staffId, modLookup) {
-  //   let b = false;
-  //
-  //   if ( (typeof(modLookup) != 'undefined') && (typeof(modLookup[staffId]) != 'undefined') ) { b = true; }
-  //
-  //   return b;
-  // }
-  //
+  function createStaffEntryObj(staffId, date, roleId, assignmentId, dayOrNight,
+    nonVent = false, doubled = false, vsick = false, crrt = false, admit = false, codepg = false, evd = false, burn = false) {
+
+    let staffEntry = {
+            staff : staffId,
+            date : date,
+            role : roleId,
+            assignment : assignmentId,
+            dayornight : dayOrNight,
+            nonvent : nonVent,
+            doubled : doubled,
+            vsick : vsick,
+            crrt : crrt,
+            admit : admit,
+            codepg : codepg,
+            evd : evd,
+            burn : burn
+          };
+
+    return staffEntry;
+  }
+
+
+
+
   // /**
   //  * Submit the form data to backend
   //  * @param  Array[Object] submissionData   An Array of ShiftEntry Objects, ready for submission to backend
   //  */
-  // function submitUnitShifts(submissionData) {
-  //   submissionData = submissionData || []; // catch null/undefined arguments
-  //
-  //   //catch bad parameter data, return to exit function
-  //   if ( submissionData === [] ) {
-  //     if (debug) { console.log("Warning: no data passed to submit via ajax handler"); }
-  //     return;
-  //   }
-  //
-  //   $.ajax({
-  // 	   url: 'resource/post_multiple_shift.php',
-  // 	   type: 'post',
-  // 	   data: {"shiftData" : JSON.stringify(submissionData)},
-  //      beforeSend: function () {
-  //        if (debug) { console.log("AJAX sent."); }
-  //        $('#submission-modal-body').html(`<i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
-  //                                          <span class="sr-only">Loading...</span>`);
-  //        $('#submission-modal').modal('show');	//show the modal
-  //      },
-  // 	   success: function(data) {
-  //        if (debug) { console.log("AJAX returned."); }
-  //
-  //        if (data === "ok") {
-  //
-  //          if (debug) { console.log("Data submission ok."); }
-  //   	     $('#submission-modal-body').html("<h3>Success!</h3><p>click close to reset the form.</p>");
-  //          $('#modal-close').on('click', function(){
-  //            location.reload();
-  //          });
-  //
-  //        } else {
-  //
-  //          if (debug) { console.log("Data submission not ok."); }
-  //          $('#submission-modal-body').html(`<h3>There was a problem!</h3>
-  //                                            <p>${data}</p>
-  //                                            <p>Click close, find the problem, resubmit.</p>`);
-  //
-  //        }
-  //
-  //        if (debug) { console.log(data); }
-  // 	   }
-  // 	});
-  // }
-  //
-  //
+  function submitUnitShifts(submissionData) {
+    submissionData = submissionData || []; // catch null/undefined arguments
+
+    //catch bad parameter data, return to exit function
+    if ( submissionData === [] ) {
+      if (debug) { console.log("Warning: no data passed to submit via ajax handler"); }
+      return;
+    }
+
+    $.ajax({
+  	   url: 'resource/post_multiple_shift.php',
+  	   type: 'post',
+  	   data: {"shiftData" : JSON.stringify(submissionData)},
+       beforeSend: function () {
+         if (debug) { console.log("AJAX sent."); }
+         $('#submission-modal-body').html(`<i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+                                           <span class="sr-only">Loading...</span>`);
+         $('#submission-modal').modal('show');	//show the modal
+       },
+  	   success: function(data) {
+         if (debug) { console.log("AJAX returned."); }
+
+         if (data === "ok") {
+
+           if (debug) { console.log("Data submission ok."); }
+    	     $('#submission-modal-body').html("<h3>Success!</h3><p>click close to reset the form.</p>");
+           $('#modal-close').on('click', function(){
+             location.reload();
+           });
+
+         } else {
+
+           if (debug) { console.log("Data submission not ok."); }
+           $('#submission-modal-body').html(`<h3>There was a problem!</h3>
+                                             <p>${data}</p>
+                                             <p>Click close, find the problem, resubmit.</p>`);
+
+         }
+
+         if (debug) { console.log(data); }
+  	   }
+  	});
+  }
+
+
 
   function ncListener() {
     if (debug) console.log('>> Setting nc listener.');
