@@ -1589,6 +1589,12 @@ if (!isset($_SESSION['user'])) {
     return staffEntry;
   }
 
+<<<<<<< HEAD
+=======
+
+
+
+>>>>>>> 51dde46d63ff63d0cb1c7e3af358af62ffd49c6c
   // /**
   //  * Submit the form data to backend
   //  * @param  Array[Object] submissionData   An Array of ShiftEntry Objects, ready for submission to backend
