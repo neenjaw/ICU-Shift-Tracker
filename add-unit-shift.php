@@ -847,8 +847,8 @@ if (!isset($_SESSION['user'])) {
     //Submit button click event, validate the form, then call the submit forms function
     $btnSubmit.click(function () {
       $sections.eq(curIndex()).find('form').parsley().whenValidate().done(function() {
-        alert('Submit attempted.');
-        // submitUnitShiftForm();
+        // alert('Submit attempted.');
+        submitUnitShiftForm();
       });
     });
 
@@ -1096,8 +1096,9 @@ if (!isset($_SESSION['user'])) {
       $(`#cn-subsection`).toggle(true); // show charge nurse select
       $(`#section-nc_cn_pod`).toggleClass('skip-section', false); // show section for pod selection for nc/cn
 
-      $(`input[name='cn']`).first().prop("required", true); // add the required property to the first cn
-      $(`#cn_pod input`).first().prop("required", true); // add the required property to the first cn-pod
+      $(`#cn`).data("populateRequired", true); // add the required property from the cn select
+      $(`#cn input[required]`).first().prop('required', true);
+      $(`#cn_pod`).data("populateRequired", true); // add the required property to the first cn-pod
     });
 
     /**
@@ -1109,10 +1110,9 @@ if (!isset($_SESSION['user'])) {
 
       $(`#section-nc_cn_pod`).toggleClass('skip-section', true); // hide section for pod selection for nc/cn
 
-      $(`input[name='cn'][required]`).prop("required", false); // remove the required property from the cn select
-      $(`input[name='cn_pod'][required]`).prop("required", false); // remove the required property from the cn select
-
-      //TODO: auto pod A/B/C for the nc
+      $(`#cn`).data("populateRequired", false); // remove the required property from the cn select
+      $(`#cn input[required]`).prop('required', false);
+      $(`#cn_pod`).data("populateRequired", false); // remove the required property to the first cn-pod
 
       let $cnElem = $(`input[type='radio'][name='cn']:checked`); //unselect any selected cn value
       if ($cnElem !== null) $cnElem.prop("checked", false);
@@ -1437,15 +1437,20 @@ if (!isset($_SESSION['user'])) {
     let date = formData['date'][0];
     let dayOrNight = formData['day-or-night'][0];
 
-    //add the clinician to the submission array
-    submission.push(createStaffEntryObj(
-      formData['nc'][0], formData['date'][0], roleLookup['Clinician'], formData[`nc_pod-${formData['nc'][0]}`][0], dayOrNight
-    ));
-
-    //check if charge nurse exists, if it does, push it too.
     if (dayOrNight === 'D') {
+      //add the clinician to the submission array
+      submission.push(createStaffEntryObj(
+        formData['nc'][0], formData['date'][0], roleLookup['Clinician'], formData[`nc_pod-${formData['nc'][0]}`][0], dayOrNight
+      ));
+
+      //if it's a day, add t he charge nurse as well
       submission.push(createStaffEntryObj(
         formData['cn'][0], formData['date'][0], roleLookup['Charge'], formData[`cn_pod-${formData['cn'][0]}`][0], dayOrNight
+      ));
+    } else {
+      //at night, clinican is on for whole unit
+      submission.push(createStaffEntryObj(
+        formData['nc'][0], formData['date'][0], roleLookup['Clinician'], assignmentLookup['A/B/C'], dayOrNight
       ));
     }
 
@@ -1547,7 +1552,7 @@ if (!isset($_SESSION['user'])) {
     if (debug) { console.log(submission); }
 
     //data is appropriate for submission, now submit it
-    submitUnitShifts(submission);
+    sendUnitShifts(submission);
   }
 
   // /**
@@ -1593,7 +1598,7 @@ if (!isset($_SESSION['user'])) {
   //  * Submit the form data to backend
   //  * @param  Array[Object] submissionData   An Array of ShiftEntry Objects, ready for submission to backend
   //  */
-  function submitUnitShifts(submissionData) {
+  function sendUnitShifts(submissionData) {
     submissionData = submissionData || []; // catch null/undefined arguments
 
     //catch bad parameter data, return to exit function
