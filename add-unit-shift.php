@@ -1439,29 +1439,29 @@ if (!isset($_SESSION['user'])) {
 
     //add the clinician to the submission array
     submission.push(createStaffEntryObj(
-      formData['nc'][0], formData['date'][0], roleLookup['Clinician'], formData['nc-pod'][0], dayOrNight
+      formData['nc'][0], formData['date'][0], roleLookup['Clinician'], formData[`nc_pod-${formData['nc'][0]}`][0], dayOrNight
     ));
 
     //check if charge nurse exists, if it does, push it too.
     if (dayOrNight === 'D') {
       submission.push(createStaffEntryObj(
-        formData['cn'][0], formData['date'][0], roleLookup['Charge'], formData['cn-pod'][0], dayOrNight
+        formData['cn'][0], formData['date'][0], roleLookup['Charge'], formData[`cn_pod-${formData['cn'][0]}`][0], dayOrNight
       ));
     }
 
     //float
-    if ( formData['float-rn-check'][0] === "Yes" ) {
-      for ( let i = 0; i < formData['float-rn'].length; i++ ) {
+    if ( formData['float_rn-check'][0] === "Yes" ) {
+      for ( let i = 0; i < formData['float_rn'].length; i++ ) {
         submission.push(createStaffEntryObj(
-          formData['float-rn'][i], formData['date'][0], roleLookup['Bedside'], assignmentLookup['Float'], dayOrNight
+          formData['float_rn'][i], formData['date'][0], roleLookup['Bedside'], assignmentLookup['Float'], dayOrNight
         ));
       }
     }
 
 
     //apod
-    for ( let i = 0; i < formData['apod-rn'].length; i++ ) {
-      let sid = formData['apod-rn'][i];
+    for ( let i = 0; i < formData['apod_rn'].length; i++ ) {
+      let sid = formData['apod_rn'][i];
 
       submission.push(createStaffEntryObj(
         sid, date, roleLookup['Bedside'], assignmentLookup['A'], dayOrNight,
@@ -1477,8 +1477,8 @@ if (!isset($_SESSION['user'])) {
     }
 
     //bpod
-    for ( let i = 0; i < formData['bpod-rn'].length; i++ ) {
-      let sid = formData['bpod-rn'][i];
+    for ( let i = 0; i < formData['bpod_rn'].length; i++ ) {
+      let sid = formData['bpod_rn'][i];
 
       submission.push(createStaffEntryObj(
         sid, date, roleLookup['Bedside'], assignmentLookup['B'], dayOrNight,
@@ -1494,8 +1494,8 @@ if (!isset($_SESSION['user'])) {
     }
 
     //cpod
-    for ( let i = 0; i < formData['cpod-rn'].length; i++ ) {
-      let sid = formData['cpod-rn'][i];
+    for ( let i = 0; i < formData['cpod_rn'].length; i++ ) {
+      let sid = formData['cpod_rn'][i];
 
       submission.push(createStaffEntryObj(
         sid, date, roleLookup['Bedside'], assignmentLookup['C'], dayOrNight,
@@ -1511,8 +1511,8 @@ if (!isset($_SESSION['user'])) {
     }
 
     //outreach
-    for ( let i = 0; i < formData['outreach-rn'].length; i++ ) {
-      let sid = formData['outreach-rn'][i];
+    for ( let i = 0; i < formData['outreach_rn'].length; i++ ) {
+      let sid = formData['outreach_rn'][i];
 
       submission.push(createStaffEntryObj(
         sid, date, roleLookup['Outreach'], assignmentLookup['Float'], dayOrNight
@@ -1526,7 +1526,7 @@ if (!isset($_SESSION['user'])) {
         let sid = formData['na'][i];
 
         submission.push(createStaffEntryObj(
-          sid, date, roleLookup['NA'], formData[`na-pod-${sid}`][0], dayOrNight
+          sid, date, roleLookup['NA'], formData[`na_pod-${sid}`][0], dayOrNight
         ));
       }
     }
@@ -1538,7 +1538,7 @@ if (!isset($_SESSION['user'])) {
         let sid = formData['uc'][i];
 
         submission.push(createStaffEntryObj(
-          sid, date, roleLookup['UC'], formData[`uc-pod-${sid}`][0], dayOrNight
+          sid, date, roleLookup['UC'], formData[`uc_pod-${sid}`][0], dayOrNight
         ));
       }
     }
@@ -1588,9 +1588,6 @@ if (!isset($_SESSION['user'])) {
 
     return staffEntry;
   }
-
-
-
 
   // /**
   //  * Submit the form data to backend
@@ -1663,15 +1660,16 @@ if (!isset($_SESSION['user'])) {
      * @var [type]
      */
 
-    $(`select[name='nc_pod']`).change(function() {
+    $(`select[name^='nc_pod']`).change(function() {
       let selectedValue = $(this).val();
       // if (debug) console.log(`>> Selected Value: ${selectedValue}`);
       let selectedPod = $(this).children(`option:selected`).text();
       // if (debug) console.log(`>> Selected Pod: ${selectedPod}`);
       let selectedMainPod = selectedPod.replace(/[\/B]/g, '');
       // if (debug) console.log(`>> Selected Main Pod: ${selectedMainPod}`);
+      let selectedCn = $(`input[name='cn']:checked`).val();
 
-      $(`select[name='cn_pod']:visible`).children(`option`).filter(function(){
+      $(`select[name='cn_pod-${selectedCn}']:visible`).children(`option`).filter(function(){
         return ($(this).text() !== selectedMainPod);
       }).prop('selected', true);
 
@@ -1685,13 +1683,14 @@ if (!isset($_SESSION['user'])) {
      * @var [type]
      */
 
-   $(`select[name='cn_pod']`).change(function() {
+   $(`select[name^='cn_pod']`).change(function() {
      let selectedValue = $(this).val();
      // if (debug) console.log(`>> Selected Value: ${selectedValue}`);
      let selectedMainPod = $(this).children(`option:selected`).text();
      // if (debug) console.log(`>> Selected Main Pod: ${selectedPod}`);d}`);
+     let selectedNc = $(`input[name='cn']:checked`).val();
 
-     $(`select[name='nc_pod']:visible`).children(`option`).filter(function(){
+     $(`select[name='nc_pod-${selectedNc}']:visible`).children(`option`).filter(function(){
        return (!$(this).text().includes(selectedMainPod));
      }).prop('selected', true);
 
