@@ -1079,6 +1079,15 @@ class ShiftCrud
    */
   public function getShiftTableObject($days_to_print = 10, $offset_from_last_day = 0, $staff_category = '*')
   {
+    //********
+    $_time_function = false;
+    if ($_time_function) {
+      $timer = array();
+      $time = microtime(true);
+      array_push($timer, (object) array('name' => 'Function Start', 'time' => $time));
+    }
+    //********
+
     $whereStaffCategory = ($staff_category !== '*') ? " WHERE category = \"{$staff_category}\" " : "";
 
     //query the db to get all the shifts within the specified date range
@@ -1106,18 +1115,27 @@ class ShiftCrud
     $stmtShiftEntries = $this->db->prepare($sql);
     $stmtShiftEntries->execute();
 
+    //********
+    if ($_time_function) {
+      $time = microtime(true);
+      array_push($timer, (object) array('name' => 'DB Query Done', 'time' => $time));
+    }
+    //********
+
     //  Loop to:
     //    1. Create a list of all the staff
     //    2. Create a 3-dimensional array shift_array[Staff Name][Shift Date][Shift Data], not every cell will be populated
     $shift_dates = array();
     $staff_array = array();
     $staff_shifts = array();
+    $category_ref = $this->getAllCategories();
+    $role_ref = $this->getAllRoles();
 
     if ($stmtShiftEntries->rowCount()>0) {
       while ($row=$stmtShiftEntries->fetch(PDO::FETCH_ASSOC)) {
         $shift_dates[ $row['shift_date'] ] = $row['shift_date'];
 
-        $letter_code = $this->getShiftLetterCode($row);
+        $letter_code = $this->getShiftLetterCode($row, $category_ref, $role_ref);
 
         $name = "{$row['last_name']}, {$row['first_name']}";
 
@@ -1140,9 +1158,23 @@ class ShiftCrud
       return (object) ["error" => true, "message" => "No shifts exist in the database for this query"];
     }
 
+    //********
+    if ($_time_function) {
+      $time = microtime(true);
+      array_push($timer, (object) array('name' => 'Staff Array created', 'time' => $time));
+    }
+    //********
+
     //now arrange all of the dates in sequence
     $shift_dates = array_values($shift_dates);
     sort($shift_dates);
+
+    //********
+    if ($_time_function) {
+      $time = microtime(true);
+      array_push($timer, (object) array('name' => 'Shift Dates Sorted', 'time' => $time));
+    }
+    //********
 
     $obj = (object) array();
     $obj->dates = $shift_dates;
@@ -1174,12 +1206,39 @@ class ShiftCrud
       array_push($groups[$staff->category]->staff, $staff);
     }
 
+    //********
+    if ($_time_function) {
+      $time = microtime(true);
+      array_push($timer, (object) array('name' => 'Staff Shift Object Done', 'time' => $time));
+    }
+    //********
+
     //add the groups to the $obj
     $obj->groups = array_values($groups);
+
+    //********
+    if ($_time_function) {
+      $time = microtime(true);
+      array_push($timer, (object) array('name' => 'Groups added', 'time' => $time));
+
+      $last_time = 0;
+      for ($i = 0; $i < count($timer); $i++) {
+          if ($i === 0) {
+            $first_time = round($timer[$i]->time, 4);
+          }
+          $timer[$i]->{'exec_time'} = round($timer[$i]->time, 4) - $first_time;
+          $timer[$i]->{'lap_time'} = $timer[$i]->{'exec_time'} - $last_time;
+          $last_time = $timer[$i]->{'exec_time'};
+      }
+
+      $obj->timers = $timer;
+    }
+    //********
 
     //return the object
     return $obj;
   }
+
 
   /**
    * [getShiftLetterCode description]
